@@ -1,0 +1,131 @@
+VC4-Development-0.0.0-130
+	+ Added changelog updater
+VC4-Development-0.0.0-131
+	* Fixed issues with changelog updater not appending correctly to changelog
+VC4-Development-0.0.0-132
+	+ Added support for mouse events on components
+	+ MouseSet support for checking if mouse pressed or released
+VC4-Development-0.0.0-133
+	* Fixed crash error in the mouse update method
+VC4-Development-0.0.0-134
+	+ Added buttons, which only display text so far
+VC4-Development-0.0.0-135
+	+ Improved button rendering
+VC4-Development-0.0.0-136
+	+ Color scheme support, and loadable color schemes
+VC4-Development-0.0.0-137
+	* Fixed color scheme load path not containing '/' between "_vc4" and "settings"
+VC4-Development-0.0.0-138
+	+ Buttons now render in the current color scheme
+VC4-Development-0.0.0-139
+	- Removed button shadow because it looked bad with transluscent color scheme
+VC4-Development-0.0.0-140
+	+ Gui type menu can now load and add buttons to the gui
+VC4-Development-0.0.0-141
+	+ Added support for gui load from file
+VC4-Development-0.0.0-142
+	* Fixed number cast bug
+VC4-Development-0.0.0-143
+	+ Settings button to main menu
+VC4-Development-0.0.0-144
+	+ Added support for different text sizes on buttons
+VC4-Development-0.0.0-146
+	* Fixed rectangle position calculation in menus
+VC4-Development-0.0.0-147
+	* The quit button now closes the game
+VC4-Development-0.0.0-148
+	+ The game now loads all guis specified in the resources file
+VC4-Development-0.0.0-151
+	* Fixed loading gui before font error
+VC4-Development-0.0.0-152
+	+ Menu guis are now able to specify their border to attach to
+VC4-Development-0.0.0-153
+	+ Added action "back" to go to the last menu
+	+ Added action "goto:" to go to a named menu after the colon
+VC4-Development-0.0.0-154
+	+ Added support for different right click commands on buttons
+VC4-Development-0.0.0-155
+	+ Support for a settings file
+VC4-Development-0.0.0-156
+	+ Added support for settings and localized settings in text
+VC4-Development-0.0.0-158
+	+ "pval" for languages to fix certain issues
+VC4-Development-0.0.0-159
+	* Fixed colorscheme not changing
+VC4-Development-0.0.0-160
+	* Text format keys can now be over 1 character
+VC4-Development-0.0.0-161
+	* String formatter now only splits between first ":" in format
+VC4-Development-0.0.0-162
+	* Right clicking the color scheme button now changes color scheme to last
+VC4-Development-0.0.0-163
+	+ Added component "Setting Scroller", to scroll through values
+VC4-Development-0.0.0-164
+	* Fixed SettingScroller arrows all pointing left
+VC4-Development-0.0.0-165
+	* SettingScroller arrows now point outwards instead of in
+VC4-Development-0.0.0-166
+	* Buttons can now have different fontsizes in the same gui
+VC4-Development-0.0.0-167
+	+ Settings are saved
+VC4-Development-0.0.0-168
+	+ VC4 Server console, which can output in most of the vc4 formats
+VC4-Development-0.0.0-169
+	* Console now uses generic monospaced font instead of consolas
+VC4-Development-0.0.0-171
+	+ ConsoleHandler, allowing loggers to log to console
+VC4-Development-0.0.0-172
+	* Console logs in different colors
+VC4-Development-0.0.0-173
+	+ Server can detect if someone is connecting
+VC4-Development-0.0.0-174
+	+ Read write packages
+VC4-Development-0.0.0-175
+	+ Added chat box
+VC4-Development-0.0.0-176
+	* Chat box fixes
+VC4-Development-0.0.0-177
+	* Chatbox fixes again
+VC4-Development-0.0.0-178
+	* Chat lines stay for 2 seconds and fade out during the third
+VC4-Development-0.0.0-179
+	+ Fonts can now render at different alpha values
+VC4-Development-0.0.0-180
+	* Text in chat lines is now indented by 3 on the x axis
+VC4-Development-0.0.0-181
+	* Fixed alpha default 0 on all text (caused button text not to render
+VC4-Development-0.0.0-182
+	+ Added chat box handler
+VC4-Development-0.0.0-183
+	* Fixed format bug while measuring lines in chatbox
+VC4-Development-0.0.0-184
+	* Improved Yaml
+VC4-Development-0.0.0-185
+	+ Added YamlMap class for easy working with maps
+VC4-Development-0.0.0-186
+	+ added test FileOutputHandler
+VC4-Development-0.0.0-187
+	* Fixed a bug with the FileOutputHandler
+VC4-Development-0.0.0-188
+	+ PluginLoader can now load plugins
+	+ Plugins can now do things on enable and disable
+VC4-Development-0.0.0-189
+	* Fixed bugs with the plugin loader
+VC4-Development-0.0.0-190
+	+ BlockRenderDefault now renders blocks
+	+ Testing chunk rendering
+VC4-Development-0.0.0-191
+	+ Added GameStates
+VC4-Development-0.0.0-192
+	+ Added IBlockMultitexture and BlockMultitexture
+VC4-Development-0.0.0-193
+	+ Added WorldGenerator interface for world generators
+VC4-Development-0.0.0-200
+	* Improved BlockRendererDefault
+	+ Added crosshairs
+VC4-Development-0.0.0-201
+	+ Added ingame gui
+VC4-Development-0.0.0-202
+	+ Block now has method to get creative items
+VC4-Development-0.0.0-203
+	+ Test infinite world
