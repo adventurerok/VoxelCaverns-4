@@ -1,0 +1,128 @@
+default:
+    name: "default"
+    background.normal:
+        red: 0.1
+        green: 0.1
+        blue: 0.1
+        alpha: 0.7
+    background.selected:
+        red: 0.35
+        green: 0.35
+        blue: 0.35
+        alpha: 0.78
+    outline.normal:
+        red: 1
+        green: 1
+        blue: 0.5
+        alpha: 0.8
+    outline.selected:
+        red: 1
+        green: 1
+        blue: 0
+        alpha: 0.8
+classic:
+    name: "classic"
+    background.normal:
+        red: 0.2
+        green: 0.2
+        blue: 0.5
+    background.selected:
+        red: 0.2
+        green: 0.2
+        blue: 0
+    outline.normal:
+        red: 1
+        green: 1
+        blue: 0.5
+    outline.selected:
+        red: 1
+        green: 1
+        blue: 0
+aqua:
+    name: "aqua"
+    background.normal:
+        red: 0.1
+        green: 0.1
+        blue: 0.6
+        alpha: 0.7
+    background.selected:
+        red: 0.35
+        green: 0.35
+        blue: 0.8
+        alpha: 0.78
+    outline.normal:
+        red: 1
+        green: 1
+        blue: 0.5
+        alpha: 0.8
+    outline.selected:
+        red: 1
+        green: 1
+        blue: 0
+        alpha: 0.8
+forest:
+    name: "forest"
+    background.normal:
+        red: 0.1
+        green: 0.6
+        blue: 0.1
+        alpha: 0.7
+    background.selected:
+        red: 0.35
+        green: 0.8
+        blue: 0.35
+        alpha: 0.78
+    outline.normal:
+        red: 1
+        green: 1
+        blue: 0.5
+        alpha: 0.8
+    outline.selected:
+        red: 1
+        green: 1
+        blue: 0
+        alpha: 0.8
+blood:
+    name: "blood"
+    background.normal:
+        red: 0.6
+        green: 0.1
+        blue: 0.1
+        alpha: 0.7
+    background.selected:
+        red: 0.8
+        green: 0.35
+        blue: 0.35
+        alpha: 0.78
+    outline.normal:
+        red: 1
+        green: 1
+        blue: 0.5
+        alpha: 0.8
+    outline.selected:
+        red: 1
+        green: 1
+        blue: 0
+        alpha: 0.8
+mix:
+    name: "mix"
+    background.normal:
+        red: 1
+        green: 0.87
+        blue: 0
+        alpha: 0.7
+    background.selected:
+        red: 1
+        green: 0.2
+        blue: 0
+        alpha: 0.78
+    outline.normal:
+        red: 0
+        green: 0.72
+        blue: 0.29
+        alpha: 0.8
+    outline.selected:
+        red: 0.28
+        green: 0.07
+        blue: 0.68
+        alpha: 0.8

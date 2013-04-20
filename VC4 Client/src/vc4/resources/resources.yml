@@ -1,0 +1,20 @@
+texture:
+    - "blocks"
+    - "crosshair"
+    
+shader:
+    - "world"
+    - "font"
+    - "fontback"
+    - "shapes"
+    - "texture"
+    
+font:
+    - "unispaced_24"
+    - "unispaced_14"
+    
+gui:
+    menu:
+        - "main"
+        - "settings"
+        

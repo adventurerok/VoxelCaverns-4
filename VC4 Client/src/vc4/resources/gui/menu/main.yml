@@ -1,0 +1,26 @@
+gui:
+    name: "main"
+    type: "menu"
+    columns: 1
+    rows: 0
+    fontsize: 18
+    border: "fill"
+    button:
+        startx: 15
+        starty: 15
+        width: 246
+        height: 30
+        gapx: 15
+        gapy: 15
+play:
+    class: "button"
+    text: "menu.play"
+    action: "gs:singleplayer"
+settings:
+    class: "button"
+    text: "menu.settings"
+    action: "goto:settings"
+quit:
+    class: "button"
+    text: "menu.quit"
+    action: "quit"
