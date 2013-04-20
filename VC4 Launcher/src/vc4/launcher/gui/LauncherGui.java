@@ -10,9 +10,13 @@ import javax.swing.JButton;
 import javax.swing.JProgressBar;
 
 public class LauncherGui extends JFrame {
+	
 	public LauncherGui() {
-		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setSize(640, 480);
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addTab("News", new NewsTab());
+		tabbedPane.addTab("Settings", new SettingsTab());
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(10, 50));
