@@ -1,0 +1,114 @@
+# Language file for VC4
+# NOT compatable with earlier versions of VoxelCaverns, because they use "*.lang" files
+# Adding "{0}" is argument 0, "{1}" is argument 1, and so on
+# "pval" is parent value. "menu.settings.pval"'s value is "menu.settings" in game
+
+block:
+    brick:
+        adamantite:
+            name: "Adamantite Brick"
+        clay:
+            name: "Clay Brick"
+        gold:
+            name: "Gold Brick"
+        obsidian:
+            name: "Obsidian Brick"
+        sandstone:
+            name: "Sandstone Brick"
+        stone:
+            name: "Stone Brick"
+    cobblestone:
+        name: "Cobblestone"
+    dirt:
+        desc: "On sale!"
+        name: "Dirt"
+    glass:
+        desc: "I think I see something on the other side"
+        name: "Glass"
+    grass:
+        desc: "The homeplace of many small creatures"
+        name: "Grass"
+    hellrock:
+        desc: "Smeared with the blood of thousands of dead souls"
+        name: "Hellrock"
+    lava:
+        name: "Lava"
+    leaf:
+        desc: "Soft to land on"
+        name: "Leaves"
+    log:
+        desc: "A valuable resource for newcomers"
+        name: "Wood"
+    mossybrick:
+        adamantite:
+            name: "Mossy Adamantite Brick"
+        clay:
+            name: "Mossy Clay Brick"
+        gold:
+            name: "Mossy Gold Brick"
+        obsidian:
+            name: "Mossy Obsidian Brick"
+        sandstone:
+            name: "Mossy Sandstone Brick"
+        stone:
+            name: "Mossy Stone Brick"
+    mossycobblestone:
+        name: "Mossy Cobblestone"
+    obsidian:
+        desc: "Water and Lava collide!"
+        name: "Obsidian"
+    ore:
+        adamantite:
+            name: "Adamantite Ore"
+        ash:
+            name: "Ash Ore"
+        coal:
+            name: "Coal Ore"
+        copper:
+            name: "Copper Ore"
+        ember:
+            name: "Ember Ore"
+        francium:
+            name: "Francium Ore"
+        gold:
+            name: "Gold Ore"
+        hellish:
+            name: "Hellish Ore"
+        iron:
+            name: "Iron Ore"
+        kradonium:
+            name: "Kradonium Ore"
+        mithril:
+            name: "Mithril Ore"
+        platinum:
+            name: "Platinum Ore"
+        silver:
+            name: "Silver Ore"
+        sulphur:
+            name: "Sulphur Ore"
+        tin:
+            name: "Tin Ore"
+        titanium:
+            name: "Titanium Ore"
+    sand:
+        desc: "Do not expose to gravity!"
+        name: "Sand"
+    stone:
+        desc: "A material of many uses"
+        name: "Stone"
+    water:
+        name: "Water"
+
+language:
+    name: "English (US)"
+    select: "Select your language"
+    title: "Language"
+
+menu:
+    back: "Back"
+    play: "Play"
+    quit: "Quit"
+    settings:
+        colorscheme: "Colorscheme: {0}"
+        crosshair: "Crosshair: {0}"
+        pval: "Settings"
