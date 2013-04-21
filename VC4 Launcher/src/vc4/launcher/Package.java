@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
@@ -21,7 +22,8 @@ public class Package {
 	private UpdateStream recommended, beta, alpha, dev;
 	private UpdateStreamType type = UpdateStreamType.RECCOMENDED;
 	private boolean manual = false;
-	private String name, author, desc, folder;
+	private boolean backup = false;
+	private String name, author, desc, folder, install;
 
 	private String packageRoot;
 
@@ -51,13 +53,17 @@ public class Package {
 	}
 
 	public void install(Version version) throws IOException {
-		String name = version.getPath();
-		if (name.contains("/")) name = name.substring(name.lastIndexOf("/"), name.length());
-		String installPath = DirectoryLocator.getPath() + "/" + folder + "/" + name;
+		if(this.version != null && version.intVersion == this.version.intVersion) return;
+		String installPath = DirectoryLocator.getPath() + "/" + folder + "/" + install;
+		if(backup && this.version != null && !type.equals("zip")){
+			String bakPath = this.version.path;
+			if(bakPath.contains("/")) bakPath = bakPath.substring(bakPath.lastIndexOf("/"), bakPath.length());
+			Files.move(new File(installPath).toPath(), new File(bakPath).toPath());
+		}
 		String downloadPath = packageRoot + version.getPath();
 		if (type.equals("zip")) {
 			installPath = DirectoryLocator.getPath() + "/" + folder + "/";
-			String tempPath = DirectoryLocator.getPath() + "/temp/" + name;
+			String tempPath = DirectoryLocator.getPath() + "/temp/" + install;
 			URL download = new URL(downloadPath);
 			ReadableByteChannel rbc = Channels.newChannel(download.openStream());
 			FileOutputStream out = new FileOutputStream(tempPath);
@@ -92,11 +98,17 @@ public class Package {
 			zis.closeEntry();
 			zis.close();
 		} else {
-			URL download = new URL(downloadPath);
-			ReadableByteChannel rbc = Channels.newChannel(download.openStream());
-			FileOutputStream out = new FileOutputStream(installPath);
-			out.getChannel().transferFrom(rbc, 0, 1 << 28);
-			out.close();
+			String checkPath = version.path;
+			if(checkPath.contains("/")) checkPath = checkPath.substring(checkPath.lastIndexOf("/"), checkPath.length());
+			if(new File(checkPath).exists()){
+				Files.copy(new File(checkPath).toPath(), new File(installPath).toPath());
+			} else {
+				URL download = new URL(downloadPath);
+				ReadableByteChannel rbc = Channels.newChannel(download.openStream());
+				FileOutputStream out = new FileOutputStream(installPath);
+				out.getChannel().transferFrom(rbc, 0, 1 << 28);
+				out.close();
+			}
 		}
 		this.version = version;
 	}
@@ -191,6 +203,7 @@ public class Package {
 		author = info.getString("author");
 		desc = info.getString("desc");
 		folder = info.getString("folder");
+		install = info.getString("install");
 		YamlMap latest = map.getSubMap("latest");
 		String latestRec = latest.getString("recommended");
 		String latestBeta = latest.getString("beta");

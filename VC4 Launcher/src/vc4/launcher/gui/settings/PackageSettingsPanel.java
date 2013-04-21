@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -130,6 +133,20 @@ public class PackageSettingsPanel extends JPanel {
 		panel.add(_versionComboBox);
 		
 		_updateButton = new JButton("Update");
+		_updateButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Version v = (Version) _versionComboBox.getSelectedItem();
+					if(v == null) v = pack.getLatest();
+					pack.install((Version) v);
+				} catch (IOException e1) {
+					System.out.println("Failed to install");
+				}
+				
+			}
+		});
 		panel.add(_updateButton);
 		
 		_launchButton = new JButton("Launch");
