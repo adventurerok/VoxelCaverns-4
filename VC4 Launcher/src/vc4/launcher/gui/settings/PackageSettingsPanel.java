@@ -36,6 +36,8 @@ public class PackageSettingsPanel extends JPanel {
 	private JComboBox<UpdateStreamType> _updateStream;
 	private JCheckBox _manualVersion;
 	private JCheckBox _autoUpdate;
+	private JCheckBox _previousVersions;
+	private Version _chosen;
 	
 	
 	public PackageSettingsPanel(final Package pack) {
@@ -75,6 +77,12 @@ public class PackageSettingsPanel extends JPanel {
 		});
 		panel.add(_manualVersion);
 		
+		JLabel lb2 = new JLabel("Keep previous versions");
+		panel.add(lb2);
+		
+		_previousVersions = new JCheckBox("Check if you want to backup old versions");
+		panel.add(_previousVersions);
+		
 		JLabel lblNewLabel_2 = new JLabel("Update Stream");
 		panel.add(lblNewLabel_2);
 		
@@ -86,7 +94,10 @@ public class PackageSettingsPanel extends JPanel {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				pack.setType((UpdateStreamType) _updateStream.getSelectedItem());
+				Version sel = (Version) _versionComboBox.getSelectedItem();
 				_versionComboBox.setModel(new DefaultComboBoxModel<Version>(pack.getVisibleVersions()));
+				if(pack.isManual()) _versionComboBox.setSelectedItem(sel);
+				else _versionComboBox.setSelectedItem(pack.getLatest());
 				_versionComboBox.repaint();
 			}
 		});
@@ -96,8 +107,26 @@ public class PackageSettingsPanel extends JPanel {
 		panel.add(lblNewLabel_3);
 		
 		_versionComboBox = new JComboBox<Version>();
+		_versionComboBox.setEnabled(pack.isManual());
 		_versionComboBox.setModel(new DefaultComboBoxModel<Version>(pack.getVisibleVersions()));
 		_versionComboBox.setToolTipText("Choose the version to use");
+		_versionComboBox.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				_chosen = (Version) _versionComboBox.getSelectedItem();
+				Version current = pack.getVersion();
+				_updateButton.setEnabled(true);
+				if(current == null) _updateButton.setText("Install");
+				else if(current.getIntVersion() < _chosen.getIntVersion()) _updateButton.setText("Update");
+				else if(current.getIntVersion() > _chosen.getIntVersion()) _updateButton.setText("Downgrade");
+				else  {
+					_updateButton.setEnabled(false);
+				}
+				_updateButton.repaint();
+				
+			}
+		});
 		panel.add(_versionComboBox);
 		
 		_updateButton = new JButton("Update");

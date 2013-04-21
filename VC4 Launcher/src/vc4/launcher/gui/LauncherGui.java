@@ -14,6 +14,7 @@ public class LauncherGui extends JFrame {
 	public LauncherGui() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(640, 480);
+		setTitle("VoxelCaverns Launcher v4");
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.addTab("News", new NewsTab());
 		tabbedPane.addTab("Settings", new SettingsTab());

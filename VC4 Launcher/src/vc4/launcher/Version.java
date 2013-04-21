@@ -69,4 +69,16 @@ public class Version implements Comparable<Version>{
 		if(intVersion > o.intVersion) return -1;
 		return 0;
 	}
+	
+	public String getPath() {
+		return path;
+	}
+	
+	public Date getDate() {
+		return date;
+	}
+	
+	public String getType() {
+		return type;
+	}
 }
