@@ -1,6 +1,6 @@
 package vc4.launcher.enumeration;
 
-public enum UpdateStream {
+public enum UpdateStreamType {
 
 	RECCOMENDED,
 	BETA,

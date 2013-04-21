@@ -9,7 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import vc4.launcher.enumeration.UpdateStream;
+import vc4.launcher.enumeration.UpdateStreamType;
 
 public class LauncherSettingsPanel extends JPanel {
 	public LauncherSettingsPanel() {
@@ -26,8 +26,8 @@ public class LauncherSettingsPanel extends JPanel {
 		JLabel lblNewLabel = new JLabel("Default Update Stream");
 		add(lblNewLabel);
 		
-		JComboBox<UpdateStream> comboBox = new JComboBox<>();
-		comboBox.setModel(new DefaultComboBoxModel<UpdateStream>(UpdateStream.values()));
+		JComboBox<UpdateStreamType> comboBox = new JComboBox<>();
+		comboBox.setModel(new DefaultComboBoxModel<UpdateStreamType>(UpdateStreamType.values()));
 		add(comboBox);
 	}
 
