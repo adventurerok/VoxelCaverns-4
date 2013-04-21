@@ -1,17 +1,22 @@
 package vc4.launcher;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Version {
+import vc4.launcher.enumeration.UpdateStreamType;
 
+public class Version implements Comparable<Version>{
+
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	
 	int intVersion;
 	String version;
 	String path;
 	String type = "zip";
 	Date date;
 	boolean bugged = false;
+	UpdateStreamType updateStream;
 	
 	public String getVersion() {
 		return version;
@@ -41,7 +46,7 @@ public class Version {
 		String path = map.getString("file");
 		Date d;
 		try {
-			d = DateFormat.getInstance().parse(map.getString("release"));
+			d = dateFormat.parse(map.getString("release"));
 		} catch (ParseException e) {
 			throw new RuntimeException("Could not parse date");
 		}
@@ -49,5 +54,19 @@ public class Version {
 		if(map.hasKey("type")) v.type = map.getString("type");
 		if(map.hasKey("bugged")) v.bugged = map.getBoolean("bugged");
 		return v;
+	}
+	
+	@Override
+	public String toString() {
+		return (updateStream == UpdateStreamType.RECCOMENDED ? "REC" : updateStream) + ": " + version + " (" + dateFormat.format(date) + ")";
+	}
+
+
+
+	@Override
+	public int compareTo(Version o) {
+		if(o.intVersion > intVersion) return 1;
+		if(intVersion > o.intVersion) return -1;
+		return 0;
 	}
 }

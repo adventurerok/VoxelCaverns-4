@@ -14,7 +14,7 @@ import vc4.launcher.enumeration.UpdateStreamType;
 public class LauncherSettingsPanel extends JPanel {
 	public LauncherSettingsPanel() {
 		setLayout(new GridLayout(0, 2, 0, 0));
-		setPreferredSize(new Dimension(300, 100));
+		setPreferredSize(new Dimension(300, 50));
 		
 		JLabel lblAutoUpdate = new JLabel("Auto Update");
 		add(lblAutoUpdate);

@@ -1,5 +1,6 @@
 package vc4.launcher.gui;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -7,6 +8,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import vc4.launcher.Launcher;
 import vc4.launcher.gui.settings.LauncherSettingsPanel;
 
 public class SettingsTree extends JTree {
@@ -32,12 +34,22 @@ public class SettingsTree extends JTree {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				SettingsPanel.getSingleton().setPanel(getSelectedPanel());
+				SettingsPanel.getSingleton().setBorder(BorderFactory.createTitledBorder(getSelectedTitle()));
+				SettingsPanel.getSingleton().repaint();
 			}
 		});
 		;
 		addNode(new SettingsNode("Launcher", defaultPanel));
+		addNode(new PackageNode(Launcher.getSingleton().getApiPackage()));
 	}
 	
+	protected String getSelectedTitle() {
+		TreePath selPath = getSelectionPath();
+		if(selPath == null || selPath.getPathCount() < 1) return "Launcher";
+		SettingsNode node = (SettingsNode) selPath.getLastPathComponent();
+		return node.getUserObject().toString();
+	}
+
 	public void addNode(SettingsNode node){
 		((DefaultTreeModel)getModel()).insertNodeInto(node, root, root.getChildCount());
 		expandPath(new TreePath(((DefaultTreeModel)getModel()).getPathToRoot(root)));
