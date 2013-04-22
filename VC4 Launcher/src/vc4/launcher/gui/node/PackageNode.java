@@ -1,4 +1,4 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.node;
 
 import vc4.launcher.Package;
 import vc4.launcher.gui.settings.PackageSettingsPanel;

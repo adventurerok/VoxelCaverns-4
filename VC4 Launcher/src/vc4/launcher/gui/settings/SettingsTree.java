@@ -1,4 +1,4 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.settings;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -9,7 +9,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import vc4.launcher.Launcher;
-import vc4.launcher.gui.settings.LauncherSettingsPanel;
+import vc4.launcher.gui.node.PackageNode;
+import vc4.launcher.gui.node.SettingsNode;
 
 public class SettingsTree extends JTree {
 

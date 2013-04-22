@@ -47,7 +47,7 @@ public class PackageSettingsPanel extends JPanel {
 		this.pack = pack;
 		setLayout(new BorderLayout(0, 0));
 		
-		JTextArea packageInfo = new JTextArea("Package Info");
+		final JTextArea packageInfo = new JTextArea("Package Info");
 		packageInfo.setPreferredSize(new Dimension(63, 80));
 		add(packageInfo, BorderLayout.NORTH);
 		packageInfo.setText(pack.getInfo());
@@ -141,6 +141,8 @@ public class PackageSettingsPanel extends JPanel {
 					Version v = (Version) _versionComboBox.getSelectedItem();
 					if(v == null) v = pack.getLatest();
 					pack.install((Version) v);
+					packageInfo.setText(pack.getInfo());
+					packageInfo.repaint();
 				} catch (IOException e1) {
 					System.out.println("Failed to install");
 				}

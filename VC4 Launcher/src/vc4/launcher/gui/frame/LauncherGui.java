@@ -1,4 +1,4 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.frame;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -8,6 +8,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JProgressBar;
+
+import vc4.launcher.gui.tab.NewsTab;
+import vc4.launcher.gui.tab.SettingsTab;
 
 public class LauncherGui extends JFrame {
 	

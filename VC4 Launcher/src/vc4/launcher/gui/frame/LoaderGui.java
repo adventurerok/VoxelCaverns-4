@@ -1,4 +1,4 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.frame;
 
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;

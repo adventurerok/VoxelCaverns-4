@@ -1,4 +1,4 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.tab;
 
 import java.awt.BorderLayout;
 

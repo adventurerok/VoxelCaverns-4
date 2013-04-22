@@ -1,6 +1,7 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.settings;
 
 import javax.swing.JPanel;
+
 
 public class SettingsPanel extends JPanel{
 

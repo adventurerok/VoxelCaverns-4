@@ -1,4 +1,4 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.node;
 
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;

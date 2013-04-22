@@ -1,9 +1,12 @@
-package vc4.launcher.gui;
+package vc4.launcher.gui.tab;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
+
+import vc4.launcher.gui.settings.SettingsPanel;
+import vc4.launcher.gui.settings.SettingsTree;
 
 public class SettingsTab extends JPanel {
 	
