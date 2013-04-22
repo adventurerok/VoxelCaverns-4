@@ -23,7 +23,7 @@ public class Package {
 	private UpdateStreamType type = UpdateStreamType.RECCOMENDED;
 	private boolean manual = false;
 	private boolean backup = false;
-	private String name, author, desc, folder, install;
+	private String name, author, desc, folder, install, fileType = "file";
 
 	private String packageRoot;
 
@@ -51,6 +51,10 @@ public class Package {
 	public void setManual(boolean manual) {
 		this.manual = manual;
 	}
+	
+	public String getFileType() {
+		return fileType;
+	}
 
 	public void install(Version version) throws IOException {
 		if(this.version != null && version.intVersion == this.version.intVersion) return;
@@ -61,7 +65,7 @@ public class Package {
 			Files.move(new File(installPath).toPath(), new File(bakPath).toPath());
 		}
 		String downloadPath = packageRoot + version.getPath();
-		if (type.equals("zip")) {
+		if (fileType.equals("zip")) {
 			installPath = DirectoryLocator.getPath() + "/" + folder + "/";
 			String tempPath = DirectoryLocator.getPath() + "/temp/" + install;
 			URL download = new URL(downloadPath);
@@ -123,6 +127,7 @@ public class Package {
 		if (type == UpdateStreamType.DEV || type == UpdateStreamType.ALPHA) result.addAll(alpha.getVersions());
 		if (type != UpdateStreamType.RECCOMENDED) result.addAll(beta.getVersions());
 		result.addAll(recommended.getVersions());
+		if(!result.contains(getLatest())) result.add(getLatest());
 		Collections.sort(result);
 		return result.toArray(new Version[result.size()]);
 	}
@@ -194,6 +199,11 @@ public class Package {
 		if (latestRec != null) {
 			if (latest == null || latestRec.intVersion > latest.intVersion) latest = latestRec;
 		}
+		if(latest == null){
+			if(latestBeta != null) latest = latestBeta;
+			else if(latestAlpha != null) latest = latestAlpha;
+			else if(latestDev != null) latest = latestDev;
+		}
 		return latest;
 	}
 
@@ -204,27 +214,34 @@ public class Package {
 		desc = info.getString("desc");
 		folder = info.getString("folder");
 		install = info.getString("install");
+		if(map.hasKey("type")) fileType = map.getString("type");
 		YamlMap latest = map.getSubMap("latest");
 		String latestRec = latest.getString("recommended");
 		String latestBeta = latest.getString("beta");
 		String latestAlpha = latest.getString("alpha");
 		String latestDev = latest.getString("dev");
 		recommended = new UpdateStream();
-		recommended.load(map.getSubMap("recommended"), latestRec, UpdateStreamType.RECCOMENDED);
+		if(map.hasKey("recommended"))recommended.load(map.getSubMap("recommended"), latestRec, UpdateStreamType.RECCOMENDED);
 		beta = new UpdateStream();
-		beta.load(map.getSubMap("beta"), latestBeta, UpdateStreamType.BETA);
+		if(map.hasKey("beta"))beta.load(map.getSubMap("beta"), latestBeta, UpdateStreamType.BETA);
 		alpha = new UpdateStream();
-		alpha.load(map.getSubMap("alpha"), latestAlpha, UpdateStreamType.ALPHA);
+		if(map.hasKey("alpha"))alpha.load(map.getSubMap("alpha"), latestAlpha, UpdateStreamType.ALPHA);
 		dev = new UpdateStream();
-		dev.load(map.getSubMap("dev"), latestDev, UpdateStreamType.DEV);
+		if(map.hasKey("dev"))dev.load(map.getSubMap("dev"), latestDev, UpdateStreamType.DEV);
 	}
 
 	public void loadInfo(URL url) throws IOException {
 		String s = url.toString();
 		if (!s.endsWith("/")) s = s + "/";
 		packageRoot = s;
-		s = s + "updates.yml";
+		s = s + "package.yml";
 		url = new URL(s);
+		YamlMap map = new YamlMap(url.openStream());
+		load(map);
+	}
+	
+	public void refresh() throws IOException{
+		URL url = new URL(packageRoot + "package.yml");
 		YamlMap map = new YamlMap(url.openStream());
 		load(map);
 	}

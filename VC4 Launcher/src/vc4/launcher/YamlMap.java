@@ -6,8 +6,10 @@ package vc4.launcher;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ import java.util.Map;
  * @author paul
  *
  */
-public class YamlMap {
+public class YamlMap implements Iterable<Object>{
 
 	private Map<Object, Object> baseMap;
 
@@ -68,6 +70,15 @@ public class YamlMap {
 	public Object[] getList(String key){
 		List<Object> l = (List<Object>) baseMap.get(key);
 		return l.toArray(new Object[l.size()]);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Iterator<YamlMap> getSubMapsIterator(){
+		ArrayList<YamlMap> stuff = new ArrayList<>();
+		for(Object o : baseMap.values()){
+			if(o instanceof Map) stuff.add(new YamlMap((Map<Object, Object>) o));
+		}
+		return stuff.iterator();
 	}
 	
 	public float getFloat(String key){
@@ -164,6 +175,11 @@ public class YamlMap {
 	
 	public Map<Object, Object> getBaseMap() {
 		return baseMap;
+	}
+
+	@Override
+	public Iterator<Object> iterator() {
+		return baseMap.values().iterator();
 	}
 	
 }

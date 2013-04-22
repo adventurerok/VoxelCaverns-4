@@ -13,7 +13,6 @@ public class Version implements Comparable<Version>{
 	int intVersion;
 	String version;
 	String path;
-	String type = "zip";
 	Date date;
 	boolean bugged = false;
 	UpdateStreamType updateStream;
@@ -51,14 +50,13 @@ public class Version implements Comparable<Version>{
 			throw new RuntimeException("Could not parse date");
 		}
 		Version v = new Version(i, version, path, d);
-		if(map.hasKey("type")) v.type = map.getString("type");
 		if(map.hasKey("bugged")) v.bugged = map.getBoolean("bugged");
 		return v;
 	}
 	
 	@Override
 	public String toString() {
-		return (updateStream == UpdateStreamType.RECCOMENDED ? "REC" : updateStream) + ": " + version + " (" + dateFormat.format(date) + ")";
+		return (updateStream == UpdateStreamType.RECCOMENDED ? "REC" : updateStream) + " " + version + " (" + dateFormat.format(date) + ")";
 	}
 
 
@@ -78,7 +76,4 @@ public class Version implements Comparable<Version>{
 		return date;
 	}
 	
-	public String getType() {
-		return type;
-	}
 }

@@ -3,7 +3,7 @@ package vc4.launcher;
 import java.io.IOException;
 import java.net.URL;
 
-import vc4.launcher.gui.LauncherGui;
+import vc4.launcher.gui.frame.LauncherGui;
 
 public class Launcher {
 
