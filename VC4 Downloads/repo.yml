@@ -1,0 +1,7 @@
+repo:
+    name: "VC4"
+packages:
+    API:
+        folder: "VC4-API"
+    Impl:
+        folder: "VC4-Impl"
