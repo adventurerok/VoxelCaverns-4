@@ -1,0 +1,16 @@
+info:
+    name: VC4-Impl
+    author: adventurerok
+    desc: "The Implementation of the API"
+    folder: "bin"
+    install: "VC4-Implementation.jar"
+latest:
+    recommended: "0.0"
+    beta: "0.0"
+    alpha: "0.0"
+    dev: "0.0.0-203"
+dev:
+    "0.0.0-203":
+        file: "VC4-Impl-0.0.0-203.jar"
+        release: "22/04/2013"
+        int: 203
