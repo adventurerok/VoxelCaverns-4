@@ -4,6 +4,7 @@ info:
     desc: "The API package for VC4. This does not include the implementation."
     folder: "bin"
     install: "VC4-API.jar"
+    data: "VC4-API.yml"
 latest:
     recommended: "0.0"
     beta: "0.0"

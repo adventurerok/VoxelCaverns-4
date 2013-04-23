@@ -4,6 +4,7 @@ info:
     desc: "The Implementation of the API"
     folder: "bin"
     install: "VC4-Implementation.jar"
+    data: "VC4-Impl.yml"
 latest:
     recommended: "0.0"
     beta: "0.0"
