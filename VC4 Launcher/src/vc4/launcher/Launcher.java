@@ -10,18 +10,22 @@ public class Launcher {
 	private static Launcher singleton;
 	
 	private LauncherGui gui;
-	private Package apiPackage, implPackage, clientPackage, serverPackage, vanillaPackage, editorPackage;
+	private Repo vc4;
 	
 	public static Launcher getSingleton() {
 		return singleton;
 	}
 	
+	public Repo getVc4() {
+		return vc4;
+	}
+	
 	public Launcher() {
 		singleton = this;
-		Package pac = new Package();
+		Repo rec = new Repo();
 		try {
-			pac.loadInfo(new URL("file:C:/Temp/vc4-api"));
-			apiPackage = pac;
+			rec.loadInfo(new URL("https://raw.github.com/adventurerok/VoxelCaverns-4/master/VC4%20Downloads"));
+			vc4 = rec;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -34,27 +38,27 @@ public class Launcher {
 	}
 
 	public Package getApiPackage() {
-		return apiPackage;
+		return vc4.getPackage("VC4-API");
 	}
 
 	public Package getImplPackage() {
-		return implPackage;
+		return vc4.getPackage("VC4-Impl");
 	}
 
 	public Package getClientPackage() {
-		return clientPackage;
+		return vc4.getPackage("VC4-Client");
 	}
 
 	public Package getServerPackage() {
-		return serverPackage;
+		return vc4.getPackage("VC4-Server");
 	}
 
 	public Package getVanillaPackage() {
-		return vanillaPackage;
+		return vc4.getPackage("VC4-Vanilla");
 	}
 
 	public Package getEditorPackage() {
-		return editorPackage;
+		return vc4.getPackage("VC4-Editor");
 	}
 	
 }

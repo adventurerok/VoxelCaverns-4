@@ -1,5 +1,6 @@
 package vc4.launcher.gui.settings;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 
@@ -19,6 +20,7 @@ public class SettingsPanel extends JPanel{
 	public SettingsPanel() {
 		singleton = this;
 		add(SettingsTree.getSingleton().getSelectedPanel());
+		setBorder(BorderFactory.createTitledBorder("Launcher"));
 	}
 	
 	public void setPanel(JPanel panel){

@@ -1,5 +1,6 @@
 package vc4.launcher.gui.frame;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
@@ -19,8 +20,8 @@ public class LauncherGui extends JFrame {
 		setSize(640, 480);
 		setTitle("VoxelCaverns Launcher v4");
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addTab("News", new NewsTab());
-		tabbedPane.addTab("Settings", new SettingsTab());
+		tabbedPane.addTab("News", new ImageIcon(getClass().getClassLoader().getResource("resources/icons/news.png")), new NewsTab());
+		tabbedPane.addTab("Settings", new ImageIcon(getClass().getClassLoader().getResource("resources/icons/settings.png")), new SettingsTab());
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(10, 50));

@@ -22,7 +22,6 @@ public class LauncherSettingsPanel extends JPanel {
 		JCheckBox checkBox = new JCheckBox("");
 		checkBox.setSelected(true);
 		add(checkBox);
-		
 		JLabel lblNewLabel = new JLabel("Default Update Stream");
 		add(lblNewLabel);
 		

@@ -34,7 +34,7 @@ public class Repo {
 		String s = url.toString();
 		if (!s.endsWith("/")) s = s + "/";
 		repoRoot = s;
-		s = s + "package.yml";
+		s = s + "repo.yml";
 		url = new URL(s);
 		YamlMap map = new YamlMap(url.openStream());
 		load(map);
@@ -55,6 +55,8 @@ public class Repo {
 			Package p = new Package();
 			URL url = new URL(repoRoot + folder + "/");
 			p.loadInfo(url);
+			namedPackages.put(p.getName(), p);
+			this.packages.add(p);
 		}
 		
 	}

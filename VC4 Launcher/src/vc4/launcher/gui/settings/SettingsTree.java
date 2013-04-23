@@ -1,15 +1,19 @@
 package vc4.launcher.gui.settings;
 
+import java.awt.Component;
+
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import vc4.launcher.Launcher;
-import vc4.launcher.gui.node.PackageNode;
+import vc4.launcher.gui.node.RepoNode;
 import vc4.launcher.gui.node.SettingsNode;
 
 public class SettingsTree extends JTree {
@@ -39,9 +43,22 @@ public class SettingsTree extends JTree {
 				SettingsPanel.getSingleton().repaint();
 			}
 		});
-		;
-		addNode(new SettingsNode("Launcher", defaultPanel));
-		addNode(new PackageNode(Launcher.getSingleton().getApiPackage()));
+		setCellRenderer(new DefaultTreeCellRenderer(){
+
+			private static final long serialVersionUID = 8860739105196982193L;
+			
+			@Override
+			public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+				super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+				if(value instanceof SettingsNode){
+					setIcon(((SettingsNode)value).getIcon());
+				}
+				return this;
+			}
+			
+		});
+		addNode(new SettingsNode("Launcher", defaultPanel).setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/icons/settings.png"))));
+		addNode(new RepoNode(Launcher.getSingleton().getVc4()));
 	}
 	
 	protected String getSelectedTitle() {
