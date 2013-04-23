@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import vc4.launcher.Launcher;
+import vc4.launcher.Repo;
 import vc4.launcher.gui.node.RepoNode;
 import vc4.launcher.gui.node.SettingsNode;
 
@@ -58,7 +59,9 @@ public class SettingsTree extends JTree {
 			
 		});
 		addNode(new SettingsNode("Launcher", defaultPanel).setIcon(new ImageIcon(getClass().getClassLoader().getResource("resources/icons/settings.png"))));
-		addNode(new RepoNode(Launcher.getSingleton().getVc4()));
+		for(Repo r : Launcher.getSingleton().getRepos()){
+			addNode(new RepoNode(r));
+		}
 	}
 	
 	protected String getSelectedTitle() {

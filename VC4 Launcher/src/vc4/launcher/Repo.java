@@ -12,6 +12,7 @@ public class Repo {
 	private ArrayList<Package> packages = new ArrayList<>();
 	private String repoRoot;
 	private String name;
+	private boolean canDisable = true;
 	
 	public ArrayList<Package> getPackages() {
 		return packages;
@@ -19,6 +20,14 @@ public class Repo {
 	
 	public Package getPackage(String name){
 		return namedPackages.get(name);
+	}
+	
+	public void setCanDisable(boolean canDisable) {
+		this.canDisable = canDisable;
+	}
+	
+	public boolean canDisable() {
+		return canDisable;
 	}
 	
 	public void refresh(){

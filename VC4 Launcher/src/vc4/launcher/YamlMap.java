@@ -4,6 +4,8 @@
 package vc4.launcher;
 
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author paul
@@ -169,7 +173,7 @@ public class YamlMap implements Iterable<Object>{
 		baseMap.put(key, Arrays.asList(list));
 	}
 	
-	public void setList(String key, List<Object> list){
+	public void setList(String key, List<?> list){
 		baseMap.put(key, list);
 	}
 	
@@ -186,5 +190,12 @@ public class YamlMap implements Iterable<Object>{
 		baseMap.put(key, b);
 		
 	}
+
+	public void save(OutputStream out) {
+		Yaml yaml = ThreadYaml.getYamlForThread();
+		yaml.dump(baseMap, new OutputStreamWriter(out));
+		
+	}
+
 	
 }
