@@ -181,5 +181,10 @@ public class YamlMap implements Iterable<Object>{
 	public Iterator<Object> iterator() {
 		return baseMap.values().iterator();
 	}
+
+	public void setBoolean(String key, boolean b) {
+		baseMap.put(key, b);
+		
+	}
 	
 }

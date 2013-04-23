@@ -2,8 +2,11 @@ package vc4.launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -12,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.yaml.snakeyaml.Yaml;
 
 import vc4.launcher.enumeration.UpdateStreamType;
 
@@ -23,7 +28,8 @@ public class Package {
 	private UpdateStreamType type = UpdateStreamType.RECCOMENDED;
 	private boolean manual = false;
 	private boolean backup = false;
-	private String name, author, desc, folder, install, fileType = "file";
+	private boolean auto = true;
+	private String name, author, desc, folder, install, fileType = "file", data;
 
 	private String packageRoot;
 
@@ -34,6 +40,10 @@ public class Package {
 	 */
 	public Version getVersion() {
 		return version;
+	}
+	
+	public boolean isBackup() {
+		return backup;
 	}
 
 	public UpdateStream getRecommended() {
@@ -48,8 +58,17 @@ public class Package {
 		return manual;
 	}
 
+	
+	public boolean isAuto() {
+		return auto;
+	}
 	public void setManual(boolean manual) {
 		this.manual = manual;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after update");
+		}
 	}
 	
 	public String getFileType() {
@@ -115,6 +134,11 @@ public class Package {
 			}
 		}
 		this.version = version;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after update");
+		}
 	}
 
 	public UpdateStream getBeta() {
@@ -131,9 +155,25 @@ public class Package {
 		Collections.sort(result);
 		return result.toArray(new Version[result.size()]);
 	}
+	
+	public Version getVersion(int ver){
+		Version v = recommended.getVersion(ver);
+		if(v != null) return v;
+		v = beta.getVersion(ver);
+		if(v != null) return v;
+		v = alpha.getVersion(ver);
+		if(v != null) return v;
+		v = dev.getVersion(ver);
+		if(v != null) return v;
+		return null;
+	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public String getData() {
+		return data;
 	}
 
 	public String getAuthor() {
@@ -142,6 +182,11 @@ public class Package {
 
 	public void setType(UpdateStreamType type) {
 		this.type = type;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after update");
+		}
 	}
 
 	public String getDesc() {
@@ -168,6 +213,24 @@ public class Package {
 
 	public boolean isPlugin() {
 		return folder.equals("plugins");
+	}
+	
+	public void setAuto(boolean auto) {
+		this.auto = auto;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after update");
+		}
+	}
+	
+	public void setBackup(boolean backup) {
+		this.backup = backup;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after update");
+		}
 	}
 
 	public void setPlugin(boolean plugin) {
@@ -206,6 +269,40 @@ public class Package {
 		}
 		return latest;
 	}
+	
+	public YamlMap getSaveData(){
+		YamlMap data = new YamlMap();
+		data.setInt("version", version == null ? -1 : version.intVersion);
+		data.setBoolean("manual", manual);
+		data.setBoolean("auto", auto);
+		data.setBoolean("backup", backup);
+		data.setString("stream", type.toString());
+		return data;
+	}
+	
+	public void save() throws IOException{
+		String path = DirectoryLocator.getPath() + "/launcher/" + data;
+		Yaml yaml = ThreadYaml.getYamlForThread();
+		YamlMap map = getSaveData();
+		Writer r = new FileWriter(path);
+		yaml.dump(map.getBaseMap(), r);
+		r.close();
+	}
+	
+	public void load() throws FileNotFoundException{
+		String path = DirectoryLocator.getPath() + "/launcher/" + data;
+		YamlMap map = new YamlMap(new FileInputStream(path));
+		loadSaveData(map);
+	}
+	
+	public void loadSaveData(YamlMap data){
+		int ver = data.getInt("version");
+		version = getVersion(ver);
+		manual = data.getBoolean("manual");
+		auto = data.getBoolean("auto");
+		backup = data.getBoolean("backup");
+		type = UpdateStreamType.valueOf(data.getString("stream"));
+	}
 
 	public void load(YamlMap map) {
 		YamlMap info = map.getSubMap("info");
@@ -214,6 +311,7 @@ public class Package {
 		desc = info.getString("desc");
 		folder = info.getString("folder");
 		install = info.getString("install");
+		data = info.getString("data");
 		if(map.hasKey("type")) fileType = map.getString("type");
 		YamlMap latest = map.getSubMap("latest");
 		String latestRec = latest.getString("recommended");
@@ -228,6 +326,10 @@ public class Package {
 		if(map.hasKey("alpha"))alpha.load(map.getSubMap("alpha"), latestAlpha, UpdateStreamType.ALPHA);
 		dev = new UpdateStream();
 		if(map.hasKey("dev"))dev.load(map.getSubMap("dev"), latestDev, UpdateStreamType.DEV);
+		try {
+			load();
+		} catch (FileNotFoundException e) {
+		}
 	}
 
 	public void loadInfo(URL url) throws IOException {

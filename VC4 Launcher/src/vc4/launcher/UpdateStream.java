@@ -29,4 +29,13 @@ public class UpdateStream {
 			if(this.latest == null && name.equals(latest)) this.latest = v;
 		}
 	}
+	
+	public Version getVersion(int ver){
+		for(Version v : versions){
+			if(v.intVersion == ver){
+				return v;
+			}
+		}
+		return null;
+	}
 }

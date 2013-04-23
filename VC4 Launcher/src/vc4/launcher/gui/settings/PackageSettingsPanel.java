@@ -63,12 +63,22 @@ public class PackageSettingsPanel extends JPanel {
 		panel.add(lblNewLabel_1);
 		
 		_autoUpdate = new JCheckBox("Check to auto update package");
+		_autoUpdate.setSelected(pack.isAuto());
+		_autoUpdate.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pack.setAuto(_autoUpdate.isSelected());
+				
+			}
+		});
 		panel.add(_autoUpdate);
 		
 		JLabel lblManualVersionSelect = new JLabel("Manual Version Select");
 		panel.add(lblManualVersionSelect);
 		
 		_manualVersion = new JCheckBox("Check to choose which version to use");
+		_manualVersion.setSelected(pack.isManual());
 		_manualVersion.addItemListener(new ItemListener() {
 			
 			@Override
@@ -84,6 +94,15 @@ public class PackageSettingsPanel extends JPanel {
 		panel.add(lb2);
 		
 		_previousVersions = new JCheckBox("Check if you want to backup old versions");
+		_previousVersions.setSelected(pack.isBackup());
+		_previousVersions.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				pack.setBackup(_previousVersions.isSelected());
+				
+			}
+		});
 		panel.add(_previousVersions);
 		
 		JLabel lblNewLabel_2 = new JLabel("Update Stream");
