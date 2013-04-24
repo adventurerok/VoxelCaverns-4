@@ -3,8 +3,8 @@ package vc4.launcher.gui.node;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import vc4.launcher.Package;
 import vc4.launcher.gui.settings.PackageSettingsPanel;
+import vc4.launcher.repo.Package;
 
 public class PackageNode extends SettingsNode {
 

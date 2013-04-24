@@ -1,10 +1,11 @@
-package vc4.launcher;
+package vc4.launcher.repo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import vc4.launcher.enumeration.UpdateStreamType;
+import vc4.launcher.util.YamlMap;
 
 public class Version implements Comparable<Version>{
 

@@ -2,7 +2,7 @@ package vc4.launcher.gui.settings;
 
 import javax.swing.JPanel;
 
-import vc4.launcher.Repo;
+import vc4.launcher.repo.Repo;
 
 public class RepoSettingsPanel extends JPanel {
 

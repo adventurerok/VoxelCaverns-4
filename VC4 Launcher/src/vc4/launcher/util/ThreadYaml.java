@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vc4.launcher;
+package vc4.launcher.util;
 
 import java.util.HashMap;
 

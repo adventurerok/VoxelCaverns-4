@@ -1,4 +1,4 @@
-package vc4.launcher;
+package vc4.launcher.util;
 
 
 

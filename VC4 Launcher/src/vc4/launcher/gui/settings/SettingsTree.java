@@ -13,9 +13,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import vc4.launcher.Launcher;
-import vc4.launcher.Repo;
 import vc4.launcher.gui.node.RepoNode;
 import vc4.launcher.gui.node.SettingsNode;
+import vc4.launcher.repo.Repo;
 
 public class SettingsTree extends JTree {
 

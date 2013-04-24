@@ -7,6 +7,10 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import vc4.launcher.gui.frame.LauncherGui;
+import vc4.launcher.repo.Package;
+import vc4.launcher.repo.Repo;
+import vc4.launcher.util.DirectoryLocator;
+import vc4.launcher.util.YamlMap;
 
 public class Launcher {
 
@@ -40,6 +44,9 @@ public class Launcher {
 			loadRepos();
 		} catch(Exception e){
 			e.printStackTrace();
+		}
+		for(Repo r : repos){
+			r.autoUpdate();
 		}
 		gui = new LauncherGui();
 		gui.setVisible(true);
@@ -108,6 +115,11 @@ public class Launcher {
 			repo.loadInfo(new URL(s));
 			repos.add(repo);
 		}
+		
+	}
+
+	public void launchPackage(Package pack) {
+		// TASK Auto-generated method stub
 		
 	}
 	

@@ -1,10 +1,12 @@
-package vc4.launcher;
+package vc4.launcher.repo;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import vc4.launcher.util.YamlMap;
 
 public class Repo {
 
@@ -47,6 +49,12 @@ public class Repo {
 		url = new URL(s);
 		YamlMap map = new YamlMap(url.openStream());
 		load(map);
+	}
+	
+	public void autoUpdate(){
+		for(Package p : packages){
+			p.autoUpdate();
+		}
 	}
 	
 	public String getRepoRoot() {

@@ -18,9 +18,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import vc4.launcher.Package;
-import vc4.launcher.Version;
+import vc4.launcher.Launcher;
 import vc4.launcher.enumeration.UpdateStreamType;
+import vc4.launcher.repo.Package;
+import vc4.launcher.repo.Version;
 
 public class PackageSettingsPanel extends JPanel {
 	
@@ -162,6 +163,9 @@ public class PackageSettingsPanel extends JPanel {
 					pack.install((Version) v);
 					packageInfo.setText(pack.getInfo());
 					packageInfo.repaint();
+					_disableButton.setEnabled(pack.isDownloaded());
+					_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
+					_removeButton.setEnabled(pack.isDownloaded());
 				} catch (IOException e1) {
 					System.out.println("Failed to install");
 				}
@@ -171,7 +175,15 @@ public class PackageSettingsPanel extends JPanel {
 		panel.add(_updateButton);
 		
 		_launchButton = new JButton("Launch");
-		_launchButton.setEnabled(pack.isDownloaded());
+		_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
+		_launchButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Launcher.getSingleton().launchPackage(pack);
+				
+			}
+		});
 		panel.add(_launchButton);
 		
 		_disableButton = new JButton("Disable");

@@ -1,9 +1,10 @@
-package vc4.launcher;
+package vc4.launcher.repo;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import vc4.launcher.enumeration.UpdateStreamType;
+import vc4.launcher.util.YamlMap;
 
 public class UpdateStream {
 

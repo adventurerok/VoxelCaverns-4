@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vc4.launcher;
+package vc4.launcher.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
+
 
 /**
  * @author paul

@@ -3,9 +3,9 @@ package vc4.launcher.gui.node;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import vc4.launcher.Package;
-import vc4.launcher.Repo;
 import vc4.launcher.gui.settings.RepoSettingsPanel;
+import vc4.launcher.repo.Package;
+import vc4.launcher.repo.Repo;
 
 public class RepoNode extends SettingsNode {
 
