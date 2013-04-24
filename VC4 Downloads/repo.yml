@@ -13,3 +13,5 @@ packages:
         folder: "VC4-Server"
     Vanilla:
         folder: "VC4-Vanilla"
+text:
+    - "info.txt"
