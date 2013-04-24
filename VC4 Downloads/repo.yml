@@ -5,3 +5,11 @@ packages:
         folder: "VC4-API"
     Impl:
         folder: "VC4-Impl"
+    Client:
+        folder: "VC4-Client"
+    Editor:
+        folder: "VC4-Editor"
+    Server:
+        folder: "VC4-Server"
+    Vanilla:
+        folder: "VC4-Vanilla"
