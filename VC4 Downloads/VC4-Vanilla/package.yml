@@ -1,0 +1,17 @@
+info:
+    name: VC4-Vanilla
+    author: adventurerok
+    desc: "The server for VC4"
+    folder: "plugins"
+    install: "Vanilla.jar"
+    data: "VC4-Vanilla.yml"
+latest:
+    recommended: "0.0"
+    beta: "0.0"
+    alpha: "0.0"
+    dev: "0.1.0"
+dev:
+    "0.0.0-203":
+        file: "Vanilla-0.1.0.jar"
+        release: "22/04/2013"
+        int: 203
