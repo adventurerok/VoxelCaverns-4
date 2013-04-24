@@ -42,19 +42,22 @@ public class PackageSettingsPanel extends JPanel {
 	private JCheckBox _autoUpdate;
 	private JCheckBox _previousVersions;
 	private Version _chosen;
+
+	private JTextArea _packageInfo;
 	
 	
 	public PackageSettingsPanel(final Package pack) {
 		this.pack = pack;
+		pack.setPanel(this);
 		setLayout(new BorderLayout(0, 0));
 		
-		final JTextArea packageInfo = new JTextArea("Package Info");
-		packageInfo.setPreferredSize(new Dimension(63, 80));
-		add(packageInfo, BorderLayout.NORTH);
-		packageInfo.setText(pack.getInfo());
-		packageInfo.setEditable(false);
-		packageInfo.setFont(new Font("default", 0, 10));
-		packageInfo.setBackground(getBackground());
+		_packageInfo = new JTextArea("Package Info");
+		_packageInfo.setPreferredSize(new Dimension(63, 80));
+		add(_packageInfo, BorderLayout.NORTH);
+		_packageInfo.setText(pack.getInfo());
+		_packageInfo.setEditable(false);
+		_packageInfo.setFont(new Font("default", 0, 10));
+		_packageInfo.setBackground(getBackground());
 		
 		JPanel panel = new JPanel();
 		add(panel, BorderLayout.CENTER);
@@ -161,11 +164,6 @@ public class PackageSettingsPanel extends JPanel {
 					Version v = (Version) _versionComboBox.getSelectedItem();
 					if(v == null) v = pack.getLatest();
 					pack.install((Version) v);
-					packageInfo.setText(pack.getInfo());
-					packageInfo.repaint();
-					_disableButton.setEnabled(pack.isDownloaded());
-					_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
-					_removeButton.setEnabled(pack.isDownloaded());
 				} catch (IOException e1) {
 					System.out.println("Failed to install");
 				}
@@ -193,6 +191,14 @@ public class PackageSettingsPanel extends JPanel {
 		_removeButton = new JButton("Remove");
 		_removeButton.setEnabled(pack.isDownloaded());
 		panel.add(_removeButton);
+	}
+	
+	public void packageUpdate(){
+		_packageInfo.setText(pack.getInfo());
+		_autoUpdate.setSelected(pack.isAuto());
+		_removeButton.setEnabled(pack.isDownloaded());
+		_disableButton.setEnabled(pack.isDownloaded());
+		_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
 	}
 
 }

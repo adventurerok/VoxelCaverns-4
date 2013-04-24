@@ -1,14 +1,15 @@
 package vc4.launcher.gui.frame;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTabbedPane;
 
 import vc4.launcher.gui.tab.NewsTab;
 import vc4.launcher.gui.tab.SettingsTab;
@@ -36,13 +37,19 @@ public class LauncherGui extends JFrame {
 		JButton playButton = new JButton("Play");
 		panel_1.add(playButton);
 		
-		JProgressBar progressBar = new JProgressBar();
-		panel.add(progressBar, BorderLayout.CENTER);
+		_progressBar = new JProgressBar();
+		_progressBar.setStringPainted(true);
+		panel.add(_progressBar, BorderLayout.CENTER);
+	}
+	
+	public JProgressBar getProgressBar() {
+		return _progressBar;
 	}
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5628814843842908657L;
+	private JProgressBar _progressBar;
 
 }

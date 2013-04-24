@@ -3,8 +3,8 @@ package vc4.launcher.task;
 public class Progress {
 
 	
-	private String text;
-	private double percent;
+	private volatile String text;
+	private volatile double percent;
 	private boolean delete;
 	private Progress feeding;
 	

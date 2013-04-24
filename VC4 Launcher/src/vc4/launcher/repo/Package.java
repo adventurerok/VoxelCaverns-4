@@ -1,24 +1,21 @@
 package vc4.launcher.repo;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.yaml.snakeyaml.Yaml;
 
+import vc4.launcher.Launcher;
 import vc4.launcher.enumeration.UpdateStreamType;
+import vc4.launcher.gui.settings.PackageSettingsPanel;
+import vc4.launcher.task.InstallVersionTask;
+import vc4.launcher.task.UpdateGuiTask;
 import vc4.launcher.util.DirectoryLocator;
 import vc4.launcher.util.ThreadYaml;
 import vc4.launcher.util.YamlMap;
@@ -33,19 +30,28 @@ public class Package {
 	private boolean backup = false;
 	private boolean auto = true;
 	private String name, author, desc, folder, install, fileType = "file", data, launch;
+	private PackageSettingsPanel panel;
 
 	private String packageRoot;
 	
 	public void autoUpdate() {
 		if(!auto) return;
 		Version latest = getLatest();
-		if(version == null || latest.intVersion <= version.intVersion) return;
+		if(version != null && latest.intVersion <= version.intVersion) return;
 		try {
 			install(latest);
 		} catch (IOException e) {
 			System.out.println("Failed to install latest");
 		}
 		
+	}
+	
+	public PackageSettingsPanel getPanel() {
+		return panel;
+	}
+	
+	public void setPanel(PackageSettingsPanel panel) {
+		this.panel = panel;
 	}
 
 	public boolean canLaunch(){
@@ -204,69 +210,18 @@ public class Package {
 	}
 
 	public void install(Version version) throws IOException {
-		if(this.version != null && version.intVersion == this.version.intVersion) return;
-		String installPath = DirectoryLocator.getPath() + "/" + folder + "/" + install;
-		if(backup && this.version != null && !type.equals("zip")){
-			String bakPath = this.version.path;
-			if(bakPath.contains("/")) bakPath = bakPath.substring(bakPath.lastIndexOf("/"), bakPath.length());
-			Files.move(new File(installPath).toPath(), new File(bakPath).toPath());
-		}
-		String downloadPath = packageRoot + version.getPath();
-		if (fileType.equals("zip")) {
-			installPath = DirectoryLocator.getPath() + "/" + folder + "/";
-			String tempPath = DirectoryLocator.getPath() + "/temp/" + install;
-			URL download = new URL(downloadPath);
-			ReadableByteChannel rbc = Channels.newChannel(download.openStream());
-			FileOutputStream out = new FileOutputStream(tempPath);
-			out.getChannel().transferFrom(rbc, 0, 1 << 28);
-			out.close();
+		Launcher.getSingleton().getTasks().addTask(new InstallVersionTask(this, version));
+		final Package pak = this;
+		Runnable run = new Runnable() {
 			
-			byte[] buffer = new byte[1024];
-			File folder = new File(installPath);
-			if (!folder.exists()) {
-				folder.mkdir();
-			}
-
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(tempPath));
-			ZipEntry ze = zis.getNextEntry();
-			while (ze != null) {
-				String fileName = ze.getName();
-				File newFile = new File(installPath + fileName);
-				if (newFile.isDirectory()) {
-					newFile.mkdirs();
-				} else {
-					FileOutputStream fos = new FileOutputStream(newFile);
-
-					int len;
-					while ((len = zis.read(buffer)) > 0) {
-						fos.write(buffer, 0, len);
-					}
-
-					fos.close();
-					ze = zis.getNextEntry();
+			@Override
+			public void run() {
+				if(pak.panel != null){
+					pak.panel.packageUpdate();
 				}
 			}
-			zis.closeEntry();
-			zis.close();
-		} else {
-			String checkPath = version.path;
-			if(checkPath.contains("/")) checkPath = checkPath.substring(checkPath.lastIndexOf("/"), checkPath.length());
-			if(new File(checkPath).exists()){
-				Files.copy(new File(checkPath).toPath(), new File(installPath).toPath());
-			} else {
-				URL download = new URL(downloadPath);
-				ReadableByteChannel rbc = Channels.newChannel(download.openStream());
-				FileOutputStream out = new FileOutputStream(installPath);
-				out.getChannel().transferFrom(rbc, 0, 1 << 28);
-				out.close();
-			}
-		}
-		this.version = version;
-		try {
-			save();
-		} catch (IOException e) {
-			System.out.println("Failed to save package after update");
-		}
+		};
+		Launcher.getSingleton().getTasks().addTask(new UpdateGuiTask(run));
 	}
 
 	public boolean isAuto() {

@@ -19,6 +19,14 @@ public class InstallVersionTask implements Task {
 	
 	Package pack;
 	Version version;
+	
+	
+
+	public InstallVersionTask(Package pack, Version version) {
+		super();
+		this.pack = pack;
+		this.version = version;
+	}
 
 	@Override
 	public void run(Progress progress) {
@@ -35,6 +43,7 @@ public class InstallVersionTask implements Task {
 			progress.setPercent(33);
 			String downloadPath = pack.getPackageRoot() + version.getPath();
 			if (pack.getFileType().equals("zip")) {
+				progress.setText("Downloading version");
 				installPath = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/";
 				String tempPath = DirectoryLocator.getPath() + "/temp/" + pack.getInstall();
 				URL download = new URL(downloadPath);
@@ -75,9 +84,11 @@ public class InstallVersionTask implements Task {
 				String checkPath = version.getPath();
 				if(checkPath.contains("/")) checkPath = checkPath.substring(checkPath.lastIndexOf("/"), checkPath.length());
 				if(new File(checkPath).exists()){
+					progress.setText("Installing backup version");
 					progress.setPercent(66);
 					Files.copy(new File(checkPath).toPath(), new File(installPath).toPath());
 				} else {
+					progress.setText("Downloading version");
 					progress.setPercent(50);
 					URL download = new URL(downloadPath);
 					ReadableByteChannel rbc = Channels.newChannel(download.openStream());

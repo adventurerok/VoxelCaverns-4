@@ -1,5 +1,7 @@
 package vc4.launcher;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import vc4.launcher.gui.frame.LauncherGui;
 import vc4.launcher.repo.Package;
 import vc4.launcher.repo.Repo;
+import vc4.launcher.task.TaskSystem;
 import vc4.launcher.util.DirectoryLocator;
 import vc4.launcher.util.YamlMap;
 
@@ -18,6 +21,7 @@ public class Launcher {
 	
 	private LauncherGui gui;
 	private Repo vc4;
+	private TaskSystem tasks = new TaskSystem();
 	
 	private ArrayList<Repo> repos = new ArrayList<>();
 	
@@ -29,8 +33,10 @@ public class Launcher {
 		return vc4;
 	}
 	
+	
 	public Launcher() {
 		singleton = this;
+		tasks.start();
 		Repo rec = new Repo();
 		try {
 			rec.loadInfo(new URL("https://raw.github.com/adventurerok/VoxelCaverns-4/master/VC4%20Downloads"));
@@ -49,6 +55,16 @@ public class Launcher {
 			r.autoUpdate();
 		}
 		gui = new LauncherGui();
+		gui.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				tasks.setStop(true);
+				try {
+					saveRepos();
+				} catch (IOException e1) {
+				}
+			}
+		});
 		gui.setVisible(true);
 	}
 	
@@ -121,6 +137,10 @@ public class Launcher {
 	public void launchPackage(Package pack) {
 		// TASK Auto-generated method stub
 		
+	}
+	
+	public TaskSystem getTasks() {
+		return tasks;
 	}
 	
 }
