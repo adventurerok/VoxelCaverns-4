@@ -129,3 +129,5 @@ VC4-Development-0.0.0-202
 	+ Block now has method to get creative items
 VC4-Development-0.0.0-203
 	+ Test infinite world
+VC4-Development-0.0.0-205
+	* Fixed issues with lwjgl natives
