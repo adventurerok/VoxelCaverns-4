@@ -41,6 +41,7 @@ public class MainProgress extends Progress{
 			public void run() {
 				try{
 					Launcher.getSingleton().getGui().getProgressBar().setValue(per);
+					Launcher.getSingleton().getTasks().setUpdated(true);
 				} catch(Exception e){}
 				
 			}

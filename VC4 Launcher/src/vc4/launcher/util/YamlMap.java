@@ -78,6 +78,12 @@ public class YamlMap implements Iterable<Object>{
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<?> getJavaList(String key){
+		List<Object> l = (List<Object>) baseMap.get(key);
+		return l;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public Iterator<YamlMap> getSubMapsIterator(){
 		ArrayList<YamlMap> stuff = new ArrayList<>();
 		for(Object o : baseMap.values()){

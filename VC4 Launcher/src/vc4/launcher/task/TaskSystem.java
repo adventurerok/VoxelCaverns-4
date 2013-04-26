@@ -30,11 +30,9 @@ public class TaskSystem extends Thread {
 			if (!wasComplete) {
 				overall.setText("Complete");
 				overall.setPercent(100);
-				wasComplete = true;
 			}
 			return;
 		}
-		wasComplete = false;
 		if (current == null || !current.canRun() || current.delete()) {
 			if (current != null) tasks.add(current);
 			current = getNext();
@@ -46,6 +44,7 @@ public class TaskSystem extends Thread {
 		if (current.delete()) {
 			current = null;
 		}
+		wasComplete = false;
 	}
 
 	public Progress getOverall() {
@@ -87,5 +86,10 @@ public class TaskSystem extends Thread {
 		}
 
 		return current / (double) total;
+	}
+
+	public void setUpdated(boolean b) {
+		wasComplete = true;
+		
 	}
 }

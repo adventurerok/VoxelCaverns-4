@@ -18,6 +18,10 @@ public class RepoNode extends SettingsNode {
 	public RepoNode(Repo repo) {
 		super(repo.getName(), new RepoSettingsPanel(repo));
 		setIcon(ico);
+		for(String s : repo.getTextFiles()){
+			String r = s.contains(".") ? s.substring(0, s.lastIndexOf(".")) : s;
+			add(new TextNode(r, repo.getUrl(s)));
+		}
 		for(Package p : repo.getPackages()){
 			add(new PackageNode(p));
 		}

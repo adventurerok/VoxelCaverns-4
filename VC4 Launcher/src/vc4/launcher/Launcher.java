@@ -5,6 +5,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -135,8 +136,17 @@ public class Launcher {
 	}
 
 	public void launchPackage(Package pack) {
-		// TASK Auto-generated method stub
-		
+		String run = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/" + pack.getInstall();
+		String separator = System.getProperty("file.separator");
+	    String path = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
+	    String memory = "1024M";
+	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + memory, "-Xms" + memory, "-cp", run, pack.getLaunch(), "heapset" });
+	    processBuilder.redirectOutput(Redirect.INHERIT);
+    	processBuilder.redirectError(Redirect.INHERIT);
+		try {
+			processBuilder.start();
+		} catch (IOException e) {
+		}
 	}
 	
 	public TaskSystem getTasks() {

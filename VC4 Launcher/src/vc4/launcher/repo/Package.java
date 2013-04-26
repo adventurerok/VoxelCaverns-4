@@ -34,6 +34,7 @@ public class Package {
 
 	private String packageRoot;
 	
+	
 	public void autoUpdate() {
 		if(!auto) return;
 		Version latest = getLatest();
@@ -185,6 +186,8 @@ public class Package {
 	public Version getVersion() {
 		return version;
 	}
+	
+	
 
 	public Version getVersion(int ver){
 		Version v = recommended.getVersion(ver);
@@ -258,8 +261,8 @@ public class Package {
 		folder = info.getString("folder");
 		install = info.getString("install");
 		data = info.getString("data");
-		if(map.hasKey("type")) fileType = map.getString("type");
-		if(map.hasKey("launch")) launch = map.getString("launch");
+		if(info.hasKey("type")) fileType = info.getString("type");
+		if(info.hasKey("launch")) launch = info.getString("launch");
 		YamlMap latest = map.getSubMap("latest");
 		String latestRec = latest.getString("recommended");
 		String latestBeta = latest.getString("beta");
