@@ -10,9 +10,14 @@ latest:
     recommended: "0.0"
     beta: "0.0"
     alpha: "0.0"
-    dev: "0.0.0-203"
+    dev: "0.0.0-205"
 dev:
+    "0.0.0-205":
+        file: "VC4-Client-0.0.0-205.jar"
+        release: "26/04/2013"
+        int: 205
     "0.0.0-203":
         file: "VC4-Client-0.0.0-203.jar"
         release: "22/04/2013"
         int: 203
+        bugged: true
