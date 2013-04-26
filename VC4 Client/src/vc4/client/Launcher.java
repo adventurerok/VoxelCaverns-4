@@ -1,9 +1,12 @@
 package vc4.client;
 
+import java.io.File;
+
 import vc4.api.client.ClientLauncher;
 import vc4.api.client.ClientWindow;
 import vc4.api.logging.ChatBoxHandler;
 import vc4.api.logging.FileOutputHandler;
+import vc4.api.util.DirectoryLocator;
 import vc4.client.font.ClientFontRendererFactory;
 import vc4.client.graphics.*;
 import vc4.client.input.ClientKeyboard;
@@ -16,6 +19,7 @@ public class Launcher implements ClientLauncher{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.setProperty("org.lwjgl.librarypath", new File(DirectoryLocator.getPath() + "/bin/natives/").getAbsolutePath());
 		GameLoader.load(new ChatBoxHandler(), new FileOutputHandler());
 		new ClientGL();
 		new ClientTextureLoader();
