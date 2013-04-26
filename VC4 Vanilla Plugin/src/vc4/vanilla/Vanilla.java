@@ -24,6 +24,7 @@ import vc4.vanilla.block.BlockWater;
 import vc4.vanilla.generation.FlatlandsGenerator;
 import vc4.vanilla.generation.OverworldGenerator;
 import vc4.vanilla.generation.WorldGenOres;
+import vc4.vanilla.generation.dungeon.Dungeon;
 
 /**
  * @author paul
@@ -74,6 +75,7 @@ public class Vanilla extends Plugin {
 		water = new BlockWater(world.getRegisteredBlock("vanilla.water")).setName("water");
 		obsidian = new BlockObsidian(world.getRegisteredBlock("vanilla.obsidian")).setName("obsidian");
 		WorldGenOres.onWorldLoad(world);
+		Dungeon.onWorldLoad(world);
 	}
 
 }

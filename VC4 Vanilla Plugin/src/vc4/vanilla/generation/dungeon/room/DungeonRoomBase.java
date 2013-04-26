@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vc4.vanilla.generation.dungeon;
+package vc4.vanilla.generation.dungeon.room;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -10,6 +10,11 @@ import vc4.api.client.Client;
 import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.generation.dungeon.Door;
+import vc4.vanilla.generation.dungeon.Dungeon;
+import vc4.vanilla.generation.dungeon.RoomBB;
+import vc4.vanilla.generation.dungeon.WeightedRoom;
+import vc4.vanilla.generation.dungeon.style.DungeonStyle;
 
 /**
  * @author paul
@@ -88,31 +93,24 @@ public class DungeonRoomBase extends DungeonRoom {
 		ConcurrentLinkedQueue<Door> doorsToGen = new ConcurrentLinkedQueue<Door>();
 		doorsToGen.addAll(generate(world, d, dungeon));
 		while((d = doorsToGen.poll()) != null){
-			if(!dungeon.inBounds(d.left) || rand.nextDouble() < 0.4d) continue;
-			DungeonRoom room = nextRoom(rand);
+			if(!dungeon.inBounds(d.left) || rand.nextDouble() < dungeon.getStyle().getRoomFailChance()) continue;
+			DungeonRoom room = nextRoom(dungeon.getStyle(), rand);
 			doorsToGen.addAll(room.generate(world, d, dungeon));
 		}
 	}
 	
-	public static DungeonRoom nextRoom(Random rand){
+	public static DungeonRoom nextRoom(DungeonStyle style, Random rand){
 		int max = 0;
-		for(DungeonRoom d : roomsToGen){
+		for(WeightedRoom d : style.getRooms()){
 			max += d.getWeight();
 		}
 		int num = rand.nextInt(max);
-		for(DungeonRoom d : roomsToGen){
+		for(WeightedRoom d : style.getRooms()){
 			num -= d.getWeight();
-			if(num <= 0) return d;
+			if(num <= 0) return d.getRoom();
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see vc4.vanilla.generation.dungeon.DungeonRoom#getWeight()
-	 */
-	@Override
-	public int getWeight() {
-		return 100;
-	}
 
 }

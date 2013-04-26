@@ -1,4 +1,4 @@
-package vc4.vanilla.generation.dungeon;
+package vc4.vanilla.generation.dungeon.room;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,13 +6,16 @@ import java.util.Collection;
 import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.generation.dungeon.Door;
+import vc4.vanilla.generation.dungeon.Dungeon;
+import vc4.vanilla.generation.dungeon.RoomBB;
 
 public class DungeonRoomPit extends DungeonRoom {
 
 	@Override
 	public Collection<Door> generate(World world, Door door, Dungeon dungeon) {
 		ArrayList<Door> result = new ArrayList<>();
-		if(dungeon.rand.nextBoolean()) door.move(14, Direction.UP);
+		if(dungeon.getRand().nextBoolean()) door.move(14, Direction.UP);
 		Vector3l start = door.left;
 		start = start.move(2, door.dir.counterClockwise());
 		if(!dungeon.inBounds(start)) return result;
@@ -52,9 +55,5 @@ public class DungeonRoomPit extends DungeonRoom {
 		return result;
 	}
 
-	@Override
-	public int getWeight() {
-		return 5;
-	}
 
 }

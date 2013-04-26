@@ -8,7 +8,8 @@ import java.util.Random;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
-import vc4.vanilla.Vanilla;
+import vc4.vanilla.generation.dungeon.style.DungeonStyle;
+import vc4.vanilla.generation.dungeon.style.DungeonStyleStone;
 
 /**
  * @author paul
@@ -16,12 +17,19 @@ import vc4.vanilla.Vanilla;
  */
 public class Dungeon {
 
+	private static ArrayList<DungeonStyle> styles = new ArrayList<>();
+	
+	static{
+		styles.add(new DungeonStyleStone());
+	}
+	
+	
 	long minX, minY, minZ, maxX, maxY, maxZ;
 	Random rand;
 	World world;
-	byte type;
 
 	public ArrayList<RoomBB> rooms = new ArrayList<>();
+	DungeonStyle style;
 
 	public Dungeon(World world, long minX, long minY, long minZ, long maxX, long maxY, long maxZ, Random rand) {
 		super();
@@ -33,8 +41,11 @@ public class Dungeon {
 		this.maxZ = maxZ;
 		this.rand = rand;
 		this.world = world;
-		type = (byte) (rand.nextBoolean() ? 4 : 15);
-		if(minY < -4900 && rand.nextBoolean()) type = 14;
+		style = getDungeonStyle(world, minX + maxX  / 2, maxY, minZ + maxZ / 2, rand);
+	}
+	
+	public DungeonStyle getStyle() {
+		return style;
 	}
 	
 	public boolean inBounds(long x, long y, long z){
@@ -57,9 +68,9 @@ public class Dungeon {
 	}
 	
 	public void setDungeonBlock(long x, long y, long z){
-		if(type != 14 && world.getBlockId(x, y, z) == 0) return;
-		if(rand.nextInt(3) == 0) world.setBlockIdDataNoNotify(x, y, z, Vanilla.mossBrick.uid, type);
-		else world.setBlockIdDataNoNotify(x, y, z, Vanilla.brick.uid, type);
+		if(style.getType() != 14 && world.getBlockId(x, y, z) == 0) return;
+		if(rand.nextInt(3) == 0) world.setBlockIdDataNoNotify(x, y, z, style.getMossId(), style.getType());
+		else world.setBlockIdDataNoNotify(x, y, z, style.getBrickId(), style.getType());
 	}
 	
 	public void setEmptyBlock(long x, long y, long z){
@@ -78,5 +89,28 @@ public class Dungeon {
 	
 	public World getWorld() {
 		return world;
+	}
+	
+	public static DungeonStyle getDungeonStyle(World world, long x, long y, long z, Random rand){
+		ArrayList<DungeonStyle> spawnable = new ArrayList<>();
+		for(DungeonStyle d : styles){
+			if(d.canGenerate(world, x, y, z)) spawnable.add(d);
+		}
+		int max = 0;
+		for(DungeonStyle d : spawnable){
+			max += d.getWeight();
+		}
+		int num = rand.nextInt(max);
+		for(DungeonStyle d : spawnable){
+			num -= d.getWeight();
+			if(num <= 0) return d;
+		}
+		return null;
+	}
+	
+	public static void onWorldLoad(World world){
+		for(DungeonStyle s : styles){
+			s.onWorldLoad(world);
+		}
 	}
 }

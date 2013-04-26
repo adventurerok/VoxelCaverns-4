@@ -1,4 +1,4 @@
-package vc4.vanilla.generation.dungeon;
+package vc4.vanilla.generation.dungeon.room;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,9 @@ import java.util.Collection;
 import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.generation.dungeon.Door;
+import vc4.vanilla.generation.dungeon.Dungeon;
+import vc4.vanilla.generation.dungeon.RoomBB;
 
 public class DungeonRoomStairs extends DungeonRoom {
 
@@ -13,7 +16,7 @@ public class DungeonRoomStairs extends DungeonRoom {
 	public Collection<Door> generate(World world, Door door, Dungeon dungeon) {
 		ArrayList<Door> result = new ArrayList<>();
 		Direction stairDir = Direction.getDirection(4 + dungeon.getRand().nextInt(2));
-		int stairHeight = 4 + dungeon.rand.nextInt(3) * 6;
+		int stairHeight = 4 + dungeon.getRand().nextInt(3) * 6;
 		Vector3l start = door.left;
 		start = start.move(2, door.dir.counterClockwise());
 		if(stairDir == Direction.DOWN) start = start.move(stairHeight - 1, stairDir);
@@ -68,9 +71,5 @@ public class DungeonRoomStairs extends DungeonRoom {
 		return result;
 	}
 
-	@Override
-	public int getWeight() {
-		return 8;
-	}
 
 }

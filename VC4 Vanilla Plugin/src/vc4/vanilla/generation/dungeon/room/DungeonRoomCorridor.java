@@ -1,13 +1,16 @@
 /**
  * 
  */
-package vc4.vanilla.generation.dungeon;
+package vc4.vanilla.generation.dungeon.room;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.generation.dungeon.Door;
+import vc4.vanilla.generation.dungeon.Dungeon;
+import vc4.vanilla.generation.dungeon.RoomBB;
 
 /**
  * @author paul
@@ -26,7 +29,7 @@ public class DungeonRoomCorridor extends DungeonRoom {
 		if(!dungeon.inBounds(start)) return result;
 		Vector3l end = door.right;
 		end = end.move(2, door.dir.clockwise());
-		int move = 7 + dungeon.rand.nextInt(6);
+		int move = 7 + dungeon.getRand().nextInt(6);
 		end = end.move(move, door.dir);
 		if(!dungeon.inBounds(end)) return result;
 		long sx = Math.min(start.x, end.x);
@@ -58,12 +61,5 @@ public class DungeonRoomCorridor extends DungeonRoom {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see vc4.vanilla.generation.dungeon.DungeonRoom#getWeight()
-	 */
-	@Override
-	public int getWeight() {
-		return 20;
-	}
 
 }

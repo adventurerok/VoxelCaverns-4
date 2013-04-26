@@ -1,19 +1,22 @@
 /**
  * 
  */
-package vc4.vanilla.generation.dungeon;
+package vc4.vanilla.generation.dungeon.room;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.generation.dungeon.Door;
+import vc4.vanilla.generation.dungeon.Dungeon;
+import vc4.vanilla.generation.dungeon.RoomBB;
 
 /**
  * @author paul
  *
  */
-public class DungeonRoomRightTurn extends DungeonRoom {
+public class DungeonRoomLeftTurn extends DungeonRoom {
 
 	/* (non-Javadoc)
 	 * @see vc4.vanilla.generation.dungeon.DungeonRoom#generate(vc4.api.world.World, vc4.vanilla.generation.dungeon.Door, vc4.vanilla.generation.dungeon.Dungeon)
@@ -21,11 +24,11 @@ public class DungeonRoomRightTurn extends DungeonRoom {
 	@Override
 	public Collection<Door> generate(World world, Door door, Dungeon dungeon) {
 		ArrayList<Door> result = new ArrayList<>();
-		Vector3l start = door.right;
-		start = start.move(2, door.dir.clockwise());
+		Vector3l start = door.left;
+		start = start.move(2, door.dir.counterClockwise());
 		if(!dungeon.inBounds(start)) return result;
-		Vector3l end = door.left;
-		end = end.move(2, door.dir.counterClockwise());
+		Vector3l end = door.right;
+		end = end.move(2, door.dir.clockwise());
 		end = end.move(3, door.dir);
 		if(!dungeon.inBounds(end)) return result;
 		long sx = Math.min(start.x, end.x);
@@ -34,7 +37,7 @@ public class DungeonRoomRightTurn extends DungeonRoom {
 		long ez = Math.max(start.z, end.z);
 		int xSize = (int) (ex - sx);
 		int zSize = (int) (ez - sz);
-		Vector3l first = start.move(3, door.dir.clockwise());
+		Vector3l first = start.move(3, door.dir.counterClockwise());
 		Vector3l last = end.move(5, door.dir);
 		long fx = Math.min(first.x, last.x);
 		long fz = Math.min(first.z, last.z);
@@ -79,8 +82,8 @@ public class DungeonRoomRightTurn extends DungeonRoom {
 			}
 		}
 		start = start.move(1, door.dir.opposite());
-		start = start.move(3, door.dir.clockwise());
-		end = end.move(5, door.dir.clockwise());
+		start = start.move(3, door.dir.counterClockwise());
+		end = end.move(5, door.dir.counterClockwise());
 		sx = Math.min(start.x, end.x);
 		sz = Math.min(start.z, end.z);
 		ex = Math.max(start.x, end.x);
@@ -107,16 +110,9 @@ public class DungeonRoomRightTurn extends DungeonRoom {
 			}
 		}
 		result.add(door.clone().setNewRoomDir(door.dir.opposite()));
-		result.add(Door.genDoor(door.right.move(5, door.dir.clockwise()).move(5, door.dir), door.dir).setNewRoomDir(door.dir.clockwise()));
+		result.add(Door.genDoor(door.left.move(5, door.dir.counterClockwise()).move(5, door.dir), door.dir).setNewRoomDir(door.dir.counterClockwise()));
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see vc4.vanilla.generation.dungeon.DungeonRoom#getWeight()
-	 */
-	@Override
-	public int getWeight() {
-		return 9;
-	}
 
 }

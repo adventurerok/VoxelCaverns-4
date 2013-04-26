@@ -12,7 +12,7 @@ import vc4.api.util.noise.SimplexOctaveGenerator;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
-import vc4.vanilla.generation.dungeon.DungeonRoomBase;
+import vc4.vanilla.generation.dungeon.room.DungeonRoomBase;
 import vc4.vanilla.generation.trees.TreeGenBasic;
 
 /**
