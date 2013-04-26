@@ -3,6 +3,8 @@ package vc4.launcher.gui.frame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -11,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 
+import vc4.launcher.Launcher;
 import vc4.launcher.gui.tab.NewsTab;
 import vc4.launcher.gui.tab.SettingsTab;
 
@@ -35,6 +38,14 @@ public class LauncherGui extends JFrame {
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JButton playButton = new JButton("Play");
+		playButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Launcher.getSingleton().launchPackage(Launcher.getSingleton().getClientPackage());
+				
+			}
+		});
 		panel_1.add(playButton);
 		
 		_progressBar = new JProgressBar();
