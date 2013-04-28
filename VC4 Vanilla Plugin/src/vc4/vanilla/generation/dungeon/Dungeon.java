@@ -8,8 +8,7 @@ import java.util.Random;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
-import vc4.vanilla.generation.dungeon.style.DungeonStyle;
-import vc4.vanilla.generation.dungeon.style.DungeonStyleStone;
+import vc4.vanilla.generation.dungeon.style.*;
 
 /**
  * @author paul
@@ -21,8 +20,12 @@ public class Dungeon {
 	
 	static{
 		styles.add(new DungeonStyleStone());
+		styles.add(new DungeonStyleLibrary());
 	}
 	
+	public static void addStyle(DungeonStyle style){
+		styles.add(style);
+	}
 	
 	long minX, minY, minZ, maxX, maxY, maxZ;
 	Random rand;
@@ -100,6 +103,7 @@ public class Dungeon {
 		for(DungeonStyle d : spawnable){
 			max += d.getWeight();
 		}
+		if(max < 1) return null;
 		int num = rand.nextInt(max);
 		for(DungeonStyle d : spawnable){
 			num -= d.getWeight();

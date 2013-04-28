@@ -90,12 +90,16 @@ public class DungeonRoomBase extends DungeonRoom {
 		dir = dir.counterClockwise();
 		d.dir = dir;
 		Dungeon dungeon = new Dungeon(world, x - 40, y - 30, z - 40, x + 40, y + 30, z + 40, rand);
+		if(dungeon.getStyle() == null) return;
 		ConcurrentLinkedQueue<Door> doorsToGen = new ConcurrentLinkedQueue<Door>();
-		doorsToGen.addAll(generate(world, d, dungeon));
+		doorsToGen.addAll(nextRoom(dungeon.getStyle(), rand).generate(world, d, dungeon));
+		int rooms = 1;
 		while((d = doorsToGen.poll()) != null){
-			if(!dungeon.inBounds(d.left) || rand.nextDouble() < dungeon.getStyle().getRoomFailChance()) continue;
+			if(!dungeon.inBounds(d.left) || (rand.nextDouble() < dungeon.getStyle().getRoomFailChance() && rooms > 8)) continue;
 			DungeonRoom room = nextRoom(dungeon.getStyle(), rand);
 			doorsToGen.addAll(room.generate(world, d, dungeon));
+			++rooms;
+			if(dungeon.getStyle().getMaxRooms() != -1 && rooms > dungeon.getStyle().getMaxRooms()) break;
 		}
 	}
 	

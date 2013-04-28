@@ -97,7 +97,7 @@ public class OverworldGenerator implements WorldGenerator {
 	 * @param world
 	 */
 	private void initHellNoise(World world) {
-		SimplexNoiseGenerator[] octaves = new SimplexNoiseGenerator[4];
+		SimplexNoiseGenerator[] octaves = new SimplexNoiseGenerator[2];
 		Random rand = new Random(world.getSeed());
 		for (int d = 0; d < 2; ++d) {
 			octaves[d] = new SimplexNoiseGenerator(rand);

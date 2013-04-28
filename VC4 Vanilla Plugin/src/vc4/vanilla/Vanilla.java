@@ -10,17 +10,7 @@ import vc4.api.block.Plant;
 import vc4.api.generator.GeneratorList;
 import vc4.api.plugin.Plugin;
 import vc4.api.world.World;
-import vc4.vanilla.block.BlockBrick;
-import vc4.vanilla.block.BlockBrickMoss;
-import vc4.vanilla.block.BlockGlass;
-import vc4.vanilla.block.BlockGrass;
-import vc4.vanilla.block.BlockLava;
-import vc4.vanilla.block.BlockLeaf;
-import vc4.vanilla.block.BlockLog;
-import vc4.vanilla.block.BlockObsidian;
-import vc4.vanilla.block.BlockOre;
-import vc4.vanilla.block.BlockSand;
-import vc4.vanilla.block.BlockWater;
+import vc4.vanilla.block.*;
 import vc4.vanilla.generation.FlatlandsGenerator;
 import vc4.vanilla.generation.OverworldGenerator;
 import vc4.vanilla.generation.WorldGenOres;
@@ -35,6 +25,7 @@ public class Vanilla extends Plugin {
 	
 	public static Block grass, dirt, logV, logX, logZ, leaf, brick, mossBrick;
 	public static Block sand, glass, ore, hellrock, lava, oreHell, water, obsidian;
+	public static Block planks, planksHalf, bookshelf, planksStairs0, planksStairs4;
 	public static Plant treeOak;
 	
 	/* (non-Javadoc)
@@ -74,6 +65,11 @@ public class Vanilla extends Plugin {
 		oreHell = new BlockOre(world.getRegisteredBlock("vanilla.ore.hell"), 21);
 		water = new BlockWater(world.getRegisteredBlock("vanilla.water")).setName("water");
 		obsidian = new BlockObsidian(world.getRegisteredBlock("vanilla.obsidian")).setName("obsidian");
+		planks = new BlockPlanks(world.getRegisteredBlock("vanilla.planks")).setName("planks");
+		planksHalf = new BlockPlanksHalf(world.getRegisteredBlock("vanilla.planks.half")).setName("plankshalf");
+		bookshelf = new BlockBookshelf(world.getRegisteredBlock("vanilla.bookshelf")).setName("bookshelf");
+		planksStairs0 = new BlockPlanksStairs(world.getRegisteredBlock("vanilla.planks.stairs.0"), 0).setName("planksstairs");
+		planksStairs4 = new BlockPlanksStairs(world.getRegisteredBlock("vanilla.planks.stairs.4"), 4).setName("planksstairs");
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
 	}

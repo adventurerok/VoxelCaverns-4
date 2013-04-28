@@ -7,6 +7,7 @@ import vc4.api.block.Block;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
+import vc4.vanilla.util.WoodBlocks;
 
 /**
  * @author paul
@@ -37,11 +38,7 @@ public class BlockLeaf extends Block {
 	 */
 	@Override
 	public ItemStack[] getCreativeItems() {
-		ItemStack[] result = new ItemStack[7];
-		for(int d = 0; d < 7; ++d){
-			result[d] = new ItemStack(uid, d, 1);
-		}
-		return result;
+		return WoodBlocks.genCreativeItems(uid);
 	}
 	
 	/* (non-Javadoc)
