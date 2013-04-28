@@ -200,6 +200,12 @@ public class DataRenderer implements Renderer {
 		if(buffer != null) buffer.clear();
 		if(data != null) data.clear();
 	}
+
+	@Override
+	public void tex(double s, double t, double r, double q) {
+		tex((float)s, (float)t, (float)r, (float)q);
+		
+	}
 	
 
 }

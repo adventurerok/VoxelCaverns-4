@@ -47,15 +47,15 @@ public class BlockRendererDefault implements BlockRenderer {
 
 	public void renderBlockFaceNorth(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ + bounds.minZ);
-		render.tex(1, 0, tex, 0);
-		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ + bounds.minZ);
-		render.tex(1, 1, tex, 0);
-		render.addVertex(x + bounds.maxX, y + bounds.minY + bounds.minY, z + bounds.minZ);
-		render.tex(0, 1, tex, 0);
-		render.addVertex(x + bounds.maxX, y + bounds.minY + bounds.minY, z + bounds.maxZ);
+		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
+		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
+		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
+		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
+		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
+		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
+		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
+		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 	}
 	
 	public void renderBlockFace(double x, double y, double z, Block block, ItemStack item, Renderer render, AABB bounds, int side){
@@ -165,14 +165,14 @@ public class BlockRendererDefault implements BlockRenderer {
 
 	public void renderBlockFaceEast(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(0, 0, tex, 0);
+		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
 		render.color(color);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(1, 0, tex, 0);
+		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(1, 1, tex, 0);
+		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(0, 1, tex, 0);
+		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
 
 	}
@@ -180,56 +180,56 @@ public class BlockRendererDefault implements BlockRenderer {
 
 	public void renderBlockFaceSouth(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(0, 0, tex, 0);
+		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
 		render.color(color);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(1, 0, tex, 0);
+		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(1, 1, tex, 0);
+		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(0, 1, tex, 0);
+		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
 
 	}
 
 	public void renderBlockFaceWest(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(0, 0, tex, 0);
+		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
 		render.color(color);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(1, 0, tex, 0);
+		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(1, 1, tex, 0);
+		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
-		render.tex(0, 1, tex, 0);
+		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
 
 	}
 
 	public void renderBlockFaceTop(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(0, 0, tex, 0);
+		render.tex(bounds.minX, bounds.minZ, tex, 0);
 		render.color(color);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(1, 0, tex, 0);
+		render.tex(bounds.maxX, bounds.minZ, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(1, 1, tex, 0);
+		render.tex(bounds.maxX, bounds.maxZ, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(0, 1, tex, 0);
+		render.tex(bounds.minX, bounds.maxZ, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
 
 	}
 
 	public void renderBlockFaceBottom(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(0, 0, tex, 0);
+		render.tex(bounds.minX, bounds.minZ, tex, 0);
 		render.color(color);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
-		render.tex(1, 0, tex, 0);
+		render.tex(bounds.maxX, bounds.minZ, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
-		render.tex(1, 1, tex, 0);
+		render.tex(bounds.maxX, bounds.maxZ, tex, 0);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(0, 1, tex, 0);
+		render.tex(bounds.minX, bounds.maxZ, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 
 	}

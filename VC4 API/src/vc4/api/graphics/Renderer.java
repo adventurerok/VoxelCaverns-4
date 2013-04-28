@@ -27,5 +27,6 @@ public interface Renderer {
 	public abstract void compile();
 
 	public abstract void render();
+	public abstract void tex(double s, double t, double r, double q);
 
 }
