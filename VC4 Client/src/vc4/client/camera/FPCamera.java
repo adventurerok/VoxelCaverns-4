@@ -24,6 +24,10 @@ public abstract class FPCamera {
 	// 3d vector to store the camera's position in
 	public Vector3d position = null;
 
+	public FPCamera() {
+		// TASK Auto-generated constructor stub
+	}
+	
 	// Constructor that takes the starting x, y, z location of the camera
 	public FPCamera(double x, double y, double z) {
 		// instantiate position Vector3f to the x y z params.
@@ -115,7 +119,7 @@ public abstract class FPCamera {
 		return new Vector3l(MathUtils.round(-position.x), MathUtils.round(-position.y), MathUtils.round(-position.z));
 	}
 
-	public Vector3d getPreciseWorldPosition() {
+	public Vector3d getPosition() {
 		return new Vector3d(-position.x, -position.y, -position.z);
 	}
 

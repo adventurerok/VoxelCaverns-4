@@ -11,9 +11,9 @@ import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
-import vc4.api.BlockInteractor;
 import vc4.api.GameState;
 import vc4.api.client.*;
+import vc4.api.entity.EntityPlayer;
 import vc4.api.font.Font;
 import vc4.api.font.FontRenderer;
 import vc4.api.graphics.*;
@@ -27,8 +27,9 @@ import vc4.api.input.*;
 import vc4.api.logging.Logger;
 import vc4.api.util.DirectoryLocator;
 import vc4.api.util.Setting;
+import vc4.api.world.ChunkPos;
 import vc4.api.yaml.ThreadYaml;
-import vc4.client.camera.FPCameraController;
+import vc4.client.camera.PlayerController;
 import vc4.client.gui.*;
 import vc4.impl.gui.GuiTypeMenu;
 import vc4.impl.plugin.PluginLoader;
@@ -52,7 +53,7 @@ public class Game extends Component implements ClientGame {
 	private HashMap<String, Gui> guis = new HashMap<String, Gui>();
 	private ClientLoadingScreen loadingScreen;
 	private GameState gameState = GameState.MENU;
-	private BlockInteractor blockInteractor;
+	private EntityPlayer player;
 	private boolean paused = false;
 	private IngameGui ingameGui;
 
@@ -87,7 +88,7 @@ public class Game extends Component implements ClientGame {
 	private long currentMenu = 0;
 
 	private ImplWorld world;
-	private FPCameraController camera;
+	private PlayerController camera;
 
 	ChatBox chatBox;
 
@@ -109,10 +110,10 @@ public class Game extends Component implements ClientGame {
 		if (gameState == GameState.SINGLEPLAYER) {
 			getWindow().enterRenderMode(RenderType.GAME);
 			camera.rotate();
-			world.drawBackground(camera.getPreciseWorldPosition());
+			world.drawBackground(camera.getPosition());
 			camera.translate();
-			world.draw(camera.getPreciseWorldPosition());
-			blockInteractor.drawCube();
+			world.draw(camera.getPosition());
+			player.drawCube();
 		}
 		gl.disable(GLFlag.DEPTH_TEST);
 		getWindow().enterRenderMode(RenderType.GUI);
@@ -189,14 +190,14 @@ public class Game extends Component implements ClientGame {
 		if (gameState == GameState.SINGLEPLAYER) {
 			if(Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
 			camera.handleInput(delta);
-			blockInteractor.decreaseCooldown(delta);
-			blockInteractor.rayTrace(camera.getPreciseWorldPosition(), camera.getLook(), 10);
+			player.decreaseCooldown(delta);
+			player.rayTrace(camera.getLook(), 10);
 			if(!isPaused()){
-				if (mouseSet.getCurrent().leftButtonPressed()) blockInteractor.leftMouseDown(delta);
-				if (mouseSet.getCurrent().rightButtomPressed()) blockInteractor.rightMouseDown(delta);
+				if (mouseSet.getCurrent().leftButtonPressed()) player.leftMouseDown(delta);
+				if (mouseSet.getCurrent().rightButtomPressed()) player.rightMouseDown(delta);
 			}
-			blockInteractor.update();
-			world.update(camera.getPreciseWorldPosition(), delta);
+			player.updateInput();
+			world.update(camera.getPosition(), delta);
 		}
 		long time = System.nanoTime() - _lastFrame;
 		_lastFrame = System.nanoTime();
@@ -222,8 +223,12 @@ public class Game extends Component implements ClientGame {
 		} catch (IOException e) {
 			Logger.getLogger(Game.class).warning("Exception occured", e);
 		}
-		camera = new FPCameraController(0, -20, 0);
-		blockInteractor = new BlockInteractor(world);
+		player = new EntityPlayer(world);
+		player.setPosition(0, 20, 0);
+		world.generateChunk(ChunkPos.createFromWorldVector(player.position));
+		player.addToWorld();
+		world.addPlayer(player);
+		camera = new PlayerController(player);
 		gl = Graphics.getClientOpenGL();
 		ingameGui = new IngameGui();
 		add(ingameGui);
@@ -685,8 +690,8 @@ public class Game extends Component implements ClientGame {
 	 * @return the blockInteractor
 	 */
 	@Override
-	public BlockInteractor getBlockInteractor() {
-		return blockInteractor;
+	public EntityPlayer getBlockInteractor() {
+		return player;
 	}
 
 }

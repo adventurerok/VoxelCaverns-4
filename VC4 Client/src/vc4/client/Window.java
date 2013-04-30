@@ -62,7 +62,11 @@ public class Window extends ClientWindow {
 				if (Display.wasResized()) resized();
 				if (Display.isCloseRequested()) _closeRequested = true;
 				Display.update();
-				Display.sync(60);
+				Display.sync(65);
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+				}
 
 			}
 			unload();
