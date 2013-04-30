@@ -155,6 +155,11 @@ public class DataRenderer implements Renderer {
 		buffer.put(data.toArray());
 		buffer.flip();
 		data = null;
+		tri = null;
+		quad = null;
+		color = null;
+		tex = null;
+		trans = null;
 	}
 	
 	/* (non-Javadoc)
@@ -177,8 +182,7 @@ public class DataRenderer implements Renderer {
 			gl.vertexAttribPointer(2, 3, normal, 56, buffer);
 			gl.drawArrays(GLPrimative.TRIANGLES, 0, amountOfVertexes);
 			gl.endList();
-			//buffer.clear();
-			//buffer = null;
+			buffer = null;
 			createdList = true;
 		}
 		gl.callList(listId);
@@ -197,8 +201,8 @@ public class DataRenderer implements Renderer {
 	 */
 	public void destroy() {
 		gl.deleteLists(listId, 1);
-		if(buffer != null) buffer.clear();
-		if(data != null) data.clear();
+		buffer = null;
+		data = null;
 	}
 
 	@Override

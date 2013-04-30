@@ -10,6 +10,7 @@ import org.jnbt.CompoundTag;
 import org.jnbt.ListTag;
 
 import vc4.api.block.Block;
+import vc4.api.entity.EntityPlayer;
 import vc4.api.itementity.ItemEntity;
 import vc4.api.itementity.ItemEntityEnchantment;
 import vc4.api.util.ColorUtils;
@@ -510,6 +511,15 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 	}
 	public byte getData() {
 		return (byte) getDamage();
+	}
+	public void onRightClick(EntityPlayer player) {
+		getItem().onRightClick(player, this);
+		
+	}
+	
+	public void onLeftClick(EntityPlayer player) {
+		getItem().onLeftClick(player, this);
+		
 	}
 
 

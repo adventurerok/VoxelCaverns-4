@@ -3,15 +3,15 @@
  */
 package vc4.api.world;
 
+import java.util.List;
 import java.util.Random;
 
 import org.jnbt.CompoundTag;
 
 import vc4.api.block.Block;
 import vc4.api.entity.Entity;
-import vc4.api.util.AABB;
-import vc4.api.util.Direction;
-import vc4.api.util.RayTraceResult;
+import vc4.api.entity.EntityPlayer;
+import vc4.api.util.*;
 import vc4.api.vector.Vector3d;
 
 /**
@@ -48,4 +48,9 @@ public interface World {
 	public long getTime();
 	public short getRegisteredBlock(String name);
 	public CompoundTag getGeneratorTag();
+	public List<EntityPlayer> getPlayers();
+	public EntityList getEntitiesInBounds(AABB bounds);
+	public EntityList getEntitiesInBoundsExcluding(AABB bounds, Entity exclude);
+	public double getFallAcceleration();
+	public double getFallMaxSpeed();
 }

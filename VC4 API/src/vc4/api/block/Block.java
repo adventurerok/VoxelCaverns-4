@@ -6,8 +6,7 @@ package vc4.api.block;
 import java.awt.Color;
 import java.util.Random;
 
-import vc4.api.block.render.BlockRenderer;
-import vc4.api.block.render.BlockRendererDefault;
+import vc4.api.block.render.*;
 import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.api.text.Localization;
@@ -74,6 +73,10 @@ public class Block {
 		return blocksList[id];
 	}
 	
+	public boolean canBeReplaced(int id, byte data){
+		return isAir || renderer instanceof BlockRendererFluid;
+	}
+	
 	/**
 	 * @return the renderer
 	 */
@@ -131,6 +134,10 @@ public class Block {
 		}
 		
 		
+	}
+	
+	public ItemStack[] getItemDrops(World world, long x, long y, long z, ItemStack mined){
+		return new ItemStack[]{new ItemStack(uid, world.getBlockData(x, y, z), 1)};
 	}
 
 	/**

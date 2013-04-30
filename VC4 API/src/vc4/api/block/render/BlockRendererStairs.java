@@ -69,7 +69,7 @@ public class BlockRendererStairs extends BlockRendererDefault {
 		renderBlockFace(c.getWorld(), x, y, z, block, renderers[1], bounds, upside ? 5 : 4);
 		if(mt != null)renderBlockFace(c.getWorld(), x, y, z, mt, renderers[1], bounds, upside ? 5 : 4);
 		
-		bounds = AABB.getBoundingBox(facing == 2 ? 2/3d : 1, facing == 0 ? 1/3d : 1, upside ? 0 : 2/3d, upside ? 1/3d : 1, facing == 3 ? 2/3d : 0, facing == 1 ? 1/3d : 1);
+		bounds = AABB.getBoundingBox(facing == 2 ? 2/3d : 0, facing == 0 ? 1/3d : 1, upside ? 0 : 2/3d, upside ? 1/3d : 1, facing == 3 ? 2/3d : 0, facing == 1 ? 1/3d : 1);
 		if(renderLeft)renderBlockFace(c.getWorld(), x, y, z, block, renderers[1], bounds, left);
 		if(renderRight)renderBlockFace(c.getWorld(), x, y, z, block, renderers[1], bounds, right);
 		renderBlockFace(c.getWorld(), x, y, z, block, renderers[1], bounds, facing);

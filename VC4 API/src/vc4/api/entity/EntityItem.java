@@ -8,6 +8,7 @@ import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 import vc4.api.render.DataRenderer;
 import vc4.api.render.ItemRenderer;
+import vc4.api.util.EntityList;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.World;
 
@@ -35,10 +36,32 @@ public class EntityItem extends Entity {
 	
 	@Override
 	public void update() {
+		if(item == null || !item.checkIsNotEmpty()){
+			isDead = true;
+			return;
+		}
+		EntityList entities = world.getEntitiesInBoundsExcluding(bounds.expand(1, 1, 1), this);
+		for(int d = 0; d < entities.size(); ++d){
+			Entity e = entities.get(d);
+			if(e == null) continue;
+			if(e instanceof IEntityPickUpItems){
+				item = ((IEntityPickUpItems)e).pickUpItem(item);
+			} else if(e instanceof EntityItem){
+				EntityItem itm = (EntityItem) e;
+				if(itm.item != null && itm.item.equals(item)){
+					item = itm.item.combineItemStack(item);
+				}
+			}
+			if(item == null || !item.checkIsNotEmpty()){
+				isDead = true;
+				return;
+			}
+		}
+		entities = null;
 		motionX *= 0.6;
 		motionZ *= 0.6;
-		motionY -= 0.1;
-		if(motionY < -0.9) motionY = -0.9;
+		motionY -= world.getFallAcceleration();
+		if(motionY < -world.getFallMaxSpeed()) motionY = -world.getFallMaxSpeed();
 		super.update();
 	}
 	

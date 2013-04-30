@@ -1,13 +1,12 @@
 /**
  * 
  */
-package vc4.api;
+package vc4.api.entity;
 
 import java.util.*;
 
 import vc4.api.block.Block;
 import vc4.api.container.ContainerInventory;
-import vc4.api.entity.EntityItem;
 import vc4.api.graphics.*;
 import vc4.api.input.*;
 import vc4.api.item.ItemStack;
@@ -19,13 +18,13 @@ import vc4.api.world.World;
  * @author paul
  *
  */
-public class BlockInteractor {
+public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 
 	
-	World world;
 	RayTraceResult rays;
 	double coolDown;
 	ContainerInventory inventory = new ContainerInventory();
+	Random rand = new Random();
 	
 	
 	/**
@@ -63,9 +62,8 @@ public class BlockInteractor {
 		return world;
 	}
 
-	public BlockInteractor(World world) {
-		super();
-		this.world = world;
+	public EntityPlayer(World world) {
+		super(world);
 		Random rand = new Random();
 		ArrayList<ItemStack> creativeItems = new ArrayList<>();
 		for(int d = 1; d < 2048; ++d){
@@ -78,26 +76,33 @@ public class BlockInteractor {
 			inventory.setItem(d, creativeItems.get(rand.nextInt(creativeItems.size())).clone().setAmount(1 + rand.nextInt(20)));
 		}
 	}
+	
+	@Override
+	public Vector3d getDefaultSize() {
+		return new Vector3d(0.25, 0.9, 0.25);
+	}
 
 	//delta in ms
 	public void leftMouseDown(double delta){
 		if(rays == null || rays.isEntity) return;
+		ItemStack held = inventory.getSelectedStack();
+		if(held.hasSpecialLeftClickEvent()){
+			held.onLeftClick(this);
+			return;
+		}
 		if(coolDown < 0.1d){
-			int id = world.getBlockId(rays.x, rays.y, rays.z);
+			ItemStack[] drops = world.getBlockType(rays.x, rays.y, rays.z).getItemDrops(world, rays.x, rays.y, rays.z, getInventory().getSelectedStack());
 			world.setBlockId(rays.x, rays.y, rays.z, 0);
 			setCoolDown(200);
-			new EntityItem(getWorld()).setItem(new ItemStack(id)).setPosition(rays.x + 0.5, rays.y + 0.5, rays.z + 0.5).addToWorld();
+			for(ItemStack d : drops){
+				new EntityItem(getWorld()).setItem(d.clone()).setPosition(rays.x + 0.5, rays.y + 0.5, rays.z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
+			}
 		}
 	}
 	
 	public void rightMouseDown(double delta){
-		if(rays == null || rays.isEntity) return;
-		if(coolDown < 0.1d){
-			ItemStack held = inventory.getSelectedStack();
-			if(held == null || !held.checkIsNotEmpty()) return;
-			world.setNearbyBlockIdData(rays.x, rays.y, rays.z, held.getId(), held.getData(), Direction.getDirection(rays.side));
-			setCoolDown(200);
-		}
+		ItemStack held = inventory.getSelectedStack();
+		held.onRightClick(this);
 	}
 	
 	public void decreaseCooldown(double delta){
@@ -110,9 +115,9 @@ public class BlockInteractor {
 	 * @param look
 	 * @param i
 	 */
-	public void rayTrace(Vector3d position, Vector3d look, double dist) {
-		Vector3d end = position.add(look.x * dist, look.y * dist, look.z * dist);
-		rays = world.rayTraceBlocks(position.clone(), end, 200);
+	public void rayTrace(Vector3d look, double dist) {
+		Vector3d end = getEyePos().add(look.x * dist, look.y * dist, look.z * dist);
+		rays = world.rayTraceBlocks(getEyePos(), end, 200);
 	}
 	
 	public void drawCube(){
@@ -182,7 +187,7 @@ public class BlockInteractor {
 		this.inventory = inventory;
 	}
 	
-	public void update(){
+	public void updateInput(){
 		Keyboard keys = Input.getClientKeyboard();
 		if(keys.keyPressed(Key.E)) inventory.toggleOpen();
 		for(int d = 1; d < 10; ++d){
@@ -210,5 +215,10 @@ public class BlockInteractor {
 			if(keys.isKeyDown(Key.CONTROL)) inventory.shiftItemsDown();
 			else inventory.shiftSelectedDown();
 		}
+	}
+
+	@Override
+	public ItemStack pickUpItem(ItemStack in) {
+		return inventory.addItemStack(in);
 	}
 }

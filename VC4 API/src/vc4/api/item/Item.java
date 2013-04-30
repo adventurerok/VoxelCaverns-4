@@ -5,6 +5,7 @@ package vc4.api.item;
 
 import java.awt.Color;
 
+import vc4.api.entity.EntityPlayer;
 import vc4.api.text.Localization;
 
 /**
@@ -95,6 +96,15 @@ public class Item {
 	public boolean overrideLeftClick() {
 		return overrideLeftClick;
 	}
+	
+	public void onLeftClick(EntityPlayer player, ItemStack item){
+		
+	}
+	
+	public void onRightClick(EntityPlayer player, ItemStack item){
+		
+	}
+	
 	/**
 	 * @param current
 	 * @return The items texture index

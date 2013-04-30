@@ -85,6 +85,7 @@ public class BlockRendererDefault implements BlockRenderer {
 	}
 	
 	public void renderBlockFace(double x, double y, double z, IBlockMultitexture block, ItemStack item, Renderer render, AABB bounds, int side){
+		if(!block.multitextureUsed(item.getData(), side)) return;
 		int tex = block.getTextureIndexMultitexture(item, side);
 		Color color = block.getColorMultitexture(item, side);
 		switch (side) {

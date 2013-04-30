@@ -3,8 +3,8 @@
  */
 package vc4.api.client;
 
-import vc4.api.BlockInteractor;
 import vc4.api.GameState;
+import vc4.api.entity.EntityPlayer;
 import vc4.api.font.Font;
 import vc4.api.graphics.texture.Texture;
 import vc4.api.gui.Component;
@@ -62,5 +62,5 @@ public interface ClientGame {
 	public GameState getGameState();
 	public void setGameState(GameState g);
 	public int getCrosshair(String name);
-	public BlockInteractor getBlockInteractor();
+	public EntityPlayer getBlockInteractor();
 }

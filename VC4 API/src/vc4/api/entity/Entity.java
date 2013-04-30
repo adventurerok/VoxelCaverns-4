@@ -271,5 +271,12 @@ public abstract class Entity {
 		
 		
 	}
+
+	public Entity setVelocity(double x, double y, double z) {
+		motionX = x;
+		motionY = y;
+		motionZ = z;
+		return this;
+	}
 	
 }

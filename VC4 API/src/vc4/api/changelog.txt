@@ -137,3 +137,11 @@ VC4-Development-0.0.0-207
 	+ Added stairs renderer
 VC4-Development-0.0.0-208
 	* Fixed block renderer bugs
+VC4-Development-0.0.0-209
+	* Improved item drops
+VC4-Development-0.0.0-210
+	+ Added gravity test
+VC4-Development-0.0.0-211
+	+ Items can now be picked up
+VC4-Development-0.0.0-212
+	+ Reduced memory load
