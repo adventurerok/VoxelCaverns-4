@@ -1,6 +1,5 @@
 package vc4.vanilla.block;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 import vc4.api.block.render.BlockRendererStairs;
@@ -9,11 +8,11 @@ import vc4.api.util.AABB;
 import vc4.api.util.Direction;
 import vc4.api.world.World;
 
-public class BlockPlanksStairs extends BlockPlanks {
+public class BlockBrickStairs extends BlockBrick {
 	
 	int base = 0;
 
-	public BlockPlanksStairs(short uid, int base) {
+	public BlockBrickStairs(short uid, int base) {
 		super(uid);
 		renderer = new BlockRendererStairs();
 		this.base = base;
@@ -52,24 +51,50 @@ public class BlockPlanksStairs extends BlockPlanks {
 	}
 	
 	@Override
-	public Color getColor(ItemStack current, int side) {
-		return backColors[base + ((current.getDamage() & 12) >> 2)];
+	public int getTextureIndex(World world, long x, long y, long z, int side) {
+		switch (base + ((world.getBlockData(x, y, z) & 12) >> 2)) {
+			case 1:
+				return 12;
+			case 2:
+				return 28;
+			case 3:
+				return 44;
+			case 4:
+				return 60;
+			case 5:
+				return 94;
+			case 14:
+				return 182;
+			case 15:
+				return textureIndex + 16;
+		}
+
+		return textureIndex;
 	}
 	
 	@Override
-	public Color getColor(World world, long x, long y, long z, int side) {
-		return backColors[base + ((world.getBlockData(x, y, z) & 12) >> 2)];
+	public int getTextureIndex(ItemStack item, int side) {
+		switch (base + ((item.getDamage() & 12) >> 2)) {
+			case 1:
+				return 12;
+			case 2:
+				return 28;
+			case 3:
+				return 44;
+			case 4:
+				return 60;
+			case 5:
+				return 94;
+			case 14:
+				return 182;
+			case 15:
+				return textureIndex + 16;
+		}
+
+		return textureIndex;
 	}
 	
-	@Override
-	public Color getColorMultitexture(ItemStack item, int side) {
-		return frontColors[base + ((item.getDamage() & 12) >> 2)];
-	}
 	
-	@Override
-	public Color getColorMultitexture(World world, long x, long y, long z, int side) {
-		return frontColors[base + ((world.getBlockData(x, y, z) & 12) >> 2)];
-	}
 	
 
 }

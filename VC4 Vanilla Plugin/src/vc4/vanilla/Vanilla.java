@@ -26,6 +26,8 @@ public class Vanilla extends Plugin {
 	public static Block grass, dirt, logV, logX, logZ, leaf, brick, mossBrick;
 	public static Block sand, glass, ore, hellrock, lava, oreHell, water, obsidian;
 	public static Block planks, planksHalf, bookshelf, planksStairs0, planksStairs4;
+	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
+	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Plant treeOak;
 	
 	/* (non-Javadoc)
@@ -70,6 +72,14 @@ public class Vanilla extends Plugin {
 		bookshelf = new BlockBookshelf(world.getRegisteredBlock("vanilla.bookshelf")).setName("bookshelf");
 		planksStairs0 = new BlockPlanksStairs(world.getRegisteredBlock("vanilla.planks.stairs.0"), 0).setName("planksstairs");
 		planksStairs4 = new BlockPlanksStairs(world.getRegisteredBlock("vanilla.planks.stairs.4"), 4).setName("planksstairs");
+		planksStairs8 = new BlockPlanksStairs(world.getRegisteredBlock("vanilla.planks.stairs.8"), 8).setName("planksstairs");
+		planksStairs12 = new BlockPlanksStairs(world.getRegisteredBlock("vanilla.planks.stairs.12"), 12).setName("planksstairs");
+		brickHalf = new BlockBrickHalf(world.getRegisteredBlock("vanilla.brick.half")).setName("brickhalf");
+		brickStairs0 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.0"), 0).setName("brickstairs");
+		brickStairs4 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.4"), 4).setName("brickstairs");
+		brickStairs8 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.8"), 8).setName("brickstairs");
+		brickStairs12 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.12"), 12).setName("brickstairs");
+		bookshelfEnchanted = new BlockBookshelfEnchanted(world.getRegisteredBlock("vanilla.bookshelf.enchanted")).setName("bookshelfenchanted");
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
 	}

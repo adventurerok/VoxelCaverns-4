@@ -80,7 +80,9 @@ public class DungeonRoomLibrary extends DungeonRoom {
 		for(Adjustment j : shelves){
 			Vector3l pos = j.adjust(door.left, door.dir);
 			for(int ny = 0; ny < 4; ++ny){
-				if(ny < 3) world.setBlockIdData(pos.x, pos.y + ny, pos.z, Vanilla.bookshelf.uid, bookshelfData);
+				if(ny < 3){
+					world.setBlockIdData(pos.x, pos.y + ny, pos.z, dungeon.getRand().nextInt(75) == 0 ? Vanilla.bookshelfEnchanted.uid : Vanilla.bookshelf.uid, bookshelfData);
+				}
 				else world.setBlockIdData(pos.x, pos.y + ny, pos.z, Vanilla.planks.uid, bookshelfData);
 			}
 		}
