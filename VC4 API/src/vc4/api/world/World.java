@@ -53,4 +53,7 @@ public interface World {
 	public EntityList getEntitiesInBoundsExcluding(AABB bounds, Entity exclude);
 	public double getFallAcceleration();
 	public double getFallMaxSpeed();
+	public boolean chunkExists(long x, long y, long z);
+	public boolean chunkExists(ChunkPos pos);
+	public Chunk generateChunk(ChunkPos pos);
 }

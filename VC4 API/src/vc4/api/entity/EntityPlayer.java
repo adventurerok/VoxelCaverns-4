@@ -10,8 +10,10 @@ import vc4.api.container.ContainerInventory;
 import vc4.api.graphics.*;
 import vc4.api.input.*;
 import vc4.api.item.ItemStack;
+import vc4.api.tool.MiningData;
 import vc4.api.util.*;
 import vc4.api.vector.Vector3d;
+import vc4.api.world.ChunkPos;
 import vc4.api.world.World;
 
 /**
@@ -25,43 +27,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	double coolDown;
 	ContainerInventory inventory = new ContainerInventory();
 	Random rand = new Random();
+	double minedAmount = 0;
 	
+	Vector3d spawn;
 	
-	/**
-	 * @return the coolDown
-	 */
-	public double getCoolDown() {
-		return coolDown;
-	}
-
-	/**
-	 * @param coolDown the coolDown to set
-	 */
-	public void setCoolDown(double coolDown) {
-		this.coolDown = coolDown;
-	}
-
-	/**
-	 * @return the rays
-	 */
-	public RayTraceResult getRays() {
-		return rays;
-	}
-
-	/**
-	 * @param rays the rays to set
-	 */
-	public void setRays(RayTraceResult rays) {
-		this.rays = rays;
-	}
-
-	/**
-	 * @return the world
-	 */
-	public World getWorld() {
-		return world;
-	}
-
 	public EntityPlayer(World world) {
 		super(world);
 		Random rand = new Random();
@@ -77,48 +46,11 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		}
 	}
 	
-	@Override
-	public Vector3d getDefaultSize() {
-		return new Vector3d(0.25, 0.9, 0.25);
-	}
-
-	//delta in ms
-	public void leftMouseDown(double delta){
-		if(rays == null || rays.isEntity) return;
-		ItemStack held = inventory.getSelectedStack();
-		if(held.hasSpecialLeftClickEvent()){
-			held.onLeftClick(this);
-			return;
-		}
-		if(coolDown < 0.1d){
-			ItemStack[] drops = world.getBlockType(rays.x, rays.y, rays.z).getItemDrops(world, rays.x, rays.y, rays.z, getInventory().getSelectedStack());
-			world.setBlockId(rays.x, rays.y, rays.z, 0);
-			setCoolDown(200);
-			for(ItemStack d : drops){
-				new EntityItem(getWorld()).setItem(d.clone()).setPosition(rays.x + 0.5, rays.y + 0.5, rays.z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
-			}
-		}
-	}
-	
-	public void rightMouseDown(double delta){
-		ItemStack held = inventory.getSelectedStack();
-		held.onRightClick(this);
-	}
-	
 	public void decreaseCooldown(double delta){
 		coolDown -= delta;
 		if(coolDown < 0) coolDown = 0;
 	}
-
-	/**
-	 * @param position
-	 * @param look
-	 * @param i
-	 */
-	public void rayTrace(Vector3d look, double dist) {
-		Vector3d end = getEyePos().add(look.x * dist, look.y * dist, look.z * dist);
-		rays = world.rayTraceBlocks(getEyePos(), end, 200);
-	}
+	
 	
 	public void drawCube(){
 		if(rays == null || rays.isEntity) return;
@@ -172,12 +104,109 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		gl.end();
 		
 	}
+
+	/**
+	 * @return the coolDown
+	 */
+	public double getCoolDown() {
+		return coolDown;
+	}
+
+	@Override
+	public Vector3d getDefaultSize() {
+		return new Vector3d(0.25, 0.9, 0.25);
+	}
 	
 	/**
 	 * @return the inventory
 	 */
 	public ContainerInventory getInventory() {
 		return inventory;
+	}
+
+	/**
+	 * @return the rays
+	 */
+	public RayTraceResult getRays() {
+		return rays;
+	}
+
+	public Vector3d getSpawn() {
+		return spawn;
+	}
+
+	/**
+	 * @return the world
+	 */
+	public World getWorld() {
+		return world;
+	}
+
+	@Override
+	public void kill() {
+		health = (int) Math.max(100, getMaxHealth() * 0.65);
+		respawn();
+	}
+	
+	//delta in ms
+	public void leftMouseDown(double delta){
+		if(rays == null || rays.isEntity) return;
+		ItemStack held = inventory.getSelectedStack();
+		if(held.hasSpecialLeftClickEvent()){
+			held.onLeftClick(this);
+			return;
+		}
+		if(coolDown < 0.1d){
+			if(minedAmount >= 1){
+				world.getBlockType(rays.x, rays.y, rays.z).onBlockMined(world, rays.x, rays.y, rays.z, held);
+				setCoolDown(200);
+				minedAmount = 0;
+			} else {
+				Block b = world.getBlockType(rays.x, rays.y, rays.z);
+				MiningData d = b.getMiningData(world, rays.x, rays.y, rays.z);
+				minedAmount += d.getMiningDone(held.getTool(), delta);
+			}
+		}
+	}
+
+	@Override
+	public ItemStack pickUpItem(ItemStack in) {
+		return inventory.addItemStack(in);
+	}
+	
+	/**
+	 * @param position
+	 * @param look
+	 * @param i
+	 */
+	public void rayTrace(Vector3d look, double dist) {
+		Vector3d end = getEyePos().add(look.x * dist, look.y * dist, look.z * dist);
+		rays = world.rayTraceBlocks(getEyePos(), end, 200);
+	}
+	
+	public void respawn() {
+		teleport(spawn.clone());
+		ChunkPos pos = ChunkPos.createFromWorldVector(position);
+		if(!world.chunkExists(pos)){
+			world.generateChunk(pos);
+		}
+		ChunkPos lower = pos.add(0, -1, 0);
+		if(!world.chunkExists(lower)){
+			world.generateChunk(lower);
+		}
+		
+	}
+
+	public void rightMouseDown(double delta){
+		ItemStack held = inventory.getSelectedStack();
+		held.onRightClick(this);
+	}
+	
+	/**
+	 * @param coolDown the coolDown to set
+	 */
+	public void setCoolDown(double coolDown) {
+		this.coolDown = coolDown;
 	}
 	
 	/**
@@ -187,6 +216,17 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		this.inventory = inventory;
 	}
 	
+	/**
+	 * @param rays the rays to set
+	 */
+	public void setRays(RayTraceResult rays) {
+		this.rays = rays;
+	}
+	
+	public void setSpawn(Vector3d spawn) {
+		this.spawn = spawn;
+	}
+
 	public void updateInput(){
 		Keyboard keys = Input.getClientKeyboard();
 		if(keys.keyPressed(Key.E)) inventory.toggleOpen();
@@ -216,9 +256,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 			else inventory.shiftSelectedDown();
 		}
 	}
-
+	
 	@Override
-	public ItemStack pickUpItem(ItemStack in) {
-		return inventory.addItemStack(in);
+	public int reduceDamage(DamageSource source, int damage) {
+		if(source == DamageSource.fallDamage) return 0;
+		else return super.reduceDamage(source, damage);
 	}
 }

@@ -7,9 +7,11 @@ import java.awt.Color;
 import java.util.Random;
 
 import vc4.api.block.render.*;
+import vc4.api.entity.EntityItem;
 import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.api.text.Localization;
+import vc4.api.tool.MiningData;
 import vc4.api.util.AABB;
 import vc4.api.util.Direction;
 import vc4.api.util.RayTraceResult;
@@ -36,8 +38,12 @@ public class Block {
 	protected BlockRenderer renderer = main;
 	protected boolean isCube = true;
 	protected boolean isAir = false;
+	
+	protected MiningData mineData = new MiningData();
 
 	private boolean solid = true;
+	
+	protected static Random rand = new Random();
 	
 	protected static Block[] blocksList = new Block[2048];
 	
@@ -138,6 +144,25 @@ public class Block {
 	
 	public ItemStack[] getItemDrops(World world, long x, long y, long z, ItemStack mined){
 		return new ItemStack[]{new ItemStack(uid, world.getBlockData(x, y, z), 1)};
+	}
+	
+	//Block not yet changed to 0
+	public void onBlockMined(World world, long x, long y, long z, ItemStack mined){
+		MiningData data = getMiningData(world, x, y, z);
+		if(data == null){
+			mined.damage();
+		}
+		else if(data.onMine(mined)){
+			ItemStack[] drops = getItemDrops(world, x, y, z, mined);
+			for(ItemStack d : drops){
+				new EntityItem(world).setItem(d.clone()).setPosition(x + 0.5, y + 0.5, z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
+			}
+		}
+		world.setBlockId(x, y, z, 0);
+	}
+	
+	public MiningData getMiningData(World world, long x, long y, long z){
+		return mineData;
 	}
 
 	/**

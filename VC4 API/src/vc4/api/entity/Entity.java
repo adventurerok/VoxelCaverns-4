@@ -51,6 +51,7 @@ public abstract class Entity {
 	
 	public Entity setPosition(double x, double y, double z){
 		position = new Vector3d(x, y, z);
+		oldPos = position;
 		size = getDefaultSize();
 		calculateBounds();
 		return this;
@@ -58,7 +59,12 @@ public abstract class Entity {
 	
 	public void damage(int amount, DamageSource source){
 		health -= amount;
-		if(health < 1) isDead = true;
+		if(health < 1) kill();
+	}
+	
+	public void kill(){
+		health = 0;
+		isDead = true;
 	}
 	
 	public void damage(int amount, DamageSource source, int ticks){
@@ -258,9 +264,13 @@ public abstract class Entity {
 	}
 
 	public void update() {
-		++ticksAlive;
+		getOlder();
 		move(motionX, motionY, motionZ);
 		
+	}
+	
+	public void getOlder(){
+		++ticksAlive;
 	}
 
 	public boolean needsRemoving() {
@@ -277,6 +287,15 @@ public abstract class Entity {
 		motionY = y;
 		motionZ = z;
 		return this;
+	}
+	
+	public void teleport(double x, double y, double z){
+		teleport(new Vector3d(x, y, z));
+	}
+
+	public void teleport(Vector3d pos) {
+		position = pos;
+		calculateBounds();
 	}
 	
 }

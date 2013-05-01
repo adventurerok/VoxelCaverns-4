@@ -145,3 +145,7 @@ VC4-Development-0.0.0-211
 	+ Items can now be picked up
 VC4-Development-0.0.0-212
 	+ Reduced memory load
+VC4-Development-0.0.0-213
+	+ Added movement style enum
+VC4-Development-0.0.0-214
+	+ Added support for tools

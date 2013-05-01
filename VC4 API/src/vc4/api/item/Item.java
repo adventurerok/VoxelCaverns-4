@@ -7,6 +7,7 @@ import java.awt.Color;
 
 import vc4.api.entity.EntityPlayer;
 import vc4.api.text.Localization;
+import vc4.api.tool.Tool;
 
 /**
  * @author paul
@@ -39,6 +40,10 @@ public class Item {
 	
 	public static void addItemBlock(int id){
 		new ItemBlock(id);
+	}
+	
+	public Tool getTool(ItemStack item){
+		return null;
 	}
 	
 	/**

@@ -13,6 +13,7 @@ import vc4.api.block.Block;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.itementity.ItemEntity;
 import vc4.api.itementity.ItemEntityEnchantment;
+import vc4.api.tool.Tool;
 import vc4.api.util.ColorUtils;
 import vc4.api.util.NumberUtils;
 
@@ -100,6 +101,10 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 		}
 
 		return "{c:f}";
+	}
+	
+	public Tool getTool(){
+		return getItem().getTool(this);
 	}
 
 	public String getTooltipText(){
