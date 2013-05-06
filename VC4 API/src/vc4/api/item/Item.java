@@ -122,4 +122,11 @@ public class Item {
 		return Color.white;
 	}
 	
+	public static void clearItems(){
+		itemsList = new Item[32768];
+	}
+	public ItemStack[] getCreativeItems() {
+		return new ItemStack[]{new ItemStack(id, 0, 1)};
+	}
+	
 }

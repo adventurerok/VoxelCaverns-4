@@ -1,7 +1,7 @@
 package vc4.api.entity;
 
+import vc4.api.Resources;
 import vc4.api.block.Block;
-import vc4.api.client.Client;
 import vc4.api.graphics.Graphics;
 import vc4.api.graphics.OpenGL;
 import vc4.api.item.ItemStack;
@@ -83,7 +83,7 @@ public class EntityItem extends Entity {
 			if(item.getAmount() > 60) amount = 4;
 			if(item.getAmount() > 98) amount = 5;
 			Graphics.getClientShaderManager().bindShader("texture");
-			Client.getGame().getTexture("blocks").bind();
+			Resources.getSheetTexture("blocks").bind();
 			for(int d = 0; d < amount; ++d){
 				gl.rotate((world.getTime() * 4) % 360, 0, 1, 0);
 				render.render();

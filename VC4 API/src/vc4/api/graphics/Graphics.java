@@ -4,7 +4,8 @@
 package vc4.api.graphics;
 
 import vc4.api.graphics.shader.ShaderManager;
-import vc4.api.graphics.texture.TextureLoader;
+import vc4.api.graphics.texture.AnimatedTextureLoader;
+import vc4.api.graphics.texture.SheetTextureLoader;
 
 /**
  * @author paul
@@ -13,16 +14,24 @@ import vc4.api.graphics.texture.TextureLoader;
 public class Graphics {
 
 	private static OpenGL _gl;
-	private static TextureLoader _texLoader;
+	private static AnimatedTextureLoader _animatedLoader;
+	private static SheetTextureLoader _sheetLoader;
 	private static ShaderManager _sm;
 	
-	public static void setImplementations(OpenGL gl, TextureLoader texLoader){
+	public static void setImplementation(OpenGL gl){
 		_gl = gl;
-		_texLoader = texLoader;
 	}
 	
 	public static void setShaderManager(ShaderManager sm){
 		_sm = sm;
+	}
+	
+	public static void setAnimatedLoader(AnimatedTextureLoader animatedLoader) {
+		_animatedLoader = animatedLoader;
+	}
+	
+	public static void setSheetLoader(SheetTextureLoader sheetLoader) {
+		_sheetLoader = sheetLoader;
 	}
 	
 	/**
@@ -34,12 +43,12 @@ public class Graphics {
 	}
 	
 	
-	/**
-	 * Finds the Client's Texture Loader implementation
-	 * @return the clients texture loader implementation, or null if server
-	 */
-	public static TextureLoader getClientTextureLoader(){
-		return _texLoader;
+	public static SheetTextureLoader getSheetLoader() {
+		return _sheetLoader;
+	}
+	
+	public static AnimatedTextureLoader getAnimatedLoader() {
+		return _animatedLoader;
 	}
 	
 	/**

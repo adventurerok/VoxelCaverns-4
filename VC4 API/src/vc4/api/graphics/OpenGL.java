@@ -58,6 +58,7 @@ public interface OpenGL {
 	public void bindTexture(GLTexture type, int texture);
 	public void texImage2D(GLTexture target, int level, GLInternalFormat internalFormat, int width, int height, boolean border, GLFormat format, GLType type, ByteBuffer data);
 	public void texImage3D(GLTexture target, int level, GLInternalFormat internalFormat, int width, int height, int depth, boolean border, GLFormat format, GLType type, ByteBuffer data);
+	public void texSubImage3D(GLTexture target, int level, int xOffset, int yOffset,  int zOffset, int width, int height, int depth, GLFormat format, GLType type, ByteBuffer data);
 	public void texParameterMagFilter(GLTexture target, GLTextureFilter filter);
 	public void texParameterMinFilter(GLTexture target, GLTextureFilter filter, GLTextureFilter mipmap);
 	public void texParameterWrapS(GLTexture target, GLTexWrap wrap);
@@ -95,6 +96,9 @@ public interface OpenGL {
 	 * @param color
 	 */
 	public void color(Color color);
+	public void texCoord(double s, double t);
+	public void vertex(double x, double y, double z);
+	public void texCoord(double s, double t, double r);
 	
 
 }

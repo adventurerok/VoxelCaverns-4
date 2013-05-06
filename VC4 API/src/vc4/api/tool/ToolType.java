@@ -7,9 +7,9 @@ public class ToolType {
 	
 	private static int nextId = 0;
 	
-	public static final ToolType pickaxe = new ToolType("pickaxe");
-	public static final ToolType axe = new ToolType("axe");
-	public static final ToolType spade = new ToolType("spade");
+	public static final ToolType pickaxe = new ToolType("pick");
+	public static final ToolType axe = new ToolType("hatchet");
+	public static final ToolType spade = new ToolType("shovel");
 	public static final ToolType hoe = new ToolType("hoe");
 	
 	public ToolType(String name) {

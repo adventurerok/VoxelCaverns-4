@@ -9,10 +9,10 @@ import vc4.api.graphics.GLTexture;
  * @author paul
  *
  */
-public interface Texture {
+public interface SheetTexture {
 
 	public int getTexture(int frame);
-	public int getTextureCurrentFrame();
+	public int getTexture();
 	public int getCurrentFrame();
 	public int getWidth();
 	public int getHeight();

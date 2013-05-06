@@ -5,8 +5,6 @@ package vc4.api.client;
 
 import vc4.api.GameState;
 import vc4.api.entity.EntityPlayer;
-import vc4.api.font.Font;
-import vc4.api.graphics.texture.Texture;
 import vc4.api.gui.Component;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.MouseSet;
@@ -32,9 +30,6 @@ public interface ClientGame {
 	 * @return The game window
 	 */
 	public ClientWindow getWindow();
-	
-	public Texture getTexture(String name);
-	public Font getFont(String name);
 	
 	public void addComponent(Component c);
 	public MouseSet getMouseSet();

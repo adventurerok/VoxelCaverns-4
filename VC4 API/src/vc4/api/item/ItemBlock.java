@@ -32,6 +32,11 @@ public class ItemBlock extends Item {
 	public int getTextureIndex(ItemStack current) {
 		return Block.byId(current.getId()).getTextureIndex(current, 0);
 	}
+	
+	@Override
+	public ItemStack[] getCreativeItems() {
+		return Block.byId(id).getCreativeItems();
+	}
 
 	/*
 	 * (non-Javadoc)

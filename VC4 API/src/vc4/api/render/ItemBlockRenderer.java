@@ -2,9 +2,9 @@ package vc4.api.render;
 
 import java.awt.Color;
 
+import vc4.api.Resources;
 import vc4.api.block.Block;
 import vc4.api.block.IBlockMultitexture;
-import vc4.api.client.Client;
 import vc4.api.graphics.*;
 import vc4.api.item.ItemStack;
 import vc4.api.util.AABB;
@@ -34,7 +34,7 @@ public class ItemBlockRenderer {
 	
 	protected static void renderBlock2d(){
 		int texInd = Block.byId(current.getId()).getTextureIndex(current, 0);
-		Client.getGame().getTexture("blocks").bind();
+		Resources.getSheetTexture("blocks").bind();
 		
 		gl.begin(GLPrimative.QUADS);
 		Color blockColor = Block.byId(current.getId()).getColor(current, 0);
@@ -87,7 +87,7 @@ public class ItemBlockRenderer {
 		gl.translate(position.x + 12, position.y + 4, 0);
 		gl.rotate(60,1,0,0);
 		gl.rotate(45,0,0,1);
-		Client.getGame().getTexture("blocks").bind();
+		Resources.getSheetTexture("blocks").bind();
 		renderBlock3dTop();
 		renderBlock3dLeft();
 		renderBlock3dRight();

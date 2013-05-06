@@ -47,6 +47,7 @@ public interface World {
 	public AABB[] getAABBsInBounds(AABB bounds, Entity exclude);
 	public long getTime();
 	public short getRegisteredBlock(String name);
+	public int getRegisteredItem(String name);
 	public CompoundTag getGeneratorTag();
 	public List<EntityPlayer> getPlayers();
 	public EntityList getEntitiesInBounds(AABB bounds);

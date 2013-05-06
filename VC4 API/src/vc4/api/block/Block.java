@@ -61,6 +61,11 @@ public class Block {
 		Item.addItemBlock(uid);
 	}
 	
+	public Block setMineData(MiningData mineData) {
+		this.mineData = mineData;
+		return this;
+	}
+	
 	public Block(int uid, int texture, Material m){
 		this((short)uid, texture, m);
 	}

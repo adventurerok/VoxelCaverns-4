@@ -149,3 +149,17 @@ VC4-Development-0.0.0-213
 	+ Added movement style enum
 VC4-Development-0.0.0-214
 	+ Added support for tools
+VC4-Development-0.0.0-215
+	+ Added cracks
+VC4-Development-0.0.0-216
+	* Fixed cracks bugs
+VC4-Development-0.0.1-218
+	+ New Resource Loader
+	+ Added Animated Texture Loader (ATL, old one known as STL)
+	+ Plugins can have their own resources
+VC4-Development-0.0.1-219
+	* Fixed meta character bug
+VC4-Development-0.0.1-220
+	* Language files are now resources
+VC4-Development-0.0.1-221
+	* Fixed "failed to load texture" bug

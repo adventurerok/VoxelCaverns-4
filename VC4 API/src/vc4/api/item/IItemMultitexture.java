@@ -11,6 +11,6 @@ import java.awt.Color;
  */
 public interface IItemMultitexture {
 
-	public int getTextureIndexMultitexture(ItemStack item);
-	public Color getColorMultitexture(ItemStack item);
+	public int getMultitextureTextureIndex(ItemStack item);
+	public Color getMultitextureColor(ItemStack item);
 }

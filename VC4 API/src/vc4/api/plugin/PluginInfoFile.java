@@ -3,6 +3,8 @@
  */
 package vc4.api.plugin;
 
+import java.net.URL;
+
 import vc4.api.yaml.YamlMap;
 
 /**
@@ -18,4 +20,7 @@ public interface PluginInfoFile {
 	public String getDescription();
 	public String getMainClass();
 	public YamlMap getYamlDocument();
+	public String getResourcePath();
+	public URL getResourceURL();
+	public abstract URL getJarUrl();
 }

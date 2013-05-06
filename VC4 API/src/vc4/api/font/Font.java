@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.*;
 
 import vc4.api.graphics.*;
-import vc4.api.graphics.texture.Texture;
+import vc4.api.graphics.texture.SheetTexture;
 import vc4.api.logging.Logger;
 
 /**
@@ -22,7 +22,7 @@ public class Font {
 	private HashMap<Integer, ArrayList<Gylph>> advs = new HashMap<Integer, ArrayList<Gylph>>();
 	private int size, lineHeight, base;
 	private boolean bold;
-	private Texture texture;
+	private SheetTexture texture;
 	private int aLine, bLine;
 	
 	private int minY = 1024, maxY = 0;
@@ -77,13 +77,13 @@ public class Font {
 		loadFont(Font.class.getClassLoader().getResourceAsStream(path + ".fnt"));
 		if(!isBold){
 			try {
-				texture = Graphics.getClientTextureLoader().loadTexture(path);
+				texture = Graphics.getSheetLoader().loadTexture(path);
 				OpenGL gl = Graphics.getClientOpenGL();
-				for(int d = 0; d < texture.getNumberOfFrames(); ++d){
-					gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture.getTexture(d));
-					gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.LINEAR, GLTextureFilter.LINEAR);
-					gl.generateMipmap(GLTexture.TEX_2D_ARRAY);
-				}
+//				for(int d = 0; d < texture.getNumberOfFrames(); ++d){
+//					gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture.getTexture(d));
+//					gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.LINEAR, GLTextureFilter.LINEAR);
+//					gl.generateMipmap(GLTexture.TEX_2D_ARRAY);
+//				}
 				gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 			} catch (IOException e) {
 				Logger.getLogger(Font.class).warning("Failed to load font texture", e);
@@ -158,10 +158,7 @@ public class Font {
 		return lineHeight;
 	}
 	
-	/**
-	 * @return the texture
-	 */
-	public Texture getTexture() {
+	public SheetTexture getTexture() {
 		return texture;
 	}
 	

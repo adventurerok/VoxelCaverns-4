@@ -6,13 +6,18 @@ package vc4.api.entity;
 import java.util.*;
 
 import vc4.api.block.Block;
+import vc4.api.block.render.BlockRendererDefault;
 import vc4.api.container.ContainerInventory;
 import vc4.api.graphics.*;
 import vc4.api.input.*;
+import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
+import vc4.api.render.CracksRenderer;
 import vc4.api.tool.MiningData;
-import vc4.api.util.*;
+import vc4.api.util.AABB;
+import vc4.api.util.RayTraceResult;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3l;
 import vc4.api.world.ChunkPos;
 import vc4.api.world.World;
 
@@ -30,14 +35,15 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	double minedAmount = 0;
 	
 	Vector3d spawn;
+	Vector3l oRP;
 	
 	public EntityPlayer(World world) {
 		super(world);
 		Random rand = new Random();
 		ArrayList<ItemStack> creativeItems = new ArrayList<>();
-		for(int d = 1; d < 2048; ++d){
-			if(Block.byId(d) == null) continue;
-			ItemStack[] b = Block.byId(d).getCreativeItems();
+		for(int d = 2048; d < 4096; ++d){
+			if(Item.byId(d) == null) continue;
+			ItemStack[] b = Item.byId(d).getCreativeItems();
 			if(b == null) continue;
 			creativeItems.addAll(Arrays.asList(b));
 		}
@@ -102,7 +108,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		gl.vertex(maxX + rays.x + s, maxY + rays.y + s, maxZ + rays.z + s);
 		gl.vertex(minX + rays.x - s, maxY + rays.y + s, maxZ + rays.z + s);
 		gl.end();
-		
+		if(minedAmount > 0 && oRP != null && world.getBlockType(oRP.x, oRP.y, oRP.z).getRenderer() instanceof BlockRendererDefault){
+			AABB bnds = world.getBlockType(oRP.x, oRP.y, oRP.z).getRenderSize(world, oRP.x, oRP.y, oRP.z);
+			CracksRenderer.renderCracks(oRP.x, oRP.y, oRP.z, bnds, minedAmount);
+		}
 	}
 
 	/**
@@ -148,9 +157,22 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		respawn();
 	}
 	
+	public double getMinedAmount() {
+		return minedAmount;
+	}
+	
 	//delta in ms
 	public void leftMouseDown(double delta){
-		if(rays == null || rays.isEntity) return;
+		if(rays == null || rays.isEntity){
+			return;
+		}
+		if(oRP != null && (oRP.x != rays.x || oRP.y != rays.y || oRP.z != rays.z)){
+			minedAmount = 0;
+			oRP = new Vector3l(rays.x, rays.y, rays.z);
+		} else if(oRP == null){
+			oRP = new Vector3l(rays.x, rays.y, rays.z);
+		}
+		
 		ItemStack held = inventory.getSelectedStack();
 		if(held.hasSpecialLeftClickEvent()){
 			held.onLeftClick(this);

@@ -2,8 +2,8 @@ package vc4.api.render;
 
 import java.awt.Color;
 
+import vc4.api.Resources;
 import vc4.api.block.Block;
-import vc4.api.client.Client;
 import vc4.api.font.FontRenderer;
 import vc4.api.graphics.*;
 import vc4.api.item.*;
@@ -65,7 +65,7 @@ public class ItemRenderer {
 	private static void renderItem(){
 		int tex = current.getItem().getTextureIndex(current);
 
-		Client.getGame().getTexture("items").bind();
+		Resources.getAnimatedTexture("items").bind();
 
 		gl.begin(GLPrimative.QUADS);
 
@@ -99,10 +99,10 @@ public class ItemRenderer {
 		gl.end();
 
 		if(current.getItem() instanceof IItemMultitexture){
-			int tex2 = ((IItemMultitexture)current.getItem()).getTextureIndexMultitexture(current);
+			int tex2 = ((IItemMultitexture)current.getItem()).getMultitextureTextureIndex(current);
 			gl.begin(GLPrimative.QUADS);
 
-			Color color2 = ((IItemMultitexture)current.getItem()).getColorMultitexture(current);
+			Color color2 = ((IItemMultitexture)current.getItem()).getMultitextureColor(current);
 			gl.color(color2.getRed() / 255F, color2.getGreen() / 255F, color2.getBlue() / 255F);
 			if(big){
 				gl.texCoord(0, 0, tex2);
@@ -187,7 +187,7 @@ public class ItemRenderer {
 		gl.vertex(position.x + width, position.y + 17);
 		gl.end();
 		gl.lineWidth(1);
-		Graphics.getClientShaderManager().bindShader("font");
+		Graphics.getClientShaderManager().bindShader("texture");
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class ItemRenderer {
 	
 	public static void renderItem3D(ItemStack stack, float x, float y, float z){
 		if(stack.isBlock() && Block.byId(stack.getId()).render3d(stack.getData())){
-			Client.getGame().getTexture("blocks").bind();
+			Resources.getSheetTexture("blocks").bind();
 			DataRenderer d = new DataRenderer();
 			Block.byId(stack.getId()).getRenderer().renderBlock(stack, x - 0.5f, y - 0.5f, z - 0.5f, d);
 			d.compile();
@@ -210,14 +210,14 @@ public class ItemRenderer {
 			return;
 		}
 		Item s = stack.getItem();
-		if(stack.isBlock()) Client.getGame().getTexture("blocks").bind();
-		else Client.getGame().getTexture("items").bind();
+		if(stack.isBlock()) Resources.getSheetTexture("blocks").bind();
+		else Resources.getAnimatedTexture("items").bind();
 		int tex = s.getTextureIndex(stack);
         gl.color(s.getColor(stack));
         renderItemWithThickness(x, y, z, tex);
         if(s instanceof IItemMultitexture){
-        	tex = ((IItemMultitexture)s).getTextureIndexMultitexture(stack);
-            gl.color(((IItemMultitexture)s).getColorMultitexture(stack));
+        	tex = ((IItemMultitexture)s).getMultitextureTextureIndex(stack);
+            gl.color(((IItemMultitexture)s).getMultitextureColor(stack));
             renderItemWithThickness(x, y, z, tex);
         }
 	}

@@ -3,14 +3,12 @@
  */
 package vc4.api.text;
 
-import java.io.InputStream;
-import java.util.*;
-import java.util.Map.Entry;
+import java.io.*;
+import java.net.URL;
+import java.util.HashMap;
 
-import org.yaml.snakeyaml.Yaml;
-
+import vc4.api.Resources;
 import vc4.api.logging.Logger;
-import vc4.api.yaml.ThreadYaml;
 
 /**
  * @author paul
@@ -21,36 +19,47 @@ public class Localization {
 	private static HashMap<String, String> loaded = new HashMap<String, String>();
 	
 	public static void loadLocalization(String name){
-		String path = "vc4/impl/lang/" + name + ".yml";
-		Logger.getLogger("VC4").info("Loading language: " + name);
-		loadLocalization(Localization.class.getClassLoader().getResourceAsStream(path));
+		loaded.clear();
+		for(URL url : Resources.getResourceURLs()){
+			String build = url.toString();
+			if(!build.endsWith("/")) build = build + "/";
+			build = build + "lang/" + name + ".lang";
+			try{
+				URL n = new URL(build);
+				loadLocalization(n.openStream());
+			} catch(IOException e){
+				
+			}
+		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static void loadLocalization(InputStream input){
+	public static void loadLocalization(InputStream input) throws IOException{
 		if(input == null){
 			Logger.getLogger(Localization.class).warning("Input is null");
 			return;
 		}
-		Yaml yaml = ThreadYaml.getYamlForThread();
-		Object o = yaml.load(input);
-		LinkedHashMap<String, ?> map = (LinkedHashMap<String, ?>) o;
-		loadLocalizations("", map);
+		BufferedReader read = new BufferedReader(new InputStreamReader(input));
+		loadLines(read);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static void loadLocalizations(String prefix, LinkedHashMap<String, ?> map){
-		for(Entry<String, ?> e : map.entrySet()){
-			String key = prefix + e.getKey();
-			Object v = e.getValue();
-			if(v instanceof LinkedHashMap){
-				loadLocalizations(key + ".", (LinkedHashMap<String, ?>) v);
-			} else{
-				if(e.getKey().equals("pval")) key = prefix.substring(0, prefix.length() - 1);
-				String value = v.toString();
-				loaded.put(key, value);
+	public static void loadLines(BufferedReader r) throws IOException{
+		String currentLine;
+		while((currentLine = r.readLine()) != null){
+			currentLine = currentLine.trim();
+			if(currentLine.equals("")) continue;
+			if(currentLine.startsWith("#")) continue;
+			String[] parts = currentLine.split("=");
+			try{
+				addLocalization(parts[0].toLowerCase(), parts[1]);
+			}
+			catch(Exception exc){
+				exc.printStackTrace();
 			}
 		}
+	}
+	
+	public static void addLocalization(String name, String value){
+		loaded.put(name, value.replace("\\n", "\n").replace("\\t", "\t"));
 	}
 	
 	public static String getLocalization(String text){
