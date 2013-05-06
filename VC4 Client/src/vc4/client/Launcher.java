@@ -19,10 +19,12 @@ public class Launcher implements ClientLauncher{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		new ClientResources();
 		System.setProperty("org.lwjgl.librarypath", new File(DirectoryLocator.getPath() + "/bin/natives/").getAbsolutePath());
 		GameLoader.load(new ChatBoxHandler(), new FileOutputHandler());
 		new ClientGL();
-		new ClientTextureLoader();
+		new ClientAnimatedTextureLoader();
+		new ClientSheetTextureLoader();
 		new ClientShaderManager();
 		new ClientKeyboard();
 		new ClientMouse();

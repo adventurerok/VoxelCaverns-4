@@ -1,6 +1,12 @@
-texture:
+sheettexture:
     - "blocks"
     - "crosshair"
+    - "cracks"
+    - "items"
+    
+animatedtexture:
+    - "blocks"
+    - "items"
     
 shader:
     - "world"

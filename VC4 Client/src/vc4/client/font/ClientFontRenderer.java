@@ -4,9 +4,11 @@
 package vc4.client.font;
 
 import java.awt.Color;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import vc4.api.Resources;
 import vc4.api.client.ClientWindow;
 import vc4.api.font.*;
 import vc4.api.graphics.*;
@@ -66,7 +68,7 @@ public class ClientFontRenderer extends FontRenderer {
 	private float alpha = 1F;
 	
 	public ClientFontRenderer(String font, float defaultSize){
-		this.font = ClientWindow.getClientWindow().getGame().getFont(font);
+		this.font = Resources.getFont(font);
 		size = defaultSize;
 		if(gl == null) gl = Graphics.getClientOpenGL();
 		if(sm == null) sm = Graphics.getClientShaderManager();
@@ -375,7 +377,7 @@ public class ClientFontRenderer extends FontRenderer {
 	}
 	
 	private void renderVertexes(){
-		gl.bindTexture(GLTexture.TEX_2D_ARRAY, font.getTexture().getTextureCurrentFrame());
+		gl.bindTexture(GLTexture.TEX_2D_ARRAY, font.getTexture().getTexture());
 		sm.bindShader("font");
 		gl.begin(GLPrimative.QUADS);
 		Vertex v = null;

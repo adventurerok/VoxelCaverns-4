@@ -18,15 +18,17 @@ import org.lwjgl.BufferUtils;
 
 import vc4.api.graphics.*;
 import vc4.api.graphics.texture.*;
+import vc4.api.logging.Logger;
+import vc4.impl.plugin.PluginLoader;
 
 
 /**
  * @author paul
  * 
  */
-public class ClientTextureLoader implements TextureLoader{
+public class ClientSheetTextureLoader implements SheetTextureLoader{
 
-	private static HashMap<String, HashMap<String, LoadableTexture>> registeredTextures = new HashMap<String, HashMap<String, LoadableTexture>>();
+	private static HashMap<String, LoadableTexture> registeredTextures;
 	private static OpenGL gl;
 
 	private static ArrayList<URL> getImageUrlsInPackage(String packageName) throws IOException {
@@ -74,6 +76,19 @@ public class ClientTextureLoader implements TextureLoader{
 		return names;
 	}
 	
+	private static ArrayList<URL> getImageURLs(){
+		ArrayList<URL> result = new ArrayList<>();
+		for(URL url : PluginLoader.getResourceURLs()){
+			try {
+				URL mod = new URL(url.toString() + "/sheettexture/");
+				result.addAll(getImageUrlsElsewhere(mod));
+			} catch (IOException e) {
+				Logger.getLogger(ClientAnimatedTextureLoader.class).warning("Exception occured", e);
+			}
+		}
+		return result;
+	}
+	
 	private static ArrayList<URL> getImageUrlsElsewhere(URL baseURL) throws IOException {
 		URL packageURL;
 		ArrayList<URL> names = new ArrayList<URL>();
@@ -108,7 +123,7 @@ public class ClientTextureLoader implements TextureLoader{
 		} else {
 			File folder = new File(URLDecoder.decode(packageURL.getFile(), "UTF-8"));
 	        File[] contenuti = folder.listFiles();
-	        //if(contenuti == null) return names;
+	        if(contenuti == null) return names;
 	        String entryName;
 	        for(File actual: contenuti){
 	            entryName = actual.getName();
@@ -122,9 +137,9 @@ public class ClientTextureLoader implements TextureLoader{
 	/**
 	 * 
 	 */
-	public ClientTextureLoader() {
+	public ClientSheetTextureLoader() {
 		gl = Graphics.getClientOpenGL();
-		Graphics.setImplementations(gl, this);
+		Graphics.setSheetLoader(this);
 	}
 
 	/*
@@ -133,23 +148,26 @@ public class ClientTextureLoader implements TextureLoader{
 	 * @see vc4.api.graphics.texture.TextureLoader#loadTexture(java.lang.String)
 	 */
 	@Override
-	public Texture loadTexture(String pathInJar) throws IOException {
-		pathInJar = pathInJar.replace(".", "/");
-		String pack = pathInJar.substring(0, pathInJar.lastIndexOf("/"));
-		HashMap<String, LoadableTexture> t = registeredTextures.get(pack);
-		if(t == null){
-			registeredTextures.put(pack, getLoadableTextures(getImageUrlsInPackage(pack)));
-			t = registeredTextures.get(pack);
+	public SheetTexture loadTexture(String path) throws IOException {
+		path = path.replace(".", "/");
+		if(path.contains("/")){
+			String pack = path.substring(0, path.lastIndexOf("/"));
+			HashMap<String, LoadableTexture> loadPoss = getLoadableTextures(getImageUrlsInPackage(pack));
+			String name = path.substring(path.lastIndexOf("/") + 1);
+			LoadableTexture l = loadPoss.get(name);
+			return l.load();
+		} else {
+			if(registeredTextures == null){
+				registeredTextures = getLoadableTextures(getImageURLs());
+			}
+			String name = path.substring(path.lastIndexOf("/") + 1);
+			LoadableTexture l = registeredTextures.get(name);
+			return l.load();
 		}
-		String name = pathInJar.substring(pathInJar.lastIndexOf("/") + 1);
-		LoadableTexture l = t.get(name);
-		
-		
-		return l.load();
 	}
 
-	private static ArrayList<LoadableImage> getLoadableImages(ArrayList<URL> urls) throws IOException {
-		ArrayList<LoadableImage> result = new ArrayList<ClientTextureLoader.LoadableImage>();
+	private static ArrayList<LoadableSheetImage> getLoadableImages(ArrayList<URL> urls) throws IOException {
+		ArrayList<LoadableSheetImage> result = new ArrayList<LoadableSheetImage>();
 		for (URL l : urls) {
 			String url = l.toString();
 			String end;
@@ -168,7 +186,7 @@ public class ClientTextureLoader implements TextureLoader{
 				for (int d = 1; d < segments.length - 3; ++d) {
 					name = name + "_" + segments[d];
 				}
-				result.add(new LoadableImage(l, numOfSprites, arrayNumber, frameNumber, name));
+				result.add(new LoadableSheetImage(l, numOfSprites, arrayNumber, frameNumber, name));
 			} catch (Exception e) {
 				continue;
 			}
@@ -178,8 +196,8 @@ public class ClientTextureLoader implements TextureLoader{
 
 	private static HashMap<String, LoadableTexture> getLoadableTextures(ArrayList<URL> urls) throws IOException {
 		HashMap<String, LoadableTexture> result = new HashMap<String, LoadableTexture>();
-		ArrayList<LoadableImage> imgs = getLoadableImages(urls);
-		for (LoadableImage l : imgs) {
+		ArrayList<LoadableSheetImage> imgs = getLoadableImages(urls);
+		for (LoadableSheetImage l : imgs) {
 			LoadableTexture t = result.get(l.texName);
 			if (t == null){
 				t = new LoadableTexture(1);
@@ -195,7 +213,7 @@ public class ClientTextureLoader implements TextureLoader{
 		return result;
 	}
 
-	private static class LoadableImage implements Comparable<LoadableImage>{
+	private static class LoadableSheetImage implements Comparable<LoadableSheetImage>{
 
 		URL url;
 		int numSprites;
@@ -203,7 +221,7 @@ public class ClientTextureLoader implements TextureLoader{
 		int frameNumber;
 		String texName;
 
-		public LoadableImage(URL url, int numSprites, int arrayIndex, int frameNumber, String name) {
+		public LoadableSheetImage(URL url, int numSprites, int arrayIndex, int frameNumber, String name) {
 			super();
 			this.url = url;
 			this.numSprites = numSprites;
@@ -220,7 +238,7 @@ public class ClientTextureLoader implements TextureLoader{
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
 		 */
 		@Override
-		public int compareTo(LoadableImage o) {
+		public int compareTo(LoadableSheetImage o) {
 			if(o.frameNumber < frameNumber) return 1;
 			else if(o.frameNumber > frameNumber) return -1;
 			if(o.arrayIndex < arrayIndex) return 1;
@@ -231,17 +249,17 @@ public class ClientTextureLoader implements TextureLoader{
 
 	protected static class LoadableTexture {
 
-		LoadableImage[] files;
+		LoadableSheetImage[] files;
 		int arraySize;
 		int numFrames;
 		String name;
 		int size;
 
 		public LoadableTexture(int initialSize) {
-			files = new LoadableImage[initialSize];
+			files = new LoadableSheetImage[initialSize];
 		}
 
-		public void addFile(LoadableImage file) {
+		public void addFile(LoadableSheetImage file) {
 			if (file.arrayIndex >= arraySize) {
 				arraySize = file.arrayIndex + 1;
 			}
@@ -253,8 +271,8 @@ public class ClientTextureLoader implements TextureLoader{
 			++size;
 		}
 		
-		public Texture load() throws IOException{
-			return loadWithModded(new ArrayList<TextureAddition>());
+		public SheetTexture load() throws IOException{
+			return loadWithModded(new ArrayList<SheetTextureAddition>());
 		}
 
 		/**
@@ -262,10 +280,10 @@ public class ClientTextureLoader implements TextureLoader{
 		 * @return The loaded texture
 		 * @throws IOException 
 		 */
-		public Texture loadWithModded(List<TextureAddition> extra) throws IOException {
+		public SheetTexture loadWithModded(List<SheetTextureAddition> extra) throws IOException {
 			for(int d = 0; d < extra.size(); ++d){
-				TextureAddition t = extra.get(d);
-				addFile(new LoadableImage(t.url, t.sprites, arraySize, 0, name));
+				SheetTextureAddition t = extra.get(d);
+				addFile(new LoadableSheetImage(t.url, t.sprites, arraySize, 0, name));
 			}
 			Arrays.sort(files);
 			int sprites = files[0].numSprites;
@@ -332,7 +350,7 @@ public class ClientTextureLoader implements TextureLoader{
 		
 	}
 	
-	protected static class TextureImpl implements Texture{
+	protected static class TextureImpl implements SheetTexture{
 
 		int numFrames;
 		int frames[];
@@ -354,7 +372,7 @@ public class ClientTextureLoader implements TextureLoader{
 		 * @see vc4.api.graphics.texture.Texture#getTextureCurrentFrame()
 		 */
 		@Override
-		public int getTextureCurrentFrame() {
+		public int getTexture() {
 			return frames[getCurrentFrame()];
 		}
 
@@ -457,30 +475,30 @@ public class ClientTextureLoader implements TextureLoader{
 		 */
 		@Override
 		public void bind() {
-			Graphics.getClientOpenGL().bindTexture(getType(), getTextureCurrentFrame());
+			Graphics.getClientOpenGL().bindTexture(getType(), getTexture());
 		}
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see game.vc3d.texture.TextureLoader#loadTexture(java.net.URL)
-	 */
-	@Override
-	public Texture loadTexture(URL url) throws IOException {
-		String urlDir = url.toString();
-		urlDir = urlDir.substring(0, urlDir.lastIndexOf("/"));
-		HashMap<String, LoadableTexture> t = registeredTextures.get(urlDir);
-		if(t == null){
-			registeredTextures.put(urlDir, getLoadableTextures(getImageUrlsElsewhere(new URL(urlDir))));
-			t = registeredTextures.get(urlDir);
-		}
-		String name = url.toString();
-		name = name.substring(name.lastIndexOf("/") + 1);
-		LoadableTexture l = t.get(name);
-		
-		
-		return l.load();
-	}
+//	/* (non-Javadoc)
+//	 * @see game.vc3d.texture.TextureLoader#loadTexture(java.net.URL)
+//	 */
+//	@Override
+//	public SheetTexture loadTexture(URL url) throws IOException {
+//		String urlDir = url.toString();
+//		urlDir = urlDir.substring(0, urlDir.lastIndexOf("/"));
+//		HashMap<String, LoadableTexture> t = registeredTextures.get(urlDir);
+//		if(t == null){
+//			registeredTextures.put(urlDir, getLoadableTextures(getImageUrlsElsewhere(new URL(urlDir))));
+//			t = registeredTextures.get(urlDir);
+//		}
+//		String name = url.toString();
+//		name = name.substring(name.lastIndexOf("/") + 1);
+//		LoadableTexture l = t.get(name);
+//		
+//		
+//		return l.load();
+//	}
 
 	/**
 	 * @param string
@@ -488,16 +506,13 @@ public class ClientTextureLoader implements TextureLoader{
 	 * @return The loaded texture
 	 * @throws IOException 
 	 */
-	public Texture loadTextureWithModded(String pathInJar, List<TextureAddition> extra) throws IOException {
-		pathInJar = pathInJar.replace(".", "/");
-		String pack = pathInJar.substring(0, pathInJar.lastIndexOf("/"));
-		HashMap<String, LoadableTexture> t = registeredTextures.get(pack);
-		if(t == null){
-			registeredTextures.put(pack, getLoadableTextures(getImageUrlsInPackage(pack)));
-			t = registeredTextures.get(pack);
+	public SheetTexture loadTextureWithModded(String path, List<SheetTextureAddition> extra) throws IOException {
+		path = path.replace(".", "/");
+		if(registeredTextures == null){
+			registeredTextures = getLoadableTextures(getImageURLs());
 		}
-		String name = pathInJar.substring(pathInJar.lastIndexOf("/") + 1);
-		LoadableTexture l = t.get(name);
+		String name = path.substring(path.lastIndexOf("/") + 1);
+		LoadableTexture l = registeredTextures.get(name);
 		
 		
 		return l.loadWithModded(extra);

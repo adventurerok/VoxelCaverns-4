@@ -3,13 +3,15 @@
  */
 package vc4.client.camera;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import vc4.api.client.Client;
 import vc4.api.entity.EntityPlayer;
+import vc4.api.entity.MovementStyle;
+import vc4.api.input.Input;
+import vc4.api.input.Key;
 import vc4.api.math.MathUtils;
 import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3l;
@@ -18,7 +20,8 @@ import vc4.api.vector.Vector3l;
 public class PlayerController extends FPCamera {
 
 	double mouseSensitivity = 0.2f;
-	double movementSpeed = 1; // move 10 units per second
+	double timeSinceForward = 1000;
+	double walkTime = 0;
 
 	EntityPlayer player;
 
@@ -79,14 +82,14 @@ public class PlayerController extends FPCamera {
 		translate();
 
 	}
-	
+
 	@Override
 	public void handleInput(double delta) {
 
 		double dx = 0.0f;
 		double dy = 0.0f;
-		
-		//MouseSet mice = Client.getGame().getMouseSet();
+
+		// MouseSet mice = Client.getGame().getMouseSet();
 
 		boolean paused = Client.getGame().isPaused();
 		if (Display.isActive() && !paused) {
@@ -103,34 +106,40 @@ public class PlayerController extends FPCamera {
 			Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
 		}
 		Mouse.setGrabbed(!paused);
+		
+		vc4.api.input.Keyboard keys = Input.getClientKeyboard();
 
-		double divisor = 100;
-		if(Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH)) delta *= 5;
+		double divisor = 50;
+		if (keys.isKeyDown(Key.BACKSLASH)) delta *= 5;
+
+		double forward = 0;
+		double sideways = 0;
 
 		// when passing in the distance to move
 		// we times the movementSpeed with dt this is a time scale
 		// so if its a slow frame u move more then a fast frame
 		// so on a slow computer you move just as fast as on a fast computer
-		if (Keyboard.isKeyDown(Keyboard.KEY_W))// move forward
-		{
-			walkForward((movementSpeed * (delta / divisor)));
+		if (keys.isKeyDown(Key.W)){
+			forward += delta / divisor;
+			walkTime += delta;
+			if(timeSinceForward < 200){
+				player.setMovement(MovementStyle.SPRINT);
+			}
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_S))// move backwards
-		{
-			walkBackwards((movementSpeed * (delta / divisor)));
+		else if(keys.keyReleased(Key.W)){
+			if(walkTime < 200) timeSinceForward = 0;
+			walkTime = 0;
+			if (!keys.isKeyDown(Key.LSHIFT)) player.setMovement(MovementStyle.WALK);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_A))// strafe left
-		{
-			strafeLeft((movementSpeed * (delta / divisor)));
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_D))// strafe right
-		{
-			strafeRight((movementSpeed * (delta / divisor)));
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			player.jump();
-		}
-		player.setSneaking(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT));
+		
+		if (keys.isKeyDown(Key.S)) forward -= delta / divisor;
+		if (keys.isKeyDown(Key.A)) sideways -= delta / divisor;
+		if (keys.isKeyDown(Key.D)) sideways += delta / divisor;
+		if (keys.isKeyDown(Key.SPACE)) player.jump();
+		if (keys.isKeyDown(Key.LSHIFT)) player.setMovement(MovementStyle.SNEAK);
+		else if(keys.keyReleased(Key.LSHIFT)) player.setMovement(MovementStyle.WALK);
+		player.walk(forward, sideways);
+		if(timeSinceForward < 1000) timeSinceForward += delta;
 	}
 
 	@Override
@@ -140,9 +149,9 @@ public class PlayerController extends FPCamera {
 		// roatate the yaw around the Y axis
 		GL11.glRotated(player.yaw, 0.0f, 1.0f, 0.0f);
 	}
-	
+
 	@Override
-	public void translate(){
+	public void translate() {
 		Vector3d pos = player.getEyePos();
 		GL11.glTranslated(-pos.x, -pos.y, -pos.z);
 	}
@@ -154,7 +163,7 @@ public class PlayerController extends FPCamera {
 		double f6 = Math.sin(player.pitch * 0.01745329F);
 		return new Vector3d(f2 * f4, f6, f * f4);
 	}
-	
+
 	@Override
 	public Vector3l getWorldPosition() {
 		return new Vector3l(MathUtils.round(player.position.x), MathUtils.round(player.position.y), MathUtils.round(player.position.z));

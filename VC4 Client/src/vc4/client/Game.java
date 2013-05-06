@@ -5,33 +5,31 @@ package vc4.client;
 
 import java.awt.Rectangle;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
 import vc4.api.GameState;
+import vc4.api.Resources;
 import vc4.api.client.*;
 import vc4.api.entity.EntityPlayer;
-import vc4.api.font.Font;
-import vc4.api.font.FontRenderer;
+import vc4.api.entity.MovementStyle;
 import vc4.api.graphics.*;
-import vc4.api.graphics.shader.ShaderManager;
-import vc4.api.graphics.texture.Texture;
-import vc4.api.graphics.texture.TextureLoader;
 import vc4.api.gui.Component;
 import vc4.api.gui.Gui;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.*;
 import vc4.api.logging.Logger;
+import vc4.api.text.Localization;
 import vc4.api.util.DirectoryLocator;
 import vc4.api.util.Setting;
+import vc4.api.vector.Vector3d;
 import vc4.api.world.ChunkPos;
 import vc4.api.yaml.ThreadYaml;
 import vc4.client.camera.PlayerController;
-import vc4.client.gui.*;
-import vc4.impl.gui.GuiTypeMenu;
+import vc4.client.gui.ChatBox;
+import vc4.client.gui.IngameGui;
 import vc4.impl.plugin.PluginLoader;
 import vc4.impl.world.ImplWorld;
 
@@ -44,18 +42,18 @@ public class Game extends Component implements ClientGame {
 	private static OpenGL gl;
 	
 	private Window window;
-	private HashMap<String, Texture> textures = new HashMap<String, Texture>();
-	private LinkedHashMap<String, Font> fonts = new LinkedHashMap<String, Font>();
 	private LinkedHashMap<String, ColorScheme> colorSchemes = new LinkedHashMap<String, ColorScheme>();
 	private LinkedHashMap<String, Integer> crosshairs = new LinkedHashMap<>();
 	private LinkedHashMap<String, Setting<Object>> settings = new LinkedHashMap<String, Setting<Object>>();
-	private HashMap<String, Long> menus = new HashMap<String, Long>();
-	private HashMap<String, Gui> guis = new HashMap<String, Gui>();
-	private ClientLoadingScreen loadingScreen;
+	HashMap<String, Long> menus = new HashMap<String, Long>();
+	HashMap<String, Gui> guis = new HashMap<String, Gui>();
+	ClientLoadingScreen loadingScreen;
 	private GameState gameState = GameState.MENU;
 	private EntityPlayer player;
 	private boolean paused = false;
 	private IngameGui ingameGui;
+	private ClientResources resources;
+	private long previousTenTicks = 0;
 
 	/**
 	 * @return the paused
@@ -107,6 +105,11 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void draw() {
+		long tenTicks = System.nanoTime() / 100000000;
+		if(tenTicks != previousTenTicks){
+			resources.animatedTextureTick((int)tenTicks);
+			previousTenTicks = tenTicks;
+		}
 		if (gameState == GameState.SINGLEPLAYER) {
 			getWindow().enterRenderMode(RenderType.GAME);
 			camera.rotate();
@@ -119,7 +122,7 @@ public class Game extends Component implements ClientGame {
 		getWindow().enterRenderMode(RenderType.GUI);
 		if(gameState == GameState.SINGLEPLAYER && !isPaused()){
 			Graphics.getClientShaderManager().bindShader("texture");
-			getTexture("crosshair").bind();
+			Resources.getSheetTexture("crosshair").bind();
 			int w = getWindow().getWidth() / 2 - 64;
 			int h = getWindow().getHeight() / 2 - 64;
 			int tex = getCrosshair(getCurrentCrosshair().getString());
@@ -212,11 +215,11 @@ public class Game extends Component implements ClientGame {
 	@Override
 	public void load() {
 		setBounds(getBounds());
+		PluginLoader.loadAndEnablePlugins();
 		loadResources();
 		loadSettings();
 		currentMenu = menus.get("main");
 		add(chatBox = new ChatBox());
-		PluginLoader.loadAndEnablePlugins();
 		world = new ImplWorld("World");
 		try {
 			world.save();
@@ -224,7 +227,8 @@ public class Game extends Component implements ClientGame {
 			Logger.getLogger(Game.class).warning("Exception occured", e);
 		}
 		player = new EntityPlayer(world);
-		player.setPosition(0, 20, 0);
+		player.setPosition(0, 30, 0);
+		player.setSpawn(new Vector3d(0, 30, 0));
 		world.generateChunk(ChunkPos.createFromWorldVector(player.position));
 		player.addToWorld();
 		world.addPlayer(player);
@@ -265,15 +269,7 @@ public class Game extends Component implements ClientGame {
 		return window;
 	}
 
-	@Override
-	public Texture getTexture(String name) {
-		return textures.get(name);
-	}
-
-	@Override
-	public Font getFont(String name) {
-		return fonts.get(name);
-	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -409,86 +405,24 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public String[] getFontNames() {
-		List<String> list = new ArrayList<String>(fonts.keySet());
+		List<String> list = new ArrayList<String>(resources.getFonts().keySet());
 		String[] result = new String[list.size()];
 		for (int i = 0; i < list.size(); ++i) {
 			result[i] = list.get(i);
 		}
 		return result;
 	}
+	
+	
 
-	@SuppressWarnings("unchecked")
 	private void loadResources() {
-		InputStream resourceList = getClass().getClassLoader().getResourceAsStream("vc4/resources/resources.yml");
-		Yaml yaml = ThreadYaml.getYamlForThread();
-		LinkedHashMap<String, Object> doc = (LinkedHashMap<String, Object>) yaml.load(resourceList);
-		ArrayList<String> lTextures = new ArrayList<String>();
-		ArrayList<String> lShaders = new ArrayList<String>();
-		ArrayList<String> lFonts = new ArrayList<String>();
-		ArrayList<Entry<String, ArrayList<String>>> lGuis = new ArrayList<Entry<String, ArrayList<String>>>();
-		for (Entry<String, Object> e : doc.entrySet()) {
-			if (e.getKey().equals("gui") && e.getValue() instanceof LinkedHashMap) {
-				for (Entry<String, ?> f : ((LinkedHashMap<String, ?>) e.getValue()).entrySet()) {
-					lGuis.add((Entry<String, ArrayList<String>>) f);
-				}
-			}
-			if (!(e.getValue() instanceof ArrayList)) continue;
-			ArrayList<String> values = new ArrayList<String>();
-			for (Object o : ((ArrayList<?>) e.getValue())) {
-				values.add(o.toString());
-			}
-			if (e.getKey().equals("texture")) lTextures = values;
-			else if (e.getKey().equals("shader")) lShaders = values;
-			else if (e.getKey().equals("font")) lFonts = values;
+		try {
+			resources = (ClientResources) Resources.getRes();
+			resources.load();
+		} catch (IOException e) {
+			Logger.getLogger(Game.class).warning("Exception occured", e);
 		}
-
-		TextureLoader l = Graphics.getClientTextureLoader();
-		for (String s : lTextures) {
-			try {
-				Logger.getLogger("VC4").fine("Loading texture: " + s);
-				Texture t = l.loadTexture("vc4/resources/texture/" + s);
-				t.setSmooth(false);
-				textures.put(s, t);
-			} catch (Exception e1) {
-				Logger.getLogger(getClass()).warning("Failed to load texture: \"" + s + "\"", e1);
-			}
-		}
-		ShaderManager m = Graphics.getClientShaderManager();
-		for (String s : lShaders) {
-			Logger.getLogger("VC4").fine("Loading shader: " + s);
-			URL base = getClass().getClassLoader().getResource("vc4/resources/shader/" + s + ".vert");
-			try {
-				base = new URL(base.toString().substring(0, base.toString().lastIndexOf(".")));
-				m.createShader(base, s);
-			} catch (Exception e1) {
-				Logger.getLogger(Game.class).warning("Failed to load shader: \"" + s + "\"", e1);
-			}
-
-		}
-		for (String s : lFonts) {
-			fonts.put(s, new Font(s));
-		}
-		loadingScreen = new ClientLoadingScreen(FontRenderer.createFontRenderer("unispaced_14", 14), getWindow());
-		loadingScreen.setLoadingTitle("Loading Gui:");
-		new ClientComponentUtils();
-		Gui.registerGuiType("menu", GuiTypeMenu.class);
-		for (Entry<String, ArrayList<String>> e : lGuis) {
-			ArrayList<Gui> nGuis = new ArrayList<Gui>();
-			for (String s : e.getValue()) {
-				InputStream i = Game.class.getClassLoader().getResourceAsStream("vc4/resources/gui/" + e.getKey() + "/" + s + ".yml");
-				Gui g = new Gui((LinkedHashMap<String, ?>) yaml.load(i));
-				loadingScreen.setLoadingInfo(e.getKey());
-				nGuis.add(g);
-			}
-			boolean isMenu = e.getKey().equals("menu");
-			for (Gui g : nGuis) {
-				guis.put(g.getName(), g);
-				if (isMenu) {
-					menus.put(g.getName(), ((GuiTypeMenu) g.getType()).getState());
-				}
-				add(g);
-			}
-		}
+		Localization.loadLocalization("en_GB");
 	}
 
 	private void loadSettings() {
@@ -692,6 +626,11 @@ public class Game extends Component implements ClientGame {
 	@Override
 	public EntityPlayer getBlockInteractor() {
 		return player;
+	}
+	
+	public float getFieldOfVision(){
+		if(player != null && player.getMovement() == MovementStyle.SPRINT) return 80;
+		else return 70;
 	}
 
 }

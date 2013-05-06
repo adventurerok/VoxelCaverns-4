@@ -24,7 +24,7 @@ public class ClientGL implements OpenGL {
 	 * 
 	 */
 	public ClientGL() {
-		Graphics.setImplementations(this, Graphics.getClientTextureLoader());
+		Graphics.setImplementation(this);
 	}
 	
 	/*
@@ -671,6 +671,30 @@ public class ClientGL implements OpenGL {
 	@Override
 	public void color(Color color) {
 		color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+	}
+
+	@Override
+	public void texCoord(double s, double t) {
+		GL11.glTexCoord2d(s, t);
+		
+	}
+
+	@Override
+	public void vertex(double x, double y, double z) {
+		GL11.glVertex3d(x, y, z);
+		
+	}
+
+	@Override
+	public void texCoord(double s, double t, double r) {
+		GL11.glTexCoord3d(s, t, r);
+		
+	}
+
+	@Override
+	public void texSubImage3D(GLTexture target, int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, GLFormat format, GLType type, ByteBuffer data) {
+		GL12.glTexSubImage3D(target.getGlInt(), level, xOffset, yOffset, zOffset, width, height, depth, format.getGlInt(), type.getGlInt(), data);
+		
 	}
 
 }
