@@ -1,0 +1,7 @@
+name: Vanilla
+version: 0.0.1
+intversion: 1
+developers: [adventurerok]
+main: vc4.vanilla.Vanilla
+description: Vanilla plugin for VC4-Engine
+resources: vc4.vanilla.resources #resource override yay

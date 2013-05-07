@@ -10,6 +10,8 @@ import vc4.api.block.BlockMultitexture;
 import vc4.api.block.Material;
 import vc4.api.block.Plant;
 import vc4.api.item.ItemStack;
+import vc4.api.tool.MiningData;
+import vc4.api.tool.ToolType;
 import vc4.api.util.Direction;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
@@ -29,7 +31,7 @@ public class BlockGrass extends BlockMultitexture {
 	 */
 	public BlockGrass(short uid, Material m) {
 		super(uid, 0, m);
-		
+		mineData = new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 25).setTimes(10, 0.02, 0.25);
 	}
 	
 	

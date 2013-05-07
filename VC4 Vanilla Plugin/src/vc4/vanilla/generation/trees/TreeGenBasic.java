@@ -17,11 +17,11 @@ public class TreeGenBasic extends TreeGen {
 	@Override
 	public boolean generate(long x, long y, long z, int tt) {
 		byte data = (byte) (tt % 100);
-		if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.treeOak)){
+		if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTreeOak)){
 			++y;
-			if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.treeOak)){
+			if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTreeOak)){
 				++y;
-				if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.treeOak)) return false;
+				if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTreeOak)) return false;
 			}
 		}
 		if(!world.getBlockType(x, y, z).replacableBy(world, x, y, z, Vanilla.logV.uid, data)) return false;
