@@ -157,6 +157,7 @@ public class ImplChunk implements Chunk {
 			s.empty();
 		}
 		stores = null;
+		world = null;
 	}
 
 	/**

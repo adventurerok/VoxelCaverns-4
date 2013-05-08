@@ -1,0 +1,16 @@
+# Language file for VC4
+# now using "*.lang" again because YML format was unfriendly
+
+block.stone.desc=A material of many uses
+block.stone.name=Stone
+
+language.name=English (GB)
+language.select=Select your language
+language.title=Language
+
+menu.back=Back
+menu.play=Play
+menu.quit=Quit
+menu.settings=Settings
+menu.settings.colorscheme=Colourscheme={0}
+menu.settings.crosshair=Crosshair={0}

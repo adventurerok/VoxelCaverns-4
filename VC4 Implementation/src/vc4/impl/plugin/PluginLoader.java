@@ -6,8 +6,7 @@ package vc4.impl.plugin;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
@@ -25,6 +24,23 @@ import vc4.api.world.World;
 public class PluginLoader {
 
 	private static HashMap<String, Plugin> loadedPlugins = new HashMap<>();
+	private static ArrayList<URL> resourceURLs = new ArrayList<>();
+	private static ArrayList<URL> externalResources = new ArrayList<>();
+	
+	static{
+		try {
+			//resourceURLs.add(new URL("jar:file:" + DirectoryLocator.getPath() + "/bin/VC4-Resources.zip!/"));
+			String s = PluginLoader.class.getClassLoader().getResource("vc4/resources/resources.yml").toString();
+			s = s.substring(0, s.lastIndexOf("/"));
+			resourceURLs.add(new URL(s));
+			s = PluginLoader.class.getClassLoader().getResource("vc4/resources/lang/en_GB.lang").toString();
+			for(int d = 0; d < 2; ++d) s = s.substring(0, s.lastIndexOf("/"));
+			resourceURLs.add(new URL(s));
+			externalResources.add(new File(DirectoryLocator.getPath() + "/resources/").toURI().toURL());
+		} catch (MalformedURLException e) {
+			Logger.getLogger(PluginLoader.class).warning("Exception occured", e);
+		}
+	}
 	
 	public static String getPluginDirectory(){
 		return DirectoryLocator.getPath() + "/plugins/";
@@ -38,6 +54,10 @@ public class PluginLoader {
 	public static void disableAndUnloadPlugins(){
 		disablePlugins();
 		unloadPlugins();
+	}
+	
+	public static ArrayList<URL> getResourceURLs() {
+		return resourceURLs;
 	}
 	
 	@SuppressWarnings("resource")
@@ -60,6 +80,11 @@ public class PluginLoader {
 		ArrayList<LoadingPlugin> loading = new ArrayList<>();
 		for(int d = 0; d < jars.length; ++d){
 			String pName = jars[d].getName();
+			try {
+				externalResources.add(new File(DirectoryLocator.getPath() + "/plugins/" + pName + "/").toURI().toURL());
+			} catch (MalformedURLException e1) {
+				Logger.getLogger(PluginLoader.class).warning("Exception occured", e1);
+			}
 			pName = pName.substring(0, pName.length() - 4);
 			try{
 				JarFile jar = new JarFile(jars[d]);
@@ -68,7 +93,8 @@ public class PluginLoader {
 					logger.warning("Failed to find plugin desc for " + pName);
 					continue;
 				}
-				PluginInfoFile infoFile = new ImplPluginInfoFile(jar.getInputStream(desc));
+				PluginInfoFile infoFile = new ImplPluginInfoFile(jar.getInputStream(desc), new URL("jar:file:" + jars[d].getPath().replace('\\', '/') + "!/"));
+				if(infoFile.getResourcePath() != null) resourceURLs.add(infoFile.getResourceURL());
 				pName = infoFile.getName();
 				JarEntry mcEntry = jar.getJarEntry(infoFile.getMainClass().replace(".", "/") + ".class");
 				if(mcEntry == null){

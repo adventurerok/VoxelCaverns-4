@@ -3,42 +3,25 @@
  */
 package vc4.impl.world;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jnbt.CompoundTag;
-import org.jnbt.ListTag;
-import org.jnbt.NBTOutputStream;
+import org.jnbt.*;
 
+import vc4.api.Resources;
 import vc4.api.block.Block;
-import vc4.api.client.Client;
 import vc4.api.entity.Entity;
+import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.GeneratorList;
-import vc4.api.graphics.GLCompareFunc;
-import vc4.api.graphics.GLFace;
-import vc4.api.graphics.GLFlag;
-import vc4.api.graphics.GLPrimative;
-import vc4.api.graphics.GLTexture;
-import vc4.api.graphics.Graphics;
-import vc4.api.graphics.OpenGL;
+import vc4.api.graphics.*;
+import vc4.api.item.Item;
 import vc4.api.math.MathUtils;
 import vc4.api.render.DataRenderer;
-import vc4.api.util.AABB;
-import vc4.api.util.Direction;
-import vc4.api.util.DirectoryLocator;
-import vc4.api.util.EntityList;
-import vc4.api.util.RayTraceResult;
+import vc4.api.util.*;
 import vc4.api.vector.Vector3d;
-import vc4.api.world.ChunkPos;
-import vc4.api.world.ComparatorClosestChunkPos;
-import vc4.api.world.World;
+import vc4.api.world.*;
 import vc4.impl.plugin.PluginLoader;
 
 /**
@@ -75,15 +58,18 @@ public class ImplWorld implements World {
 	private static BlockStore fake = new BlockStore(0, 0, 0);
 	public ConcurrentHashMap<ChunkPos, ImplChunk> chunks = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<String, Integer> registeredBlocks = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Integer> registeredItems = new ConcurrentHashMap<>();
 	private int nextBlockId = 2;
+	private int nextItemId = 2050;
 	private long seed = new Random().nextLong();
 	private long time;
-	private String generatorName = "flat";
+	private String generatorName = "overworld";
 	private String name = "World";
 	private String saveName;
 	private CompoundTag generatorTag = new CompoundTag("gen");
 
 	private double tickTime;
+	private List<EntityPlayer> players = new ArrayList<>();
 
 	private static double WORLD_SECOND = 50;
 
@@ -102,6 +88,7 @@ public class ImplWorld implements World {
 		toLoad.add(start);
 	}
 
+	@Override
 	public boolean chunkExists(long x, long y, long z) {
 		return getChunk(x, y, z) != null;
 	}
@@ -129,9 +116,18 @@ public class ImplWorld implements World {
 	}
 
 	public void onLoad() {
+		Item.clearItems();
 		Block.clearBlocks();
 		PluginLoader.onWorldLoad(this);
 		GeneratorList.onWorldLoad(this);
+	}
+	
+	public void addPlayer(EntityPlayer player){
+		players.add(player);
+	}
+	
+	public void removePlayer(EntityPlayer player){
+		players.remove(player);
 	}
 
 	public void draw(Vector3d pos) {
@@ -143,7 +139,7 @@ public class ImplWorld implements World {
 		gl.enable(GLFlag.ALPHA_TEST);
 		gl.alphaFunc(GLCompareFunc.GREATER, .3f);
 		gl.depthFunc(GLCompareFunc.LEQUAL);
-		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Client.getGame().getTexture("blocks").getTextureCurrentFrame());
+		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Resources.getAnimatedTexture("blocks").getTexture());
 		gl.enableVertexArrribArray(0);
 		gl.enableVertexArrribArray(2);
 		gl.enableVertexArrribArray(3);
@@ -199,7 +195,7 @@ public class ImplWorld implements World {
 		gl.enable(GLFlag.ALPHA_TEST);
 		gl.alphaFunc(GLCompareFunc.GREATER, .3f);
 		gl.depthFunc(GLCompareFunc.LEQUAL);
-		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Client.getGame().getTexture("blocks").getTextureCurrentFrame());
+		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Resources.getAnimatedTexture("blocks").getTexture());
 		for (DataRenderer d : fluidRender) {
 			d.render();
 		}
@@ -249,6 +245,7 @@ public class ImplWorld implements World {
 		}
 	}
 
+	@Override
 	public ImplChunk generateChunk(ChunkPos pos) {
 		ImplChunk chunk = new ImplChunk(this, pos);
 		chunk.setData(GeneratorList.getWorldGenerator(generatorName).generate(this, pos.x, pos.y, pos.z));
@@ -361,7 +358,8 @@ public class ImplWorld implements World {
 		return getChunk(ChunkPos.create(x, y, z));
 	}
 
-	private EntityList getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
+	@Override
+	public EntityList getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
 		if (bounds == null) return null;
 
 		EntityList list = new EntityList();
@@ -379,7 +377,37 @@ public class ImplWorld implements World {
 					// long start = System.nanoTime();
 					for (int dofor = 0; dofor < c.entitys.size(); ++dofor) {
 						Entity e = c.entitys.get(dofor);
-						if (e != null && bounds.intersectsWith(e.bounds) && e != exclude) list.add(e);
+						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	@Override
+	public EntityList getEntitiesInBounds(AABB bounds) {
+		if (bounds == null) return null;
+
+		EntityList list = new EntityList();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		for (long x = minX; x <= maxX; ++x) {
+			for (long y = minY; y <= maxY; ++y) {
+				for (long z = minZ; z <= maxZ; ++z) {
+					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (int dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						Entity e = c.entitys.get(dofor);
+						if (e != null && bounds.intersectsWith(e.bounds)) list.add(e);
 					}
 					// long time = System.nanoTime() - start;
 					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
@@ -445,12 +473,7 @@ public class ImplWorld implements World {
 				toRemove.add(c);
 			}
 		}
-		for (ImplChunk c : toRemove) {
-			chunks.values().remove(c);
-		}
-		for (ImplChunk c : toRemove) {
-			chunks.values().remove(c);
-		}
+		chunks.values().removeAll(toRemove);
 		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
 		ChunkPos me = ChunkPos.createFromWorldVector(loc);
 		for (int x = -7; x < 8; ++x) {
@@ -798,6 +821,16 @@ public class ImplWorld implements World {
 		}
 		return i.shortValue();
 	}
+	
+	@Override
+	public int getRegisteredItem(String name) {
+		Integer i = registeredItems.get(name);
+		if (i == null) {
+			i = nextItemId++;
+			registeredItems.put(name, i);
+		}
+		return i.intValue();
+	}
 
 	public String getName() {
 		return name;
@@ -810,6 +843,26 @@ public class ImplWorld implements World {
 
 	public String getSaveName() {
 		return saveName;
+	}
+
+	@Override
+	public List<EntityPlayer> getPlayers() {
+		return players;
+	}
+
+	@Override
+	public double getFallAcceleration() {
+		return 0.2;
+	}
+
+	@Override
+	public double getFallMaxSpeed() {
+		return 2.5;
+	}
+
+	@Override
+	public boolean chunkExists(ChunkPos pos) {
+		return chunks.get(pos) != null;
 	}
 
 }

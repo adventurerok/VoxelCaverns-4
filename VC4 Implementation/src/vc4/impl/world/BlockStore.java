@@ -19,7 +19,7 @@ public class BlockStore {
 	public short[] blocks;
 	public byte[] data;
 	
-	public DataRenderer oldData[];
+//	public DataRenderer oldData[];
 	public DataRenderer currentData[] = new DataRenderer[3];
 	int compileState = 0;
 	
@@ -61,7 +61,7 @@ public class BlockStore {
 			blocks[arrayCalc(x, y, z)] = id;
 		} else {
 			int ac = arrayCalc(x, y, z);
-			if(blocks[ac] != id){
+			if(blocks != null && blocks[ac] != id){
 				blocks[ac] = id;
 			}
 		}
@@ -75,7 +75,7 @@ public class BlockStore {
 			data[arrayCalc(x, y, z)] = d;
 		} else {
 			int ac = arrayCalc(x, y, z);
-			if(data[ac] != d){
+			if(data != null && data[ac] != d){
 				data[ac] = d;
 			}
 		}
@@ -88,7 +88,7 @@ public class BlockStore {
 			blocks[arrayCalc(x, y, z)] = id;
 		} else {
 			int ac = arrayCalc(x, y, z);
-			if(blocks[ac] != id){
+			if(blocks != null && blocks[ac] != id){
 				blocks[ac] = id;
 			}
 		}
@@ -97,7 +97,7 @@ public class BlockStore {
 			data[arrayCalc(x, y, z)] = d;
 		} else {
 			int ac = arrayCalc(x, y, z);
-			if(data[ac] != d){
+			if(data != null && data[ac] != d){
 				data[ac] = d;
 			}
 		}
@@ -109,18 +109,25 @@ public class BlockStore {
 		currentData[0] = new DataRenderer();
 		currentData[1] = new DataRenderer();
 		currentData[2] = new DataRenderer();
+		boolean allAir = true;
+		boolean noData = true;
 		for(int x = 0; x < 16; ++x){
 			for(int y = 0; y < 16; ++y){
 				for(int z = 0; z < 16; ++z){
 					int i = getBlockId(x, y, z);
 					if(i < 1) continue;
-					
-					Block.byId(i).getRenderer().renderBlock(c, x | xMod, y | yMod, z | zMod, Block.byId(i), getBlockData(x, y, z), currentData);
+					allAir = false;
+					byte data = getBlockData(x, y, z);
+					if(data != 0) noData = false;
+					Block.byId(i).getRenderer().renderBlock(c, x | xMod, y | yMod, z | zMod, Block.byId(i), data, currentData);
 				}
 			}
 			
 		}
-		
+		if(allAir){
+			blocks = null;
+			data = null;
+		} else if(noData) data = null;
 		
 		compileState = 2;
 	}
@@ -134,7 +141,7 @@ public class BlockStore {
 	public void clearRenderers(){
 		oldCompile = compileState;
 		compileState = 0;
-		oldData = currentData;
+		//oldData = currentData;
 	}
 
 	/**
@@ -143,16 +150,17 @@ public class BlockStore {
 	public void empty() {
 		blocks = null;
 		data = null;
-		if(oldData != null){
-			for(DataRenderer r : oldData){
-				if(r != null) r.destroy();
-			}
-		}
+//		if(oldData != null){
+//			for(DataRenderer r : oldData){
+//				if(r != null) r.destroy();
+//			}
+//		}
 		if(currentData != null){
 			for(DataRenderer r : currentData){
 				if(r != null) r.destroy();
 			}
 		}
+//		oldData = null;
 	}
 
 }
