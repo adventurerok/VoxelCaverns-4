@@ -1,12 +1,10 @@
 sheettexture:
-    - "blocks"
     - "crosshair"
-    - "cracks"
-    - "items"
     
 animatedtexture:
     - "blocks"
     - "items"
+    - "cracks"
     
 shader:
     - "world"
@@ -14,6 +12,7 @@ shader:
     - "fontback"
     - "shapes"
     - "texture"
+    - "texture3d"
     
 font:
     - "unispaced_24"
