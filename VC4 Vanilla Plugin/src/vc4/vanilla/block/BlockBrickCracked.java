@@ -17,19 +17,19 @@ import vc4.vanilla.Vanilla;
  * @author paul
  *
  */
-public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
+public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 
 	/**
 	 * @param uid
 	 */
-	public BlockBrickMoss(short uid) {
+	public BlockBrickCracked(short uid) {
 		super(uid);
 		
 	}
 	
 	@Override
 	protected String getModifiedName(ItemStack item) {
-		return "mossy" + super.getModifiedName(item);
+		return "cracked" + super.getModifiedName(item);
 	}
 
 	/* (non-Javadoc)
@@ -53,7 +53,7 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 	 */
 	@Override
 	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
-		return BlockTexture.moss;
+		return BlockTexture.cracks;
 	}
 
 	/* (non-Javadoc)

@@ -14,6 +14,7 @@ import vc4.api.tool.MiningData;
 import vc4.api.tool.ToolType;
 import vc4.api.util.Direction;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
 import vc4.vanilla.Vanilla;
 
 /**
@@ -30,8 +31,8 @@ public class BlockGrass extends BlockMultitexture {
 	 * @param m
 	 */
 	public BlockGrass(short uid, Material m) {
-		super(uid, 0, m);
-		mineData = new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 25).setTimes(10, 0.02, 0.25);
+		super(uid, BlockTexture.grassTop, m);
+		mineData = new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 25).setTimes(0.5, 0.02, 0.25);
 	}
 	
 	
@@ -58,11 +59,11 @@ public class BlockGrass extends BlockMultitexture {
 	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
 		byte data = world.getBlockData(x, y, z);
 		if(side < 4 && world.getNearbyBlockId(x, y - 1, z, Direction.getDirection(side)) != uid){
-			if(data == 0)return 2;
+			if(data == 0)return BlockTexture.grassSide;
 			else return 178 + data;
 		}
 		else{
-			if(data == 0) return 0;
+			if(data == 0) return BlockTexture.grassTop;
 			else return 175 + data;
 		}
 	}
@@ -88,7 +89,7 @@ public class BlockGrass extends BlockMultitexture {
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
 		if(side < 4){
-			if(item.getDamage() == 0)return 2;
+			if(item.getDamage() == 0)return BlockTexture.grassSide;
 			else return 178 + item.getDamage();
 		}
 		else return 175 + item.getDamage();
@@ -99,8 +100,8 @@ public class BlockGrass extends BlockMultitexture {
 	 */
 	@Override
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
-		if((side == 4 || (side < 4 && world.getNearbyBlockId(x, y - 1, z, Direction.getDirection(side)) == uid)) && world.getBlockData(x, y, z) == 0) return 13;
-		else return 1;
+		if((side == 4 || (side < 4 && world.getNearbyBlockId(x, y - 1, z, Direction.getDirection(side)) == uid)) && world.getBlockData(x, y, z) == 0) return BlockTexture.grassTop;
+		else return BlockTexture.dirt;
 	}
 	
 	/* (non-Javadoc)
@@ -108,8 +109,8 @@ public class BlockGrass extends BlockMultitexture {
 	 */
 	@Override
 	public int getTextureIndex(ItemStack item, int side) {
-		if(side == 4 && item.getDamage() == 0) return 13;
-		else return 1;
+		if(side == 4 && item.getDamage() == 0) return BlockTexture.grassTop;
+		else return BlockTexture.dirt;
 	}
 	
 	/* (non-Javadoc)

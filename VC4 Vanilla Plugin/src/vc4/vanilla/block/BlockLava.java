@@ -8,6 +8,7 @@ import java.awt.Color;
 import vc4.api.block.BlockFluid;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
 
 /**
  * @author paul
@@ -21,7 +22,7 @@ public class BlockLava extends BlockFluid {
 	 * @param material
 	 */
 	public BlockLava(int uid) {
-		super(uid, 9, "lava");
+		super(uid, BlockTexture.fluid, "lava");
 		
 	}
 	

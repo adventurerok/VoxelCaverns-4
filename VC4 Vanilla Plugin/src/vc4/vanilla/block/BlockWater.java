@@ -8,6 +8,7 @@ import java.awt.Color;
 import vc4.api.block.BlockFluid;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
 
 /**
  * @author paul
@@ -23,7 +24,7 @@ public class BlockWater extends BlockFluid {
 	 * @param material
 	 */
 	public BlockWater(int uid) {
-		super(uid, 9, "water");
+		super(uid, BlockTexture.fluid, "water");
 		
 	}
 	

@@ -3,18 +3,13 @@
  */
 package vc4.vanilla;
 
-import vc4.api.block.Block;
-import vc4.api.block.BlockStone;
-import vc4.api.block.Material;
-import vc4.api.block.Plant;
+import vc4.api.block.*;
 import vc4.api.generator.GeneratorList;
 import vc4.api.plugin.Plugin;
 import vc4.api.tool.*;
 import vc4.api.world.World;
 import vc4.vanilla.block.*;
-import vc4.vanilla.generation.FlatlandsGenerator;
-import vc4.vanilla.generation.OverworldGenerator;
-import vc4.vanilla.generation.WorldGenOres;
+import vc4.vanilla.generation.*;
 import vc4.vanilla.generation.dungeon.Dungeon;
 import vc4.vanilla.item.ItemTool;
 
@@ -30,6 +25,7 @@ public class Vanilla extends Plugin {
 	public static Block planks, planksHalf, bookshelf, planksStairs0, planksStairs4;
 	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
+	public static Block crackedBrick;
 	
 	//Items
 	
@@ -103,7 +99,7 @@ public class Vanilla extends Plugin {
 		BlockTexture.update();
 		ItemTexture.update();
 		grass = new BlockGrass(world.getRegisteredBlock("vanilla.grass"), Material.getMaterial("grass")).setName("grass");
-		dirt = new Block(world.getRegisteredBlock("vanilla.dirt"), 1, Material.getMaterial("dirt")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 2, 20).setTimes(0.45, 0.01, 0.22)).setName("dirt");
+		dirt = new Block(world.getRegisteredBlock("vanilla.dirt"), BlockTexture.dirt, Material.getMaterial("dirt")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 2, 20).setTimes(0.45, 0.01, 0.22)).setName("dirt");
 		logV = new BlockLog(world.getRegisteredBlock("vanilla.log.V"), Material.getMaterial("wood"), 0).setName("log");
 		logX = new BlockLog(world.getRegisteredBlock("vanilla.log.X"), Material.getMaterial("wood"), 1).setName("log");
 		logZ = new BlockLog(world.getRegisteredBlock("vanilla.log.Z"), Material.getMaterial("wood"), 2).setName("log");
@@ -111,11 +107,11 @@ public class Vanilla extends Plugin {
 		brick = new BlockBrick(world.getRegisteredBlock("vanilla.brick")).setName("brick");
 		mossBrick = new BlockBrickMoss(world.getRegisteredBlock("vanilla.brick.moss")).setName("brick");
 		sand = new BlockSand(world.getRegisteredBlock("vanilla.sand")).setName("sand");
-		glass = new BlockGlass(world.getRegisteredBlock("vanilla.glass"), 3, Material.getMaterial("glass")).setName("glass");
-		ore = new BlockOre(world.getRegisteredBlock("vanilla.ore"), 14);
-		hellrock = new BlockStone(world.getRegisteredBlock("vanilla.hellrock"), 21, Material.getMaterial("hellrock")).setName("hellrock");
+		glass = new BlockGlass(world.getRegisteredBlock("vanilla.glass"), BlockTexture.glass, Material.getMaterial("glass")).setName("glass");
+		ore = new BlockOre(world.getRegisteredBlock("vanilla.ore"), BlockTexture.stone);
+		hellrock = new Block(world.getRegisteredBlock("vanilla.hellrock"), BlockTexture.hellrock, Material.getMaterial("hellrock")).setName("hellrock");
 		lava = new BlockLava(world.getRegisteredBlock("vanilla.lava")).setName("lava");
-		oreHell = new BlockOre(world.getRegisteredBlock("vanilla.ore.hell"), 21);
+		oreHell = new BlockOre(world.getRegisteredBlock("vanilla.ore.hell"), BlockTexture.hellrock);
 		water = new BlockWater(world.getRegisteredBlock("vanilla.water")).setName("water");
 		obsidian = new BlockObsidian(world.getRegisteredBlock("vanilla.obsidian")).setName("obsidian");
 		planks = new BlockPlanks(world.getRegisteredBlock("vanilla.planks")).setName("planks");
@@ -131,6 +127,7 @@ public class Vanilla extends Plugin {
 		brickStairs8 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.8"), 8).setName("brickstairs");
 		brickStairs12 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.12"), 12).setName("brickstairs");
 		bookshelfEnchanted = new BlockBookshelfEnchanted(world.getRegisteredBlock("vanilla.bookshelf.enchanted")).setName("bookshelfenchanted");
+		crackedBrick = new BlockBrickCracked(world.getRegisteredBlock("vanilla.brick.cracked")).setName("crackedbrick");
 		
 		generateToolItems(world);
 		

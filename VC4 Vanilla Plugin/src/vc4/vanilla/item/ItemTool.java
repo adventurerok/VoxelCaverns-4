@@ -16,6 +16,7 @@ public class ItemTool extends ItemMultitexture {
 
 	public ItemTool(int id, ToolType type, ToolMaterial material) {
 		super(id);
+		maxStack = 1;
 		textureIndex = ItemTexture.toolHandle;
 		damageOnUse = true;
 		maxDamage = material.getDurability();

@@ -7,6 +7,7 @@ import vc4.api.block.Block;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
 import vc4.vanilla.util.WoodBlocks;
 
 /**
@@ -23,6 +24,11 @@ public class BlockLeaf extends Block {
 	public BlockLeaf(short uid, Material m) {
 		super(uid, 0, m);
 		
+	}
+	
+	@Override
+	protected String getModifiedName(ItemStack item) {
+		return "leaf." + WoodBlocks.getName(item.getData() & 15);
 	}
 	
 	/* (non-Javadoc)
@@ -47,7 +53,23 @@ public class BlockLeaf extends Block {
 	@Override
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
 		int data = world.getBlockData(x, y, z) & 15;
-		return 112 + data;
+		switch(data){
+			case 0:
+				return BlockTexture.oakLeaves;
+			case 1:
+				return BlockTexture.birchLeaves;
+			case 2:
+				return BlockTexture.willowLeaves;
+			case 3:
+				return BlockTexture.ashLeaves;
+			case 4:
+				return BlockTexture.chestnutLeaves;
+			case 5:
+				return BlockTexture.redwoodLeaves;
+			case 6:
+				return BlockTexture.kapokLeaves;
+		}
+		return BlockTexture.oakLeaves;
 	}
 	
 	/* (non-Javadoc)
@@ -55,7 +77,23 @@ public class BlockLeaf extends Block {
 	 */
 	@Override
 	public int getTextureIndex(ItemStack item, int side) {
-		return 112 + (item.getDamage() & 15);
+		switch(item.getData()){
+			case 0:
+				return BlockTexture.oakLeaves;
+			case 1:
+				return BlockTexture.birchLeaves;
+			case 2:
+				return BlockTexture.willowLeaves;
+			case 3:
+				return BlockTexture.ashLeaves;
+			case 4:
+				return BlockTexture.chestnutLeaves;
+			case 5:
+				return BlockTexture.redwoodLeaves;
+			case 6:
+				return BlockTexture.kapokLeaves;
+		}
+		return BlockTexture.oakLeaves;
 	}
 	
 	/* (non-Javadoc)

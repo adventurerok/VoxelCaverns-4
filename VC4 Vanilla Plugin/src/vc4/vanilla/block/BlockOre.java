@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import vc4.api.block.BlockMultitexture;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
 
 /**
  * @author paul
@@ -50,6 +51,8 @@ public class BlockOre extends BlockMultitexture {
 		
 		registerOre(25, "ash", new Color(217, 217, 225)); //Tier 2 fuel (cooks 25 , 12 torches)
 		registerOre(26, "ember", new Color(255, 126, 16)); //Tier 3 fuel (cooks 75 , 33 torches)
+		mtIndex = BlockTexture.ore;
+		
 	}
 	
 	/* (non-Javadoc)
@@ -82,21 +85,6 @@ public class BlockOre extends BlockMultitexture {
 		return getColor(current.getDamage());
 	}
 	
-	/* (non-Javadoc)
-	 * @see vc4.api.block.BlockMultitexture#getTextureIndexMultitexture(vc4.api.item.ItemStack, int)
-	 */
-	@Override
-	public int getTextureIndexMultitexture(ItemStack item, int side) {
-		return 6;
-	}
-	
-	/* (non-Javadoc)
-	 * @see vc4.api.block.BlockMultitexture#getTextureIndexMultitexture(vc4.api.world.World, long, long, long, int)
-	 */
-	@Override
-	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
-		return 6;
-	}
 	
 
 	/**

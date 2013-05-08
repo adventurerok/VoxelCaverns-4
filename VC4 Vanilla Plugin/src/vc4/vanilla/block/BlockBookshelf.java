@@ -6,13 +6,19 @@ import vc4.api.block.BlockMultitexture;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
 import vc4.vanilla.util.WoodBlocks;
 
 public class BlockBookshelf extends BlockMultitexture {
 
 	public BlockBookshelf(int id) {
-		super((short) id, 254, Material.getMaterial("wood"), 19);
+		super((short) id, 1, Material.getMaterial("wood"), 19);
 		
+	}
+	
+	@Override
+	protected String getModifiedName(ItemStack item) {
+		return "bookshelf." + WoodBlocks.getName(item.getDamage() & 15);
 	}
 	
 	@Override
@@ -34,12 +40,12 @@ public class BlockBookshelf extends BlockMultitexture {
 	
 	@Override
 	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
-		return side < 4 ? 19 : 76;
+		return side < 4 ? BlockTexture.bookshelf : BlockTexture.woodFront;
 	}
 	
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
-		return side < 4 ? 19 : 76;
+		return side < 4 ? BlockTexture.bookshelf : BlockTexture.woodFront;
 	}
 	
 	@Override

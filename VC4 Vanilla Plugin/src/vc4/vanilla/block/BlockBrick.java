@@ -7,6 +7,7 @@ import vc4.api.block.Block;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
 
 
 /**
@@ -30,24 +31,26 @@ public class BlockBrick extends Block {
 	 */
 	@Override
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
-		switch (world.getBlockData(x, y, z)) {
+		switch (world.getBlockData(x, y, z) & 15) {
+			case 0:
+				return BlockTexture.brick;
 			case 1:
-				return 12;
+				return BlockTexture.sandstoneBrick;
 			case 2:
-				return 28;
+				return BlockTexture.goldBrick;
 			case 3:
-				return 44;
+				return BlockTexture.adamantiteBrick;
 			case 4:
-				return 60;
+				return BlockTexture.stoneBrick;
 			case 5:
-				return 94;
+				return BlockTexture.obsidianBrick;
 			case 14:
-				return 182;
+				return BlockTexture.hellCobble;
 			case 15:
-				return textureIndex + 16;
+				return BlockTexture.cobble;
 		}
 
-		return textureIndex;
+		return BlockTexture.brick;
 	}
 	
 	/* (non-Javadoc)
@@ -69,24 +72,26 @@ public class BlockBrick extends Block {
 	 */
 	@Override
 	public int getTextureIndex(ItemStack item, int side) {
-		switch (item.getDamage()) {
+		switch (item.getDamage() & 15) {
+			case 0:
+				return BlockTexture.brick;
 			case 1:
-				return 12;
+				return BlockTexture.sandstoneBrick;
 			case 2:
-				return 28;
+				return BlockTexture.goldBrick;
 			case 3:
-				return 44;
+				return BlockTexture.adamantiteBrick;
 			case 4:
-				return 60;
+				return BlockTexture.stoneBrick;
 			case 5:
-				return 94;
+				return BlockTexture.obsidianBrick;
 			case 14:
-				return 182;
+				return BlockTexture.hellCobble;
 			case 15:
-				return textureIndex + 16;
+				return BlockTexture.cobble;
 		}
 
-		return textureIndex;
+		return BlockTexture.brick;
 	}
 	
 	@Override
@@ -104,6 +109,8 @@ public class BlockBrick extends Block {
 				return "brick.stone";
 			case 5:
 				return "brick.obsidian";
+			case 6:
+				return "brick.hell";
 			case 14:
 			case 15:
 				return "cobblestone";
