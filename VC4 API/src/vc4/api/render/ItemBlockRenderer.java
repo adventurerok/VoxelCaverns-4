@@ -34,7 +34,7 @@ public class ItemBlockRenderer {
 	
 	protected static void renderBlock2d(){
 		int texInd = Block.byId(current.getId()).getTextureIndex(current, 0);
-		Resources.getSheetTexture("blocks").bind();
+		Resources.getAnimatedTexture("blocks").bind();
 		
 		gl.begin(GLPrimative.QUADS);
 		Color blockColor = Block.byId(current.getId()).getColor(current, 0);
@@ -87,7 +87,7 @@ public class ItemBlockRenderer {
 		gl.translate(position.x + 12, position.y + 4, 0);
 		gl.rotate(60,1,0,0);
 		gl.rotate(45,0,0,1);
-		Resources.getSheetTexture("blocks").bind();
+		Resources.getAnimatedTexture("blocks").bind();
 		renderBlock3dTop();
 		renderBlock3dLeft();
 		renderBlock3dRight();

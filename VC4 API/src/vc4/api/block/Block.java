@@ -8,13 +8,12 @@ import java.util.Random;
 
 import vc4.api.block.render.*;
 import vc4.api.entity.EntityItem;
+import vc4.api.entity.EntityPlayer;
 import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.api.text.Localization;
 import vc4.api.tool.MiningData;
-import vc4.api.util.AABB;
-import vc4.api.util.Direction;
-import vc4.api.util.RayTraceResult;
+import vc4.api.util.*;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.World;
 
@@ -205,8 +204,13 @@ public class Block {
 		return Color.white;
 	}
 	
+	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item){
+		world.setBlockIdData(x, y, z, uid, item.getData());
+		item.decrementAmount();
+	}
+	
 	public static Block minus = new Block((short)-1, 0, Material.getMaterial("air")).setAir(true);
-	public static Block stone = new BlockStone((short)1, 14, Material.getMaterial("stone")).setSolid(true).setName("stone");
+	public static Block stone = new BlockStone((short)1, Material.getMaterial("stone")).setSolid(true).setName("stone");
 	public static Block air = new Block((short)0, 0, Material.getMaterial("air")).setAir(true);
 
 

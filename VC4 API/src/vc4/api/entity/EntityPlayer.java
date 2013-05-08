@@ -12,6 +12,7 @@ import vc4.api.graphics.*;
 import vc4.api.input.*;
 import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
+import vc4.api.math.MathUtils;
 import vc4.api.render.CracksRenderer;
 import vc4.api.tool.MiningData;
 import vc4.api.util.AABB;
@@ -41,20 +42,33 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		super(world);
 		Random rand = new Random();
 		ArrayList<ItemStack> creativeItems = new ArrayList<>();
-		for(int d = 2048; d < 4096; ++d){
+		for(int d = 0; d < 2048; ++d){
 			if(Item.byId(d) == null) continue;
 			ItemStack[] b = Item.byId(d).getCreativeItems();
 			if(b == null) continue;
 			creativeItems.addAll(Arrays.asList(b));
 		}
-		for(int d = 0; d < 44; ++d){
-			inventory.setItem(d, creativeItems.get(rand.nextInt(creativeItems.size())).clone().setAmount(1 + rand.nextInt(20)));
+		for(int d = 0; d < 40; ++d){
+			inventory.setItem(d, creativeItems.get(rand.nextInt(creativeItems.size())).clone().setAmount(50 + rand.nextInt(40)));
 		}
 	}
 	
 	public void decreaseCooldown(double delta){
 		coolDown -= delta;
 		if(coolDown < 0) coolDown = 0;
+	}
+	
+	//NESW
+	public int getSimpleFacing(){
+		return (int) ((MathUtils.floor(((yaw * 4F) / 360F) + 0.5D) + 1) & 3);
+	}
+	
+	//NESW NE, SE, SW, NW
+	public int getAdvancedFacing(){
+		int eight = (int) ((MathUtils.floor(((yaw * 8F) / 360F) + 0.5D) + 1) & 7);
+		if(eight % 2 == 0) return eight / 2;
+		else return ((eight - 1) / 2) + 6;
+				
 	}
 	
 	
@@ -174,7 +188,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		}
 		
 		ItemStack held = inventory.getSelectedStack();
-		if(held.hasSpecialLeftClickEvent()){
+		if(held != null && held.hasSpecialLeftClickEvent()){
 			held.onLeftClick(this);
 			return;
 		}
@@ -186,7 +200,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 			} else {
 				Block b = world.getBlockType(rays.x, rays.y, rays.z);
 				MiningData d = b.getMiningData(world, rays.x, rays.y, rays.z);
-				minedAmount += d.getMiningDone(held.getTool(), delta);
+				minedAmount += d.getMiningDone(held != null ? held.getTool() : null, delta);
 			}
 		}
 	}
@@ -221,7 +235,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 
 	public void rightMouseDown(double delta){
 		ItemStack held = inventory.getSelectedStack();
-		held.onRightClick(this);
+		if(held != null) held.onRightClick(this);
 	}
 	
 	/**

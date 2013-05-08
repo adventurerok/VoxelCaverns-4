@@ -83,7 +83,7 @@ public class EntityItem extends Entity {
 			if(item.getAmount() > 60) amount = 4;
 			if(item.getAmount() > 98) amount = 5;
 			Graphics.getClientShaderManager().bindShader("texture");
-			Resources.getSheetTexture("blocks").bind();
+			Resources.getAnimatedTexture("blocks").bind();
 			for(int d = 0; d < amount; ++d){
 				gl.rotate((world.getTime() * 4) % 360, 0, 1, 0);
 				render.render();

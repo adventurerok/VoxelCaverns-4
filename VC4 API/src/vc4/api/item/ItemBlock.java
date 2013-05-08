@@ -67,14 +67,24 @@ public class ItemBlock extends Item {
 	public String getLocalizedItemDescription(ItemStack stack) {
 		return Block.byId(stack.getId()).getLocalizedDescription(stack);
 	}
+	
+	
 
 	@Override
 	public void onRightClick(EntityPlayer player, ItemStack item) {
 		if (player.getRays() == null || player.getRays().isEntity) return;
 		if (player.getCoolDown() > 0.1) return;
-		if (player.getWorld().getBlockType(player.getRays().x, player.getRays().y, player.getRays().z).canBeReplaced(item.getId(), item.getData())) {
-			player.getWorld().setBlockIdData(player.getRays().x, player.getRays().y, player.getRays().z, item.getId(), item.getData());
-		} else player.getWorld().setNearbyBlockIdData(player.getRays().x, player.getRays().y, player.getRays().z, item.getId(), item.getData(), Direction.getDirection(player.getRays().side));
+		long x = player.getRays().x;
+		long y = player.getRays().y;
+		long z = player.getRays().z;
+		if (player.getWorld().getBlockType(x, y, z).canBeReplaced(item.getId(), item.getData())) {
+			Block.byId(item.getId()).place(player.getWorld(), x, y, z, player, item);
+		} else {
+			Direction dir = Direction.getDirection(player.getRays().side);
+			if(player.getWorld().getNearbyBlockType(x, y, z, dir).canBeReplaced(item.getId(), item.getData())){
+				Block.byId(item.getId()).place(player.getWorld(), x + dir.getX(), y + dir.getY(), z + dir.getZ(), player, item);
+			}
+		}
 		player.setCoolDown(200);
 	}
 }

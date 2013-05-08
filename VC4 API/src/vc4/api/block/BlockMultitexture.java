@@ -14,7 +14,7 @@ import vc4.api.world.World;
  */
 public class BlockMultitexture extends Block implements IBlockMultitexture {
 
-	int mtIndex;
+	protected int mtIndex;
 	
 	public BlockMultitexture(int uid, int texture, Material m) {
 		super(uid, texture, m);

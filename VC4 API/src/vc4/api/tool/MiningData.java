@@ -146,7 +146,7 @@ public class MiningData {
 	
 	
 	public boolean onMine(ItemStack item){
-		Tool tool = item.getTool();
+		Tool tool = item != null ? item.getTool() : null;
 		boolean drp;
 		boolean crt;
 		if(required == null){
@@ -161,7 +161,7 @@ public class MiningData {
 		else if(!required.equals(tool.getType())) drp = crt = false;
 		else drp = crt = tool.getPower() >= dropToolPower;
 		if(crt) item.damage(correctDurabilityLoss);
-		else item.damage(incorrectDurabilityLoss);
+		else if(item != null) item.damage(incorrectDurabilityLoss);
 		return drp;
 	}
 
