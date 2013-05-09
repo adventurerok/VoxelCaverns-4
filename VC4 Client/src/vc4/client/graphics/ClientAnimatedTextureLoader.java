@@ -85,18 +85,15 @@ public class ClientAnimatedTextureLoader implements AnimatedTextureLoader{
 	}
 	
 	private static ArrayList<URL> getImageUrlsElsewhere(URL baseURL) throws IOException {
-		URL packageURL;
 		ArrayList<URL> names = new ArrayList<URL>();
 
-		packageURL = baseURL;
-
-		if (packageURL.getProtocol().equals("jar")) {
+		if (baseURL.getProtocol().equals("jar")) {
 			String jarFileName;
 			Enumeration<JarEntry> jarEntries;
 			String entryName;
 
 			// build jar file name, then loop through zipped entries
-			jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
+			jarFileName = URLDecoder.decode(baseURL.getFile(), "UTF-8");
 			String packName = jarFileName.substring(jarFileName.indexOf("!") + 2);
 			jarFileName = jarFileName.substring(5, jarFileName.indexOf("!"));
 			
@@ -109,14 +106,14 @@ public class ClientAnimatedTextureLoader implements AnimatedTextureLoader{
 					// System.out.println(entryName);
 					if (entryName.startsWith(packName) && entryName.length() > 5 && entryName.endsWith(".png")) {
 						entryName = entryName.substring(packName.length(), entryName.lastIndexOf('.'));
-						names.add(new URL(packageURL + entryName + ".png"));
+						names.add(new URL(baseURL + entryName + ".png"));
 					}
 				}
 			}
 
 			// loop through files in classpath
 		} else {
-			File folder = new File(URLDecoder.decode(packageURL.getFile(), "UTF-8"));
+			File folder = new File(URLDecoder.decode(baseURL.getFile(), "UTF-8"));
 	        File[] contenuti = folder.listFiles();
 	        if(contenuti == null) return names;
 	        String entryName;

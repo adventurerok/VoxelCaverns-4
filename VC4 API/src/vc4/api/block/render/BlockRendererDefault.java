@@ -48,7 +48,8 @@ public class BlockRendererDefault implements BlockRenderer {
 	@Override
 	public void renderBlockCracks(World world, long x, long y, long z, Renderer render, double amount){
 			Block block = world.getBlockType(x, y, z);
-			AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);
+			AABB bounds = block.getRenderSize(world, x, y, z);
+			bounds.expand(0.002, 0.002, 0.002);
 			for(int d = 0; d < 6; ++d){
 				renderBlockFaceCracks(world, x, y, z, block, render, bounds, d, amount);
 			}

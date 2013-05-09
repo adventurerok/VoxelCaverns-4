@@ -163,3 +163,7 @@ VC4-Development-0.0.1-220
 	* Language files are now resources
 VC4-Development-0.0.1-221
 	* Fixed "failed to load texture" bug
+VC4-Development-0.0.1-223
+	+ Added sound and music support
+VC4-Development-0.0.1-224
+	+ Worlds can play music based on player position

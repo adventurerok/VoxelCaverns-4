@@ -124,7 +124,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		gl.end();
 		if(minedAmount > 0 && oRP != null && world.getBlockType(oRP.x, oRP.y, oRP.z).getRenderer() instanceof BlockRendererDefault){
 			AABB bnds = world.getBlockType(oRP.x, oRP.y, oRP.z).getRenderSize(world, oRP.x, oRP.y, oRP.z);
-			CracksRenderer.renderCracks(oRP.x, oRP.y, oRP.z, bnds, minedAmount);
+			CracksRenderer.renderCracks(world, oRP.x, oRP.y, oRP.z, bnds, minedAmount);
 		}
 	}
 

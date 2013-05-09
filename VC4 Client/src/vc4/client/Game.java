@@ -10,8 +10,7 @@ import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
-import vc4.api.GameState;
-import vc4.api.Resources;
+import vc4.api.*;
 import vc4.api.client.*;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.entity.MovementStyle;
@@ -21,6 +20,7 @@ import vc4.api.gui.Gui;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.*;
 import vc4.api.logging.Logger;
+import vc4.api.sound.Audio;
 import vc4.api.text.Localization;
 import vc4.api.util.DirectoryLocator;
 import vc4.api.util.Setting;
@@ -30,6 +30,7 @@ import vc4.api.yaml.ThreadYaml;
 import vc4.client.camera.PlayerController;
 import vc4.client.gui.ChatBox;
 import vc4.client.gui.IngameGui;
+import vc4.client.sound.SoundManager;
 import vc4.impl.plugin.PluginLoader;
 import vc4.impl.world.ImplWorld;
 
@@ -201,6 +202,7 @@ public class Game extends Component implements ClientGame {
 			}
 			player.updateInput();
 			world.update(camera.getPosition(), delta);
+			Audio.playMusic(world.getMusic(player));
 		}
 		long time = System.nanoTime() - _lastFrame;
 		_lastFrame = System.nanoTime();
@@ -215,6 +217,7 @@ public class Game extends Component implements ClientGame {
 	@Override
 	public void load() {
 		setBounds(getBounds());
+		SoundManager.init();
 		PluginLoader.loadAndEnablePlugins();
 		loadResources();
 		loadSettings();
@@ -237,7 +240,7 @@ public class Game extends Component implements ClientGame {
 		ingameGui = new IngameGui();
 		add(ingameGui);
 		ingameGui.resized();
-
+		Audio.playMusic("First_Day");
 	}
 
 	/*
@@ -248,6 +251,7 @@ public class Game extends Component implements ClientGame {
 	@Override
 	public void unload() {
 		saveSettingsFile(DirectoryLocator.getPath() + "/settings/");
+		SoundManager.dispose();
 	}
 
 	/*

@@ -11,6 +11,8 @@ import org.jnbt.CompoundTag;
 import vc4.api.block.Block;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
+import vc4.api.generator.WorldGenerator;
+import vc4.api.sound.Music;
 import vc4.api.util.*;
 import vc4.api.vector.Vector3d;
 
@@ -57,4 +59,6 @@ public interface World {
 	public boolean chunkExists(long x, long y, long z);
 	public boolean chunkExists(ChunkPos pos);
 	public Chunk generateChunk(ChunkPos pos);
+	public WorldGenerator getGenerator();
+	public Music getMusic(EntityPlayer player);
 }

@@ -7,6 +7,7 @@ import vc4.api.item.ItemStack;
 import vc4.api.util.AABB;
 import vc4.api.util.Direction;
 import vc4.api.world.Chunk;
+import vc4.api.world.World;
 
 public class BlockRendererStairs extends BlockRendererDefault {
 
@@ -82,6 +83,7 @@ public class BlockRendererStairs extends BlockRendererDefault {
 		if(mt != null)renderBlockFace(c.getWorld(), x, y, z, mt, renderers[1], bounds, upside ? 5 : 4);
 	}
 	
+	@Override
 	public void renderBlockCracks(World world, long x, long y, long z, Renderer render, double amount){
 		Block block = world.getBlockType(x, y, z);
 		byte data = world.getBlockData(x, y, z);
@@ -94,7 +96,7 @@ public class BlockRendererStairs extends BlockRendererDefault {
 			renderBlockFaceCracks(world, x, y, z, block, render, bounds, 5, amount);
 		}
 		int opp = Direction.getDirection(facing).opposite().getId();
-		renderBlockFaceCracks(world, x, y, z, block, renderers[1], bounds, opp, amount);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, opp, amount);
 		int left = Direction.getDirection(facing).counterClockwise().getId();
 		int right = Direction.getDirection(facing).clockwise().getId();
 		
