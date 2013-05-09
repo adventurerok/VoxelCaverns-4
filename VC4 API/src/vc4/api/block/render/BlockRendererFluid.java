@@ -35,6 +35,10 @@ public class BlockRendererFluid implements BlockRenderer {
 		}
 	}
 	
+	public void renderBlockCracks(World world, long x, long y, long z, Renderer render, double amount){
+		
+	}
+	
 	/**
 	 * @param x
 	 * @param y
