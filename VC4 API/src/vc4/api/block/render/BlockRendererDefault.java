@@ -44,8 +44,17 @@ public class BlockRendererDefault implements BlockRenderer {
 		}
 
 	}
+	
+	@Override
+	public void renderBlockCracks(World world, long x, long y, long z, Renderer render, double amount){
+			Block block = world.getBlockType(x, y, z);
+			AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);
+			for(int d = 0; d < 6; ++d){
+				renderBlockFaceCracks(world, x, y, z, block, render, bounds, d, amount);
+			}
+	}
 
-	public void renderBlockFaceNorth(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
+	public void renderBlockFaceNorth(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
 		render.useQuadInputMode(true);
 		render.color(color);
 		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
@@ -137,6 +146,32 @@ public class BlockRendererDefault implements BlockRenderer {
 		}
 
 	}
+	
+	public void renderBlockFaceCracks(World world, long x, long y, long z, Block block, Renderer render, AABB bounds, int side, double amount) {
+		Color color = Color.white;
+		switch (side) {
+			case 0:
+				renderBlockFaceNorth(x, y, z, render, bounds, amount, color);
+				break;
+			case 1:
+				renderBlockFaceEast(x, y, z, render, bounds, amount, color);
+				break;
+			case 2:
+				renderBlockFaceSouth(x, y, z, render, bounds, amount, color);
+				break;
+			case 3:
+				renderBlockFaceWest(x, y, z, render, bounds, amount, color);
+				break;
+			case 4:
+				renderBlockFaceTop(x, y, z, render, bounds, amount, color);
+				break;
+			case 5:
+				renderBlockFaceBottom(x, y, z, render, bounds, amount, color);
+				break;
+
+		}
+
+	}
 
 	public void renderBlockFace(World world, long x, long y, long z, IBlockMultitexture block, Renderer render, AABB bounds, int side) {
 		int tex = block.getTextureIndexMultitexture(world, x, y, z, side);
@@ -164,7 +199,7 @@ public class BlockRendererDefault implements BlockRenderer {
 		}
 	}
 
-	public void renderBlockFaceEast(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
+	public void renderBlockFaceEast(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
 		render.useQuadInputMode(true);
 		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
 		render.color(color);
@@ -179,7 +214,7 @@ public class BlockRendererDefault implements BlockRenderer {
 	}
 
 
-	public void renderBlockFaceSouth(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
+	public void renderBlockFaceSouth(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
 		render.useQuadInputMode(true);
 		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
 		render.color(color);
@@ -193,7 +228,7 @@ public class BlockRendererDefault implements BlockRenderer {
 
 	}
 
-	public void renderBlockFaceWest(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
+	public void renderBlockFaceWest(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
 		render.useQuadInputMode(true);
 		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
 		render.color(color);
@@ -207,7 +242,7 @@ public class BlockRendererDefault implements BlockRenderer {
 
 	}
 
-	public void renderBlockFaceTop(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
+	public void renderBlockFaceTop(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
 		render.useQuadInputMode(true);
 		render.tex(bounds.minX, bounds.minZ, tex, 0);
 		render.color(color);
@@ -221,7 +256,7 @@ public class BlockRendererDefault implements BlockRenderer {
 
 	}
 
-	public void renderBlockFaceBottom(double x, double y, double z, Renderer render, AABB bounds, int tex, Color color) {
+	public void renderBlockFaceBottom(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
 		render.useQuadInputMode(true);
 		render.tex(bounds.minX, bounds.minZ, tex, 0);
 		render.color(color);
