@@ -81,6 +81,47 @@ public class BlockRendererStairs extends BlockRendererDefault {
 		renderBlockFace(c.getWorld(), x, y, z, block, renderers[1], bounds, upside ? 5 : 4);
 		if(mt != null)renderBlockFace(c.getWorld(), x, y, z, mt, renderers[1], bounds, upside ? 5 : 4);
 	}
+	
+	public void renderBlockCracks(World world, long x, long y, long z, Renderer render, double amount){
+		Block block = world.getBlockType(x, y, z);
+		byte data = world.getBlockData(x, y, z);
+		int facing = data & 3;
+		boolean upside = (data & 16) != 0;
+		AABB bounds = block.getRenderSize(world, x, y, z);
+		if(upside){
+			renderBlockFaceCracks(world, x, y, z, block, render, bounds, 4, amount);
+		} else {
+			renderBlockFaceCracks(world, x, y, z, block, render, bounds, 5, amount);
+		}
+		int opp = Direction.getDirection(facing).opposite().getId();
+		renderBlockFaceCracks(world, x, y, z, block, renderers[1], bounds, opp, amount);
+		int left = Direction.getDirection(facing).counterClockwise().getId();
+		int right = Direction.getDirection(facing).clockwise().getId();
+		
+		bounds = AABB.getBoundingBox(0, 1, upside ? 2/3d : 0, upside ? 1 : 1/3d, 0, 1);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, left, amount);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, right, amount);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, facing, amount);
+		
+		bounds = AABB.getBoundingBox(facing == 0 ? 2/3d : 0, facing == 2 ? 1/3d : 1, upside ? 2/3d : 0, upside ? 1 : 1/3d, facing == 1 ? 2/3d : 0, facing == 3 ? 1/3d : 1);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, upside ? 5 : 4, amount);
+		
+		bounds = AABB.getBoundingBox(facing == 2 ? 1/3d : 0, facing == 0 ? 2/3d : 1, 1/3d, 2/3d, facing == 3 ? 1/3d : 0, facing == 1 ? 2/3d : 1);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, left, amount);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, right, amount);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, facing, amount);
+		
+		bounds = AABB.getBoundingBox(facing % 2 == 0 ? 1/3d : 0, facing % 2 == 0 ? 2/3d : 1, 1/3d, 2/3d, facing % 2 == 1 ? 1/3d : 0, facing % 2 == 1 ? 2/3d : 1);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, upside ? 5 : 4, amount);
+		
+		bounds = AABB.getBoundingBox(facing == 2 ? 2/3d : 0, facing == 0 ? 1/3d : 1, upside ? 0 : 2/3d, upside ? 1/3d : 1, facing == 3 ? 2/3d : 0, facing == 1 ? 1/3d : 1);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, left, amount);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, right, amount);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, facing, amount);
+		
+		bounds = AABB.getBoundingBox(facing == 2 ? 2/3d : 0, facing == 0 ? 1/3d : 1, upside ? 0 : 2/3d, upside ? 1/3d : 1, facing == 3 ? 2/3d : 0, facing == 1 ? 1/3d : 1);
+		renderBlockFaceCracks(world, x, y, z, block, render, bounds, upside ? 5 : 4, amount);
+	}
 
 	
 
