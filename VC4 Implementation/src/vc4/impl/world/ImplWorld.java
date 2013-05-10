@@ -66,7 +66,7 @@ public class ImplWorld implements World {
 	private int nextItemId = 2050;
 	private long seed = new Random().nextLong();
 	private long time;
-	private String generatorName = "overworld";
+	private String generatorName = "sky";
 	private String name = "World";
 	private String saveName;
 	private CompoundTag generatorTag = new CompoundTag("gen");
@@ -221,47 +221,8 @@ public class ImplWorld implements World {
 		gl.disable(GLFlag.CULL_FACE);
 	}
 
-	public void drawBackground(Vector3d pos) {
-		OpenGL gl = Graphics.getClientOpenGL();
-		gl.disable(GLFlag.DEPTH_TEST);
-		Graphics.getClientShaderManager().unbindShader();
-		if (pos.y < 192) {
-			gl.begin(GLPrimative.QUADS);
-			if (pos.y > -5200) gl.color(0.6f, 0.45f, 0.45f, 1);
-			else gl.color(0.8f, 0.3f, 0.3f, 1);
-			gl.vertex(-256, -256, -256);
-			gl.vertex(256, -256, -256);
-			gl.vertex(256, -256, 256);
-			gl.vertex(-256, -256, 256);
-			if (pos.y < -192) {
-				gl.vertex(256, -256, -256);
-				gl.vertex(256, 256, -256);
-				gl.vertex(256, 256, 256);
-				gl.vertex(256, -256, 256);
-
-				gl.vertex(-256, -256, -256);
-				gl.vertex(-256, 256, -256);
-				gl.vertex(-256, 256, 256);
-				gl.vertex(-256, -256, 256);
-
-				gl.vertex(-256, -256, 256);
-				gl.vertex(-256, 256, 256);
-				gl.vertex(256, 256, 256);
-				gl.vertex(256, -256, 256);
-
-				gl.vertex(256, -256, -256);
-				gl.vertex(256, 256, -256);
-				gl.vertex(-256, 256, -256);
-				gl.vertex(-256, -256, -256);
-				if (pos.y < -256) {
-					gl.vertex(-256, 256, -256);
-					gl.vertex(256, 256, -256);
-					gl.vertex(256, 256, 256);
-					gl.vertex(-256, 256, 256);
-				}
-			}
-			gl.end();
-		}
+	public void drawBackground(EntityPlayer player) {
+		getGenerator().renderSkyBox(this, player);
 	}
 
 	@Override

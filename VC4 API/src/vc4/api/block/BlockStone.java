@@ -5,6 +5,8 @@ package vc4.api.block;
 
 import vc4.api.Resources;
 import vc4.api.item.ItemStack;
+import vc4.api.tool.MiningData;
+import vc4.api.tool.ToolType;
 import vc4.api.world.World;
 
 
@@ -25,7 +27,7 @@ public class BlockStone extends Block{
 	 */
 	public BlockStone(short uid, Material m) {
 		super(uid, 0, m);
-		
+		setMineData(new MiningData().setRequired(ToolType.pickaxe).setPowers(1, 1, 25).setTimes(5, 0.1, 1));
 	}
 	
 	@Override

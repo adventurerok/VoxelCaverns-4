@@ -62,39 +62,42 @@ public class SoundManager extends Audio{
 		music.addSounds(sGroup);
 	}
 	
-//	public static void playMusic(String name){
-//		if(name.equals(musicPath)) return;
-//		Sound sound = music.getRandomSound(name);
-//		if (sound == null) return;
-//		String source = "MUSIC_" + soundId;
-//		++musicId;
-//		if(musicSource != null) player.stop(musicSource);
-//		player.backgroundMusic(source, sound.location, sound.location.toString(), true);
-//		player.play(source);
-//		musicSource = source;
-//		musicPath = name;
-//	}
-	
 	public static void playMusic(String name){
-		if(name == null){
-			if(musicSource != null) player.stop(musicSource);
-			musicPath = musicSource = null;
-			musicObject = null;
-			return;
-		}
 		if(name.equals(musicPath)) return;
 		Sound sound = music.getRandomSound(name);
 		if (sound == null) return;
-		if(musicPath != null){
-			player.fadeOutIn(musicSource, sound.location, sound.location.toString(), 2000, 2000);
-		} else {
-			musicSource = "MUSIC_" + soundId;
-			musicPath = name;
-			++musicId;
-			player.backgroundMusic(musicSource, sound.location, sound.location.toString(), true);
-			player.play(musicSource);
+		String source = "MUSIC_" + soundId;
+		++musicId;
+		if(musicSource != null){
+			//player.fadeOut(musicSource, null, 2000);
+			player.stop(musicSource);
 		}
+		player.backgroundMusic(source, sound.location, sound.location.toString(), true);
+		player.play(source);
+		musicSource = source;
+		musicPath = name;
 	}
+	
+//	public static void playMusic(String name){
+//		if(name == null){
+//			if(musicSource != null) player.stop(musicSource);
+//			musicPath = musicSource = null;
+//			musicObject = null;
+//			return;
+//		}
+//		if(name.equals(musicPath)) return;
+//		Sound sound = music.getRandomSound(name);
+//		if (sound == null) return;
+//		if(musicPath != null){
+//			player.fadeOutIn(musicSource, sound.location, sound.location.toString(), 2000, 2000);
+//		} else {
+//			musicSource = "MUSIC_" + soundId;
+//			musicPath = name;
+//			++musicId;
+//			player.backgroundMusic(musicSource, sound.location, sound.location.toString(), true);
+//			player.play(musicSource);
+//		}
+//	}
 	
 	
 

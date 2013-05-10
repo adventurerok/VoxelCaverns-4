@@ -114,7 +114,7 @@ public class Game extends Component implements ClientGame {
 		if (gameState == GameState.SINGLEPLAYER) {
 			getWindow().enterRenderMode(RenderType.GAME);
 			camera.rotate();
-			world.drawBackground(camera.getPosition());
+			world.drawBackground(player);
 			camera.translate();
 			world.draw(camera.getPosition());
 			player.drawCube();

@@ -79,12 +79,12 @@ public class PluginLoader {
 		ArrayList<LoadingPlugin> loading = new ArrayList<>();
 		for(int d = 0; d < jars.length; ++d){
 			String pName = jars[d].getName();
+			pName = pName.substring(0, pName.length() - 4);
 			try {
 				resourceURLs.add(new File(DirectoryLocator.getPath() + "/plugins/" + pName + "/").toURI().toURL());
 			} catch (MalformedURLException e1) {
 				Logger.getLogger(PluginLoader.class).warning("Exception occured", e1);
 			}
-			pName = pName.substring(0, pName.length() - 4);
 			try{
 				JarFile jar = new JarFile(jars[d]);
 				JarEntry desc = jar.getJarEntry("plugin.yml");

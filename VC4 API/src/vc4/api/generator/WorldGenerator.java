@@ -19,4 +19,5 @@ public interface WorldGenerator {
 	public void populate(World world, long x, long y, long z);
 	public Vector3d getSpawnPoint(World world);
 	public Music getBiomeMusic(EntityPlayer player);
+	public void renderSkyBox(World world, EntityPlayer player);
 }
