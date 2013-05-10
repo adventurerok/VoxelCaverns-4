@@ -15,13 +15,16 @@ import vc4.api.block.Block;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.GeneratorList;
+import vc4.api.generator.WorldGenerator;
 import vc4.api.graphics.*;
 import vc4.api.item.Item;
 import vc4.api.math.MathUtils;
 import vc4.api.render.DataRenderer;
+import vc4.api.sound.Music;
 import vc4.api.util.*;
 import vc4.api.vector.Vector3d;
-import vc4.api.world.*;
+import vc4.api.world.ChunkPos;
+import vc4.api.world.World;
 import vc4.impl.plugin.PluginLoader;
 
 /**
@@ -56,7 +59,7 @@ public class ImplWorld implements World {
 	}
 
 	private static BlockStore fake = new BlockStore(0, 0, 0);
-	public ConcurrentHashMap<ChunkPos, ImplChunk> chunks = new ConcurrentHashMap<>();
+	public HashMap<ChunkPos, ImplChunk> chunks = new HashMap<>();
 	private ConcurrentHashMap<String, Integer> registeredBlocks = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<String, Integer> registeredItems = new ConcurrentHashMap<>();
 	private int nextBlockId = 2;
@@ -70,6 +73,8 @@ public class ImplWorld implements World {
 
 	private double tickTime;
 	private List<EntityPlayer> players = new ArrayList<>();
+	
+	private GeneratorThread[] genThreads;
 
 	private static double WORLD_SECOND = 50;
 
@@ -79,14 +84,28 @@ public class ImplWorld implements World {
 	public ImplWorld(String saveName) {
 		this.saveName = saveName;
 		onLoad();
+		startGenThreads(4);
 	}
 
-	private void checkLoad(ChunkPos start, int x, int y, int z, ArrayList<ChunkPos> toLoad) {
-		start = start.add(x, y, z);
-		if (toLoad.contains(start)) return;
-		if (chunks.get(start) != null) return;
-		toLoad.add(start);
+	@SuppressWarnings("unchecked")
+	private void startGenThreads(int num) {
+		GeneratorThread.world = this;
+		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
+		GeneratorThread.location = new Vector3d(0, 0, 0);
+		GeneratorThread.maxNum = num - 1;
+		genThreads = new GeneratorThread[num];
+		for(int d = 0; d < num; ++d){
+			genThreads[d] = new GeneratorThread(d);
+			genThreads[d].start();
+		}
 	}
+
+//	private void checkLoad(ChunkPos start, int x, int y, int z, ArrayList<ChunkPos> toLoad) {
+//		start = start.add(x, y, z);
+//		if (toLoad.contains(start)) return;
+//		if (chunks.get(start) != null) return;
+//		toLoad.add(start);
+//	}
 
 	@Override
 	public boolean chunkExists(long x, long y, long z) {
@@ -451,7 +470,10 @@ public class ImplWorld implements World {
 	 */
 	@Override
 	public Block getNearbyBlockType(long x, long y, long z, Direction dir) {
-		return null;
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		return getBlockType(x, y, z);
 	}
 
 	/*
@@ -464,6 +486,7 @@ public class ImplWorld implements World {
 		return seed;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void infiniteWorld(Vector3d loc) {
 		ArrayList<ImplChunk> toRemove = new ArrayList<>();
 		ArrayList<ImplChunk> toPopulate = new ArrayList<>();
@@ -474,19 +497,28 @@ public class ImplWorld implements World {
 			}
 		}
 		chunks.values().removeAll(toRemove);
-		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
-		ChunkPos me = ChunkPos.createFromWorldVector(loc);
-		for (int x = -7; x < 8; ++x) {
-			for (int y = -7; y < 8; ++y) {
-				for (int z = -7; z < 8; ++z) {
-					checkLoad(me, x, y, z, closestToLoad);
-				}
+//		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
+//		ChunkPos me = ChunkPos.createFromWorldVector(loc);
+//		for (int x = -7; x < 8; ++x) {
+//			for (int y = -7; y < 8; ++y) {
+//				for (int z = -7; z < 8; ++z) {
+//					checkLoad(me, x, y, z, closestToLoad);
+//				}
+//			}
+//		}
+//		Collections.sort(closestToLoad, new ComparatorClosestChunkPos(loc));
+//		for (int d = 0; d < 3; ++d) {
+//			if (closestToLoad.size() <= d) break;
+//			generateChunk(closestToLoad.get(d));
+//		}
+		ImplChunk cnk;
+		GeneratorThread.location = loc.clone();
+		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
+		//GeneratorThread.
+		for(int d = 0; d < genThreads.length; ++d){
+			while((cnk = genThreads[d].generated.poll()) != null){
+				chunks.put(cnk.pos, cnk);
 			}
-		}
-		Collections.sort(closestToLoad, new ComparatorClosestChunkPos(loc));
-		for (int d = 0; d < 3; ++d) {
-			if (closestToLoad.size() <= d) break;
-			generateChunk(closestToLoad.get(d));
 		}
 		for (ImplChunk c : chunks.values()) {
 			if (!c.isPopulated() && c.isSurrounded()) {
@@ -863,6 +895,16 @@ public class ImplWorld implements World {
 	@Override
 	public boolean chunkExists(ChunkPos pos) {
 		return chunks.get(pos) != null;
+	}
+
+	@Override
+	public WorldGenerator getGenerator() {
+		return GeneratorList.getWorldGenerator(generatorName);
+	}
+
+	@Override
+	public Music getMusic(EntityPlayer player) {
+		return getGenerator().getBiomeMusic(player);
 	}
 
 }

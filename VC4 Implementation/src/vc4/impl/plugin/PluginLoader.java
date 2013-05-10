@@ -25,7 +25,6 @@ public class PluginLoader {
 
 	private static HashMap<String, Plugin> loadedPlugins = new HashMap<>();
 	private static ArrayList<URL> resourceURLs = new ArrayList<>();
-	private static ArrayList<URL> externalResources = new ArrayList<>();
 	
 	static{
 		try {
@@ -36,7 +35,7 @@ public class PluginLoader {
 			s = PluginLoader.class.getClassLoader().getResource("vc4/resources/lang/en_GB.lang").toString();
 			for(int d = 0; d < 2; ++d) s = s.substring(0, s.lastIndexOf("/"));
 			resourceURLs.add(new URL(s));
-			externalResources.add(new File(DirectoryLocator.getPath() + "/resources/").toURI().toURL());
+			resourceURLs.add(new File(DirectoryLocator.getPath() + "/resources/").toURI().toURL());
 		} catch (MalformedURLException e) {
 			Logger.getLogger(PluginLoader.class).warning("Exception occured", e);
 		}
@@ -81,7 +80,7 @@ public class PluginLoader {
 		for(int d = 0; d < jars.length; ++d){
 			String pName = jars[d].getName();
 			try {
-				externalResources.add(new File(DirectoryLocator.getPath() + "/plugins/" + pName + "/").toURI().toURL());
+				resourceURLs.add(new File(DirectoryLocator.getPath() + "/plugins/" + pName + "/").toURI().toURL());
 			} catch (MalformedURLException e1) {
 				Logger.getLogger(PluginLoader.class).warning("Exception occured", e1);
 			}

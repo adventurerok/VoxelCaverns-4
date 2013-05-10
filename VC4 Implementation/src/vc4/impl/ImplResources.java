@@ -13,6 +13,7 @@ import vc4.api.graphics.Graphics;
 import vc4.api.graphics.shader.ShaderManager;
 import vc4.api.graphics.texture.*;
 import vc4.api.logging.Logger;
+import vc4.api.sound.Audio;
 import vc4.api.yaml.ThreadYaml;
 import vc4.impl.plugin.PluginLoader;
 
@@ -56,6 +57,8 @@ public class ImplResources extends Resources {
 	@SuppressWarnings("unchecked")
 	public void load() throws IOException{
 		ArrayList<String> lSheetTextures = new ArrayList<String>();
+		ArrayList<String> lSounds = new ArrayList<>();
+		ArrayList<String> lMusic = new ArrayList<>();
 		ArrayList<String> lAnimatedTextures = new ArrayList<String>();
 		ArrayList<String> lShaders = new ArrayList<String>();
 		ArrayList<String> lFonts = new ArrayList<String>();
@@ -83,6 +86,8 @@ public class ImplResources extends Resources {
 					else if(e.getKey().equals("animatedtexture")) lAnimatedTextures.addAll(values);
 					else if (e.getKey().equals("shader")) lShaders.addAll(values);
 					else if (e.getKey().equals("font")) lFonts.addAll(values);
+					else if (e.getKey().equals("music")) lMusic.addAll(values);
+					else if (e.getKey().equals("sound")) lSounds.addAll(values);
 				}
 			} catch(IOException e){}
 		}
@@ -119,6 +124,13 @@ public class ImplResources extends Resources {
 				Logger.getLogger(ImplResources.class).warning("Failed to load shader: \"" + s + "\"", e1);
 			}
 
+		}
+		for(String s : lSounds){
+			Audio.loadSound(s);
+		}
+		for(String s : lMusic){
+			Logger.getLogger("VC4").fine("Loading music: " + s);
+			Audio.loadMusic(s);
 		}
 		for (String s : lFonts) {
 			fonts.put(s, new Font(s));
