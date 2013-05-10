@@ -5,8 +5,11 @@ package vc4.vanilla.generation;
 
 import java.util.Random;
 
+import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.generator.WorldGenerator;
+import vc4.api.graphics.*;
+import vc4.api.sound.Music;
 import vc4.api.util.noise.SimplexNoiseGenerator;
 import vc4.api.util.noise.SimplexOctaveGenerator;
 import vc4.api.vector.Vector3d;
@@ -28,8 +31,8 @@ public class OverworldGenerator implements WorldGenerator {
 	private WorldGenUndergroundLake waterLakeGen;
 	private WorldGenUndergroundLake lavaLakeGen;
 	private WorldGenDungeons dungeonsGen = new WorldGenDungeons();
-	SimplexOctaveGenerator noise;
-	SimplexOctaveGenerator hellNoise;
+	//SimplexOctaveGenerator noise;
+	//SimplexOctaveGenerator hellNoise;
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
 
 	@Override
@@ -38,7 +41,7 @@ public class OverworldGenerator implements WorldGenerator {
 		lavaLakeGen = new WorldGenUndergroundLake(Vanilla.lava.uid, 175);
 	}
 
-	public int[] getNoiseDiff(World world, long x, long y, long z) {
+	public int[] getNoiseDiff(World world, long x, long y, long z, SimplexOctaveGenerator noise) {
 		int[] res = new int[32 * 32];
 		long px = (x << 5);
 		long pz = (z << 5);
@@ -50,6 +53,12 @@ public class OverworldGenerator implements WorldGenerator {
 		}
 		return res;
 	}
+	
+	@Override
+	public Music getBiomeMusic(EntityPlayer player) {
+		if(player.position.y < -5000) return Vanilla.musicHell;
+		else return Vanilla.musicOverworld;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -58,11 +67,11 @@ public class OverworldGenerator implements WorldGenerator {
 	 */
 	@Override
 	public GeneratorOutput generate(World world, long x, long y, long z) {
-		noise = new SimplexOctaveGenerator(world, 4);
+		SimplexOctaveGenerator noise = new SimplexOctaveGenerator(world, 4);
 		noise.setScale(1 / 96f);
-		hellNoise = null;
+		SimplexOctaveGenerator hellNoise = null;
 		GeneratorOutput out = new GeneratorOutput();
-		int[] nz = getNoiseDiff(world, x, y, z);
+		int[] nz = getNoiseDiff(world, x, y, z, noise);
 		for (int cx = 0; cx < 32; ++cx) {
 			for (int cz = 0; cz < 32; ++cz) {
 				long diff = nz[cx * 32 + cz];
@@ -71,7 +80,7 @@ public class OverworldGenerator implements WorldGenerator {
 					if (diff > 5000) {
 						double big = -1 + (diff - 5000) / 500;
 						if (big > 0.95) big = 1.9 - big;
-						if (hellNoise == null) initHellNoise(world);
+						if (hellNoise == null) hellNoise = initHellNoise(world);
 						b = hellNoise.noise((x << 5) + cx, (y << 5) + cy, (z << 5) + cz, 0.1f, 1f, true) >= big;
 					}
 					if (diff > -1 && b) {
@@ -96,7 +105,7 @@ public class OverworldGenerator implements WorldGenerator {
 	/**
 	 * @param world
 	 */
-	private void initHellNoise(World world) {
+	private SimplexOctaveGenerator initHellNoise(World world) {
 		SimplexNoiseGenerator[] octaves = new SimplexNoiseGenerator[2];
 		Random rand = new Random(world.getSeed());
 		for (int d = 0; d < 2; ++d) {
@@ -104,7 +113,7 @@ public class OverworldGenerator implements WorldGenerator {
 			octaves[d].setScale(1 / (48d * (d * 2 + 1)));
 		}
 		// hellNoise = new SimplexOctaveGenerator(world, 4);
-		hellNoise = new SimplexOctaveGenerator(octaves);
+		return new SimplexOctaveGenerator(octaves);
 		// hellNoise.setScale(1/96f);
 	}
 
@@ -137,6 +146,52 @@ public class OverworldGenerator implements WorldGenerator {
 			oakGen.generate((x << 5) + oakGen.rand.nextInt(32), (y << 5) + oakGen.rand.nextInt(32), (z << 5) + oakGen.rand.nextInt(32), 0);
 		}
 		if(world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);
+	}
+
+	@Override
+	public void renderSkyBox(World world, EntityPlayer player) {
+		Vector3d pos = player.getEyePos();
+		OpenGL gl = Graphics.getClientOpenGL();
+		gl.disable(GLFlag.DEPTH_TEST);
+		Graphics.getClientShaderManager().unbindShader();
+		if (pos.y < 192) {
+			gl.begin(GLPrimative.QUADS);
+			if (pos.y > -5200) gl.color(0.6f, 0.45f, 0.45f, 1);
+			else gl.color(0.8f, 0.3f, 0.3f, 1);
+			gl.vertex(-256, -256, -256);
+			gl.vertex(256, -256, -256);
+			gl.vertex(256, -256, 256);
+			gl.vertex(-256, -256, 256);
+			if (pos.y < -192) {
+				gl.vertex(256, -256, -256);
+				gl.vertex(256, 256, -256);
+				gl.vertex(256, 256, 256);
+				gl.vertex(256, -256, 256);
+
+				gl.vertex(-256, -256, -256);
+				gl.vertex(-256, 256, -256);
+				gl.vertex(-256, 256, 256);
+				gl.vertex(-256, -256, 256);
+
+				gl.vertex(-256, -256, 256);
+				gl.vertex(-256, 256, 256);
+				gl.vertex(256, 256, 256);
+				gl.vertex(256, -256, 256);
+
+				gl.vertex(256, -256, -256);
+				gl.vertex(256, 256, -256);
+				gl.vertex(-256, 256, -256);
+				gl.vertex(-256, -256, -256);
+				if (pos.y < -256) {
+					gl.vertex(-256, 256, -256);
+					gl.vertex(256, 256, -256);
+					gl.vertex(256, 256, 256);
+					gl.vertex(-256, 256, 256);
+				}
+			}
+			gl.end();
+		}
+		
 	}
 
 }
