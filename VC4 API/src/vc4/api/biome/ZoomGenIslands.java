@@ -14,7 +14,7 @@ public class ZoomGenIslands extends ZoomGenerator{
 		z = (z >> zoom) << zoom;
 		for(int px = 0; px < size; ++px){
 			for(int pz = 0; pz < size; ++pz){
-				createRandom(x + ((px - 2) << zoom), z + ((pz - 2) << zoom), zoom);
+				createRandom(x + ((px - zoom) << zoom), z + ((pz - zoom) << zoom), zoom);
 				if(rand.nextInt(5) == 0) result[px * size + pz] = 1;
 			}
 		}

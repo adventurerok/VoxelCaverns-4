@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.jnbt.CompoundTag;
 
+import vc4.api.biome.Biome;
 import vc4.api.block.Block;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
@@ -256,6 +257,18 @@ public class TestWorld implements World {
 
 	@Override
 	public Music getMusic(EntityPlayer player) {
+		// TASK Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MapData getMapData(long x, long z) {
+		// TASK Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Biome getBiome(long x, long z) {
 		// TASK Auto-generated method stub
 		return null;
 	}

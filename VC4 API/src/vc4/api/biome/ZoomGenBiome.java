@@ -20,7 +20,7 @@ public class ZoomGenBiome extends ZoomGenerator {
 		z = (z >> zoom) << zoom;
 		for(int px = 0; px < size; ++px){
 			for(int pz = 0; pz < size; ++pz){
-				createRandom(x + ((px - 2) << (zoom)), z + ((pz - 2) << (zoom)), zoom);
+				createRandom(x + ((px - zoom) << (zoom)), z + ((pz - zoom) << (zoom)), zoom);
 				ArrayList<Integer> curr = types.get(result[px * size + pz]);
 				result[px * size + pz] = curr.get(rand.nextInt(curr.size()));
 			}

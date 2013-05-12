@@ -28,7 +28,7 @@ public class ZoomGenBiomeType extends ZoomGenerator {
 		z = (z >> zoom) << zoom;
 		for(int px = 0; px < size; ++px){
 			for(int pz = 0; pz < size; ++pz){
-				createRandom(x + ((px - 2) << (zoom)), z + ((pz - 2) << (zoom)), zoom);
+				createRandom(x + ((px - zoom) << (zoom)), z + ((pz - zoom) << (zoom)), zoom);
 				if(result[px * size + pz] == 1) result[px * size + pz] = types.get(rand.nextInt(types.size()));
 			}
 		}
