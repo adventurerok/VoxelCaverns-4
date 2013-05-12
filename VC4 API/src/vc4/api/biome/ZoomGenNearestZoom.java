@@ -3,9 +3,9 @@ package vc4.api.biome;
 import vc4.api.list.IntList;
 import vc4.api.world.World;
 
-public class ZoomGenZoom extends ZoomGenerator {
+public class ZoomGenNearestZoom extends ZoomGenerator {
 
-	public ZoomGenZoom(World world, ZoomGenerator parent) {
+	public ZoomGenNearestZoom(World world, ZoomGenerator parent) {
 		super(world, parent);
 	}
 
@@ -21,25 +21,17 @@ public class ZoomGenZoom extends ZoomGenerator {
 	 */
 	public int[] generate(long x, long z, int zoom, int size) {
 		int parentZoom = ((size >> 1) + 3) & -2; //Size of parent output
-		//int supSize = size;
+		if(parentZoom == 18) parentZoom = 20;
 		int[] parentOutput = parent.generate(x, z, zoom + 1, parentZoom);
 		x = (x >> zoom) << zoom; //Get rid of insignificant bits. Is there a better way to do this?
 		z = (z >> zoom) << zoom;
 		int[] output = new int[size * size]; //Create output array
 		for (int px = 0; px < size; ++px) {
 			int qx = px / 2 + 2; //X index in parent array
-			int sx = px & 1; //Used for getting index of other 
 			for (int pz = 0; pz < size; ++pz) {
 				createRandom(x + ((px - 2) << (zoom)), z + ((pz - 2) << (zoom)), zoom); //Create a random for the position
 				int qz = pz / 2 + 2; //Z index in parent array
-				int sz = pz & 1;
-				IntList its = new IntList(); //A modified version of the arraylist class to store ints. 
-				its.add(parentOutput[(qx) * parentZoom + (qz)]);
-				if(sx == 1 && px > 0 && px < size - 1) its.add(parentOutput[(qx + 1) * parentZoom + (qz)]);
-				else if(sx == 0 && px > 0 && px < size - 1) its.add(parentOutput[(qx - 1) * parentZoom + (qz)]);
-				if(sz == 1 && pz > 0 && pz < size - 1) its.add(parentOutput[(qx) * parentZoom + (qz + 1)]);
-				else if(sz == 0 && pz > 0 && pz < size - 1) its.add(parentOutput[(qx) * parentZoom + (qz - 1)]);
-				output[px * size + pz] = choose(its); //Zoom and smooth the output
+				output[px * size + pz] = parentOutput[(qx) * parentZoom + (qz)]; //Zoom and smooth the output
 			}
 		}
 		return output;

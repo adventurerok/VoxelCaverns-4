@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.jnbt.CompoundTag;
 
+import vc4.api.biome.Biome;
 import vc4.api.block.Block;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
@@ -61,4 +62,6 @@ public interface World {
 	public Chunk generateChunk(ChunkPos pos);
 	public WorldGenerator getGenerator();
 	public Music getMusic(EntityPlayer player);
+	public MapData getMapData(long x, long z);
+	public Biome getBiome(long x, long z);
 }

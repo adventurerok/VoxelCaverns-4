@@ -2,6 +2,9 @@ package vc4.api.biome;
 
 import java.awt.Color;
 
+import vc4.api.sound.Music;
+import vc4.api.sound.MusicType;
+
 public class Biome {
 
 	private static Biome[] biomesList = new Biome[256];
@@ -15,6 +18,7 @@ public class Biome {
 	public int bottomBlock;
 	public int minHeight = 3;
 	public int maxHeight = 30;
+	public Music music = new Music("First_Day", MusicType.BIOME);
 	
 	private static int nextId;
 	
