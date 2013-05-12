@@ -19,9 +19,15 @@ public class EntityLiving extends Entity {
 	}
 	
 	public void jump(){
-		if(onGround){
+		if(onGround || movement == MovementStyle.FLY){
 			motionY = 0.8;
 		}
+	}
+	
+	public void sneak(){
+		if(movement == MovementStyle.FLY){
+			motionY = -0.8;
+		} else movement = MovementStyle.SNEAK;
 	}
 	
 	public double getEyeHeight(){
@@ -77,8 +83,12 @@ public class EntityLiving extends Entity {
 	public void move(){
 		motionX *= 0.6;
 		motionZ *= 0.6;
-		motionY -= world.getFallAcceleration();
-		if(motionY < -world.getFallMaxSpeed()) motionY = -world.getFallMaxSpeed();
+		if(movement != MovementStyle.FLY){
+			motionY -= world.getFallAcceleration();
+			if(motionY < -world.getFallMaxSpeed()) motionY = -world.getFallMaxSpeed();
+		} else{
+			motionY *= 0.6;
+		}
 		if(!onGround){
 			fallDistance += Math.max(0, oldPos.y - position.y);
 			if(fallDistance > 512 && motionY <= -world.getFallMaxSpeed()){
@@ -92,6 +102,9 @@ public class EntityLiving extends Entity {
 			fallDistance = 0;
 		}
 		move(motionX, motionY, motionZ);
+		if(movement == MovementStyle.FLY && onGround){
+			movement = MovementStyle.WALK;
+		}
 		if(collisionHorizontal && movement == MovementStyle.SPRINT) movement = MovementStyle.WALK; 
 	}
 
