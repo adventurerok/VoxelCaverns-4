@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jnbt.*;
 
 import vc4.api.Resources;
+import vc4.api.biome.Biome;
 import vc4.api.block.Block;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
@@ -22,9 +23,9 @@ import vc4.api.math.MathUtils;
 import vc4.api.render.DataRenderer;
 import vc4.api.sound.Music;
 import vc4.api.util.*;
+import vc4.api.vector.Vector2l;
 import vc4.api.vector.Vector3d;
-import vc4.api.world.ChunkPos;
-import vc4.api.world.World;
+import vc4.api.world.*;
 import vc4.impl.plugin.PluginLoader;
 
 /**
@@ -60,16 +61,18 @@ public class ImplWorld implements World {
 
 	private static BlockStore fake = new BlockStore(0, 0, 0);
 	public HashMap<ChunkPos, ImplChunk> chunks = new HashMap<>();
+	public HashMap<Vector2l, ImplMapData> heights = new HashMap<>();
 	private ConcurrentHashMap<String, Integer> registeredBlocks = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<String, Integer> registeredItems = new ConcurrentHashMap<>();
 	private int nextBlockId = 2;
 	private int nextItemId = 2050;
 	private long seed = new Random().nextLong();
 	private long time;
-	private String generatorName = "sky";
+	private String generatorName = "overworld";
 	private String name = "World";
 	private String saveName;
 	private CompoundTag generatorTag = new CompoundTag("gen");
+	protected boolean loaded = false;
 
 	private double tickTime;
 	private List<EntityPlayer> players = new ArrayList<>();
@@ -91,6 +94,7 @@ public class ImplWorld implements World {
 	private void startGenThreads(int num) {
 		GeneratorThread.world = this;
 		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
+		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
 		GeneratorThread.location = new Vector3d(0, 0, 0);
 		GeneratorThread.maxNum = num - 1;
 		genThreads = new GeneratorThread[num];
@@ -139,6 +143,7 @@ public class ImplWorld implements World {
 		Block.clearBlocks();
 		PluginLoader.onWorldLoad(this);
 		GeneratorList.onWorldLoad(this);
+		loaded = true;
 	}
 	
 	public void addPlayer(EntityPlayer player){
@@ -228,9 +233,22 @@ public class ImplWorld implements World {
 	@Override
 	public ImplChunk generateChunk(ChunkPos pos) {
 		ImplChunk chunk = new ImplChunk(this, pos);
-		chunk.setData(GeneratorList.getWorldGenerator(generatorName).generate(this, pos.x, pos.y, pos.z));
+		chunk.setData(GeneratorList.getWorldGenerator(generatorName).generate(this, pos.x, pos.y, pos.z, getOrGenerate(new Vector2l(pos.x, pos.z))));
 		chunks.put(pos, chunk);
 		return chunk;
+	}
+	
+	public ImplMapData getOrGenerate(Vector2l pos){
+		ImplMapData data = heights.get(pos);
+		if(data == null) data = generateMapData(pos);
+		return data;
+	}
+	
+	public ImplMapData generateMapData(Vector2l pos){
+		ImplMapData data = new ImplMapData(pos);
+		getGenerator().generateMapData(this, data);
+		heights.put(pos, data);
+		return data;
 	}
 
 	@Override
@@ -455,6 +473,7 @@ public class ImplWorld implements World {
 			if (c.distanceSquared(loc) > 65565) {
 				c.empty();
 				toRemove.add(c);
+				removeMDReference(c.pos.x, c.pos.z);
 			}
 		}
 		chunks.values().removeAll(toRemove);
@@ -473,14 +492,28 @@ public class ImplWorld implements World {
 //			generateChunk(closestToLoad.get(d));
 //		}
 		ImplChunk cnk;
+		ImplMapData dta;
 		GeneratorThread.location = loc.clone();
-		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
-		//GeneratorThread.
+		for(int d = 0; d < genThreads.length; ++d){
+			while((dta = genThreads[d].newData.poll()) != null){
+				heights.put(dta.getPosition(), dta);
+			}
+		}
 		for(int d = 0; d < genThreads.length; ++d){
 			while((cnk = genThreads[d].generated.poll()) != null){
 				chunks.put(cnk.pos, cnk);
+				addMDReference(cnk.pos.x, cnk.pos.z);
 			}
 		}
+		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
+		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
+		ArrayList<MapData> deadData = new ArrayList<>();
+		for(MapData d : heights.values()){
+			if(d.getReferences() < 1){
+				deadData.add(d);
+			}
+		}
+		heights.values().removeAll(deadData);
 		for (ImplChunk c : chunks.values()) {
 			if (!c.isPopulated() && c.isSurrounded()) {
 				toPopulate.add(c);
@@ -493,6 +526,20 @@ public class ImplWorld implements World {
 			GeneratorList.getWorldGenerator(generatorName).populate(this, pop.x, pop.y, pop.z);
 			toPopulate.get(d).setPopulated(true);
 		}
+	}
+
+	private void removeMDReference(long x, long z) {
+		ImplMapData data = heights.get(new Vector2l(x, z));
+		if(data == null) return;
+		data.removeReference();
+		
+	}
+	
+	private void addMDReference(long x, long z) {
+		ImplMapData data = heights.get(new Vector2l(x, z));
+		if(data == null) return;
+		data.addReference();
+		
 	}
 
 	public void notifyNear(long x, long y, long z) {
@@ -825,6 +872,7 @@ public class ImplWorld implements World {
 		return i.intValue();
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -834,6 +882,7 @@ public class ImplWorld implements World {
 		return generatorTag;
 	}
 
+	@Override
 	public String getSaveName() {
 		return saveName;
 	}
@@ -866,6 +915,21 @@ public class ImplWorld implements World {
 	@Override
 	public Music getMusic(EntityPlayer player) {
 		return getGenerator().getBiomeMusic(player);
+	}
+
+	@Override
+	public MapData getMapData(long x, long z) {
+		return heights.get(new Vector2l(x, z));
+	}
+
+	@Override
+	public Biome getBiome(long x, long z) {
+		try{
+			return getMapData(x >> 5, z >> 5).getBiome((int)(x & 31), (int)(z & 31));
+		} catch(Exception e){
+			System.out.println("null biome");
+			return Biome.plains;
+		}
 	}
 
 }

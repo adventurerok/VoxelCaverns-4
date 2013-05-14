@@ -19,6 +19,7 @@ public class SoundManager extends Audio{
 
 	protected static long soundId;
 	protected static long musicId;
+	protected static int fadeTime = 2;
 	
 	static String musicSource;
 	static Music musicObject;
@@ -80,7 +81,7 @@ public class SoundManager extends Audio{
 	
 //	public static void playMusic(String name){
 //		if(name == null){
-//			if(musicSource != null) player.stop(musicSource);
+//			if(musicSource != null) player.fadeOut(musicSource, null, null, fadeTime);
 //			musicPath = musicSource = null;
 //			musicObject = null;
 //			return;
@@ -89,12 +90,12 @@ public class SoundManager extends Audio{
 //		Sound sound = music.getRandomSound(name);
 //		if (sound == null) return;
 //		if(musicPath != null){
-//			player.fadeOutIn(musicSource, sound.location, sound.location.toString(), 2000, 2000);
+//			player.fadeOutIn(musicSource, sound.location, sound.location.toString(), fadeTime, fadeTime);
 //		} else {
 //			musicSource = "MUSIC_" + soundId;
 //			musicPath = name;
 //			++musicId;
-//			player.backgroundMusic(musicSource, sound.location, sound.location.toString(), true);
+//			player.newStreamingSource(true, musicSource, sound.location, sound.location.toString(), true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
 //			player.play(musicSource);
 //		}
 //	}

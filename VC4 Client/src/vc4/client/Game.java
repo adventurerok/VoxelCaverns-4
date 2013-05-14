@@ -21,6 +21,7 @@ import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.*;
 import vc4.api.logging.Logger;
 import vc4.api.sound.Audio;
+import vc4.api.sound.Music;
 import vc4.api.text.Localization;
 import vc4.api.util.DirectoryLocator;
 import vc4.api.util.Setting;
@@ -230,7 +231,7 @@ public class Game extends Component implements ClientGame {
 			Logger.getLogger(Game.class).warning("Exception occured", e);
 		}
 		player = new EntityPlayer(world);
-		player.setPosition(0, 30, 0);
+		player.setPosition(12, 30, 12);
 		player.setSpawn(new Vector3d(0, 30, 0));
 		world.generateChunk(ChunkPos.createFromWorldVector(player.position));
 		player.addToWorld();
@@ -240,7 +241,7 @@ public class Game extends Component implements ClientGame {
 		ingameGui = new IngameGui();
 		add(ingameGui);
 		ingameGui.resized();
-		Audio.playMusic("First_Day");
+		Audio.playMusic(Music.TITLE);
 	}
 
 	/*

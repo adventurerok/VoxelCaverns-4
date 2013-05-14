@@ -15,6 +15,7 @@ import vc4.impl.gui.GuiInventory;
 public class IngameGui extends Component {
 
 	GuiInventory invGui;
+	ScreenDebug debug;
 	
 	/**
 	 * 
@@ -22,6 +23,8 @@ public class IngameGui extends Component {
 	public IngameGui() {
 		invGui = new GuiInventory();
 		add(invGui);
+		debug = new ScreenDebug();
+		add(debug);
 		add(new OverlayRenderer());
 	}
 	

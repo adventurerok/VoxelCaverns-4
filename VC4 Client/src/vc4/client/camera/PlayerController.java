@@ -21,7 +21,9 @@ public class PlayerController extends FPCamera {
 
 	double mouseSensitivity = 0.2f;
 	double timeSinceForward = 1000;
+	double timeSinceJump = 1000;
 	double walkTime = 0;
+	double jumpTime = 0;
 
 	EntityPlayer player;
 
@@ -129,15 +131,25 @@ public class PlayerController extends FPCamera {
 		else if(keys.keyReleased(Key.W)){
 			if(walkTime < 200) timeSinceForward = 0;
 			walkTime = 0;
-			if (!keys.isKeyDown(Key.LSHIFT)) player.setMovement(MovementStyle.WALK);
+			if (!keys.isKeyDown(Key.LSHIFT) && player.getMovement() != MovementStyle.FLY) player.setMovement(MovementStyle.WALK);
 		}
 		
 		if (keys.isKeyDown(Key.S)) forward -= delta / divisor;
 		if (keys.isKeyDown(Key.A)) sideways -= delta / divisor;
 		if (keys.isKeyDown(Key.D)) sideways += delta / divisor;
-		if (keys.isKeyDown(Key.SPACE)) player.jump();
-		if (keys.isKeyDown(Key.LSHIFT)) player.setMovement(MovementStyle.SNEAK);
-		else if(keys.keyReleased(Key.LSHIFT)) player.setMovement(MovementStyle.WALK);
+		if (keys.isKeyDown(Key.SPACE)){
+			player.jump();
+			jumpTime += delta;
+			if(timeSinceJump < 200){
+				if(player.getMovement() != MovementStyle.FLY) player.setMovement(MovementStyle.FLY);
+				else player.setMovement(MovementStyle.WALK);
+			}
+		} else if(keys.keyReleased(Key.SPACE)){
+			if(jumpTime < 200) timeSinceJump = 0;
+			jumpTime = 0;
+		}
+		if (keys.isKeyDown(Key.LSHIFT)) player.sneak();
+		else if(keys.keyReleased(Key.LSHIFT) && player.getMovement() == MovementStyle.SNEAK) player.setMovement(MovementStyle.WALK);
 		player.walk(forward, sideways);
 		if(timeSinceForward < 1000) timeSinceForward += delta;
 	}

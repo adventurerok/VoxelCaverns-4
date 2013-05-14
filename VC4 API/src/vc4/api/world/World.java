@@ -64,4 +64,6 @@ public interface World {
 	public Music getMusic(EntityPlayer player);
 	public MapData getMapData(long x, long z);
 	public Biome getBiome(long x, long z);
+	public abstract String getSaveName();
+	public abstract String getName();
 }

@@ -36,7 +36,7 @@ public class PluginLoader {
 			for(int d = 0; d < 2; ++d) s = s.substring(0, s.lastIndexOf("/"));
 			resourceURLs.add(new URL(s));
 			resourceURLs.add(new File(DirectoryLocator.getPath() + "/resources/").toURI().toURL());
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			Logger.getLogger(PluginLoader.class).warning("Exception occured", e);
 		}
 	}

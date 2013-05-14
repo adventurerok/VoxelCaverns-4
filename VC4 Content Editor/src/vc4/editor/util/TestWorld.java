@@ -273,4 +273,12 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	public String getSaveName() {
+		return null;
+	}
+
+	public String getName() {
+		return null;
+	}
+
 }

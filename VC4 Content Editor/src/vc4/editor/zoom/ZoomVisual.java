@@ -19,9 +19,9 @@ public class ZoomVisual {
 
 	 private static long seed = new Random().nextLong();
 //	private static long seed = 1919273631L;
-	private static int width = 4;
+	private static int width = 16;
 	// private static int minus = width / 2;
-	private static int minus = 0;
+	private static int minus = -8;
 	private static int size = 32;
 	private static int imgSize = size * width;
 
@@ -29,7 +29,7 @@ public class ZoomVisual {
 
 	public static void main(String[] args) {
 		int[] result = doFourZooms();
-		displayImage(result, "incorrectzoom");
+		displayImage(result, "zoomgentest");
 		size *= width;
 		width = 1;
 		int[] correct = doFourZooms();
@@ -56,7 +56,8 @@ public class ZoomVisual {
 	}
 
 	public static void displayImage(int[] img, String save) {
-		img = toPixels(img);
+		//img = biomesToPixels(img);
+		img = heightsToPixels(img);
 		BufferedImage image = new BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_RGB);
 		WritableRaster raster = (WritableRaster) image.getData();
 		raster.setPixels(0, 0, imgSize, imgSize, img);
@@ -81,7 +82,7 @@ public class ZoomVisual {
 		int[][] funcs = new int[width * width][];
 		for (int x = 0; x < width; ++x) {
 			for (int z = 0; z < width; ++z) {
-				funcs[x * width + z] = doZoomFunc(x - minus, z - minus);
+				funcs[z * width + x] = doZoomFunc(x - minus, z - minus);
 			}
 		}
 		int[] result = new int[size * size * width * width];
@@ -92,43 +93,29 @@ public class ZoomVisual {
 			for (int z = 0; z < size3; ++z) {
 				int az = z / size;
 				int pz = z % size;
-				int[] root = funcs[ax * width + az];
-				result[x * size3 + z] = root[px * size + pz];
+				int[] root = funcs[az * width + ax];
+				result[x * size3 + z] = root[pz * size + px];
 			}
 		}
 		return result;
 	}
 
 	private static int[] doZoomFunc(int x, int z) {
-		ZoomGenRandomZoom.rootSize = size;
-		ZoomGenerator par = new ZoomGenIslands(world);
-		par = new ZoomGenRandomZoom(world, par);
-		par = new ZoomGenIslands(world, par);
-		par = new ZoomGenRandomZoom(world, par);
-		par = new ZoomGenBiomeType(world, par);
-		par = new ZoomGenRandomZoom(world, par);
-		ArrayList<ArrayList<Integer>> biomes = new ArrayList<>();
-		ArrayList<Integer> ocean = new ArrayList<>();
-		ocean.add(Biome.ocean.id);
-		biomes.add(ocean);
-		ArrayList<Integer> normal = new ArrayList<>();
-		normal.add(Biome.plains.id);
-		biomes.add(normal);
-		ArrayList<Integer> cold = new ArrayList<>();
-		cold.add(Biome.snowPlains.id);
-		biomes.add(cold);
-		ArrayList<Integer> hot = new ArrayList<>();
-		hot.add(Biome.desert.id);
-		biomes.add(hot);
-		par = new ZoomGenBiome(world, par, biomes);
-		par = new ZoomGenRandomZoom(world, par);
-//		for (int d = 0; d < 4; ++d) {
-//			par = new ZoomGenRandomZoom(world, par);
-//			par = new ZoomGenRandomZoom(world, par);
-//		}
-//		par = new ZoomGenRandomZoom(world, par);
+		ZoomGenerator par = new HeightGenSeed(world);
+		par = new HeightGenZoom(world, par);
+		par = new HeightGenDisplace(world, par, 1/2f);
+		par = new HeightGenZoom(world, par);
+		par = new HeightGenDisplace(world, par, 1/4f);
+		par = new HeightGenZoom(world, par);
+		par = new HeightGenDisplace(world, par, 1/8f);
+		par = new HeightGenZoom(world, par);
+		par = new HeightGenDisplace(world, par, 1/16f);
+		par = new HeightGenZoom(world, par);
+		par = new HeightGenZoom(world, par);
+		par = new BiomeGenZoom(world, par);
 		long start = System.nanoTime();
-		int[] result = par.generate(x * size, z * size, 0, size);
+		int[] result = par.generate(x * size, z * size, size);
+		
 		long time = (System.nanoTime() - start) / 1000000;
 		System.out.println("Took " + time + " ms");
 		return result;
@@ -143,13 +130,24 @@ public class ZoomVisual {
 		return resizedImg;
 	}
 
-	private static int[] toPixels(int[] result) {
+	public static int[] biomesToPixels(int[] result) {
 		int[] out = new int[result.length * 3];
 		for (int d = 0; d < result.length; ++d) {
 			int col = Biome.byId(result[d]).mapColor.getRGB();
 			out[d * 3] = col >> 16;
 			out[d * 3 + 1] = col >> 8;
 			out[d * 3 + 2] = col;
+		}
+		return out;
+	}
+	
+	public static int[] heightsToPixels(int[] result) {
+		int[] out = new int[result.length * 3];
+		for (int d = 0; d < result.length; ++d) {
+			int all = result[d] + 127;
+			out[d * 3] = all;
+			out[d * 3 + 1] = all;
+			out[d * 3 + 2] = all;
 		}
 		return out;
 	}

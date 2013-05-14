@@ -14,7 +14,7 @@ public abstract class ZoomGenerator {
 		this.world = world;
 	}
 	
-	public void createRandom(long x, long z, int zoom){
+	public void createRandom(long x, long z){
 		rand = world.createRandom(x, z, 35628132776231L);
 	}
 	
@@ -31,5 +31,5 @@ public abstract class ZoomGenerator {
 	}
 	
 	
-	public abstract int[] generate(long x, long z, int zoom, int size);
+	public abstract int[] generate(long x, long z, int size);
 }

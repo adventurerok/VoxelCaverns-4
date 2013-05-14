@@ -3,6 +3,7 @@ package vc4.impl.world;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import vc4.api.vector.Vector2l;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.ChunkPos;
 import vc4.api.world.ComparatorClosestChunkPos;
@@ -10,10 +11,12 @@ import vc4.api.world.ComparatorClosestChunkPos;
 public class GeneratorThread extends Thread {
 	
 	public static HashMap<ChunkPos, ImplChunk> chunks;
+	public static HashMap<Vector2l, ImplMapData> heights;
 	public static ImplWorld world;
 	public static boolean stop;
 	public static Vector3d location;
 	public ConcurrentLinkedQueue<ImplChunk> generated = new ConcurrentLinkedQueue<>();
+	public ConcurrentLinkedQueue<ImplMapData> newData = new ConcurrentLinkedQueue<>();
 	public int num;
 	public static int maxNum;
 	
@@ -26,7 +29,7 @@ public class GeneratorThread extends Thread {
 	public void run() {
 		while(!stop){
 			long start = System.nanoTime();
-			generate(location);
+			if(world.loaded) generate(location);
 			long time = System.nanoTime() - start;
 			time /= 1000000;
 			if(time > 30) time = 30;
@@ -56,9 +59,20 @@ public class GeneratorThread extends Thread {
 	
 	public ImplChunk generateChunk(ChunkPos pos) {
 		ImplChunk chunk = new ImplChunk(world, pos);
-		chunk.setData(world.getGenerator().generate(world, pos.x, pos.y, pos.z));
+		chunk.setData(world.getGenerator().generate(world, pos.x, pos.y, pos.z, getOrGenerate(new Vector2l(pos.x, pos.z))));
 		generated.add(chunk);
 		return chunk;
+	}
+	
+	public ImplMapData getOrGenerate(Vector2l pos){
+		ImplMapData data = heights.get(pos);
+		if(data == null){
+			data = new ImplMapData(pos);
+			world.getGenerator().generateMapData(world, data);
+			heights.put(pos, data);
+			newData.add(data);
+		}
+		return data;
 	}
 	
 	private void checkLoad(ChunkPos start, int x, int y, int z, ArrayList<ChunkPos> toLoad) {
