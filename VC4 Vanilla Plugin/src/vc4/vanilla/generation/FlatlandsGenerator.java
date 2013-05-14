@@ -8,6 +8,7 @@ import vc4.api.generator.WorldGenerator;
 import vc4.api.graphics.*;
 import vc4.api.sound.Music;
 import vc4.api.vector.Vector3d;
+import vc4.api.world.MapData;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 
@@ -20,7 +21,7 @@ public class FlatlandsGenerator implements WorldGenerator {
 	}
 
 	@Override
-	public GeneratorOutput generate(World world, long x, long y, long z) {
+	public GeneratorOutput generate(World world, long x, long y, long z, MapData data) {
 		GeneratorOutput out = new GeneratorOutput();
 		if(y < 0){
 			Arrays.fill(out.blocks, world.getGeneratorTag().getShort("blockId", (short)1));
@@ -87,6 +88,10 @@ public class FlatlandsGenerator implements WorldGenerator {
 			}
 			gl.end();
 		}
+	}
+
+	@Override
+	public void generateMapData(World world, MapData data) {
 	}
 
 }

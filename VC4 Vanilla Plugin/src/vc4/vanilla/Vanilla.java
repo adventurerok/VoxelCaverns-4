@@ -3,6 +3,7 @@
  */
 package vc4.vanilla;
 
+import vc4.api.biome.Biome;
 import vc4.api.block.*;
 import vc4.api.generator.GeneratorList;
 import vc4.api.plugin.Plugin;
@@ -52,7 +53,10 @@ public class Vanilla extends Plugin {
 	public static ToolMaterial materialSacred = new ToolMaterial("sacred", 5120, 750);
 	
 	public static Music musicOverworld = new Music("First_Day", MusicType.BIOME);
+	public static Music musicDesert = new Music("desert_winds", MusicType.BIOME);
 	public static Music musicHell = new Music("A_Night_Out", MusicType.BIOME);
+	public static Music musicSky = new Music("Menu_Screen", MusicType.BIOME);
+	
 	
 	private static ToolMaterial[] materials = new ToolMaterial[]{
 		materialWood,
@@ -134,9 +138,13 @@ public class Vanilla extends Plugin {
 		brickStairs12 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.12"), 12).setName("brickstairs");
 		bookshelfEnchanted = new BlockBookshelfEnchanted(world.getRegisteredBlock("vanilla.bookshelf.enchanted")).setMineData(new MiningData().setRequired(ToolType.axe).setPowers(1, 5, 50).setTimes(3, 0.1, 0.75)).setName("bookshelfenchanted");
 		crackedBrick = new BlockBrickCracked(world.getRegisteredBlock("vanilla.brick.cracked")).setName("crackedbrick");
-		
 		generateToolItems(world);
-		
+		Biome.ocean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		Biome.ocean.music = musicSky;
+		Biome.desert.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		Biome.desert.music = musicDesert;
+		Biome.plains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		Biome.snowPlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
 	}

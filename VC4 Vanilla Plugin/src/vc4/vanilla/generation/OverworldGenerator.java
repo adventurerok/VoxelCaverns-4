@@ -3,8 +3,9 @@
  */
 package vc4.vanilla.generation;
 
-import java.util.Random;
+import java.util.*;
 
+import vc4.api.biome.*;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.generator.WorldGenerator;
@@ -13,6 +14,8 @@ import vc4.api.sound.Music;
 import vc4.api.util.noise.SimplexNoiseGenerator;
 import vc4.api.util.noise.SimplexOctaveGenerator;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3l;
+import vc4.api.world.MapData;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.room.DungeonRoomBase;
@@ -31,14 +34,28 @@ public class OverworldGenerator implements WorldGenerator {
 	private WorldGenUndergroundLake waterLakeGen;
 	private WorldGenUndergroundLake lavaLakeGen;
 	private WorldGenDungeons dungeonsGen = new WorldGenDungeons();
-	//SimplexOctaveGenerator noise;
-	//SimplexOctaveGenerator hellNoise;
+	private WorldGenFloatingIslands floatingGen = new WorldGenFloatingIslands();
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
+	ArrayList<ArrayList<Integer>> biomes;
+	
 
 	@Override
 	public void onWorldLoad(World world) {
 		waterLakeGen = new WorldGenUndergroundLake(Vanilla.water.uid, 100);
 		lavaLakeGen = new WorldGenUndergroundLake(Vanilla.lava.uid, 175);
+		biomes = new ArrayList<>();
+		ArrayList<Integer> ocean = new ArrayList<>();
+		ocean.add(Biome.ocean.id);
+		biomes.add(ocean);
+		ArrayList<Integer> normal = new ArrayList<>();
+		normal.add(Biome.plains.id);
+		biomes.add(normal);
+		ArrayList<Integer> cold = new ArrayList<>();
+		cold.add(Biome.snowPlains.id);
+		biomes.add(cold);
+		ArrayList<Integer> hot = new ArrayList<>();
+		hot.add(Biome.desert.id);
+		biomes.add(hot);
 	}
 
 	public int[] getNoiseDiff(World world, long x, long y, long z, SimplexOctaveGenerator noise) {
@@ -53,11 +70,24 @@ public class OverworldGenerator implements WorldGenerator {
 		}
 		return res;
 	}
-	
+
+	public int[] getNoiseDiff(MapData data, long y) {
+		int[] res = Arrays.copyOf(data.getHeightMap(), 1024);
+		for (int cx = 0; cx < 32; ++cx) {
+			for (int cz = 0; cz < 32; ++cz) {
+				res[cz * 32 + cx] = (int) (res[cz * 32 + cx] - ((y << 5) + 31));
+			}
+		}
+		return res;
+	}
+
 	@Override
 	public Music getBiomeMusic(EntityPlayer player) {
-		if(player.position.y < -5000) return Vanilla.musicHell;
-		else return Vanilla.musicOverworld;
+		Vector3l pos = player.position.toVector3l();
+		if (pos.y < -5000) return Vanilla.musicHell;
+		if (pos.y > 750) return Vanilla.musicSky;
+		Biome biome = player.getWorld().getBiome(pos.x, pos.z);
+		return biome.music;
 	}
 
 	/*
@@ -66,15 +96,13 @@ public class OverworldGenerator implements WorldGenerator {
 	 * @see vc4.api.generator.WorldGenerator#generate(vc4.api.world.World, long, long, long)
 	 */
 	@Override
-	public GeneratorOutput generate(World world, long x, long y, long z) {
-		SimplexOctaveGenerator noise = new SimplexOctaveGenerator(world, 4);
-		noise.setScale(1 / 96f);
+	public GeneratorOutput generate(World world, long x, long y, long z, MapData data) {
 		SimplexOctaveGenerator hellNoise = null;
 		GeneratorOutput out = new GeneratorOutput();
-		int[] nz = getNoiseDiff(world, x, y, z, noise);
+		int[] nz = getNoiseDiff(data, y);
 		for (int cx = 0; cx < 32; ++cx) {
 			for (int cz = 0; cz < 32; ++cz) {
-				long diff = nz[cx * 32 + cz];
+				long diff = nz[cz * 32 + cx];
 				for (int cy = 31; cy >= 0; --cy) {
 					boolean b = true;
 					if (diff > 5000) {
@@ -84,14 +112,20 @@ public class OverworldGenerator implements WorldGenerator {
 						b = hellNoise.noise((x << 5) + cx, (y << 5) + cy, (z << 5) + cz, 0.1f, 1f, true) >= big;
 					}
 					if (diff > -1 && b) {
-						if (diff == 0) out.setBlockId(cx, cy, cz, Vanilla.grass.uid);
-						else if (diff < 6) out.setBlockId(cx, cy, cz, Vanilla.dirt.uid);
+						if (diff < 6){
+							Biome bio = data.getBiome(cx, cz);
+							if (diff == 0) out.setBlockId(cx, cy, cz, bio.topBlock);
+							else if(diff < 5) out.setBlockId(cx, cy, cz, bio.fillerBlock);
+							else out.setBlockId(cx, cy, cz, bio.bottomBlock);
+						}
 						else if (diff < 5000) out.setBlockId(cx, cy, cz, 1);
 						else out.setBlockId(cx, cy, cz, Vanilla.hellrock.uid);
 					} else if (!b) {
 						if ((y << 5) + cy < -5975) {
 							out.setBlockId(cx, cy, cz, Vanilla.lava.uid);
 						}
+					} else if(diff < 0 && (y << 5) + cy < 0){
+						out.setBlockId(cx, cy, cz, Vanilla.water.uid);
 					}
 					++diff;
 				}
@@ -141,11 +175,16 @@ public class OverworldGenerator implements WorldGenerator {
 			ruinsGen.populate(world, x, y, z);
 			dungeonsGen.populate(world, x, y, z);
 		}
-		TreeGenBasic oakGen = new TreeGenBasic(world, new Random(world.getSeed() ^ 71927L ^ x ^ 139013L ^ y ^ 1038794L ^ z));
-		for (int d = 0; d < 100; ++d) {
-			oakGen.generate((x << 5) + oakGen.rand.nextInt(32), (y << 5) + oakGen.rand.nextInt(32), (z << 5) + oakGen.rand.nextInt(32), 0);
+		if(y > -1){
+			TreeGenBasic oakGen = new TreeGenBasic(world, new Random(world.getSeed() ^ 71927L ^ x ^ 139013L ^ y ^ 1038794L ^ z));
+			for (int d = 0; d < 100; ++d) {
+				oakGen.generate((x << 5) + oakGen.rand.nextInt(32), (y << 5) + oakGen.rand.nextInt(32), (z << 5) + oakGen.rand.nextInt(32), 0);
+			}
 		}
-		if(world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);
+		if (world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);
+		if (y > 30) {
+			floatingGen.populate(world, x, y, z);
+		}
 	}
 
 	@Override
@@ -191,7 +230,59 @@ public class OverworldGenerator implements WorldGenerator {
 			}
 			gl.end();
 		}
+
+	}
+
+	@Override
+	public void generateMapData(World world, MapData data) {
+		long wx = data.getPosition().x << 5;
+		long wz = data.getPosition().y << 5;
+		ZoomGenerator bgen = new BiomeGenIslands(world);
+		bgen = new BiomeGenZoom(world, bgen, false);
+		bgen = new BiomeGenIslands(world, bgen);
+		bgen = new BiomeGenZoom(world, bgen, true);
+		bgen = new BiomeGenSuperbiome(world, bgen);
+		bgen = new BiomeGenZoom(world, bgen, false);
+		bgen = new BiomeGenBiome(world, bgen, biomes);
+		bgen = new BiomeGenZoom(world, bgen, true);
+		ZoomGenerator hgen = new HeightGenSeed(world);
+		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //0
+		bgen = new BiomeGenZoom(world, bgen, true);
+		hgen = new HeightGenZoom(world, hgen);
+		hgen = new HeightGenDisplace(world, hgen, 1/2f);
+		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //1
+		bgen = new BiomeGenZoom(world, bgen, true);
+		hgen = new HeightGenZoom(world, hgen);
+		hgen = new HeightGenDisplace(world, hgen, 1/4f);
+		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //2
+		bgen = new BiomeGenZoom(world, bgen, true);
+		hgen = new HeightGenZoom(world, hgen);
+		hgen = new HeightGenDisplace(world, hgen, 1/8f);
+		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //3
+		bgen = new BiomeGenZoom(world, bgen, true);
+		hgen = new HeightGenZoom(world, hgen);
+		hgen = new HeightGenDisplace(world, hgen, 1/16f);
+		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //4
+		bgen = new BiomeGenZoom(world, bgen, true);
+		hgen = new HeightGenZoom(world, hgen);
+		hgen = new HeightGenDisplace(world, hgen, 1/32f);
+		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //5
+		bgen = new BiomeGenZoom(world, bgen, true);
+		hgen = new HeightGenZoom(world, hgen);
+		hgen = new HeightGenDisplace(world, hgen, 1/64f);
+		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //6
+		hgen = new HeightGenZoom(world, hgen);
+		hgen = new BiomeGenZoom(world, hgen);
+		bgen = new BiomeGenZoom(world, bgen, true); //7
+		bgen = new BiomeGenZoom(world, bgen, true); //8
+		
+		int[] intBiomes = bgen.generate(wx, wz, 32);
+		byte[] biomes = new byte[32 * 32];
+		for(int d = 0; d < 1024; ++d) biomes[d] = (byte) intBiomes[d];
+		data.setBiomeMap(biomes);
+		data.setHeightMap(hgen.generate(wx, wz, 32));
 		
 	}
+	
 
 }

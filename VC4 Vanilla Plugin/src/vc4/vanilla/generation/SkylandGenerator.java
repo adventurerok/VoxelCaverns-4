@@ -8,7 +8,9 @@ import vc4.api.generator.WorldGenerator;
 import vc4.api.sound.Music;
 import vc4.api.util.noise.SimplexOctaveGenerator;
 import vc4.api.vector.Vector3d;
+import vc4.api.world.MapData;
 import vc4.api.world.World;
+import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.trees.TreeGenBasic;
 
 public class SkylandGenerator implements WorldGenerator {
@@ -20,7 +22,7 @@ public class SkylandGenerator implements WorldGenerator {
 	}
 
 	@Override
-	public GeneratorOutput generate(World world, long x, long y, long z) {
+	public GeneratorOutput generate(World world, long x, long y, long z, MapData data) {
 		GeneratorOutput out = new GeneratorOutput();
 		return out;
 	}
@@ -54,12 +56,17 @@ public class SkylandGenerator implements WorldGenerator {
 
 	@Override
 	public Music getBiomeMusic(EntityPlayer player) {
-		return Music.TITLE;
+		return Vanilla.musicSky;
 	}
 
 	@Override
 	public void renderSkyBox(World world, EntityPlayer player) {
 		// TASK Auto-generated method stub
+		
+	}
+
+	@Override
+	public void generateMapData(World world, MapData data) {
 		
 	}
 
