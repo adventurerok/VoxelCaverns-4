@@ -3,6 +3,8 @@ package vc4.vanilla.generation;
 
 import java.util.Random;
 
+import vc4.api.biome.Biome;
+import vc4.api.biome.BiomeType;
 import vc4.api.generator.WorldPopulator;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
@@ -12,9 +14,9 @@ public class WorldGenDungeons implements WorldPopulator{
 	@Override
 	public void populate(World world, long x, long y, long z) {
 		Random rand = world.createRandom(x, y, z, 15625684286L);
-		//Biome b = world.getBiome(x << 5, z << 5);
-		//boolean badBiome = (b == Biome.ocean && y > -1000) || (b == Biome.volcanic && y > -100);
-		if(y > -1/* || badBiome*/) return;
+		Biome b = world.getBiome(x << 5, z << 5);
+		boolean badBiome = b.getType().equals(BiomeType.ocean) && y > -3;
+		if(y > -1 || badBiome) return;
 		if(rand.nextInt(150) != 0) return;
 		x <<= 5;
 		y <<= 5;

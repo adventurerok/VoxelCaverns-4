@@ -31,8 +31,9 @@ public class SkylandGenerator implements WorldGenerator {
 		int[] res = new int[32 * 32];
 		long px = (x << 5);
 		long pz = (z << 5);
+		int cz;
 		for (int cx = 0; cx < 32; ++cx) {
-			for (int cz = 0; cz < 32; ++cz) {
+			for (cz = 0; cz < 32; ++cz) {
 				res[cx * 32 + cz] = (int) ((noise.noise(px + cx, pz + cz, 0.1f, 1f) + 1) * 15);
 				res[cx * 32 + cz] = (int) (res[cx * 32 + cz] - ((y << 5) + 31));
 			}
@@ -44,8 +45,11 @@ public class SkylandGenerator implements WorldGenerator {
 	public void populate(World world, long x, long y, long z) {
 		new WorldGenFloatingIslands().populate(world, x, y, z);
 		TreeGenBasic oakGen = new TreeGenBasic(world, new Random(world.getSeed() ^ 71927L ^ x ^ 139013L ^ y ^ 1038794L ^ z));
+		x <<= 5;
+		y <<= 5;
+		z <<= 5;
 		for (int d = 0; d < 100; ++d) {
-			oakGen.generate((x << 5) + oakGen.rand.nextInt(32), (y << 5) + oakGen.rand.nextInt(32), (z << 5) + oakGen.rand.nextInt(32), 0);
+			oakGen.generate(x + oakGen.rand.nextInt(32), y + oakGen.rand.nextInt(32), z + oakGen.rand.nextInt(32), Vanilla.plantTreeOak);
 		}
 	}
 

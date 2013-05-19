@@ -2,6 +2,7 @@ package vc4.vanilla.generation.trees;
 
 import java.util.Random;
 
+import vc4.api.block.Plant;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.TreeGen;
@@ -9,27 +10,32 @@ import vc4.vanilla.generation.TreeGen;
 public class TreeGenBasic extends TreeGen {
 
 	
+	public TreeGenBasic() {
+		// TASK Auto-generated constructor stub
+	}
 	
+	
+	
+
 	public TreeGenBasic(World world, Random rand) {
 		super(world, rand);
+		// TASK Auto-generated constructor stub
 	}
 
+
+
+
 	@Override
-	public boolean generate(long x, long y, long z, int tt) {
-		byte data = (byte) (tt % 100);
-		if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTreeOak)){
-			++y;
-			if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTreeOak)){
-				++y;
-				if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTreeOak)) return false;
-			}
-		}
+	public boolean generate(long x, long y, long z, Plant plant) {
+		byte data = (byte) (plant.getSubId() % 100);
+		if(!world.getBlockType(x, y - 1, z).canGrowPlant(plant)) return false;
 		if(!world.getBlockType(x, y, z).replacableBy(world, x, y, z, Vanilla.logV.uid, data)) return false;
 		int height = 5 + rand.nextInt(9);
-		if(tt / 100 != 2){
+		if(plant.getSubId() / 100 != 2){
+			int gy, gz;
 			for(int gx = 0; gx < 5; ++gx){
-				for(int gy = 0; gy < 5; ++gy){
-					for(int gz = 0; gz < 5; ++gz){
+				for(gy = 0; gy < 5; ++gy){
+					for(gz = 0; gz < 5; ++gz){
 						if(gx == 0 || gx == 4){
 							if(gy == 0 || gy == 4){
 								if(gz == 0 || gz == 4) continue;
@@ -50,5 +56,6 @@ public class TreeGenBasic extends TreeGen {
 		}
 		return true;
 	}
+
 
 }

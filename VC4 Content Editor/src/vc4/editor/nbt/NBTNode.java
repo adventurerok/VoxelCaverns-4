@@ -4,11 +4,7 @@ import java.util.Map.Entry;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.jnbt.CompoundTag;
-import org.jnbt.ListTag;
-import org.jnbt.NBTConstants;
-import org.jnbt.NBTUtils;
-import org.jnbt.Tag;
+import org.jnbt.*;
 
 public class NBTNode extends DefaultMutableTreeNode {
 

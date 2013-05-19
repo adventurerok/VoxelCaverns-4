@@ -169,3 +169,7 @@ VC4-Development-0.0.1-224
 	+ Worlds can play music based on player position
 VC4-Development-0.0.1-225
 	* World Generation is now done on threads and is faster and doesn't contribute to lag as much (especially in hell)
+VC4-Development-0.0.1-226
+	* Better biome api
+VC4-Development-0.0.1-227
+	+ New BlockRendererFace

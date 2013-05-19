@@ -6,6 +6,7 @@ package vc4.vanilla.block;
 import java.awt.Color;
 import java.util.Random;
 
+import vc4.api.biome.Biome;
 import vc4.api.block.BlockMultitexture;
 import vc4.api.block.Material;
 import vc4.api.block.Plant;
@@ -23,7 +24,7 @@ import vc4.vanilla.Vanilla;
  */
 public class BlockGrass extends BlockMultitexture {
 
-	private static Color grass = new Color(0x1C8F1C);
+	public static Color grass = new Color(0x1C8F1C);
 	
 	/**
 	 * @param uid
@@ -41,6 +42,9 @@ public class BlockGrass extends BlockMultitexture {
 	 */
 	@Override
 	public Color getColorMultitexture(World world, long x, long y, long z, int side) {
+		if(world.getBlockId(x, y + 1, z) == Vanilla.snow.uid) return Color.white;
+		Biome bio = world.getBiome(x, z);
+		if(bio != null) return bio.grassColor;
 		return grass;
 	}
 	
@@ -71,8 +75,10 @@ public class BlockGrass extends BlockMultitexture {
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
 		if(side == 4 && world.getBlockData(x, y, z) == 0){
-			//if(world.getBlockId(x, y + 1, z) == Block.snowCover.uid) return Color.white;
-			/*else */return grass;
+			if(world.getBlockId(x, y + 1, z) == Vanilla.snow.uid) return Color.white;
+			Biome bio = world.getBiome(x, z);
+			if(bio != null) return bio.grassColor;
+			else return grass;
 		}
 		else return Color.white;
 	}
@@ -136,12 +142,12 @@ public class BlockGrass extends BlockMultitexture {
 	 */
 	@Override
 	public boolean canGrowPlant(Plant plant) {
-		return plant.getUid() == 12;
+		return plant.getUid() == Vanilla.plantTreeOak.getUid() || plant.getUid() == Vanilla.plantWeed.getUid();
 	}
 	
 	
 	@Override
-	public void blockUpdate(World world, Random rand, long x, long y, long z) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z) {
 		byte data = world.getBlockData(x, y, z);
 		if(rand.nextInt(data + 1) == 0){
 			long nx = x - 1 + rand.nextInt(3);
@@ -164,7 +170,7 @@ public class BlockGrass extends BlockMultitexture {
 			world.setBlockData(x, y, z, data);
 		}
 		
-		return;
+		return 0;
 	}
 
 }

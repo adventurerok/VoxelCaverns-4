@@ -17,6 +17,7 @@ public interface Renderer {
 
 	public abstract void color(float r, float g, float b, float a);
 	public abstract void color(Color color);
+	public abstract void color(Color color, double multiply);
 
 	public abstract void tex(float s, float t, float r, float q);
 
@@ -28,5 +29,6 @@ public interface Renderer {
 
 	public abstract void render();
 	public abstract void tex(double s, double t, double r, double q);
+	public abstract void color(double r, double g, double b, double a);
 
 }

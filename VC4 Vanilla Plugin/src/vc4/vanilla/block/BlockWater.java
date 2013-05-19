@@ -5,6 +5,7 @@ package vc4.vanilla.block;
 
 import java.awt.Color;
 
+import vc4.api.biome.Biome;
 import vc4.api.block.BlockFluid;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
@@ -41,6 +42,8 @@ public class BlockWater extends BlockFluid {
 	 */
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
+		Biome bio = world.getBiome(x, z);
+		if(bio != null) return bio.waterColor;
 		return water;
 	}
 

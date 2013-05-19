@@ -2,6 +2,8 @@ package vc4.vanilla.generation;
 
 import java.util.Random;
 
+import vc4.api.biome.Biome;
+import vc4.api.biome.BiomeType;
 import vc4.api.generator.WorldPopulator;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
@@ -23,16 +25,17 @@ public class WorldGenRuins implements WorldPopulator{
 		if(world.getBlockId(x, y + 1, z + 6) != Vanilla.dirt.uid && world.getBlockId(x, y + 1, z + 6) != Vanilla.grass.uid) return;
 		if(world.getBlockId(x + 6, y + 1, z + 6) != Vanilla.dirt.uid && world.getBlockId(x + 6, y + 1, z + 6) != Vanilla.grass.uid) return;
 		if(world.getBlockId(x + 3, y + 5, z + 3) == Vanilla.dirt.uid || world.getBlockId(x + 3, y + 5, z + 3) == Vanilla.grass.uid) return;
-//		Biome b = world.getBiome(x, z);
-//		if(b == Biome.redwoodForest || b == Biome.snowForest || b == Biome.ocean) return;
+		Biome b = world.getBiome(x, z);
+		if(!b.getType().equals(BiomeType.normal)) return;
 		byte data = (byte) (rand.nextBoolean() ? 15 : 4);
+		int cz, h, cy;
 		for(int cx = 0; cx < 7; ++cx){
-			for(int cz = 0; cz < 7; ++cz){
+			for(cz = 0; cz < 7; ++cz){
 				world.setBlockId(x + cx, y, z + cz, rand.nextInt(2) == 0 ? Vanilla.mossBrick.uid : Vanilla.brick.uid);
 				world.setBlockData(x + cx, y, z + cz, data);
 				if(cx == 0 || cx == 6 || cz == 0 || cz == 6){
-					int h = rand.nextInt(4) + 2;
-					for(int cy = 1; cy < h; ++cy){
+					h = rand.nextInt(4) + 2;
+					for(cy = 1; cy < h; ++cy){
 						world.setBlockIdData(x + cx, y + cy, z + cz, rand.nextInt(2) == 0 ? Vanilla.mossBrick.uid : Vanilla.brick.uid, data);
 					}
 				}

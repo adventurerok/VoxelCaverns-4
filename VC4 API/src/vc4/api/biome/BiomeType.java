@@ -7,6 +7,20 @@ public class BiomeType {
 	int id;
 	String name;
 	
+	@Override
+	public int hashCode() {
+		return id;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		BiomeType other = (BiomeType) obj;
+		if (id != other.id) return false;
+		return true;
+	}
+
 	static int lastId;
 
 	public BiomeType(String name) {

@@ -4,14 +4,11 @@
 package vc4.vanilla.block;
 
 import java.awt.Color;
-import java.util.Random;
 
 import vc4.api.block.IBlockMultitexture;
 import vc4.api.item.ItemStack;
-import vc4.api.util.Direction;
 import vc4.api.world.World;
 import vc4.vanilla.BlockTexture;
-import vc4.vanilla.Vanilla;
 
 /**
  * @author paul
@@ -81,14 +78,5 @@ public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 		return true;
 	}
 	
-	@Override
-	public void blockUpdate(World world, Random rand, long x, long y, long z) {
-		if(rand.nextInt(5) != 0) return;
-		Direction dir = Direction.getDirection(rand.nextInt(10));
-		if(world.getNearbyBlockId(x, y, z, dir) == Vanilla.brick.uid){
-			byte data = world.getNearbyBlockData(x, y, z, dir);
-			world.setNearbyBlockIdData(x, y, z, uid, data, dir);
-		}
-	}
 
 }

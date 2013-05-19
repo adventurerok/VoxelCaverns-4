@@ -3,9 +3,9 @@
  */
 package vc4.vanilla.block;
 
-import vc4.api.block.Block;
-import vc4.api.block.Material;
+import vc4.api.block.*;
 import vc4.vanilla.BlockTexture;
+import vc4.vanilla.Vanilla;
 
 /**
  * @author paul
@@ -21,6 +21,11 @@ public class BlockSand extends Block {
 	public BlockSand(short uid) {
 		super(uid, BlockTexture.sand, Material.getMaterial("sand"));
 		
+	}
+	
+	@Override
+	public boolean canGrowPlant(Plant plant) {
+		return plant.getUid() == Vanilla.plantCactus.getUid();
 	}
 
 }

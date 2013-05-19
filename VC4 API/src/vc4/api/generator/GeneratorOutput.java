@@ -16,6 +16,10 @@ public class GeneratorOutput {
 		blocks[(y*32+x)*32+z] = (short) id;
 	}
 	
+	public void setBlockData(int x, int y, int z, int data){
+		this.data[(y*32+x)*32+z] = (byte) data;
+	}
+	
 	public static int arrayCalc(int x, int y, int z){
 		return (y*32+x)*32+z;
 	}

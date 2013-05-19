@@ -509,4 +509,36 @@ public class AABB {
 		maxZ *= scale;
 		return this;
 	}
+	
+	public Vector3d getVertexP(Vector3d normal) {
+
+		Vector3d res = new Vector3d(minX, minY, minZ);
+
+		if (normal.x > 0)
+			res.x += maxX - minX;
+
+		if (normal.y > 0)
+			res.y += maxY - minY;
+
+		if (normal.z > 0)
+			res.z += maxZ - minZ;
+
+		return(res);
+	}
+
+	public Vector3d getVertexN(Vector3d normal) {
+
+		Vector3d res = new Vector3d(minX, minY, minZ);
+
+		if (normal.x < 0)
+			res.x += maxX - minX;
+
+		if (normal.y < 0)
+			res.y += maxY - minY;
+
+		if (normal.z < 0)
+			res.z += maxZ - minZ;
+
+		return(res);
+	}
 }

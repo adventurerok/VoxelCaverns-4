@@ -1,6 +1,8 @@
 package vc4.vanilla.generation;
 
 
+import java.util.Random;
+
 import vc4.api.block.Block;
 import vc4.api.block.BlockFluid;
 import vc4.api.generator.GeneratorOutput;
@@ -18,11 +20,12 @@ public class RecursiveGenCaves extends RecursiveGenerator{
 	}
 	
 	@Override
-	protected void generateRecursive(long x, long y, long z, long cx, long cy,
+	protected void generateRecursive(Random rand, long x, long y, long z, long cx, long cy,
 			long cz, GeneratorOutput data) {
-		int change = rand.nextInt(rand.nextInt(140) + 1);
+		int change = rand.nextInt(rand.nextInt(115 - (int)Math.max(-20, Math.min(cy, 50))) + 1);
 		if(change != 0) return;
-		int amount = rand.nextInt(rand.nextInt(7) + 1);
+		int var = 7 + (int)Math.max(0, Math.min(-cy * 0.2, 3));
+		int amount = rand.nextInt(rand.nextInt(var) + 1);
 		for(int dofor = 0; dofor < amount; ++dofor){
 			double sx = rand.nextInt(32) + rand.nextDouble() + (cx * 32);
 			double sy = rand.nextInt(32) + rand.nextDouble() + (cy * 32);
@@ -30,13 +33,13 @@ public class RecursiveGenCaves extends RecursiveGenerator{
 			float yaw = rand.nextFloat() * (float)Math.PI * 2.0F;
 	        float pitch = ((rand.nextFloat() - 0.5F) * 2.0F) / 8F;
 	        float stride = rand.nextFloat() * 2.0F + rand.nextFloat();
-	        generateCaveNode(x, y, z, cx, cy, cz, data, sx, sy, sz, yaw, pitch, stride, 0);
+	        generateCaveNode(rand, x, y, z, cx, cy, cz, data, sx, sy, sz, yaw, pitch, stride, 0, 3 + rand.nextInt(rand.nextInt(4) + 1));
 		}
 
 	}
 
-	public void generateCaveNode(long x, long y, long z, long cx, long cy,
-			long cz, GeneratorOutput data, double sx, double sy, double sz, float yaw, float pitch, float stride, int length){
+	public void generateCaveNode(Random rand, long x, long y, long z, long cx, long cy,
+			long cz, GeneratorOutput data, double sx, double sy, double sz, float yaw, float pitch, float stride, int length, int radius){
 
 		long actX = x * 32;
 		long actY = y * 32;
@@ -45,7 +48,6 @@ public class RecursiveGenCaves extends RecursiveGenerator{
 		sy -= actY;
 		sz -= actZ;
 		
-		float radius = 4;
 
 		float yawAdd = 0.0F;
 		float pitchAdd = 0.0F;

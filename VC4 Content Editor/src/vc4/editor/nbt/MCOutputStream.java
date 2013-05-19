@@ -1,27 +1,10 @@
 package vc4.editor.nbt;
 
-import java.io.Closeable;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-import org.jnbt.ByteArrayTag;
-import org.jnbt.ByteTag;
-import org.jnbt.CompoundTag;
-import org.jnbt.DoubleTag;
-import org.jnbt.EndTag;
-import org.jnbt.FloatTag;
-import org.jnbt.IntArrayTag;
-import org.jnbt.IntTag;
-import org.jnbt.ListTag;
-import org.jnbt.LongTag;
-import org.jnbt.NBTConstants;
-import org.jnbt.NBTUtils;
-import org.jnbt.ShortTag;
-import org.jnbt.StringTag;
-import org.jnbt.Tag;
+import org.jnbt.*;
 
 /*
  * JNBT License

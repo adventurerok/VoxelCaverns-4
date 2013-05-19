@@ -11,4 +11,6 @@ public interface Vector4<V> extends Vector<V> {
 
 	
 	public Vector4f toVector4f();
+	public Vector4l toVector4l();
+	
 }

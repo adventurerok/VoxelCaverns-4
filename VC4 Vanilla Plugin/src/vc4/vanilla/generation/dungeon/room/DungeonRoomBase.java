@@ -77,7 +77,7 @@ public class DungeonRoomBase extends DungeonRoom {
 	
 	public void generate(World world, long x, long y, long z){
 		Random rand = world.createRandom(x, y, z, 1263763L);
-		if(y > -2 || y < -185) return;
+		if(y > -3 || y < -185) return;
 		if(rand.nextInt(Client.debugMode() ? 150 : 500) != 0) return;
 		x <<= 5;
 		y <<= 5;

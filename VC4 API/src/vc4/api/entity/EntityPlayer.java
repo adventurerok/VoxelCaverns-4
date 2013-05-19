@@ -14,7 +14,7 @@ import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 import vc4.api.render.CracksRenderer;
-import vc4.api.tool.MiningData;
+import vc4.api.tool.*;
 import vc4.api.util.AABB;
 import vc4.api.util.RayTraceResult;
 import vc4.api.vector.Vector3d;
@@ -42,13 +42,47 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		super(world);
 		Random rand = new Random();
 		ArrayList<ItemStack> creativeItems = new ArrayList<>();
+		int pick = 0;
+		double pickPower = 0;
+		int spade = 0;
+		double spadePower = 0;
+		int axe = 0;
+		double axePower = 0;
+		for(int d = 2048; d < 4096; ++d){
+			if(Item.byId(d) == null) continue;
+			Item itm = Item.byId(d);
+			Tool tool = itm.getTool(new ItemStack(d));
+			if(tool == null) continue;
+			if(tool.getType() == null || tool.getPower() < 1) continue;
+			if(tool.getType().equals(ToolType.pickaxe)){
+				if(tool.getPower() > pickPower){
+					pick = d;
+					pickPower = tool.getPower();
+				}
+			} else if(tool.getType().equals(ToolType.axe)){
+				if(tool.getPower() > axePower){
+					axe = d;
+					axePower = tool.getPower();
+				}
+			} else if(tool.getType().equals(ToolType.spade)){
+				if(tool.getPower() > spadePower){
+					spade = d;
+					spadePower = tool.getPower();
+				}
+			}
+			
+		}
 		for(int d = 0; d < 2048; ++d){
 			if(Item.byId(d) == null) continue;
 			ItemStack[] b = Item.byId(d).getCreativeItems();
 			if(b == null) continue;
 			creativeItems.addAll(Arrays.asList(b));
 		}
-		for(int d = 0; d < 40; ++d){
+		inventory.setItem(0, new ItemStack(pick, 0, 1));
+		inventory.setItem(1, new ItemStack(world.getRegisteredBlock("vanilla.vine"), 0, 99));
+		inventory.setItem(2, new ItemStack(spade, 0, 1));
+		inventory.setItem(3, new ItemStack(axe, 0, 1));
+		for(int d = 4; d < 40; ++d){
 			inventory.setItem(d, creativeItems.get(rand.nextInt(creativeItems.size())).clone().setAmount(50 + rand.nextInt(40)));
 		}
 	}

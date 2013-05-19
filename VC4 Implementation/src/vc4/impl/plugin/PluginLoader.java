@@ -29,10 +29,13 @@ public class PluginLoader {
 	static{
 		try {
 			//resourceURLs.add(new URL("jar:file:" + DirectoryLocator.getPath() + "/bin/VC4-Resources.zip!/"));
-			String s = PluginLoader.class.getClassLoader().getResource("vc4/resources/resources.yml").toString();
-			s = s.substring(0, s.lastIndexOf("/"));
-			resourceURLs.add(new URL(s));
-			s = PluginLoader.class.getClassLoader().getResource("vc4/resources/lang/en_GB.lang").toString();
+			try{
+				String s = PluginLoader.class.getClassLoader().getResource("vc4/resources/resources.yml").toString();
+				s = s.substring(0, s.lastIndexOf("/"));
+				resourceURLs.add(new URL(s));
+			} catch(Exception e)
+			{}
+			String s = PluginLoader.class.getClassLoader().getResource("vc4/resources/lang/en_GB.lang").toString();
 			for(int d = 0; d < 2; ++d) s = s.substring(0, s.lastIndexOf("/"));
 			resourceURLs.add(new URL(s));
 			resourceURLs.add(new File(DirectoryLocator.getPath() + "/resources/").toURI().toURL());

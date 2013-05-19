@@ -15,7 +15,9 @@ public class BlockTexture {
 	public static int redwoodSapling, redwoodLeaves, redwoodWood, redwoodBase;
 	public static int kapokSapling, kapokLeaves, kapokWood, kapokBase;
 	public static int bookshelf, enchantedBookshelf, glass, fluid, obsidian, ore, stone;
-	public static int sand, cracks, woodFront;
+	public static int sand, cracks, woodFront, cactusBottom, cactusTop, cactusSide;
+	public static int vines;
+	public static int[] weeds = new int[9];
 	
 	public static void update(){
 		AnimatedTexture tex = Resources.getAnimatedTexture("blocks");
@@ -70,5 +72,12 @@ public class BlockTexture {
 		sand = tex.getArrayIndex("sand");
 		cracks = tex.getArrayIndex("cracks");
 		woodFront = tex.getArrayIndex("woodfront");
+		cactusSide = tex.getArrayIndex("cactusside");
+		cactusTop = tex.getArrayIndex("cactustop");
+		cactusBottom = tex.getArrayIndex("cactusbottom");
+		vines = tex.getArrayIndex("vines");
+		for(int d = 0; d < 9; ++d){
+			weeds[d] = tex.getArrayIndex("weeds" + (d + 1));
+		}
 	}
 }

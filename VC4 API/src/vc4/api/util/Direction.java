@@ -149,5 +149,9 @@ public enum Direction {
 		return getDirection(side + 6);
 	}
 	
+	public static Direction getOpposite(int dir){
+		return getDirection(dir).opposite();
+	}
+	
 	
 }

@@ -8,6 +8,7 @@ import vc4.api.entity.EntityPlayer;
 import vc4.api.gui.Component;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.MouseSet;
+import vc4.api.util.Fustrum;
 import vc4.api.util.Setting;
 
 /**
@@ -24,6 +25,7 @@ public interface ClientGame {
 	public void resized();
 	public boolean isPaused();
 	public void setPaused(boolean paused);
+	public Fustrum getViewFustrum();
 	
 	/**
 	 * Finds the window

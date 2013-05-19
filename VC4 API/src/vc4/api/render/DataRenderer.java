@@ -121,6 +121,11 @@ public class DataRenderer implements Renderer {
 		color = new Vector4f(r, g, b, a);
 	}
 	
+	@Override
+	public void color(double r, double g, double b, double a){
+		color = new Vector4f((float)r, (float)g, (float)b, (float)a);
+	}
+	
 	/* (non-Javadoc)
 	 * @see vc4.impl.world.rendering.Renderer#tex(float, float, float, float)
 	 */
@@ -208,6 +213,12 @@ public class DataRenderer implements Renderer {
 	@Override
 	public void tex(double s, double t, double r, double q) {
 		tex((float)s, (float)t, (float)r, (float)q);
+		
+	}
+
+	@Override
+	public void color(Color color, double multiply) {
+		color((color.getRed() / 255f) * multiply, (color.getGreen() / 255f) * multiply, (color.getBlue() / 255f) * multiply, color.getAlpha() / 255f);
 		
 	}
 	

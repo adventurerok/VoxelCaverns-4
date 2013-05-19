@@ -3,17 +3,23 @@
  */
 package vc4.vanilla;
 
+import java.awt.Color;
+
 import vc4.api.biome.Biome;
+import vc4.api.biome.BiomeType;
 import vc4.api.block.*;
 import vc4.api.generator.GeneratorList;
+import vc4.api.generator.PlantGrowth;
 import vc4.api.plugin.Plugin;
 import vc4.api.sound.Music;
 import vc4.api.sound.MusicType;
 import vc4.api.tool.*;
 import vc4.api.world.World;
+import vc4.vanilla.biome.*;
 import vc4.vanilla.block.*;
 import vc4.vanilla.generation.*;
 import vc4.vanilla.generation.dungeon.Dungeon;
+import vc4.vanilla.generation.trees.*;
 import vc4.vanilla.item.ItemTool;
 
 /**
@@ -28,12 +34,17 @@ public class Vanilla extends Plugin {
 	public static Block planks, planksHalf, bookshelf, planksStairs0, planksStairs4;
 	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
-	public static Block crackedBrick;
+	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
 	
 	//Items
 	
 	//Plants
 	public static Plant plantTreeOak;
+	public static Plant plantTreeBirch;
+	public static Plant plantTreeWillow;
+	public static Plant plantTreeRedwood;
+	public static Plant plantCactus;
+	public static Plant plantWeed;
 	
 	//Tools
 	public static ToolMaterial materialWood = new ToolMaterial("wood", 32, 1);
@@ -56,6 +67,20 @@ public class Vanilla extends Plugin {
 	public static Music musicDesert = new Music("desert_winds", MusicType.BIOME);
 	public static Music musicHell = new Music("A_Night_Out", MusicType.BIOME);
 	public static Music musicSky = new Music("Menu_Screen", MusicType.BIOME);
+	
+	public static Biome biomeOcean = new Biome("ocean", BiomeType.ocean, Color.blue).setHeights(1, -56);
+	public static BiomeHilly biomePlains = new BiomePlains("plains", BiomeType.normal, Color.green);
+	public static BiomeHilly biomeDesert = new BiomeHilly("desert", BiomeType.hot, Color.yellow);
+	public static BiomeHilly biomeSnowPlains = new BiomeHilly("snowplains", BiomeType.cold, Color.white);
+	public static BiomeHilly biomeForest = new BiomeHilly("forest", BiomeType.normal, Color.green);
+	public static Biome biomePlainsHills = new BiomePlains("plains/hills", BiomeType.normal, Color.green).setHeights(60, 10);
+	public static Biome biomeDesertHills = new Biome("desert/hills", BiomeType.hot, Color.yellow).setHeights(60, 10);
+	public static Biome biomeSnowPlainsHills = new Biome("snowplains/hills", BiomeType.cold, Color.white).setHeights(60, 10);
+	public static Biome biomeForestHills = new Biome("forest/hills", BiomeType.normal, Color.green).setHeights(60, 10);
+	public static BiomeHilly biomeVolcanic = new BiomeVolcanic("volcanic", BiomeType.hot, Color.black, 3).setHeights(50, 3);
+	public static Biome biomeVolcano = new BiomeVolcanic("volcanic/hills", BiomeType.hot, Color.black, 8).setHeights(100, 12);
+	public static BiomeHilly biomeSnowForest = new BiomeHilly("snowforest", BiomeType.cold, Color.white);
+	public static Biome biomeSnowForestHills = new Biome("snowforest/hills", BiomeType.cold, Color.white).setHeights(60, 10);
 	
 	
 	private static ToolMaterial[] materials = new ToolMaterial[]{
@@ -89,11 +114,21 @@ public class Vanilla extends Plugin {
 	 */
 	@Override
 	public void onEnable() {
-		plantTreeOak = new Plant(12, 0, "tree.oak");
+		plantTreeOak = new Plant(0, 0, "tree.oak");
+		plantTreeBirch = new Plant(0, 1, "tree.birch");
+		plantTreeWillow = new Plant(0, 2, "tree.willow");
+		plantTreeRedwood = new Plant(0, 5, "tree.redwood");
+		plantCactus = new Plant(1, 0, "cactus");
+		plantWeed = new Plant(2, 0, "weed");
 		OverworldGenerator gen = new OverworldGenerator();
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
 		GeneratorList.registerGenerator("sky", new SkylandGenerator());
+		GeneratorList.registerPlantGen(plantTreeOak, new TreeGenBasic());
+		GeneratorList.registerPlantGen(plantTreeBirch, new TreeGenBasic());
+		GeneratorList.registerPlantGen(plantTreeWillow, new TreeGenWillow());
+		GeneratorList.registerPlantGen(plantTreeRedwood, new TreeGenRedwood());
+		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
 	}
 
 	/* (non-Javadoc)
@@ -138,13 +173,51 @@ public class Vanilla extends Plugin {
 		brickStairs12 = new BlockBrickStairs(world.getRegisteredBlock("vanilla.brick.stairs.12"), 12).setName("brickstairs");
 		bookshelfEnchanted = new BlockBookshelfEnchanted(world.getRegisteredBlock("vanilla.bookshelf.enchanted")).setMineData(new MiningData().setRequired(ToolType.axe).setPowers(1, 5, 50).setTimes(3, 0.1, 0.75)).setName("bookshelfenchanted");
 		crackedBrick = new BlockBrickCracked(world.getRegisteredBlock("vanilla.brick.cracked")).setName("crackedbrick");
+		snow = new BlockSnow(world.getRegisteredBlock("vanilla.snow")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(1, 1, 15).setTimes(0.75, 0.45, 0.08)).setName("snow");
+		cactus = new BlockCactus(world.getRegisteredBlock("vanilla.cactus")).setName("cactus");
+		weeds = new BlockWeeds(world.getRegisteredBlock("vanilla.weeds")).setName("weeds");
+		vines = new BlockVine(world.getRegisteredBlock("vanilla.vine"), BlockTexture.vines, "vine").setName("vine");
+		willowVines = new BlockWillowVine(world.getRegisteredBlock("vanilla.willowvine"), BlockTexture.vines, "vine").setName("vine");
 		generateToolItems(world);
-		Biome.ocean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
-		Biome.ocean.music = musicSky;
-		Biome.desert.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
-		Biome.desert.music = musicDesert;
-		Biome.plains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		Biome.snowPlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 2));
+		biomeOcean.music = musicSky;
+		biomeDesert.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		biomeDesertHills.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		biomeDesert.music = musicDesert;
+		biomeDesertHills.music = musicDesert;
+		biomeDesert.addPlant(new PlantGrowth(plantCactus, 3));
+		biomeDesertHills.addPlant(new PlantGrowth(plantCactus, 3));
+		biomeDesert.setHills(biomeDesertHills.id);
+		biomePlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlains.setIcingBlock(weeds.uid);
+		biomePlainsHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsHills.setIcingBlock(weeds.uid);
+		biomePlains.setHills(biomePlainsHills.id);
+		biomeForest.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForest.addPlant(new PlantGrowth(plantTreeOak, 12));
+		biomeForest.addPlant(new PlantGrowth(plantTreeBirch, 10));
+		biomeForestHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestHills.addPlant(new PlantGrowth(plantTreeOak, 12));
+		biomeForestHills.addPlant(new PlantGrowth(plantTreeBirch, 10));
+		biomeForest.setHills(biomeForestHills.id);
+		biomeSnowPlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeSnowPlains.setIcingBlock(snow.uid);
+		biomeSnowForest.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeSnowForest.setIcingBlock(snow.uid);
+		biomeSnowForest.addPlant(new PlantGrowth(plantTreeRedwood, 10));
+		biomeSnowPlainsHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeSnowPlainsHills.setIcingBlock(snow.uid);
+		biomeSnowForestHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeSnowForestHills.setIcingBlock(snow.uid);
+		biomeSnowForestHills.addPlant(new PlantGrowth(plantTreeRedwood, 10));
+		biomeSnowPlains.setHills(biomeSnowPlainsHills.id);
+		biomeSnowForest.setHills(biomeSnowForestHills.id);
+		biomeVolcanic.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
+		biomeVolcanic.music = musicHell;
+		biomeVolcano.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
+		biomeVolcano.music = musicHell;
+		biomeVolcanic.setHills(biomeVolcano.id);
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
 	}

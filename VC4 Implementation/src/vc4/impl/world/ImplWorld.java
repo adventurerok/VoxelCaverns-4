@@ -13,18 +13,16 @@ import org.jnbt.*;
 import vc4.api.Resources;
 import vc4.api.biome.Biome;
 import vc4.api.block.Block;
+import vc4.api.client.Client;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
-import vc4.api.generator.GeneratorList;
-import vc4.api.generator.WorldGenerator;
+import vc4.api.generator.*;
 import vc4.api.graphics.*;
 import vc4.api.item.Item;
 import vc4.api.math.MathUtils;
-import vc4.api.render.DataRenderer;
 import vc4.api.sound.Music;
 import vc4.api.util.*;
-import vc4.api.vector.Vector2l;
-import vc4.api.vector.Vector3d;
+import vc4.api.vector.*;
 import vc4.api.world.*;
 import vc4.impl.plugin.PluginLoader;
 
@@ -33,6 +31,8 @@ import vc4.impl.plugin.PluginLoader;
  * 
  */
 public class ImplWorld implements World {
+	
+	Biome fakeBiome = Biome.createFake();
 
 	private static class BlockStoreDist implements Comparable<BlockStoreDist> {
 		BlockStore s;
@@ -73,12 +73,14 @@ public class ImplWorld implements World {
 	private String saveName;
 	private CompoundTag generatorTag = new CompoundTag("gen");
 	protected boolean loaded = false;
+	private LinkedList<Vector4l> blockUpdates = new LinkedList<>();
+	private int visibleChunks = 0;
 
 	private double tickTime;
 	private List<EntityPlayer> players = new ArrayList<>();
 	
 	private GeneratorThread[] genThreads;
-
+	
 	private static double WORLD_SECOND = 50;
 
 	/**
@@ -141,6 +143,7 @@ public class ImplWorld implements World {
 	public void onLoad() {
 		Item.clearItems();
 		Block.clearBlocks();
+		Biome.clear();
 		PluginLoader.onWorldLoad(this);
 		GeneratorList.onWorldLoad(this);
 		loaded = true;
@@ -170,19 +173,16 @@ public class ImplWorld implements World {
 		gl.enableVertexArrribArray(8);
 		ArrayList<BlockStoreDist> toBuild = new ArrayList<>();
 		ArrayList<BlockStoreDist> toCompile = new ArrayList<>();
-		ArrayList<DataRenderer> solidRender = new ArrayList<>();
-		ArrayList<DataRenderer> transparentRender = new ArrayList<>();
-		ArrayList<DataRenderer> fluidRender = new ArrayList<>();
+		ArrayList<BlockStoreDist> render = new ArrayList<>();
 		for (ImplChunk c : chunks.values()) {
+			if(!c.isPopulated()) continue;
 			for (BlockStore b : c.stores) {
 				if (b.compileState < 1) {
 					toBuild.add(new BlockStoreDist(b, c, b.distance(pos, c)));
 				} else if (b.compileState == 2) {
 					toCompile.add(new BlockStoreDist(b, c, b.distance(pos, c)));
 				} else if (b.compileState == 4) {
-					solidRender.add(b.currentData[0]);
-					transparentRender.add(b.currentData[1]);
-					fluidRender.add(b.currentData[2]);
+					render.add(new BlockStoreDist(b, c, b.distance(pos, c)));
 				}
 			}
 		}
@@ -198,16 +198,26 @@ public class ImplWorld implements World {
 			if (toCompile.size() <= d) continue;
 			BlockStoreDist ds = toCompile.get(d);
 			ds.s.compileRenderData();
-			solidRender.add(ds.s.currentData[0]);
-			transparentRender.add(ds.s.currentData[1]);
-			fluidRender.add(ds.s.currentData[2]);
+			render.add(ds);
 		}
-		for (DataRenderer d : solidRender) {
-			d.render();
+		ArrayList<BlockStoreDist> tRender = new ArrayList<>();
+		Fustrum fust = Client.getGame().getViewFustrum();
+		visibleChunks = 0;
+		for(BlockStoreDist b : render){
+			AABB cube = AABB.getBoundingBox(b.c.pos.worldX(b.s.xMod) - 2, b.c.pos.worldX(b.s.xMod) + 18, b.c.pos.worldY(b.s.yMod) - 2, b.c.pos.worldY(b.s.yMod) + 18, b.c.pos.worldZ(b.s.zMod) - 2, b.c.pos.worldZ(b.s.zMod) + 18);
+			if(fust.boxInFrustum(cube) != Fustrum.OUTSIDE){
+				tRender.add(b);
+				++visibleChunks;
+			}
+		}
+		render = tRender;
+		Collections.sort(render);
+		for (BlockStoreDist d : render) {
+			d.s.currentData[0].render();
 		}
 		gl.disable(GLFlag.CULL_FACE);
-		for (DataRenderer d : transparentRender) {
-			d.render();
+		for (BlockStoreDist d : render) {
+			d.s.currentData[1].render();
 		}
 		for (ImplChunk c : chunks.values()) {
 			c.drawEntitys();
@@ -220,14 +230,15 @@ public class ImplWorld implements World {
 		gl.alphaFunc(GLCompareFunc.GREATER, .3f);
 		gl.depthFunc(GLCompareFunc.LEQUAL);
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Resources.getAnimatedTexture("blocks").getTexture());
-		for (DataRenderer d : fluidRender) {
-			d.render();
+		for (BlockStoreDist d : render) {
+			d.s.currentData[2].render();
 		}
 		gl.disable(GLFlag.CULL_FACE);
 	}
 
 	public void drawBackground(EntityPlayer player) {
 		getGenerator().renderSkyBox(this, player);
+		Graphics.getClientOpenGL().color(1, 1, 1, 1);
 	}
 
 	@Override
@@ -477,20 +488,6 @@ public class ImplWorld implements World {
 			}
 		}
 		chunks.values().removeAll(toRemove);
-//		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
-//		ChunkPos me = ChunkPos.createFromWorldVector(loc);
-//		for (int x = -7; x < 8; ++x) {
-//			for (int y = -7; y < 8; ++y) {
-//				for (int z = -7; z < 8; ++z) {
-//					checkLoad(me, x, y, z, closestToLoad);
-//				}
-//			}
-//		}
-//		Collections.sort(closestToLoad, new ComparatorClosestChunkPos(loc));
-//		for (int d = 0; d < 3; ++d) {
-//			if (closestToLoad.size() <= d) break;
-//			generateChunk(closestToLoad.get(d));
-//		}
 		ImplChunk cnk;
 		ImplMapData dta;
 		GeneratorThread.location = loc.clone();
@@ -508,8 +505,8 @@ public class ImplWorld implements World {
 		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
 		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
 		ArrayList<MapData> deadData = new ArrayList<>();
-		for(MapData d : heights.values()){
-			if(d.getReferences() < 1){
+		for(ImplMapData d : heights.values()){
+			if(d.getReferences() < 1 || d.distanceSquared(loc) > 80000){
 				deadData.add(d);
 			}
 		}
@@ -523,9 +520,42 @@ public class ImplWorld implements World {
 		for (int d = 0; d < 4; ++d) {
 			if (toPopulate.size() <= d) break;
 			ChunkPos pop = toPopulate.get(d).pos;
-			GeneratorList.getWorldGenerator(generatorName).populate(this, pop.x, pop.y, pop.z);
-			toPopulate.get(d).setPopulated(true);
+			toPopulate.get(d).setPopulated(populate(pop.x, pop.y, pop.z));
 		}
+	}
+	
+	private boolean populate(long x, long y, long z){
+		MapData data = getMapData(x, z);
+		if(data == null) return false;
+		GeneratorList.getWorldGenerator(generatorName).populate(this, x, y, z);
+		if(y < -8 || y > 8) return true;
+		ArrayList<PlantGrowth> growing = new ArrayList<>();
+		growing.addAll(data.getBiome(0, 0).getPlants());
+		growing.addAll(data.getBiome(31, 0).getPlants());
+		growing.addAll(data.getBiome(31, 31).getPlants());
+		growing.addAll(data.getBiome(0, 31).getPlants());
+		if(growing.size() < 1) return true;
+		ArrayList<PlantGrowth> plants = new ArrayList<>();
+		for(int d = 0; d < growing.size(); ++d){
+			PlantGrowth curr = growing.get(d);
+			if(!plants.contains(curr)){
+				plants.add(curr.clone());
+				continue;
+			}
+			PlantGrowth add = plants.get(plants.indexOf(curr));
+			add.addAmount(curr.getAmount());
+		}
+		Random rand = createRandom(x, y, z, 126862622643624L);
+		for(int d = 0; d < plants.size(); ++d){
+			PlantGrowth curr = plants.get(d);
+			curr.setAmount(curr.getAmount() / 4 + 1);
+			PlantGenerator gen = GeneratorList.getPlantGenerator(curr.getPlant());
+			if(gen == null) continue;
+			for(int i = 0; i < curr.getAmount(); ++i){
+				gen.growPlant(this, data, x, y, z, rand, curr.getPlant());
+			}
+		}
+		return true;
 	}
 
 	private void removeMDReference(long x, long z) {
@@ -789,12 +819,28 @@ public class ImplWorld implements World {
 		if (time < 0) time = 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void updateTick(Vector3d loc) {
 		infiniteWorld(loc);
 		Random rand = createRandom(time, (long) loc.x, (long) loc.z);
 		for (ImplChunk c : chunks.values()) {
 			c.update(rand);
 		}
+		LinkedList<Vector4l> current = (LinkedList<Vector4l>) blockUpdates.clone();
+		blockUpdates.clear();
+		for(Vector4l b : current){
+			if(b.w == 0){
+				int i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z);
+				if(i > 0) blockUpdates.add(new Vector4l(b.x, b.y, b.z, i));
+			} else {
+				b.w--;
+				blockUpdates.add(b);
+			}
+		}
+	}
+	
+	public void scheduleBlockUpdate(long x, long y, long z, int time){
+		blockUpdates.add(new Vector4l(x, y, z, time));
 	}
 
 	@Override
@@ -921,14 +967,21 @@ public class ImplWorld implements World {
 	public MapData getMapData(long x, long z) {
 		return heights.get(new Vector2l(x, z));
 	}
+	
+	@Override
+	public String[] getDebugInfo(){
+		String[] res = new String[2];
+		res[0] = "World: " + getName() + " (" + getSaveName() + ")" + ", seed:" + getSeed();
+		res[1] = "Chunks: " + visibleChunks + "/" + chunks.size() + ", MapData: " + heights.size();
+		return res;
+	}
 
 	@Override
 	public Biome getBiome(long x, long z) {
 		try{
 			return getMapData(x >> 5, z >> 5).getBiome((int)(x & 31), (int)(z & 31));
 		} catch(Exception e){
-			System.out.println("null biome");
-			return Biome.plains;
+			return fakeBiome;
 		}
 	}
 

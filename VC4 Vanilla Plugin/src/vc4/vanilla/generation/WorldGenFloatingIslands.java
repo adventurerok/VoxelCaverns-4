@@ -21,14 +21,16 @@ public class WorldGenFloatingIslands implements WorldPopulator {
 		int radius = 12 + rand.nextInt(12);
 		int size = radius + 4;
 		double large = size / (double)(radius * radius);
+		int cz, yFact, yMax, yMin, cy;
+		double xzSq;
 		for (int cx = -size; cx <= size; ++cx) {
-			for (int cz = -size; cz <= size; ++cz) {
-				int yFact = 0;
-				double xzSq = (cx * cx + cz * cz) * large;
-				int yMax = (int) Math.abs(noise.noise(px + cx, pz + cz, py ^ 3124781794L, 0.1, 1) * 5);
-				int yMin = (int) ((-size + 3 + xzSq) + Math.abs(noise.noise(px + cx, pz + cz, py ^ 18372517L, 3, 3, true)));
+			for (cz = -size; cz <= size; ++cz) {
+				yFact = 0;
+				xzSq = (cx * cx + cz * cz) * large;
+				yMax = (int) Math.abs(noise.noise(px + cx, pz + cz, py ^ 3124781794L, 0.1, 1) * 5);
+				yMin = (int) ((-size + 3 + xzSq) + Math.abs(noise.noise(px + cx, pz + cz, py ^ 18372517L, 3, 3, true)));
 				if (yMin > yMax) continue;
-				for (int cy = yMax; cy >= yMin; --cy) {
+				for (cy = yMax; cy >= yMin; --cy) {
 					// double sq = (cx * cx + cz * cz) * 1.5 + cy * cy;
 					// if ((sq / large - 1) > noise.noise(cx + px, cy + py, cz + pz, 0.1, 1d, true)){
 					// yFact = 0;

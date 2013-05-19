@@ -216,5 +216,33 @@ public class Vector3d implements Vector3<Vector3d> {
 		return (float) nx * nx + ny * ny + nz * nz;
 	}
 	
+	public Vector3d cross(Vector3d in) {
+		return new Vector3d(y * in.z - z * in.y, z * in.x - x * in.z, x * in.y - y * in.x);
+
+	}
+
+	public double lengthSquared() {
+		return x * x + y * y + z * z;
+	}
+
+	public double length() {
+		return Math.sqrt(lengthSquared());
+	}
+
+	public Vector3d normalize() {
+		double len = length();
+		if (len != 0 && len != 1) return new Vector3d(x / len, y / len, z / len);
+		else return clone();
+	}
+
+	public double innerProduct(Vector3d v) {
+		return (x * v.x + y * v.y + z * v.z);
+	}
+
+	public Vector3d multiply(double val) {
+		return new Vector3d(x * val, y * val, z * val);
+	}
+
+	
 
 }

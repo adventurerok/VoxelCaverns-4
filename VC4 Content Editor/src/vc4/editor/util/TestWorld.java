@@ -273,11 +273,17 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	@Override
 	public String getSaveName() {
 		return null;
 	}
 
+	@Override
 	public String getName() {
+		return null;
+	}
+
+	public String[] getDebugInfo() {
 		return null;
 	}
 

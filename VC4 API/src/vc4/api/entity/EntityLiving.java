@@ -20,13 +20,13 @@ public class EntityLiving extends Entity {
 	
 	public void jump(){
 		if(onGround || movement == MovementStyle.FLY){
-			motionY = 0.8;
+			motionY += 0.35;
 		}
 	}
 	
 	public void sneak(){
 		if(movement == MovementStyle.FLY){
-			motionY = -0.8;
+			motionY -= 0.35;
 		} else movement = MovementStyle.SNEAK;
 	}
 	

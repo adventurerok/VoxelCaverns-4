@@ -1,7 +1,11 @@
 package vc4.api.biome;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Random;
 
+import vc4.api.generator.GeneratorOutput;
+import vc4.api.generator.PlantGrowth;
 import vc4.api.sound.Music;
 import vc4.api.sound.MusicType;
 
@@ -13,13 +17,21 @@ public class Biome {
 	public Color mapColor;
 	public int id;
 	public String name;
+	public int icingBlock;
 	public int topBlock;
 	public int fillerBlock;
 	public int bottomBlock;
-	public int minHeight = 3;
-	public int maxHeight = 30;
-	public int diffHeight = 27, midHeight = 16;
+	public int minHeight = 0;
+	public int maxHeight = 20;
+	public int soilDepth = 6;
+	public int diffHeight = 20, midHeight = 10;
+	public boolean enfHeight = true; //If the height should be clamped
 	public Music music = new Music("First_Day", MusicType.BIOME);
+	public Color grassColor = new Color(0x1C8F1C);
+	public Color waterColor = new Color(0, 156, 254, 128);
+	public Color plantColor = new Color(0x267F00);
+	
+	public ArrayList<PlantGrowth> plants = new ArrayList<>();
 	
 	public BiomeType getType() {
 		return type;
@@ -35,6 +47,32 @@ public class Biome {
 
 	public String getName() {
 		return name;
+	}
+	
+	public int generateSubBiome(Random rand){
+		return id;
+	}
+	
+	public Biome setColors(Color grass, Color water, Color plant){
+		waterColor = water;
+		grassColor = grass;
+		plantColor = plant;
+		return this;
+	}
+	
+	public void setIcingBlock(int icingBlock) {
+		this.icingBlock = icingBlock;
+	}
+	
+	public void placeBiomeBlock(GeneratorOutput out, Random rand, int cx, int cy, int cz, long diff, long y){
+		if(diff == -1){
+			out.setBlockId(cx, cy, cz, icingBlock);
+		} else if (diff == 0){
+			if((y << 5) + cy < -1) out.setBlockId(cx, cy, cz, fillerBlock);
+			else out.setBlockId(cx, cy, cz, topBlock);
+		}
+		else if(diff < 5) out.setBlockId(cx, cy, cz, fillerBlock);
+		else out.setBlockId(cx, cy, cz, bottomBlock);
 	}
 
 	public int getMinHeight() {
@@ -79,10 +117,29 @@ public class Biome {
 		biomesList[id] = this;
 	}
 	
-	public static Biome ocean = new Biome("ocean", BiomeType.ocean, Color.blue).setHeights(2, -40);
-	public static Biome plains = new Biome("plains", BiomeType.normal, Color.green);
-	public static Biome desert = new Biome("desert", BiomeType.hot, Color.yellow);
-	public static Biome snowPlains = new Biome("snowplains", BiomeType.cold, Color.white);
+	private Biome(){
+		
+	}
+	
+	public static Biome createFake(){
+		return new Biome();
+	}
+	
+	public ArrayList<PlantGrowth> getPlants() {
+		return plants;
+	}
+	
+	public void addPlant(PlantGrowth plant){
+		plants.add(plant);
+	}
+	
+
+	public static void clear() {
+		for(Biome b : biomesList){
+			if(b == null) continue;
+			b.plants.clear();
+		}
+	}
 	
 	
 }

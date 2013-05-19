@@ -16,10 +16,12 @@ public class BiomeGenBiome extends ZoomGenerator {
 	@Override
 	public int[] generate(long x, long z, int size) {
 		int[] result = parent.generate(x, z, size);
+		ArrayList<Integer> curr;
+		int pz;
 		for(int px = 0; px < size; ++px){
-			for(int pz = 0; pz < size; ++pz){
+			for(pz = 0; pz < size; ++pz){
 				createRandom(x + px, z + pz);
-				ArrayList<Integer> curr = types.get(result[pz * size + px]);
+				curr = types.get(result[pz * size + px]);
 				result[pz * size + px] = curr.get(rand.nextInt(curr.size()));
 			}
 		}

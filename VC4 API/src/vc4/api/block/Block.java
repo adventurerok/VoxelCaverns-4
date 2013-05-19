@@ -343,8 +343,8 @@ public class Block {
 		return size;
 	}
 
-	public void blockUpdate(World world, Random rand, long x, long y, long z) {
-		
+	public int blockUpdate(World world, Random rand, long x, long y, long z) {
+		return 0;
 	}
 
 	

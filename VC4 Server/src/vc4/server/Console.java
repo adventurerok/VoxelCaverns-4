@@ -37,6 +37,7 @@ public class Console extends ServerConsole implements MouseListener, KeyListener
 	 */
 	public static void main(String[] args) {
 		Console console = new Console();
+		new ServerResources();
 		GameLoader.load(new ConsoleHandler());
 		console.run();
 	}

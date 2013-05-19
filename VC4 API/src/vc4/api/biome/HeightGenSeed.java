@@ -10,10 +10,12 @@ public class HeightGenSeed extends ZoomGenerator implements HeightGenBiomeInput{
 	@Override
 	public int[] generate(long x, long z, int size) {
 		int[] result = new int[size * size];
+		Biome bio;
+		int pz;
 		for(int px = 0; px < size; ++px){
-			for(int pz = 0; pz < size; ++pz){
+			for(pz = 0; pz < size; ++pz){
 				createRandom(x + px, z + pz);
-				Biome bio = Biome.byId(biomes[pz * size + px]);
+				bio = Biome.byId(biomes[pz * size + px]);
 				result[pz * size + px] = rand.nextInt(bio.diffHeight) + bio.minHeight;
 			}
 		}

@@ -2,6 +2,7 @@ package vc4.impl.world;
 
 import vc4.api.biome.Biome;
 import vc4.api.vector.Vector2l;
+import vc4.api.vector.Vector3d;
 import vc4.api.world.MapData;
 
 public class ImplMapData implements MapData{
@@ -58,6 +59,12 @@ public class ImplMapData implements MapData{
 	@Override
 	public int getReferences() {
 		return reference;
+	}
+	
+	public double distanceSquared(Vector3d loc){
+		double x = (pos.x << 5) + 16 - loc.x;
+		double z = (pos.y << 5) + 16 - loc.z;
+		return x*x + z*z;
 	}
 	
 	

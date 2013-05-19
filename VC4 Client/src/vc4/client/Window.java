@@ -257,7 +257,7 @@ public class Window extends ClientWindow {
 		gl.matrixMode(GLMatrixMode.PROJECTION);
 		gl.loadIdentity();
 		if (mode == RenderType.GAME) {
-			gl.perspective(game.getFieldOfVision(), _width / (float) _height, 0.1F, 476F);
+			gl.perspective(game.getFieldOfVision(), getAspectRatio(), 0.1F, 476F);
 			gl.lookAt(0, 0, 0, 0, 0, 1, 0, 1, 0);
 		} else gl.ortho(0, _width, _height, 0, 32, -32);
 		gl.matrixMode(GLMatrixMode.MODELVIEW);
@@ -271,6 +271,10 @@ public class Window extends ClientWindow {
 	@Override
 	public Game getGame() {
 		return game;
+	}
+
+	public float getAspectRatio() {
+		return _width / (float)_height;
 	}
 
 }

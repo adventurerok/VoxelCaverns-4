@@ -4,13 +4,22 @@
 package vc4.client;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
+import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import org.yaml.snakeyaml.Yaml;
 
-import vc4.api.*;
+import vc4.api.GameState;
+import vc4.api.Resources;
 import vc4.api.client.*;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.entity.MovementStyle;
@@ -19,12 +28,13 @@ import vc4.api.gui.Component;
 import vc4.api.gui.Gui;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.*;
+import vc4.api.logging.Level;
 import vc4.api.logging.Logger;
 import vc4.api.sound.Audio;
 import vc4.api.sound.Music;
 import vc4.api.text.Localization;
-import vc4.api.util.DirectoryLocator;
-import vc4.api.util.Setting;
+import vc4.api.util.*;
+import vc4.api.vector.Vector2f;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.ChunkPos;
 import vc4.api.yaml.ThreadYaml;
@@ -42,7 +52,9 @@ import vc4.impl.world.ImplWorld;
 public class Game extends Component implements ClientGame {
 
 	private static OpenGL gl;
-	
+	private static Vector3d up = new Vector3d(0, 1, 0);
+
+	private Vector2f nearFar = new Vector2f(0.1F, 476F);
 	private Window window;
 	private LinkedHashMap<String, ColorScheme> colorSchemes = new LinkedHashMap<String, ColorScheme>();
 	private LinkedHashMap<String, Integer> crosshairs = new LinkedHashMap<>();
@@ -56,6 +68,7 @@ public class Game extends Component implements ClientGame {
 	private IngameGui ingameGui;
 	private ClientResources resources;
 	private long previousTenTicks = 0;
+	private Fustrum fustrum = new Fustrum();
 
 	/**
 	 * @return the paused
@@ -66,7 +79,8 @@ public class Game extends Component implements ClientGame {
 	}
 
 	/**
-	 * @param paused the paused to set
+	 * @param paused
+	 *            the paused to set
 	 */
 	@Override
 	public void setPaused(boolean paused) {
@@ -108,12 +122,13 @@ public class Game extends Component implements ClientGame {
 	@Override
 	public void draw() {
 		long tenTicks = System.nanoTime() / 100000000;
-		if(tenTicks != previousTenTicks){
-			resources.animatedTextureTick((int)tenTicks);
+		if (tenTicks != previousTenTicks) {
+			resources.animatedTextureTick((int) tenTicks);
 			previousTenTicks = tenTicks;
 		}
 		if (gameState == GameState.SINGLEPLAYER) {
 			getWindow().enterRenderMode(RenderType.GAME);
+			calculateFustrum();
 			camera.rotate();
 			world.drawBackground(player);
 			camera.translate();
@@ -122,7 +137,7 @@ public class Game extends Component implements ClientGame {
 		}
 		gl.disable(GLFlag.DEPTH_TEST);
 		getWindow().enterRenderMode(RenderType.GUI);
-		if(gameState == GameState.SINGLEPLAYER && !isPaused()){
+		if (gameState == GameState.SINGLEPLAYER && !isPaused()) {
 			Graphics.getClientShaderManager().bindShader("texture");
 			Resources.getSheetTexture("crosshair").bind();
 			int w = getWindow().getWidth() / 2 - 64;
@@ -193,11 +208,11 @@ public class Game extends Component implements ClientGame {
 		}
 		super.update();
 		if (gameState == GameState.SINGLEPLAYER) {
-			if(Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
+			if (Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
 			camera.handleInput(delta);
 			player.decreaseCooldown(delta);
 			player.rayTrace(camera.getLook(), 10);
-			if(!isPaused()){
+			if (!isPaused()) {
 				if (mouseSet.getCurrent().leftButtonPressed()) player.leftMouseDown(delta);
 				if (mouseSet.getCurrent().rightButtomPressed()) player.rightMouseDown(delta);
 			}
@@ -205,9 +220,60 @@ public class Game extends Component implements ClientGame {
 			world.update(camera.getPosition(), delta);
 			Audio.playMusic(world.getMusic(player));
 		}
+		if (Input.getClientKeyboard().keyReleased(Key.F2)) {
+			takeScreenshot();
+		}
 		long time = System.nanoTime() - _lastFrame;
 		_lastFrame = System.nanoTime();
 		if (time > 0) delta = time / 1000000D;
+	}
+
+	public String takeScreenshot() {
+		int startX = 0;
+		int startY = 0;
+		int width = (int) window.getWidth();
+		int height = (int) window.getHeight();
+		GL11.glReadBuffer(GL11.GL_FRONT);
+		int bpp = 4; // Assuming a 32-bit display with a byte each for red, green, blue, and alpha.
+		ByteBuffer buffer = BufferUtils.createByteBuffer(Display.getWidth() * Display.getHeight() * bpp);
+		// ByteBuffer buffer = BufferUtils.createByteBuffer(Display.getWidth() * Display.getHeight() * bpp);
+		GL11.glReadPixels(0, 0, Display.getWidth(), Display.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+		String time = sdf.format(cal.getTime());
+		String path = DirectoryLocator.getPath();
+		File file = new File(path + "/screenshots/" + time + ".png"); // The file to save to.
+		new File(path + "/screenshots").mkdirs();
+
+		try {
+			file.createNewFile();
+			Logger.getLogger("VC4").info("Screenshot saved at: " + "{c:e}" + file.getPath());
+			// if (player != null) player.message("Screenshot saved at: " + "{c:e}" + file.getPath());
+		} catch (IOException e1) {
+			Logger.getLogger("Screenshots").log(Level.WARNING, e1);
+		}
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+		for (int x = startX; x < startX + width; x++)
+			for (int y = startY; y < startY + height; y++) {
+				int i = (x + (Display.getWidth() * y)) * bpp;
+				int r = buffer.get(i) & 0xFF;
+				int g = buffer.get(i + 1) & 0xFF;
+				int b = buffer.get(i + 2) & 0xFF;
+				image.setRGB(x - startX, height - (y + 1) - startY, (0xFF << 24) | (r << 16) | (g << 8) | b);
+			}
+
+		try {
+			FileOutputStream fileOut = new FileOutputStream(file);
+			ImageIO.write(image, "PNG", fileOut);
+			fileOut.close();
+
+		} catch (IOException e) {
+			Logger.getLogger("Screenshots").log(Level.WARNING, e);
+		}
+
+		return file.getPath();
+
 	}
 
 	/*
@@ -232,7 +298,7 @@ public class Game extends Component implements ClientGame {
 		}
 		player = new EntityPlayer(world);
 		player.setPosition(12, 30, 12);
-		player.setSpawn(new Vector3d(0, 30, 0));
+		player.setSpawn(new Vector3d(0, 40, 0));
 		world.generateChunk(ChunkPos.createFromWorldVector(player.position));
 		player.addToWorld();
 		world.addPlayer(player);
@@ -266,6 +332,10 @@ public class Game extends Component implements ClientGame {
 		super.resized();
 	}
 
+	public Vector2f getNearFar() {
+		return nearFar;
+	}
+
 	/**
 	 * @return the window
 	 */
@@ -273,8 +343,6 @@ public class Game extends Component implements ClientGame {
 	public Window getWindow() {
 		return window;
 	}
-
-	
 
 	/*
 	 * (non-Javadoc)
@@ -347,7 +415,7 @@ public class Game extends Component implements ClientGame {
 			lastMenu = lastMenu1;
 			lastMenu1 = lastMenu2;
 			lastMenu2 = 0;
-		} else if(action.startsWith("setting:")){
+		} else if (action.startsWith("setting:")) {
 			String type = action.substring(8);
 			if (type.equals("colorscheme:next")) {
 				List<String> list = new ArrayList<String>(colorSchemes.keySet());
@@ -359,12 +427,12 @@ public class Game extends Component implements ClientGame {
 				int n = list.indexOf(getCurrentColorScheme().getString()) - 1;
 				if (n < 0) n = list.size() - 1;
 				changeSetting("colorscheme", list.get(n));
-			} else if(type.equals("crosshair:next")){
+			} else if (type.equals("crosshair:next")) {
 				List<String> list = new ArrayList<String>(crosshairs.keySet());
 				int n = list.indexOf(getCurrentCrosshair().getString()) + 1;
 				if (n >= list.size()) n = 0;
 				changeSetting("crosshair", list.get(n));
-			} else if(type.equals("crosshair:last")){
+			} else if (type.equals("crosshair:last")) {
 				List<String> list = new ArrayList<String>(crosshairs.keySet());
 				int n = list.indexOf(getCurrentCrosshair().getString()) - 1;
 				if (n < 0) n = list.size() - 1;
@@ -382,9 +450,9 @@ public class Game extends Component implements ClientGame {
 	public ColorScheme getColorScheme(String name) {
 		return colorSchemes.get(name);
 	}
-	
+
 	@Override
-	public int getCrosshair(String name){
+	public int getCrosshair(String name) {
 		return crosshairs.get(name);
 	}
 
@@ -417,8 +485,6 @@ public class Game extends Component implements ClientGame {
 		}
 		return result;
 	}
-	
-	
 
 	private void loadResources() {
 		try {
@@ -437,7 +503,6 @@ public class Game extends Component implements ClientGame {
 		loadSettingsFile(settings);
 	}
 
-	
 	private void loadCrossHairs() {
 		crosshairs.put("default", 0);
 		crosshairs.put("circle", 1);
@@ -539,9 +604,9 @@ public class Game extends Component implements ClientGame {
 		return o;
 
 	}
-	
+
 	@Override
-	public Setting<Object> getCurrentCrosshair(){
+	public Setting<Object> getCurrentCrosshair() {
 		Setting<Object> o = settings.get("crosshair");
 		return o;
 	}
@@ -624,7 +689,15 @@ public class Game extends Component implements ClientGame {
 	public void setGameState(GameState g) {
 		gameState = g;
 	}
-	
+
+	public void calculateFustrum() {
+		Vector2f nf = getNearFar();
+		fustrum.setCamInternals(getFieldOfVision(), window.getAspectRatio(), nf.x, nf.y);
+		Vector3d p = camera.getPosition();
+		Vector3d l = p.add(camera.getLook());
+		fustrum.setCamDef(p, l, up);
+	}
+
 	/**
 	 * @return the blockInteractor
 	 */
@@ -632,10 +705,15 @@ public class Game extends Component implements ClientGame {
 	public EntityPlayer getBlockInteractor() {
 		return player;
 	}
-	
-	public float getFieldOfVision(){
-		if(player != null && player.getMovement() == MovementStyle.SPRINT) return 80;
+
+	public float getFieldOfVision() {
+		if (player != null && player.getMovement() == MovementStyle.SPRINT) return 80;
 		else return 70;
+	}
+
+	@Override
+	public Fustrum getViewFustrum() {
+		return fustrum;
 	}
 
 }

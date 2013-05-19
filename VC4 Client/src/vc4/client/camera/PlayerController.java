@@ -112,7 +112,8 @@ public class PlayerController extends FPCamera {
 		vc4.api.input.Keyboard keys = Input.getClientKeyboard();
 
 		double divisor = 50;
-		if (keys.isKeyDown(Key.BACKSLASH)) delta *= 5;
+		boolean spe = keys.isKeyDown(Key.BACKSLASH);
+		if (spe) delta *= 5;
 
 		double forward = 0;
 		double sideways = 0;
@@ -139,6 +140,7 @@ public class PlayerController extends FPCamera {
 		if (keys.isKeyDown(Key.D)) sideways += delta / divisor;
 		if (keys.isKeyDown(Key.SPACE)){
 			player.jump();
+			if(spe) for(int d = 0; d < 4; ++d) player.jump();
 			jumpTime += delta;
 			if(timeSinceJump < 200){
 				if(player.getMovement() != MovementStyle.FLY) player.setMovement(MovementStyle.FLY);
@@ -148,7 +150,10 @@ public class PlayerController extends FPCamera {
 			if(jumpTime < 200) timeSinceJump = 0;
 			jumpTime = 0;
 		}
-		if (keys.isKeyDown(Key.LSHIFT)) player.sneak();
+		if (keys.isKeyDown(Key.LSHIFT)){
+			player.sneak();
+			if(spe) for(int d = 0; d < 4; ++d) player.sneak();
+		}
 		else if(keys.keyReleased(Key.LSHIFT) && player.getMovement() == MovementStyle.SNEAK) player.setMovement(MovementStyle.WALK);
 		player.walk(forward, sideways);
 		if(timeSinceForward < 1000) timeSinceForward += delta;
@@ -183,7 +188,7 @@ public class PlayerController extends FPCamera {
 
 	@Override
 	public Vector3d getPosition() {
-		return player.position.clone();
+		return player.getEyePos().clone();
 	}
 
 }

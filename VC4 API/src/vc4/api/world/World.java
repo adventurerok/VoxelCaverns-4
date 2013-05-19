@@ -66,4 +66,5 @@ public interface World {
 	public Biome getBiome(long x, long z);
 	public abstract String getSaveName();
 	public abstract String getName();
+	public abstract String[] getDebugInfo();
 }

@@ -211,7 +211,10 @@ public class ImplChunk implements Chunk {
 			int x = rand.nextInt(32);
 			int y = rand.nextInt(32);
 			int z = rand.nextInt(32);
-			Block.byId(getBlockId(x, y, z)).blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z));
+			int time = Block.byId(getBlockId(x, y, z)).blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z));
+			if(time > 0){
+				world.scheduleBlockUpdate(pos.worldX(x), pos.worldY(y), pos.worldZ(z), time);
+			}
 		}
 	}
 	

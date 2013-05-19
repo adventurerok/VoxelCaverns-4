@@ -138,6 +138,11 @@ public class Vector4f implements Vector4<Vector4f> {
 	public Vector4f toVector4f() {
 		return clone();
 	}
+	
+	@Override
+	public Vector4l toVector4l() {
+		return new Vector4l(MathUtils.floor(x), MathUtils.floor(y), MathUtils.floor(z), MathUtils.floor(w));
+	}
 
 	
 

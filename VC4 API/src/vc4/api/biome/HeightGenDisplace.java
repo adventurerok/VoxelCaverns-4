@@ -12,11 +12,17 @@ public class HeightGenDisplace extends ZoomGenerator implements HeightGenBiomeIn
 	@Override
 	public int[] generate(long x, long z, int size) {
 		int[] result = parent.generate(x, z, size);
+		Biome bio;
+		int pz;
 		for(int px = 0; px < size; ++px){
-			for(int pz = 0; pz < size; ++pz){
+			for(pz = 0; pz < size; ++pz){
 				createRandom(x + px, z + pz);
-				Biome bio = Biome.byId(biomes[pz * size + px]);
+				bio = Biome.byId(biomes[pz * size + px]);
 				result[pz * size + px] += MathUtils.floor((rand.nextInt(bio.diffHeight) + bio.minHeight - bio.midHeight) * rough);
+				if(bio.enfHeight){
+					if(result[pz * size + px] > bio.maxHeight) result[pz * size + px] = bio.maxHeight - 1 + rand.nextInt(3);
+					else if(result[pz * size + px] < bio.minHeight) result[pz * size + px] = bio.minHeight - 1 + rand.nextInt(3);
+				}
 			}
 		}
 		return result;

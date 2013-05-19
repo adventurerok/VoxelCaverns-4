@@ -5,6 +5,7 @@ package vc4.api.generator;
 
 import java.util.HashMap;
 
+import vc4.api.block.Plant;
 import vc4.api.world.World;
 
 /**
@@ -14,10 +15,15 @@ import vc4.api.world.World;
 public class GeneratorList {
 
 	private static HashMap<String, WorldGenerator> generators = new HashMap<>();
+	private static HashMap<Plant, PlantGenerator> plantGens = new HashMap<>();
 	private static WorldGenerator defaultGen;
 	
 	public static void registerGenerator(String name, WorldGenerator generator){
 		generators.put(name, generator);
+	}
+	
+	public static void registerPlantGen(Plant plant, PlantGenerator gen){
+		plantGens.put(plant, gen);
 	}
 	
 	public static WorldGenerator getWorldGenerator(String name){
@@ -42,5 +48,12 @@ public class GeneratorList {
 		for(WorldGenerator g : generators.values()){
 			g.onWorldLoad(world);
 		}
+		for(PlantGenerator g : plantGens.values()){
+			g.onWorldLoad(world);
+		}
+	}
+	
+	public static PlantGenerator getPlantGenerator(Plant plant){
+		return plantGens.get(plant);
 	}
 }

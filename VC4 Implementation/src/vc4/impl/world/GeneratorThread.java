@@ -46,7 +46,8 @@ public class GeneratorThread extends Thread {
 		for (int x = -7; x < 8; ++x) {
 			for (int y = -7; y < 8; ++y) {
 				for (int z = -7; z < 8; ++z) {
-					checkLoad(me, x, y, z, closestToLoad);
+					
+					checkLoad(loc, me, x, y, z, closestToLoad);
 				}
 			}
 		}
@@ -75,11 +76,12 @@ public class GeneratorThread extends Thread {
 		return data;
 	}
 	
-	private void checkLoad(ChunkPos start, int x, int y, int z, ArrayList<ChunkPos> toLoad) {
+	private void checkLoad(Vector3d loc, ChunkPos start, int x, int y, int z, ArrayList<ChunkPos> toLoad) {
 		start = start.add(x, y, z);
 		if((start.z & maxNum) != num) return;
 		if (toLoad.contains(start)) return;
 		if (chunks.get(start) != null) return;
+		if(start.distanceSquared(loc) > 60000) return;
 		toLoad.add(start);
 	}
 }
