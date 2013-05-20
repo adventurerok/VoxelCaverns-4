@@ -408,14 +408,18 @@ public class ImplWorld implements World {
 		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
 		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
 		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long y, z;
+		int dofor;
+		ImplChunk c;
+		Entity e;
 		for (long x = minX; x <= maxX; ++x) {
-			for (long y = minY; y <= maxY; ++y) {
-				for (long z = minZ; z <= maxZ; ++z) {
-					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
-					for (int dofor = 0; dofor < c.entitys.size(); ++dofor) {
-						Entity e = c.entitys.get(dofor);
+					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						e = c.entitys.get(dofor);
 						if (e != null && bounds.intersectsWith(e.bounds)) list.add(e);
 					}
 					// long time = System.nanoTime() - start;
@@ -536,20 +540,22 @@ public class ImplWorld implements World {
 		growing.addAll(data.getBiome(0, 31).getPlants());
 		if(growing.size() < 1) return true;
 		ArrayList<PlantGrowth> plants = new ArrayList<>();
+		PlantGrowth curr, add;
 		for(int d = 0; d < growing.size(); ++d){
-			PlantGrowth curr = growing.get(d);
+			curr = growing.get(d);
 			if(!plants.contains(curr)){
 				plants.add(curr.clone());
 				continue;
 			}
-			PlantGrowth add = plants.get(plants.indexOf(curr));
+			add = plants.get(plants.indexOf(curr));
 			add.addAmount(curr.getAmount());
 		}
 		Random rand = createRandom(x, y, z, 126862622643624L);
+		PlantGenerator gen;
 		for(int d = 0; d < plants.size(); ++d){
-			PlantGrowth curr = plants.get(d);
-			curr.setAmount(curr.getAmount() / 4 + 1);
-			PlantGenerator gen = GeneratorList.getPlantGenerator(curr.getPlant());
+			curr = plants.get(d);
+			curr.setAmount(curr.getAmount() / 4);
+			gen = GeneratorList.getPlantGenerator(curr.getPlant());
 			if(gen == null) continue;
 			for(int i = 0; i < curr.getAmount(); ++i){
 				gen.growPlant(this, data, x, y, z, rand, curr.getPlant());
@@ -573,12 +579,15 @@ public class ImplWorld implements World {
 	}
 
 	public void notifyNear(long x, long y, long z) {
+		Direction dir;
+		long px, py, pz;
+		Block b;
 		for (int d = 0; d < 6; ++d) {
-			Direction dir = Direction.getDirection(d);
-			long px = x + dir.getX();
-			long py = y + dir.getY();
-			long pz = z + dir.getZ();
-			Block b = getBlockType(px, py, pz);
+			dir = Direction.getDirection(d);
+			px = x + dir.getX();
+			py = y + dir.getY();
+			pz = z + dir.getZ();
+			b = getBlockType(px, py, pz);
 			b.nearbyBlockChanged(this, px, py, pz, dir.opposite());
 		}
 	}
@@ -598,14 +607,23 @@ public class ImplWorld implements World {
 			RayTraceResult primaryResult = primaryBlock.getRayTrace(this, posX, posY, posZ, start, end);
 			if (primaryResult != null) return primaryResult;
 		}
+		boolean xFlag, yFlag, zFlag;
+		double xAmount, yAmount, zAmount;
+		double xSide, ySide, zSide;
+		double xDist, yDist, zDist;
+		byte side;
+		Vector3d other;
+		int blockID, blockData;
+		Block block;
+		RayTraceResult newResult;
 		for (int pos = amount; pos-- >= 0;) {
 			if (posX == endBlockX && posY == endBlockY && posZ == endBlockZ) return null;
-			boolean xFlag = true;
-			boolean yFlag = true;
-			boolean zFlag = true;
-			double xAmount = 999F;
-			double yAmount = 999F;
-			double zAmount = 999F;
+			xFlag = true;
+			yFlag = true;
+			zFlag = true;
+			xAmount = 999F;
+			yAmount = 999F;
+			zAmount = 999F;
 			if (endBlockX > posX) xAmount = posX + 1.0F;
 			else if (endBlockX < posX) xAmount = posX + 0.0f;
 			else xFlag = false;
@@ -615,16 +633,16 @@ public class ImplWorld implements World {
 			if (endBlockZ > posZ) zAmount = posZ + 1.0f;
 			else if (endBlockZ < posZ) zAmount = posZ + 0.0f;
 			else zFlag = false;
-			double xSide = 999f;
-			double ySide = 999f;
-			double zSide = 999f;
-			double xDist = end.x - start.x;
-			double yDist = end.y - start.y;
-			double zDist = end.z - start.z;
+			xSide = 999f;
+			ySide = 999f;
+			zSide = 999f;
+			xDist = end.x - start.x;
+			yDist = end.y - start.y;
+			zDist = end.z - start.z;
 			if (xFlag) xSide = (xAmount - start.x) / xDist;
 			if (yFlag) ySide = (yAmount - start.y) / yDist;
 			if (zFlag) zSide = (zAmount - start.z) / zDist;
-			byte side = 0;
+			side = 0;
 			if (xSide < ySide && xSide < zSide) {
 				if (endBlockX > posX) side = 2; // Fixed
 				else side = 0; // Fixed
@@ -644,7 +662,7 @@ public class ImplWorld implements World {
 				start.y += yDist * zSide;
 				start.z = zAmount;
 			}
-			Vector3d other = new Vector3d(start.x, start.y, start.z);
+			other = new Vector3d(start.x, start.y, start.z);
 			posX = (int) (other.x = MathUtils.floor(start.x));
 			if (side == 0) { // Fixed
 				posX--;
@@ -660,11 +678,11 @@ public class ImplWorld implements World {
 				posZ--;
 				++other.z;
 			}
-			int blockID = getBlockId(posX, posY, posZ);
-			int blockData = getBlockData(posX, posY, posZ);
-			Block block = Block.byId(blockID);
+			blockID = getBlockId(posX, posY, posZ);
+			blockData = getBlockData(posX, posY, posZ);
+			block = Block.byId(blockID);
 			if (!block.isAir() && block.includeInRayTrace((byte) blockData) && block.getRayTraceSize(this, posX, posY, posZ) != null) {
-				RayTraceResult newResult = block.getRayTrace(this, posX, posY, posZ, start, end);
+				newResult = block.getRayTrace(this, posX, posY, posZ, start, end);
 				if (newResult != null) return newResult;
 			}
 		}
@@ -828,9 +846,10 @@ public class ImplWorld implements World {
 		}
 		LinkedList<Vector4l> current = (LinkedList<Vector4l>) blockUpdates.clone();
 		blockUpdates.clear();
+		int i;
 		for(Vector4l b : current){
 			if(b.w == 0){
-				int i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z);
+				i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z);
 				if(i > 0) blockUpdates.add(new Vector4l(b.x, b.y, b.z, i));
 			} else {
 				b.w--;
@@ -851,8 +870,9 @@ public class ImplWorld implements World {
 	public CompoundTag getSaveCompound() {
 		CompoundTag root = new CompoundTag("root");
 		ListTag blocks = new ListTag("blocks", CompoundTag.class);
+		CompoundTag block;
 		for (Entry<String, Integer> e : registeredBlocks.entrySet()) {
-			CompoundTag block = new CompoundTag("");
+			block = new CompoundTag("");
 			block.setInt("id", e.getValue());
 			block.setString("name", e.getKey());
 			blocks.addTag(block);
@@ -869,10 +889,13 @@ public class ImplWorld implements World {
 	
 	public void loadSaveCompound(CompoundTag root){
 		ListTag blocks = root.getListTag("blocks");
+		CompoundTag t;
+		int id;
+		String name;
 		while(blocks.hasNext()){
-			CompoundTag t = (CompoundTag) blocks.getNextTag();
-			int id = t.getInt("id");
-			String name = t.getString("name");
+			t = (CompoundTag) blocks.getNextTag();
+			id = t.getInt("id");
+			name = t.getString("name");
 			registeredBlocks.put(name, id);
 		}
 		nextBlockId = root.getInt("nextBlock");
