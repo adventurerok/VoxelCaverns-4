@@ -111,13 +111,15 @@ public class BlockStore {
 		currentData[2] = new DataRenderer();
 		boolean allAir = true;
 		boolean noData = true;
+		int y, z, i;
+		byte data;
 		for(int x = 0; x < 16; ++x){
-			for(int y = 0; y < 16; ++y){
-				for(int z = 0; z < 16; ++z){
+			for(y = 0; y < 16; ++y){
+				for(z = 0; z < 16; ++z){
 					int i = getBlockId(x, y, z);
 					if(i < 1) continue;
 					allAir = false;
-					byte data = getBlockData(x, y, z);
+					data = getBlockData(x, y, z);
 					if(data != 0) noData = false;
 					Block.byId(i).getRenderer().renderBlock(c, x | xMod, y | yMod, z | zMod, Block.byId(i), data, currentData);
 				}
