@@ -43,9 +43,10 @@ public class ImplChunk implements Chunk {
 			stores[d].blocks = new short[4096];
 			stores[d].data = new byte[4096];
 		}
+		int y, z;
 		for (int x = 0; x < 32; ++x) {
-			for (int y = 0; y < 32; ++y) {
-				for (int z = 0; z < 32; ++z) {
+			for (y = 0; y < 32; ++y) {
+				for (z = 0; z < 32; ++z) {
 					if (data.blocks[GeneratorOutput.arrayCalc(x, y, z)] == 0) continue;
 					stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].blocks[BlockStore.arrayCalc(x & 15, y & 15, z & 15)] = data.blocks[GeneratorOutput.arrayCalc(x, y, z)];
 					if (data.data[GeneratorOutput.arrayCalc(x, y, z)] == 0) continue;
@@ -176,9 +177,10 @@ public class ImplChunk implements Chunk {
 	}
 
 	public boolean isSurrounded() {
+		int y, z;
 		for (int x = -1; x < 2; ++x) {
-			for (int y = -1; y < 2; ++y) {
-				for (int z = -1; z < 2; ++z) {
+			for (y = -1; y < 2; ++y) {
+				for (z = -1; z < 2; ++z) {
 					if (!world.chunkExists(x + pos.x, y + pos.y, z + pos.z)) return false;
 				}
 			}
@@ -188,30 +190,33 @@ public class ImplChunk implements Chunk {
 
 	public void update(Random rand) {
 		EntityList alive = new EntityList();
+		Entity e;
+		long qx, qy, qz;
 		for (int dofor = entitys.size() - 1; dofor > -1; --dofor) {
 			Entity e = entitys.get(dofor);
 			if (e == null) continue;
 			if (!e.hadUpdate) e.update();
 			if (!e.needsRemoving()) {
-				long x = MathUtils.floor(e.position.x) >> 5;
-				long y = MathUtils.floor(e.position.y) >> 5;
-				long z = MathUtils.floor(e.position.z) >> 5;
-				if (ChunkPos.create(x, y, z).equals(pos) || !world.chunkExists(x, y, z)) {
+				qx = MathUtils.floor(e.position.x) >> 5;
+				qy = MathUtils.floor(e.position.y) >> 5;
+				qz = MathUtils.floor(e.position.z) >> 5;
+				if (ChunkPos.create(qx, qy, qz).equals(pos) || !world.chunkExists(qx, qy, qz)) {
 					e.hadUpdate = false;
 					alive.add(e);
 				} else {
 					e.hadUpdate = true;
-					world.chunks.get(ChunkPos.create(x, y, z)).entitys.add(e);
+					world.chunks.get(ChunkPos.create(qx, qy, qz)).entitys.add(e);
 				}
 
 			}
 		}
 		entitys = alive;
+		int x, y, z, time;
 		for(int d = 0; d < 10; ++d){
-			int x = rand.nextInt(32);
-			int y = rand.nextInt(32);
-			int z = rand.nextInt(32);
-			int time = Block.byId(getBlockId(x, y, z)).blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z));
+			x = rand.nextInt(32);
+			y = rand.nextInt(32);
+			z = rand.nextInt(32);
+			time = Block.byId(getBlockId(x, y, z)).blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z));
 			if(time > 0){
 				world.scheduleBlockUpdate(pos.worldX(x), pos.worldY(y), pos.worldZ(z), time);
 			}
