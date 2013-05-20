@@ -27,10 +27,11 @@ public class GeneratorThread extends Thread {
 
 	@Override
 	public void run() {
+		long start, time;
 		while(!stop){
-			long start = System.nanoTime();
+			start = System.nanoTime();
 			if(world.loaded) generate(location);
-			long time = System.nanoTime() - start;
+			time = System.nanoTime() - start;
 			time /= 1000000;
 			if(time > 30) time = 30;
 			try {
@@ -43,9 +44,10 @@ public class GeneratorThread extends Thread {
 	public void generate(Vector3d loc){
 		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
 		ChunkPos me = ChunkPos.createFromWorldVector(loc);
+		int y, z;
 		for (int x = -7; x < 8; ++x) {
-			for (int y = -7; y < 8; ++y) {
-				for (int z = -7; z < 8; ++z) {
+			for (y = -7; y < 8; ++y) {
+				for (z = -7; z < 8; ++z) {
 					
 					checkLoad(loc, me, x, y, z, closestToLoad);
 				}
