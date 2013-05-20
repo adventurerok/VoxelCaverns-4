@@ -242,9 +242,10 @@ public abstract class Entity {
 		long may = MathUtils.floor(bounds.maxY - 0.001D);
 		long maz = MathUtils.floor(bounds.maxZ - 0.001D);
 
+		long qy, qz;
 		for (long qx = mix; qx <= max; qx++) {
-			for (long qy = miy; qy <= may; qy++) {
-				for (long qz = miz; qz <= maz; qz++) {
+			for (qy = miy; qy <= may; qy++) {
+				for (qz = miz; qz <= maz; qz++) {
 //					int id = world.getBlockId(qx, qy, qz);
 //					if (id > 0)
 //						Block.byId(id).onEntityCollidedWith(world, qx, qy, qz, this);
