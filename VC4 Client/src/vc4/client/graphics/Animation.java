@@ -21,10 +21,12 @@ public class Animation {
 	public void loadFrames(String s){
 		String[] sects = s.split(",");
 		frames = new Frame[sects.length];
+		String[] ns;
+		int part, ticks;
 		for(int d = 0; d < sects.length; ++d){
-			String[] ns = sects[d].split("\\*");
-			int part = Integer.parseInt(ns[0]);
-			int ticks = 1;
+			ns = sects[d].split("\\*");
+			part = Integer.parseInt(ns[0]);
+			ticks = 1;
 			if(ns.length > 1) ticks = Integer.parseInt(ns[1]);
 			frames[d] = new Frame(ticks, part);
 			length += ticks;
