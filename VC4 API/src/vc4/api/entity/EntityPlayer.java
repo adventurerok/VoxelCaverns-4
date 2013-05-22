@@ -38,10 +38,15 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	Vector3d spawn;
 	Vector3l oRP;
 	
+	int maxHealing = 100;
+	
+	double nowHealing = 0;
+	double healMinus = 0;
+	
+	
 	public EntityPlayer(World world) {
 		super(world);
-		Random rand = new Random();
-		ArrayList<ItemStack> creativeItems = new ArrayList<>();
+		healing = 100;
 		int pick = 0;
 		double pickPower = 0;
 		int spade = 0;
@@ -72,19 +77,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 			}
 			
 		}
-		for(int d = 0; d < 2048; ++d){
-			if(Item.byId(d) == null) continue;
-			ItemStack[] b = Item.byId(d).getCreativeItems();
-			if(b == null) continue;
-			creativeItems.addAll(Arrays.asList(b));
-		}
 		inventory.setItem(0, new ItemStack(pick, 0, 1));
-		inventory.setItem(1, new ItemStack(world.getRegisteredBlock("vanilla.vine"), 0, 99));
+		//inventory.setItem(1, new ItemStack(world.getRegisteredBlock("vanilla.vine"), 0, 99));
 		inventory.setItem(2, new ItemStack(spade, 0, 1));
 		inventory.setItem(3, new ItemStack(axe, 0, 1));
-		for(int d = 4; d < 40; ++d){
-			inventory.setItem(d, creativeItems.get(rand.nextInt(creativeItems.size())).clone().setAmount(50 + rand.nextInt(40)));
-		}
 	}
 	
 	public void decreaseCooldown(double delta){
@@ -179,6 +175,11 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	 */
 	public ContainerInventory getInventory() {
 		return inventory;
+	}
+	
+	@Override
+	public int getMaxHealing() {
+		return maxHealing;
 	}
 
 	/**
@@ -296,6 +297,36 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	public void setSpawn(Vector3d spawn) {
 		this.spawn = spawn;
 	}
+	
+	@Override
+	public void update() {
+		super.update();
+		if(healing == 0) return;
+		double heal = healing / 5500d;
+		if(heal > 0 && health >= getMaxHealth()) heal = 0;
+		if(heal > 0) healMinus += 1;
+		else if(heal < 0) healMinus -= 1;
+		nowHealing += heal;
+		if(nowHealing > 0){
+			while(nowHealing >= 1){
+				health += 1;
+				nowHealing -= 1;
+			}
+			while(healMinus >= 375){
+				healing -= 1;
+				healMinus -= 370;
+			}
+		} else if(nowHealing < 0){
+			while(nowHealing <= -1){
+				health -= 1;
+				nowHealing += 1;
+			}
+			while(healMinus <= -375){
+				healing += 1;
+				healMinus += 370;
+			}
+		}
+	}
 
 	public void updateInput(){
 		Keyboard keys = Input.getClientKeyboard();
@@ -329,7 +360,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	@Override
 	public int reduceDamage(DamageSource source, int damage) {
-		if(source == DamageSource.fallDamage) return 0;
-		else return super.reduceDamage(source, damage);
+		//if(source == DamageSource.fallDamage) return 0;
+		return super.reduceDamage(source, damage);
 	}
 }

@@ -44,7 +44,7 @@ public class ScreenDebug extends Component {
 	@Override
 	public void draw() {
 		debugLine = 0;
-		EntityPlayer player = Client.getGame().getBlockInteractor();
+		EntityPlayer player = Client.getGame().getPlayer();
 		World world = player.getWorld();
 		Vector3l blockPos = player.position.toVector3l();
 		String[] dInfo = world.getDebugInfo();

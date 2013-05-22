@@ -173,3 +173,7 @@ VC4-Development-0.0.1-226
 	* Better biome api
 VC4-Development-0.0.1-227
 	+ New BlockRendererFace
+VC4-Development-0.0.1-228
+	* Improved creative items
+VC4-Development-0.0.1-229
+	* Fixed item creative bug

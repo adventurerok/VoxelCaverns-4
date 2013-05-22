@@ -4,7 +4,7 @@
 package vc4.api.block;
 
 import java.awt.Color;
-import java.util.Random;
+import java.util.*;
 
 import vc4.api.block.render.*;
 import vc4.api.entity.EntityItem;
@@ -127,8 +127,10 @@ public class Block {
 		return Localization.getLocalization(getDescription(item));
 	}
 	
-	public ItemStack[] getCreativeItems(){
-		return new ItemStack[]{new ItemStack(uid, 0, 1)};
+	public Collection<ItemStack> getCreativeItems(){
+		ArrayList<ItemStack> res = new ArrayList<>();
+		res.add(new ItemStack(uid, 0, 1));
+		return res;
 	}
 	
 	private static class DuplicateBlockException extends RuntimeException{

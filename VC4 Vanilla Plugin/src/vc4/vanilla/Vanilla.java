@@ -4,9 +4,9 @@
 package vc4.vanilla;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
-import vc4.api.biome.Biome;
-import vc4.api.biome.BiomeType;
+import vc4.api.biome.*;
 import vc4.api.block.*;
 import vc4.api.generator.GeneratorList;
 import vc4.api.generator.PlantGrowth;
@@ -68,19 +68,26 @@ public class Vanilla extends Plugin {
 	public static Music musicHell = new Music("A_Night_Out", MusicType.BIOME);
 	public static Music musicSky = new Music("Menu_Screen", MusicType.BIOME);
 	
-	public static Biome biomeOcean = new Biome("ocean", BiomeType.ocean, Color.blue).setHeights(1, -56);
+	
+	public static BiomeHeightModel hills = new BiomeHeightModel(75, 25, 80, 10);
+	public static BiomeHeightModel oceans = new BiomeHeightModel(-38, -80, 1, -100);
+	public static BiomeHeightModel trenchs = new BiomeHeightModel(-70, -125, -10, -140);
+	public static Biome biomeOcean = new BiomeOcean().setHeights(oceans);
 	public static BiomeHilly biomePlains = new BiomePlains("plains", BiomeType.normal, Color.green);
 	public static BiomeHilly biomeDesert = new BiomeHilly("desert", BiomeType.hot, Color.yellow);
 	public static BiomeHilly biomeSnowPlains = new BiomeHilly("snowplains", BiomeType.cold, Color.white);
 	public static BiomeHilly biomeForest = new BiomeHilly("forest", BiomeType.normal, Color.green);
-	public static Biome biomePlainsHills = new BiomePlains("plains/hills", BiomeType.normal, Color.green).setHeights(60, 10);
-	public static Biome biomeDesertHills = new Biome("desert/hills", BiomeType.hot, Color.yellow).setHeights(60, 10);
-	public static Biome biomeSnowPlainsHills = new Biome("snowplains/hills", BiomeType.cold, Color.white).setHeights(60, 10);
-	public static Biome biomeForestHills = new Biome("forest/hills", BiomeType.normal, Color.green).setHeights(60, 10);
-	public static BiomeHilly biomeVolcanic = new BiomeVolcanic("volcanic", BiomeType.hot, Color.black, 3).setHeights(50, 3);
-	public static Biome biomeVolcano = new BiomeVolcanic("volcanic/hills", BiomeType.hot, Color.black, 8).setHeights(100, 12);
+	public static Biome biomePlainsHills = new BiomePlains("plains/hills", BiomeType.normal, Color.green).setHeights(hills);
+	public static Biome biomeDesertHills = new Biome("desert/hills", BiomeType.hot, Color.yellow).setHeights(hills);
+	public static Biome biomeSnowPlainsHills = new Biome("snowplains/hills", BiomeType.cold, Color.white).setHeights(hills);
+	public static Biome biomeForestHills = new Biome("forest/hills", BiomeType.normal, Color.green).setHeights(hills);
+	public static BiomeHilly biomeVolcanic = new BiomeVolcanic("volcanic", BiomeType.hot, Color.black, 3).setHeights(new BiomeHeightModel(56, 20, 65, 3));
+	public static Biome biomeVolcano = new BiomeVolcanic("volcanic/hills", BiomeType.hot, Color.black, 8).setHeights(new BiomeHeightModel(135, 50, 145, 12));
 	public static BiomeHilly biomeSnowForest = new BiomeHilly("snowforest", BiomeType.cold, Color.white);
-	public static Biome biomeSnowForestHills = new Biome("snowforest/hills", BiomeType.cold, Color.white).setHeights(60, 10);
+	public static Biome biomeSnowForestHills = new Biome("snowforest/hills", BiomeType.cold, Color.white).setHeights(hills);
+	public static Biome biomeTrench = new Biome("ocean/trench", BiomeType.ocean, Color.blue).setHeights(trenchs);
+	
+	public static ArrayList<ArrayList<Integer>> biomes;
 	
 	
 	private static ToolMaterial[] materials = new ToolMaterial[]{
@@ -182,6 +189,8 @@ public class Vanilla extends Plugin {
 		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 2));
 		biomeOcean.music = musicSky;
+		biomeTrench.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		biomeTrench.music = musicSky;
 		biomeDesert.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesertHills.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesert.music = musicDesert;
@@ -218,8 +227,29 @@ public class Vanilla extends Plugin {
 		biomeVolcano.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
 		biomeVolcano.music = musicHell;
 		biomeVolcanic.setHills(biomeVolcano.id);
+		biomes = new ArrayList<>();
+		ArrayList<Integer> ocean = new ArrayList<>();
+		ocean.add(Vanilla.biomeOcean.id);
+		biomes.add(ocean);
+		ArrayList<Integer> normal = new ArrayList<>();
+		normal.add(Vanilla.biomePlains.id);
+		normal.add(Vanilla.biomeForest.id);
+		biomes.add(normal);
+		ArrayList<Integer> cold = new ArrayList<>();
+		cold.add(Vanilla.biomeSnowPlains.id);
+		cold.add(Vanilla.biomeSnowForest.id);
+		biomes.add(cold);
+		ArrayList<Integer> hot = new ArrayList<>();
+		hot.add(Vanilla.biomeDesert.id);
+		hot.add(Vanilla.biomeDesert.id);
+		hot.add(Vanilla.biomeVolcanic.id);
+		biomes.add(hot);
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
+	}
+	
+	public ArrayList<ArrayList<Integer>> getBiomes() {
+		return biomes;
 	}
 	
 	public void generateToolItems(World world){

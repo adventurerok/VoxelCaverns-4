@@ -35,31 +35,21 @@ public class OverworldGenerator implements WorldGenerator {
 	private WorldGenUndergroundLake lavaLakeGen;
 	private WorldGenDungeons dungeonsGen = new WorldGenDungeons();
 	private WorldGenFloatingIslands floatingGen = new WorldGenFloatingIslands();
+	private WorldGenPyramids pyramidsGen = new WorldGenPyramids();
+	private RecursiveGenVolcano volcanoGen = new RecursiveGenVolcano();
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
 	ArrayList<ArrayList<Integer>> biomes;
 	
+	
+	public ArrayList<ArrayList<Integer>> getBiomes() {
+		return biomes;
+	}
 
 	@Override
 	public void onWorldLoad(World world) {
 		waterLakeGen = new WorldGenUndergroundLake(Vanilla.water.uid, 100);
 		lavaLakeGen = new WorldGenUndergroundLake(Vanilla.lava.uid, 175);
-		biomes = new ArrayList<>();
-		ArrayList<Integer> ocean = new ArrayList<>();
-		ocean.add(Vanilla.biomeOcean.id);
-		biomes.add(ocean);
-		ArrayList<Integer> normal = new ArrayList<>();
-		normal.add(Vanilla.biomePlains.id);
-		normal.add(Vanilla.biomeForest.id);
-		biomes.add(normal);
-		ArrayList<Integer> cold = new ArrayList<>();
-		cold.add(Vanilla.biomeSnowPlains.id);
-		cold.add(Vanilla.biomeSnowForest.id);
-		biomes.add(cold);
-		ArrayList<Integer> hot = new ArrayList<>();
-		hot.add(Vanilla.biomeDesert.id);
-		hot.add(Vanilla.biomeDesert.id);
-		hot.add(Vanilla.biomeVolcanic.id);
-		biomes.add(hot);
+		biomes = Vanilla.biomes;
 	}
 
 	public int[] getNoiseDiff(World world, long x, long y, long z, SimplexOctaveGenerator noise) {
@@ -141,8 +131,9 @@ public class OverworldGenerator implements WorldGenerator {
 				}
 			}
 		}
-		if (world.getGeneratorTag().getBoolean("caves", true)) caveGen.generate(world, x, y, z, out);
 		if (world.getGeneratorTag().getBoolean("chasms", true)) chasmGen.generate(world, data, x, y, z, out);
+		if(world.getGeneratorTag().getBoolean("volcanos", true)) volcanoGen.generate(world, x, y, z, out);
+		if (world.getGeneratorTag().getBoolean("caves", true)) caveGen.generate(world, x, y, z, out);
 		return out;
 	}
 
@@ -185,6 +176,7 @@ public class OverworldGenerator implements WorldGenerator {
 		if (world.getGeneratorTag().getBoolean("dungeons", true)) {
 			dungeonGen.generate(world, x, y, z);
 			ruinsGen.populate(world, x, y, z);
+			pyramidsGen.populate(world, x, y, z);
 			dungeonsGen.populate(world, x, y, z);
 		}
 		if (world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);

@@ -8,6 +8,7 @@ import vc4.api.entity.EntityPlayer;
 import vc4.api.gui.Component;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.MouseSet;
+import vc4.api.packet.Packet;
 import vc4.api.util.Fustrum;
 import vc4.api.util.Setting;
 
@@ -59,5 +60,6 @@ public interface ClientGame {
 	public GameState getGameState();
 	public void setGameState(GameState g);
 	public int getCrosshair(String name);
-	public EntityPlayer getBlockInteractor();
+	public EntityPlayer getPlayer();
+	public void handlePacket(Packet pack);
 }

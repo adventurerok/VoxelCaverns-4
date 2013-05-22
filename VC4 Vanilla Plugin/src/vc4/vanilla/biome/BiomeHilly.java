@@ -3,8 +3,7 @@ package vc4.vanilla.biome;
 import java.awt.Color;
 import java.util.Random;
 
-import vc4.api.biome.Biome;
-import vc4.api.biome.BiomeType;
+import vc4.api.biome.*;
 
 public class BiomeHilly extends Biome {
 	
@@ -18,6 +17,12 @@ public class BiomeHilly extends Biome {
 	@Override
 	public BiomeHilly setHeights(int max, int min) {
 		super.setHeights(max, min);
+		return this;
+	}
+	
+	@Override
+	public BiomeHilly setHeights(BiomeHeightModel model) {
+		super.setHeights(model);
 		return this;
 	}
 	

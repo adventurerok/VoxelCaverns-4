@@ -4,6 +4,7 @@
 package vc4.api.block;
 
 import vc4.api.block.render.BlockRendererFluid;
+import vc4.api.util.AABB;
 import vc4.api.util.Direction;
 import vc4.api.world.World;
 
@@ -29,6 +30,11 @@ public class BlockFluid extends Block {
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return false;
+	}
+	
+	@Override
+	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
+		return null;
 	}
 	
 	/* (non-Javadoc)

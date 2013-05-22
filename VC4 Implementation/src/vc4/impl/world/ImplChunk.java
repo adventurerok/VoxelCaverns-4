@@ -193,7 +193,7 @@ public class ImplChunk implements Chunk {
 		Entity e;
 		long qx, qy, qz;
 		for (int dofor = entitys.size() - 1; dofor > -1; --dofor) {
-			Entity e = entitys.get(dofor);
+			e = entitys.get(dofor);
 			if (e == null) continue;
 			if (!e.hadUpdate) e.update();
 			if (!e.needsRemoving()) {

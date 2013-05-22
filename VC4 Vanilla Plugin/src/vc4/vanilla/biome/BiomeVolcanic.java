@@ -22,11 +22,7 @@ public class BiomeVolcanic extends BiomeHilly {
 	public void placeBiomeBlock(GeneratorOutput out, Random rand, int cx, int cy, int cz, long diff, long y) {
 		int type = Block.stone.uid;
 		if(rand.nextInt(amt) != 0) type = Vanilla.obsidian.uid;
-		if(diff == -1){
-			if(amt > 3 && (y << 5) + cy > 75){
-				out.setBlockId(cx, cy, cz, Vanilla.lava.uid);
-			}
-		} else if (diff == 0){
+		if (diff == 0){
 			out.setBlockId(cx, cy, cz, type);
 		}
 		else if(diff < 5) out.setBlockId(cx, cy, cz, type);

@@ -26,9 +26,9 @@ public class ItemTooltipRenderer {
 //			case ARMOUR:
 //				text = item.getArmourSlotText(slot);
 //				break;
-//			case CREATIVE:
-//				text = item.getCreativeTooltipText();
-//				break;
+			case CREATIVE:
+				text = item.getCreativeTooltipText();
+				break;
 			case INVENTORY:
 				text = item.getTooltipText();
 				break;

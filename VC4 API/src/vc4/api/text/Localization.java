@@ -68,11 +68,22 @@ public class Localization {
 		return s;
 	}
 	
-	public static String getLocalization(String text, Object[] args){
+	public static String getLocalization(String text, Object... args){
 		String format = loaded.get(text);
 		if(format == null) return text;
 		for (int dofor = 0; dofor < args.length; dofor++) {
 			String string = args[dofor].toString();
+			String replace = "{" + dofor + "}";
+			format = format.replace(replace, (string == null) ? "" : string);
+		}
+		return format;
+	}
+	
+	public static String getLocalization(String text, String... args){
+		String format = loaded.get(text);
+		if(format == null) return text;
+		for (int dofor = 0; dofor < args.length; dofor++) {
+			String string = args[dofor];
 			String replace = "{" + dofor + "}";
 			format = format.replace(replace, (string == null) ? "" : string);
 		}

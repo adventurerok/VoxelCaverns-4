@@ -3,6 +3,9 @@
  */
 package vc4.api.gui;
 
+import java.util.ArrayList;
+
+import vc4.api.gui.listeners.TextListener;
 import vc4.api.input.*;
 import vc4.api.util.Clipboard;
 
@@ -43,6 +46,8 @@ public class TextBox extends Component {
 	private boolean wasInFocus = false;
 
 	private Keyboard keyboard;
+	
+	private ArrayList<TextListener> listeners = new ArrayList<>();
 
 	/*
 	 * (non-Javadoc)
@@ -121,7 +126,11 @@ public class TextBox extends Component {
 			}
 			cursorPos++;
 		} else if(key == Key.RETURN){
-			//TASK notify listeners
+			for(TextListener l : listeners){
+				l.textRecieved(this, value);
+				setText("");
+				setFocus(false);
+			}
 		}
 	}
 
@@ -150,6 +159,10 @@ public class TextBox extends Component {
 			setText(oldText);
 			setCursorPos(oldCursorPos);
 		}
+	}
+	
+	public void addListener(TextListener listener){
+		listeners.add(listener);
 	}
 	
 	/**

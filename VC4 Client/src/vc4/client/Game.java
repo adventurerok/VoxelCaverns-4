@@ -30,6 +30,7 @@ import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.*;
 import vc4.api.logging.Level;
 import vc4.api.logging.Logger;
+import vc4.api.packet.Packet;
 import vc4.api.sound.Audio;
 import vc4.api.sound.Music;
 import vc4.api.text.Localization;
@@ -702,7 +703,7 @@ public class Game extends Component implements ClientGame {
 	 * @return the blockInteractor
 	 */
 	@Override
-	public EntityPlayer getBlockInteractor() {
+	public EntityPlayer getPlayer() {
 		return player;
 	}
 
@@ -714,6 +715,12 @@ public class Game extends Component implements ClientGame {
 	@Override
 	public Fustrum getViewFustrum() {
 		return fustrum;
+	}
+
+	@Override
+	public void handlePacket(Packet pack) {
+		
+		
 	}
 
 }

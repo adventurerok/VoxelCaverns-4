@@ -4,8 +4,7 @@ public enum MovementStyle {
 
 	WALK(0.22),
 	SNEAK(0.065),
-	SPRINT(0.3),
-	FLY(0.55);
+	SPRINT(0.3);
 	
 	private double speed;
 	

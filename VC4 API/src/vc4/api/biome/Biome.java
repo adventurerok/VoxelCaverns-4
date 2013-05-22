@@ -22,9 +22,11 @@ public class Biome {
 	public int fillerBlock;
 	public int bottomBlock;
 	public int minHeight = 0;
-	public int maxHeight = 20;
+	public int maxHeight = 26;
+	public int minEnf = 0;
+	public int maxEnf = 30;
 	public int soilDepth = 6;
-	public int diffHeight = 20, midHeight = 10;
+	public int diffHeight = 26, midHeight = 13;
 	public boolean enfHeight = true; //If the height should be clamped
 	public Music music = new Music("First_Day", MusicType.BIOME);
 	public Color grassColor = new Color(0x1C8F1C);
@@ -51,6 +53,13 @@ public class Biome {
 	
 	public int generateSubBiome(Random rand){
 		return id;
+	}
+	
+	public Biome setHeights(BiomeHeightModel model){
+		setHeights(model.max, model.min);
+		maxEnf = model.eMax;
+		minEnf = model.eMin;
+		return this;
 	}
 	
 	public Biome setColors(Color grass, Color water, Color plant){

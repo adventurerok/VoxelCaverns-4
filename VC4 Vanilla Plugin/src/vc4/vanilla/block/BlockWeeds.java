@@ -76,6 +76,11 @@ public class BlockWeeds extends Block {
 	}
 	
 	@Override
+	public boolean render3d(byte data) {
+		return false;
+	}
+	
+	@Override
 	public boolean replacableBy(World world, long x, long y, long z, int bid, byte data) {
 		return bid != uid && bid != 0;
 	}

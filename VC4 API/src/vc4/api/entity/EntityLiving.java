@@ -8,9 +8,11 @@ public class EntityLiving extends Entity {
 	public double yaw, pitch, forward, sideways;
 	public double fallDistance;
 	public MovementStyle movement = MovementStyle.WALK;
+	public FlyingStyle flying = FlyingStyle.WALK;
 	
 	public byte resistanceTime = 20;
 	public int resistedDamage = 100000;
+	public int healing = 25;
 	
 	
 	public EntityLiving(World world) {
@@ -19,19 +21,31 @@ public class EntityLiving extends Entity {
 	}
 	
 	public void jump(){
-		if(onGround || movement == MovementStyle.FLY){
-			motionY += 0.35;
+		if(flying != FlyingStyle.WALK){
+			motionY += 0.45;
+		} else if(onGround){
+			motionY = 0.7;
 		}
 	}
 	
 	public void sneak(){
-		if(movement == MovementStyle.FLY){
-			motionY -= 0.35;
+		if(flying != FlyingStyle.WALK){
+			motionY -= 0.45;
 		} else movement = MovementStyle.SNEAK;
 	}
 	
 	public double getEyeHeight(){
 		return position.y + getDefaultSize().y - 0.15;
+	}
+	
+	public void setFlying(FlyingStyle flying) {
+		this.flying = flying;
+	}
+	
+	
+	
+	public FlyingStyle getFlying() {
+		return flying;
 	}
 	
 	
@@ -58,12 +72,21 @@ public class EntityLiving extends Entity {
 	
 	//Useful for walking with delta
 	public void walk(double forward, double sideways){
-		double xmotion = -forward * movement.getSpeed() * Math.sin(Math.toRadians(yaw));
-		double zmotion = forward * movement.getSpeed() * Math.cos(Math.toRadians(yaw));
-		xmotion += sideways * movement.getSpeed() * Math.sin(Math.toRadians(yaw - 90));
-		zmotion -= sideways * movement.getSpeed() * Math.cos(Math.toRadians(yaw - 90));
+		double fMod = flying != FlyingStyle.WALK ? 2.2 : 1;
+		double xmotion = -forward * movement.getSpeed() * fMod * Math.sin(Math.toRadians(yaw));
+		double zmotion = forward * movement.getSpeed() * fMod * Math.cos(Math.toRadians(yaw));
+		xmotion += sideways * movement.getSpeed() * fMod * Math.sin(Math.toRadians(yaw - 90));
+		zmotion -= sideways * movement.getSpeed() * fMod * Math.cos(Math.toRadians(yaw - 90));
 		motionX += xmotion;
 		motionZ += zmotion;
+	}
+	
+	public int getHealing() {
+		return healing;
+	}
+	
+	public int getMaxHealing(){
+		return 25;
 	}
 	
 	
@@ -83,26 +106,28 @@ public class EntityLiving extends Entity {
 	public void move(){
 		motionX *= 0.6;
 		motionZ *= 0.6;
-		if(movement != MovementStyle.FLY){
+		if(flying == FlyingStyle.WALK){
 			motionY -= world.getFallAcceleration();
 			if(motionY < -world.getFallMaxSpeed()) motionY = -world.getFallMaxSpeed();
 		} else{
 			motionY *= 0.6;
 		}
 		if(!onGround){
-			fallDistance += Math.max(0, oldPos.y - position.y);
-			if(fallDistance > 512 && motionY <= -world.getFallMaxSpeed()){
-				double base = fallDistance - 512;
-				damage((int) base, DamageSource.fallDamage, 5);
+			if(flying == FlyingStyle.WALK){
+				fallDistance += Math.max(0, oldPos.y - position.y);
+				if(fallDistance > 512 && motionY <= -world.getFallMaxSpeed()){
+					double base = fallDistance - 512;
+					damage((int) base, DamageSource.fallDamage, 5);
+				}
 			}
 		} else{
 			if(fallDistance > 4){
-				damage((int) (4.5 * fallDistance), DamageSource.fallDamage);
+				damage((int) (3.75 * fallDistance), DamageSource.fallDamage);
 			}
 			fallDistance = 0;
 		}
 		move(motionX, motionY, motionZ);
-		if(movement == MovementStyle.FLY && onGround){
+		if(flying == FlyingStyle.FLY && onGround){
 			movement = MovementStyle.WALK;
 		}
 		if(collisionHorizontal && movement == MovementStyle.SPRINT) movement = MovementStyle.WALK; 
@@ -116,6 +141,11 @@ public class EntityLiving extends Entity {
 	
 	public void setMovement(MovementStyle movement) {
 		this.movement = movement;
+	}
+	
+	@Override
+	public boolean noClip() {
+		return flying == FlyingStyle.NOCLIP;
 	}
 	
 	public MovementStyle getMovement() {

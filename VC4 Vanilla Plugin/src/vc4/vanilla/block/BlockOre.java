@@ -5,6 +5,7 @@ package vc4.vanilla.block;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import vc4.api.block.BlockMultitexture;
 import vc4.api.item.ItemStack;
@@ -59,14 +60,14 @@ public class BlockOre extends BlockMultitexture {
 	 * @see vc4.api.block.Block#getCreativeItems()
 	 */
 	@Override
-	public ItemStack[] getCreativeItems() {
+	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> items = new ArrayList<>();
 		for(int d = 0; d < 32; ++d){
 			if(oreColors[d] != null){
 				items.add(new ItemStack(uid, d, 1));
 			}
 		}
-		return items.toArray(new ItemStack[items.size()]);
+		return items;
 	}
 	
 	/* (non-Javadoc)

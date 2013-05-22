@@ -1,5 +1,8 @@
 package vc4.vanilla.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import vc4.api.item.ItemStack;
 
 public class WoodBlocks {
@@ -9,10 +12,10 @@ public class WoodBlocks {
 		"oak", "birch", "willow", "ash", "chestnut", "redwood", "kapok"
 	};
 	
-	public static ItemStack[] genCreativeItems(int bid){
-		ItemStack[] result = new ItemStack[maxData];
+	public static Collection<ItemStack> genCreativeItems(int bid){
+		ArrayList<ItemStack> result = new ArrayList<>();
 		for(int d = 0; d < maxData; ++d){
-			result[d] = new ItemStack(bid, d);
+			result.add(new ItemStack(bid, d));
 		}
 		return result;
 	}

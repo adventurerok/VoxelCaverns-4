@@ -1,6 +1,7 @@
 package vc4.vanilla.block;
 
 import java.awt.Color;
+import java.util.Collection;
 
 import vc4.api.block.BlockMultitexture;
 import vc4.api.block.Material;
@@ -62,7 +63,7 @@ public class BlockPlanks extends BlockMultitexture {
 	}
 	
 	@Override
-	public ItemStack[] getCreativeItems() {
+	public Collection<ItemStack> getCreativeItems() {
 		return WoodBlocks.genCreativeItems(uid);
 	}
 	

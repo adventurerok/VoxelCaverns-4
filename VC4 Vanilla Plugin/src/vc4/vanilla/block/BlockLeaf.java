@@ -3,6 +3,8 @@
  */
 package vc4.vanilla.block;
 
+import java.util.Collection;
+
 import vc4.api.block.Block;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
@@ -43,7 +45,7 @@ public class BlockLeaf extends Block {
 	 * @see vc4.api.block.Block#getCreativeItems()
 	 */
 	@Override
-	public ItemStack[] getCreativeItems() {
+	public Collection<ItemStack> getCreativeItems() {
 		return WoodBlocks.genCreativeItems(uid);
 	}
 	

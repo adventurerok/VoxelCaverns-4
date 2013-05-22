@@ -963,7 +963,7 @@ public class ImplWorld implements World {
 
 	@Override
 	public double getFallAcceleration() {
-		return 0.2;
+		return 0.15;
 	}
 
 	@Override

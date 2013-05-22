@@ -2,6 +2,7 @@ package vc4.vanilla.block;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import vc4.api.block.render.BlockRendererStairs;
 import vc4.api.entity.EntityPlayer;
@@ -63,13 +64,13 @@ public class BlockPlanksStairs extends BlockPlanks {
 	}
 	
 	@Override
-	public ItemStack[] getCreativeItems() {
+	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> result = new ArrayList<>();
 		for(int d = 0; d < 4; ++d){
 			if(d + base > 6) continue;
 			result.add(new ItemStack(uid, d << 2));
 		}
-		return result.toArray(new ItemStack[result.size()]);
+		return result;
 	}
 	
 	@Override

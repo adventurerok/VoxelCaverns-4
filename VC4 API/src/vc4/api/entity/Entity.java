@@ -71,6 +71,10 @@ public abstract class Entity {
 		if(world.getTime() % ticks == 0) damage(amount, source);
 	}
 	
+	
+	public int getHealth() {
+		return health;
+	}
 	protected void calculateBounds(){
 		if (bounds == null)
 			bounds = AABB.getBoundingBox(0, 0, 0, 0, 0, 0);

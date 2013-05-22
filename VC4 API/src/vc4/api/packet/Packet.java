@@ -41,10 +41,10 @@ public abstract class Packet {
 	}
 	static{
 		try {
-//			register(Packet0Accept.class);
-//			register(Packet1Disconnect.class);
-//			register(Packet2Message.class);
-//			register(Packet3Login.class);
+			register(Packet0Accept.class);
+			register(Packet1Disconnect.class);
+			register(Packet2Message.class);
+			register(Packet3Login.class);
 //			register(Packet4Chat.class);
 //			register(Packet5Position.class);
 //			register(Packet6SpecialMessage.class);

@@ -4,6 +4,7 @@
 package vc4.api.item;
 
 import java.awt.Color;
+import java.util.Collection;
 
 import vc4.api.block.Block;
 import vc4.api.entity.EntityPlayer;
@@ -34,7 +35,7 @@ public class ItemBlock extends Item {
 	}
 	
 	@Override
-	public ItemStack[] getCreativeItems() {
+	public Collection<ItemStack> getCreativeItems() {
 		return Block.byId(id).getCreativeItems();
 	}
 

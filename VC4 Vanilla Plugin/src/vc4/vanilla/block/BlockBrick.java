@@ -3,6 +3,9 @@
  */
 package vc4.vanilla.block;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import vc4.api.block.Block;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
@@ -57,13 +60,13 @@ public class BlockBrick extends Block {
 	 * @see vc4.api.block.Block#getCreativeItems()
 	 */
 	@Override
-	public ItemStack[] getCreativeItems() {
-		ItemStack[] result = new ItemStack[8];
+	public Collection<ItemStack> getCreativeItems() {
+		ArrayList<ItemStack> result = new ArrayList<>(8);
 		for(int d = 0; d < 6; ++d){
-			result[d] = new ItemStack(uid, d, 1);
+			result.add(new ItemStack(uid, d, 1));
 		}
-		result[6] = new ItemStack(uid, 14, 1);
-		result[7] = new ItemStack(uid, 15, 1);
+		result.add(new ItemStack(uid, 14, 1));
+		result.add(new ItemStack(uid, 15, 1));
 		return result;
 	}
 	

@@ -4,6 +4,8 @@
 package vc4.api.item;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import vc4.api.entity.EntityPlayer;
 import vc4.api.text.Localization;
@@ -23,7 +25,7 @@ public class Item {
 	protected int maxStack = 99;
 	protected boolean overrideLeftClick;
 	
-	protected static Item[] itemsList = new Item[32768];
+	protected static Item[] itemsList = new Item[65536];
 	public Item(int id) {
 		super();
 		this.id = id;
@@ -123,10 +125,12 @@ public class Item {
 	}
 	
 	public static void clearItems(){
-		itemsList = new Item[32768];
+		itemsList = new Item[65536];
 	}
-	public ItemStack[] getCreativeItems() {
-		return new ItemStack[]{new ItemStack(id, 0, 1)};
+	public Collection<ItemStack> getCreativeItems() {
+		ArrayList<ItemStack> res = new ArrayList<>();
+		res.add(new ItemStack(id, 0, 1));
+		return res;
 	}
 	
 }

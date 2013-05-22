@@ -45,7 +45,7 @@ public class GuiInventory extends Component{
 	public void draw() {
 		int px = getX();
 		int py = getY();
-		inventory = Client.getGame().getBlockInteractor().getInventory();
+		inventory = Client.getGame().getPlayer().getInventory();
 		OpenGL gl = Graphics.getClientOpenGL();
 		Graphics.getClientShaderManager().unbindShader();
 		for (int x = 10; x > -1; x--) {
@@ -106,7 +106,7 @@ public class GuiInventory extends Component{
 	public void update() {
 		//draw();
 		if (!Client.getGame().isPaused()) return;
-		inventory = Client.getGame().getBlockInteractor().getInventory();
+		inventory = Client.getGame().getPlayer().getInventory();
 		if (inventory == null) return;
 		if (inventory.getHeldItemStack() != null) {
 			if (!inventory.getHeldItemStack().checkIsNotEmpty()) inventory.setHeldItemStack(null);

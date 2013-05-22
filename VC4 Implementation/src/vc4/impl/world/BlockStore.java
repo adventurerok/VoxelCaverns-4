@@ -116,7 +116,7 @@ public class BlockStore {
 		for(int x = 0; x < 16; ++x){
 			for(y = 0; y < 16; ++y){
 				for(z = 0; z < 16; ++z){
-					int i = getBlockId(x, y, z);
+					i = getBlockId(x, y, z);
 					if(i < 1) continue;
 					allAir = false;
 					data = getBlockData(x, y, z);
@@ -128,8 +128,8 @@ public class BlockStore {
 		}
 		if(allAir){
 			blocks = null;
-			data = null;
-		} else if(noData) data = null;
+			this.data = null;
+		} else if(noData) this.data = null;
 		
 		compileState = 2;
 	}

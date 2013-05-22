@@ -163,17 +163,17 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 //		return "\r\n" + Localization.getLocalization(name);
 //	}
 
-//	public String getCreativeTooltipText(){
-//		StringBuilder text = new StringBuilder();
-//		text.append(getName() + "{c:f}");
-//		text.append(" (").append(NumberUtils.doDigitGrouping(getId())).append(":");
-//		text.append(NumberUtils.doDigitGrouping(getDamage())).append(")");
-//		text.append(getEquipText());
-//		text.append(getDescription());
-//		text.append(getStatsText());
-//		text.append(getEnchantmentText());
-//		return text.toString();
-//	}
+	public String getCreativeTooltipText(){
+		StringBuilder text = new StringBuilder();
+		text.append(getName() + "{c:f}");
+		text.append(" (").append(NumberUtils.doDigitGrouping(getId())).append(":");
+		text.append(NumberUtils.doDigitGrouping(getDamage())).append(")");
+		//text.append(getEquipText());
+		text.append(getDescription());
+		//text.append(getStatsText());
+		text.append(getEnchantmentText());
+		return text.toString();
+	}
 
 //	public String getStatsText(){
 //		StringBuilder ret = new StringBuilder();

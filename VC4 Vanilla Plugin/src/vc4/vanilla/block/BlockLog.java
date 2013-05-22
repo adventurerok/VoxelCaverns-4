@@ -3,6 +3,9 @@
  */
 package vc4.vanilla.block;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import vc4.api.block.Block;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
@@ -34,8 +37,8 @@ public class BlockLog extends Block {
 	 * @see vc4.api.block.Block#getCreativeItems()
 	 */
 	@Override
-	public ItemStack[] getCreativeItems() {
-		if(uid != Vanilla.logV.uid) return new ItemStack[0];
+	public Collection<ItemStack> getCreativeItems() {
+		if(uid != Vanilla.logV.uid) return new ArrayList<>();
 		return WoodBlocks.genCreativeItems(uid);
 	}
 	

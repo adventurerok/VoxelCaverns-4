@@ -43,6 +43,11 @@ public class BlockVine extends Block {
 
 		return null;
 	}
+	
+	@Override
+	public boolean render3d(byte data) {
+		return false;
+	}
 
 	@Override
 	public AABB getRayTraceSize(World world, long x, long y, long z) {

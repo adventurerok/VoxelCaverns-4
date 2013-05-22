@@ -104,7 +104,14 @@ public class ClientComponentUtils implements ComponentUtils {
 	public void renderComponent(Component c) {
 		if(Button.class.isAssignableFrom(c.getClass())){
 			renderButton((Button)c);
+		} else if(TextBox.class.isAssignableFrom(c.getClass())){
+			renderTextBox((TextBox)c);
 		}
+	}
+
+	private void renderTextBox(TextBox c) {
+		// TASK Auto-generated method stub
+		
 	}
 
 	/**

@@ -9,6 +9,7 @@ import vc4.api.generator.GeneratorOutput;
 import vc4.api.generator.RecursiveGenerator;
 import vc4.api.math.MathUtils;
 import vc4.api.vector.Vector3d;
+import vc4.api.world.World;
 
 public class RecursiveGenCaves extends RecursiveGenerator{
 
@@ -20,7 +21,7 @@ public class RecursiveGenCaves extends RecursiveGenerator{
 	}
 	
 	@Override
-	protected void generateRecursive(Random rand, long x, long y, long z, long cx, long cy,
+	protected void generateRecursive(World world, Random rand, long x, long y, long z, long cx, long cy,
 			long cz, GeneratorOutput data) {
 		int change = rand.nextInt(rand.nextInt(115 - (int)Math.max(-20, Math.min(cy, 50))) + 1);
 		if(change != 0) return;
