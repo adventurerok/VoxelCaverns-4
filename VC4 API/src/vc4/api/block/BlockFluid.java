@@ -37,6 +37,10 @@ public class BlockFluid extends Block {
 		return null;
 	}
 	
+	public AABB getRayTraceSize(World world, long x, long y, long z) {
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see vc4.api.block.Block#renderSide(vc4.api.world.World, long, long, long, int)
 	 */
