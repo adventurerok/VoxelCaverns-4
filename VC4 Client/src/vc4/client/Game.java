@@ -3,6 +3,7 @@
  */
 package vc4.client;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -12,8 +13,11 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.yaml.snakeyaml.Yaml;
@@ -24,8 +28,7 @@ import vc4.api.client.*;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.entity.MovementStyle;
 import vc4.api.graphics.*;
-import vc4.api.gui.Component;
-import vc4.api.gui.Gui;
+import vc4.api.gui.*;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.*;
 import vc4.api.logging.Level;
@@ -40,8 +43,7 @@ import vc4.api.vector.Vector3d;
 import vc4.api.world.ChunkPos;
 import vc4.api.yaml.ThreadYaml;
 import vc4.client.camera.PlayerController;
-import vc4.client.gui.ChatBox;
-import vc4.client.gui.IngameGui;
+import vc4.client.gui.*;
 import vc4.client.sound.SoundManager;
 import vc4.impl.plugin.PluginLoader;
 import vc4.impl.world.ImplWorld;
@@ -57,11 +59,12 @@ public class Game extends Component implements ClientGame {
 
 	private Vector2f nearFar = new Vector2f(0.1F, 476F);
 	private Window window;
+	private LinkedHashMap<String, Cursor> cursors = new LinkedHashMap<>();
 	private LinkedHashMap<String, ColorScheme> colorSchemes = new LinkedHashMap<String, ColorScheme>();
 	private LinkedHashMap<String, Integer> crosshairs = new LinkedHashMap<>();
 	private LinkedHashMap<String, Setting<Object>> settings = new LinkedHashMap<String, Setting<Object>>();
 	HashMap<String, Long> menus = new HashMap<String, Long>();
-	HashMap<String, Gui> guis = new HashMap<String, Gui>();
+	HashMap<String, Screen> guis = new HashMap<String, Screen>();
 	ClientLoadingScreen loadingScreen;
 	private GameState gameState = GameState.MENU;
 	private EntityPlayer player;
@@ -77,6 +80,16 @@ public class Game extends Component implements ClientGame {
 	@Override
 	public boolean isPaused() {
 		return paused;
+	}
+	
+	@Override
+	public void addCursor(Cursor cursor){
+		cursors.put(cursor.getName(), cursor);
+	}
+	
+	@Override
+	public Cursor getCursor(String name){
+		return cursors.get(name);
 	}
 
 	/**
@@ -104,8 +117,15 @@ public class Game extends Component implements ClientGame {
 
 	private ImplWorld world;
 	private PlayerController camera;
+	
+	private Cursor cursor;
 
 	ChatBox chatBox;
+	
+	@Override
+	public Component getHoveringComponent() {
+		return _currentc;
+	}
 
 	/**
 	 * 
@@ -113,6 +133,10 @@ public class Game extends Component implements ClientGame {
 	public Game(Window window) {
 		Client.setGame(this);
 		this.window = window;
+	}
+	
+	public void setCursor(Cursor cursor) {
+		this.cursor = cursor;
 	}
 
 	/*
@@ -143,7 +167,7 @@ public class Game extends Component implements ClientGame {
 			Resources.getSheetTexture("crosshair").bind();
 			int w = getWindow().getWidth() / 2 - 64;
 			int h = getWindow().getHeight() / 2 - 64;
-			int tex = getCrosshair(getCurrentCrosshair().getString());
+			int tex = getCrosshair(getCrosshairSetting().getString());
 			gl.begin(GLPrimative.QUADS);
 			gl.color(1, 1, 1, 1);
 			gl.texCoord(0, 0, tex);
@@ -157,7 +181,30 @@ public class Game extends Component implements ClientGame {
 			gl.end();
 		}
 		super.draw();
+		if(!Mouse.isGrabbed()){
+			Color col = Color.green;
+			Graphics.getClientShaderManager().bindShader("texture");
+			Resources.getAnimatedTexture("cursor").bind();
+			int ind = Resources.getAnimatedTexture("cursor").getArrayIndex(cursor.getName());
+			float mx = Input.getClientMouse().getX();
+			float my = Input.getClientMouse().getY();
+			mx -= cursor.getX();
+			my -= cursor.getY();
+			gl.begin(GLPrimative.QUADS);
+			gl.color(col);
+			gl.texCoord(0.001, 0.001, ind);
+			gl.vertex(mx, my);
+			gl.texCoord(0.999, 0.001, ind);
+			gl.vertex(mx + 16, my);
+			gl.texCoord(0.999, 0.999, ind);
+			gl.vertex(mx + 16, my + 16);
+			gl.texCoord(0.001, 0.999, ind);
+			gl.vertex(mx, my + 16);
+			gl.end();
+			Graphics.getClientShaderManager().unbindShader();
+		}
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -166,6 +213,7 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void update() {
+		getCursor("pointer").bind();
 		Input.getClientKeyboard().update();
 		Input.getClientMouse().update();
 		mouseSet.update();
@@ -184,6 +232,7 @@ public class Game extends Component implements ClientGame {
 		}
 		if (mouseSet.buttonPressed(0)) {
 			if (_currentc != null) {
+				_currentc.bringToFront();
 				_currentc.fireMouseEvent("pressed", 0, x, y);
 				_mouseupc = _currentc;
 			}
@@ -197,7 +246,10 @@ public class Game extends Component implements ClientGame {
 			if (_currentc != null) _currentc.fireMouseEvent("clicked", 0, x, y);
 		}
 		if (mouseSet.buttonPressed(1)) {
-			if (_currentc != null) _currentc.fireMouseEvent("pressed", 1, x, y);
+			if (_currentc != null){
+				_currentc.bringToFront();
+				_currentc.fireMouseEvent("pressed", 1, x, y);
+			}
 		} else if (mouseSet.buttonReleased(1)) {
 			if (_mouseupc != _currentc) _currentc.fireMouseEvent("released", 1, x, y);
 			if (_currentc != null) _currentc.fireMouseEvent("released", 1, x, y);
@@ -220,6 +272,13 @@ public class Game extends Component implements ClientGame {
 			player.updateInput();
 			world.update(camera.getPosition(), delta);
 			Audio.playMusic(world.getMusic(player));
+			Keyboard keys = Input.getClientKeyboard();
+			if(keys.keyPressed(Key.C)) ingameGui.toggleVisibility("crafting");
+			if(keys.keyPressed(Key.X)) ingameGui.toggleVisibility("armour");
+			if(keys.keyPressed(Key.Z)) ingameGui.toggleVisibility("game");
+		}
+		if(Input.getClientKeyboard().keyPressed(Key.F6)){
+			JOptionPane.showMessageDialog(null, "Hovering: " + _currentc.toString());
 		}
 		if (Input.getClientKeyboard().keyReleased(Key.F2)) {
 			takeScreenshot();
@@ -229,6 +288,7 @@ public class Game extends Component implements ClientGame {
 		if (time > 0) delta = time / 1000000D;
 	}
 
+	@Override
 	public String takeScreenshot() {
 		int startX = 0;
 		int startY = 0;
@@ -284,11 +344,25 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void load() {
+		try {
+			org.lwjgl.input.Cursor none = new org.lwjgl.input.Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), BufferUtils.createIntBuffer(1));
+			Mouse.setNativeCursor(none);
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+		}
 		setBounds(getBounds());
 		SoundManager.init();
 		PluginLoader.loadAndEnablePlugins();
 		loadResources();
 		loadSettings();
+		addCursor(new ClientCursor("pointer"));
+		addCursor(new ClientCursor("resize_ns", 8, 8));
+		addCursor(new ClientCursor("resize_we", 8, 8));
+		addCursor(new ClientCursor("resize_swne", 8, 8));
+		addCursor(new ClientCursor("resize_nwse", 8, 8));
+		addCursor(new ClientCursor("move", 8, 8));
+		addCursor(new ClientCursor("precision", 8, 8));
+		cursor = getCursor("pointer");
 		currentMenu = menus.get("main");
 		add(chatBox = new ChatBox());
 		world = new ImplWorld("World");
@@ -420,22 +494,22 @@ public class Game extends Component implements ClientGame {
 			String type = action.substring(8);
 			if (type.equals("colorscheme:next")) {
 				List<String> list = new ArrayList<String>(colorSchemes.keySet());
-				int n = list.indexOf(getCurrentColorScheme().getString()) + 1;
+				int n = list.indexOf(getColorSchemeSetting().getString()) + 1;
 				if (n >= list.size()) n = 0;
 				changeSetting("colorscheme", list.get(n));
 			} else if (type.equals("colorscheme:last")) {
 				List<String> list = new ArrayList<String>(colorSchemes.keySet());
-				int n = list.indexOf(getCurrentColorScheme().getString()) - 1;
+				int n = list.indexOf(getColorSchemeSetting().getString()) - 1;
 				if (n < 0) n = list.size() - 1;
 				changeSetting("colorscheme", list.get(n));
 			} else if (type.equals("crosshair:next")) {
 				List<String> list = new ArrayList<String>(crosshairs.keySet());
-				int n = list.indexOf(getCurrentCrosshair().getString()) + 1;
+				int n = list.indexOf(getCrosshairSetting().getString()) + 1;
 				if (n >= list.size()) n = 0;
 				changeSetting("crosshair", list.get(n));
 			} else if (type.equals("crosshair:last")) {
 				List<String> list = new ArrayList<String>(crosshairs.keySet());
-				int n = list.indexOf(getCurrentCrosshair().getString()) - 1;
+				int n = list.indexOf(getCrosshairSetting().getString()) - 1;
 				if (n < 0) n = list.size() - 1;
 				changeSetting("crosshair", list.get(n));
 			}
@@ -600,14 +674,14 @@ public class Game extends Component implements ClientGame {
 	}
 
 	@Override
-	public Setting<Object> getCurrentColorScheme() {
+	public Setting<Object> getColorSchemeSetting() {
 		Setting<Object> o = settings.get("colorscheme");
 		return o;
 
 	}
 
 	@Override
-	public Setting<Object> getCurrentCrosshair() {
+	public Setting<Object> getCrosshairSetting() {
 		Setting<Object> o = settings.get("crosshair");
 		return o;
 	}
@@ -721,6 +795,11 @@ public class Game extends Component implements ClientGame {
 	public void handlePacket(Packet pack) {
 		
 		
+	}
+
+	@Override
+	public ColorScheme getCurrentColorScheme() {
+		return getColorScheme(getColorSchemeSetting().getString());
 	}
 
 }

@@ -13,6 +13,10 @@ public class Vector3f implements Vector3<Vector3f> {
 
 	public float x, y, z;
 
+	public Vector3f() {
+		// TASK Auto-generated constructor stub
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

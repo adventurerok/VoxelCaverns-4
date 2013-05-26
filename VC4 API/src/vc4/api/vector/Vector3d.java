@@ -13,7 +13,9 @@ public class Vector3d implements Vector3<Vector3d> {
 
 	public double x, y, z;
 	
-	
+	public Vector3d() {
+		// TASK Auto-generated constructor stub
+	}
 	
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)

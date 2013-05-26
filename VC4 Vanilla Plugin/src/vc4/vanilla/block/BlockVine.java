@@ -172,14 +172,14 @@ public class BlockVine extends Block {
 
 	@Override
 	public Color getColor(ItemStack current, int side) {
-		return BlockWeeds.weeds;
+		return BlockTallGrass.grass;
 	}
 
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
 		Biome bio = world.getBiome(x, z);
 		if (bio != null) return bio.plantColor;
-		else return BlockWeeds.weeds;
+		else return BlockTallGrass.grass;
 	}
 	
 	@Override

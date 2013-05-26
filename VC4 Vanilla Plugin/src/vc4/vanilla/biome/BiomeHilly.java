@@ -9,8 +9,8 @@ public class BiomeHilly extends Biome {
 	
 	int hills;
 
-	public BiomeHilly(String name, BiomeType type, Color mapColor) {
-		super(name, type, mapColor);
+	public BiomeHilly(int id, String name, BiomeType type, Color mapColor) {
+		super(id, name, type, mapColor);
 		hills = id;
 	}
 	
@@ -32,8 +32,8 @@ public class BiomeHilly extends Biome {
 	}
 	
 	@Override
-	public int generateSubBiome(Random rand) {
-		if(rand.nextInt(3) == 0) return hills;
+	public int generateSubBiome(Random rand, int op) {
+		if(rand.nextInt(3) == 0 && op == 0) return hills;
 		return id;
 	}
 

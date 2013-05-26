@@ -10,14 +10,18 @@ package vc4.api.vector;
  */
 public class Vector3i implements Vector3<Vector3i> {
 
-	public long x, y, z;
+	public int x, y, z;
 	
+	
+	public Vector3i() {
+		// TASK Auto-generated constructor stub
+	}
 	
 	
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)
 	 */
-	public Vector3i(long x, long y, long z) {
+	public Vector3i(int x, int y, int z) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -79,9 +83,9 @@ public class Vector3i implements Vector3<Vector3i> {
 	 */
 	@Override
 	public double distanceSquared(Vector3i vec) {
-		long nx = x - vec.x;
-		long ny = y - vec.y;
-		long nz = z - vec.z;
+		int nx = x - vec.x;
+		int ny = y - vec.y;
+		int nz = z - vec.z;
 		
 		return nx * nx + ny * ny + nz * nz;
 	}

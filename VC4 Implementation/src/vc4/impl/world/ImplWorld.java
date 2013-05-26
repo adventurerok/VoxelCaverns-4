@@ -14,6 +14,7 @@ import vc4.api.Resources;
 import vc4.api.biome.Biome;
 import vc4.api.block.Block;
 import vc4.api.client.Client;
+import vc4.api.crafting.CraftingManager;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.*;
@@ -21,6 +22,7 @@ import vc4.api.graphics.*;
 import vc4.api.item.Item;
 import vc4.api.math.MathUtils;
 import vc4.api.sound.Music;
+import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
 import vc4.api.vector.*;
 import vc4.api.world.*;
@@ -64,8 +66,14 @@ public class ImplWorld implements World {
 	public HashMap<Vector2l, ImplMapData> heights = new HashMap<>();
 	private ConcurrentHashMap<String, Integer> registeredBlocks = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<String, Integer> registeredItems = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Integer> registeredCrafting = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Integer> registeredEntitys = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Integer> registeredBiomes = new ConcurrentHashMap<>();
 	private int nextBlockId = 2;
 	private int nextItemId = 2050;
+	private int nextCraftingId = 1;
+	private int nextEntityId = 10;
+	private int nextBiomeId = 0;
 	private long seed = new Random().nextLong();
 	private long time;
 	private String generatorName = "overworld";
@@ -144,6 +152,7 @@ public class ImplWorld implements World {
 		Item.clearItems();
 		Block.clearBlocks();
 		Biome.clear();
+		CraftingManager.emptyRecipes();
 		PluginLoader.onWorldLoad(this);
 		GeneratorList.onWorldLoad(this);
 		loaded = true;
@@ -443,6 +452,11 @@ public class ImplWorld implements World {
 		z += dir.getZ();
 		return getBlockData(x, y, z);
 	}
+	
+	@Override
+	public byte getNearbyBlockData(long x, long y, long z, int d) {
+		return getNearbyBlockData(x, y, z, Direction.getDirection(d));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -456,6 +470,24 @@ public class ImplWorld implements World {
 		z += dir.getZ();
 		return getBlockId(x, y, z);
 	}
+	
+	@Override
+	public short getNearbyBlockId(long x, long y, long z, int d) {
+		return getNearbyBlockId(x, y, z, Direction.getDirection(d));
+	}
+	
+	@Override
+	public TileEntity getNearbyTileEntity(long x, long y, long z, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		return getTileEntity(x, y, z);
+	}
+	
+	@Override
+	public TileEntity getNearbyTileEntity(long x, long y, long z, int dir) {
+		return getNearbyTileEntity(x, y, z, Direction.getDirection(dir));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -468,6 +500,11 @@ public class ImplWorld implements World {
 		y += dir.getY();
 		z += dir.getZ();
 		return getBlockType(x, y, z);
+	}
+	
+	@Override
+	public Block getNearbyBlockType(long x, long y, long z, int dir){
+		return getNearbyBlockType(x, y, z, Direction.getDirection(dir));
 	}
 
 	/*
@@ -690,6 +727,24 @@ public class ImplWorld implements World {
 		return null;
 
 	}
+	
+	@Override
+	public void setTileEntity(long x, long y, long z, TileEntity t){
+		ImplChunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) {
+			c.setTileEntity((int) (x & 31), (int) (y & 31), (int) (z & 31), t);
+			notifyNear(x, y, z);
+		}
+	}
+	
+	@Override
+	public TileEntity getTileEntity(long x, long y, long z){
+		ImplChunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) {
+			return c.getTileEntity((int) (x & 31), (int) (y & 31), (int) (z & 31));
+		}
+		return null;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -791,6 +846,14 @@ public class ImplWorld implements World {
 		z += dir.getZ();
 		setBlockId(x, y, z, id);
 	}
+	
+	@Override
+	public void setNearbyTileEntity(long x, long y, long z, TileEntity t, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		setTileEntity(x, y, z, t);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -841,7 +904,8 @@ public class ImplWorld implements World {
 	public void updateTick(Vector3d loc) {
 		infiniteWorld(loc);
 		Random rand = createRandom(time, (long) loc.x, (long) loc.z);
-		for (ImplChunk c : chunks.values()) {
+		HashMap<ChunkPos, ImplChunk> cnk  = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
+		for (ImplChunk c : cnk.values()) {
 			c.update(rand);
 		}
 		LinkedList<Vector4l> current = (LinkedList<Vector4l>) blockUpdates.clone();
@@ -937,6 +1001,36 @@ public class ImplWorld implements World {
 		if (i == null) {
 			i = nextItemId++;
 			registeredItems.put(name, i);
+		}
+		return i.intValue();
+	}
+	
+	@Override
+	public short getRegisteredCrafting(String name) {
+		Integer i = registeredCrafting.get(name);
+		if (i == null) {
+			i = nextCraftingId++;
+			registeredCrafting.put(name, i);
+		}
+		return i.shortValue();
+	}
+	
+	@Override
+	public int getRegisteredEntity(String name) {
+		Integer i = registeredEntitys.get(name);
+		if (i == null) {
+			i = nextEntityId++;
+			registeredEntitys.put(name, i);
+		}
+		return i.intValue();
+	}
+	
+	@Override
+	public int getRegisteredBiome(String name) {
+		Integer i = registeredBiomes.get(name);
+		if (i == null) {
+			i = nextBiomeId++;
+			registeredBiomes.put(name, i);
 		}
 		return i.intValue();
 	}

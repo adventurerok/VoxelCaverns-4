@@ -23,7 +23,7 @@ public class StatInt implements Stat {
 	}
 
 	@Override
-	public Object getValue() {
+	public Integer getValue() {
 		return value;
 	}
 

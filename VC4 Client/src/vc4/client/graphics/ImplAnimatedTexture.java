@@ -6,8 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -137,6 +136,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 	
 	public AnimatedTexture load(ArrayList<LoadableAnimatedImage> images){
 		if(images.size() < 1) return this;
+		Collections.sort(images);
 		String yml = images.get(0).image.toString();
 		yml = yml.substring(0, yml.lastIndexOf("/"));
 		yml = yml + "/texture.yml";

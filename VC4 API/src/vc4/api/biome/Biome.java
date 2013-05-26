@@ -51,7 +51,7 @@ public class Biome {
 		return name;
 	}
 	
-	public int generateSubBiome(Random rand){
+	public int generateSubBiome(Random rand, int op){
 		return id;
 	}
 	
@@ -96,8 +96,6 @@ public class Biome {
 		return music;
 	}
 
-	private static int nextId;
-	
 	public static Biome byId(int id){
 		return biomesList[id];
 	}
@@ -117,12 +115,12 @@ public class Biome {
 		return this;
 	}
 
-	public Biome(String name, BiomeType type, Color mapColor) {
+	public Biome(int id, String name, BiomeType type, Color mapColor) {
 		super();
 		this.type = type;
 		this.mapColor = mapColor;
 		this.name = name;
-		this.id = nextId++;
+		this.id = id;
 		biomesList[id] = this;
 	}
 	

@@ -7,9 +7,11 @@ import vc4.api.biome.BiomeType;
 import vc4.api.generator.GeneratorOutput;
 
 public class BiomePlains extends BiomeHilly {
+	
+	
 
-	public BiomePlains(String name, BiomeType type, Color mapColor) {
-		super(name, type, mapColor);
+	public BiomePlains(int id, String name, BiomeType type, Color mapColor) {
+		super(id, name, type, mapColor);
 		// TASK Auto-generated constructor stub
 	}
 	

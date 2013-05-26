@@ -10,9 +10,11 @@ import org.jnbt.CompoundTag;
 import org.jnbt.ListTag;
 
 import vc4.api.block.Block;
+import vc4.api.crafting.CraftingStack;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.itementity.ItemEntity;
 import vc4.api.itementity.ItemEntityEnchantment;
+import vc4.api.stats.Stats;
 import vc4.api.tool.Tool;
 import vc4.api.util.ColorUtils;
 import vc4.api.util.NumberUtils;
@@ -103,6 +105,10 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 		return "{c:f}";
 	}
 	
+	public Stats getStats(){
+		return getItem().getStats(this);
+	}
+	
 	public Tool getTool(){
 		return getItem().getTool(this);
 	}
@@ -123,7 +129,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 		}
 		//text.append(getEquipText());
 		text.append(getDescription());
-		//text.append(getStatsText());
+		text.append("\n" + getStatsText());
 		text.append(getEnchantmentText());
 		return text.toString();
 	}
@@ -170,49 +176,14 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 		text.append(NumberUtils.doDigitGrouping(getDamage())).append(")");
 		//text.append(getEquipText());
 		text.append(getDescription());
-		//text.append(getStatsText());
+		text.append("\n" + getStatsText());
 		text.append(getEnchantmentText());
 		return text.toString();
 	}
 
-//	public String getStatsText(){
-//		StringBuilder ret = new StringBuilder();
-//		ArrayList<Entry<String, Double>> stats = getStats().getData();
-//		ItemStats ench = getEnchantmentStats();
-//		for(int dofor = 0; dofor < stats.size(); ++dofor){
-//			ret.append("\r\n");
-//			ret.append("{c:");
-//			if(stats.get(dofor).getValue() > 0) ret.append("2");
-//			else ret.append("c");
-//			ret.append("}");
-//			double val = stats.get(dofor).getValue();
-//			double eVal = ench.getStat("enchantment." + stats.get(dofor).getKey());
-//			if(!MathHelper.doubleEquals(eVal, 0)){
-//				ret.append("{c:a}");
-//				val *= (1 + (eVal / 100));
-//				ench.removeStat("enchantment." + stats.get(dofor).getKey());
-//			}
-//			String sign = val < 0 ? "-" : "+";
-//			String minus = val < 0 ? "-" : "";
-//			int dp = ItemStats.getDecimalPoints(stats.get(dofor).getKey());
-//			ret.append(Localization.getLocalization("item.stats." + stats.get(dofor).getKey(), dps[dp].format(Math.abs(val)), sign, minus));
-//		}
-//		stats = ench.getData();
-//		for(int dofor = 0; dofor < stats.size(); ++dofor){
-//			String name = stats.get(dofor).getKey().replace("enchantment.", "");
-//			ret.append("\r\n");
-//			ret.append("{c:");
-//			if(stats.get(dofor).getValue() > 0) ret.append("a");
-//			else ret.append("4");
-//			ret.append("}");
-//			double val = 1 * (stats.get(dofor).getValue() / 100D);
-//			String sign = val < 0 ? "-" : "+";
-//			String minus = val < 0 ? "-" : "";
-//			int dp = ItemStats.getDecimalPoints(name);
-//			ret.append(Localization.getLocalization("item.stats." + name, dps[dp].format(Math.abs(val)), sign, minus));
-//		}
-//		return ret.toString();
-//	}
+	public String getStatsText(){
+		return getStats().getStatsText();
+	}
 	public ItemStack(int id, int damage){
 		setId(id);
 		setDamage(damage);
@@ -313,8 +284,9 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof ItemStack))
 			return false;
+		if(obj instanceof CraftingStack) return ((CraftingStack)obj).equals(this);
 		ItemStack other = (ItemStack) obj;
 		if (damage != other.damage)
 			return false;

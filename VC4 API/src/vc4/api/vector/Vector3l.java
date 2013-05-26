@@ -14,7 +14,9 @@ public class Vector3l implements Vector3<Vector3l> {
 
 	public long x, y, z;
 	
-	
+	public Vector3l() {
+		// TASK Auto-generated constructor stub
+	}
 	
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)

@@ -8,8 +8,7 @@ import java.util.ArrayList;
 
 import vc4.api.font.FontRenderer;
 import vc4.api.graphics.*;
-import vc4.api.gui.Border;
-import vc4.api.gui.Component;
+import vc4.api.gui.*;
 
 /**
  * @author paul
@@ -30,7 +29,12 @@ public class ChatBox extends Component {
 		font = FontRenderer.createFontRenderer("unispaced_14", 14F);
 		gl = Graphics.getClientOpenGL();
 		setDefaultBounds(new Rectangle(0, 0, 400, 154));
-		setBorderToAttach(Border.SOUTHWEST);
+		setResizer(new BorderResizer(Border.SOUTHWEST));
+	}
+	
+	@Override
+	public boolean isClickable() {
+		return false;
 	}
 	
 	/* (non-Javadoc)

@@ -3,6 +3,8 @@
  */
 package vc4.api.input;
 
+import vc4.api.vector.Vector2i;
+
 /**
  * @author paul
  *
@@ -17,6 +19,7 @@ public interface Mouse extends Cloneable{
 	public int getY();
 	public int getDX();
 	public int getDY();
+	public Vector2i getPos();
 	
 	/**
 	 * Gets the scroll wheel rotation since last update

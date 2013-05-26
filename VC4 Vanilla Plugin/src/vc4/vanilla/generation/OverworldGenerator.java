@@ -239,6 +239,7 @@ public class OverworldGenerator implements WorldGenerator {
 	public void generateMapData(World world, MapData data) {
 		long wx = data.getPosition().x << 5;
 		long wz = data.getPosition().y << 5;
+		int op = 0;
 		ZoomGenerator bgen = new BiomeGenIslands(world);
 		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenIslands(world, bgen);
@@ -247,16 +248,18 @@ public class OverworldGenerator implements WorldGenerator {
 		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenBiome(world, bgen, biomes);
 		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSubBiome(world, bgen);
+		bgen = new BiomeGenSubBiome(world, bgen, op++);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		ZoomGenerator hgen = new HeightGenSeed(world);
 		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //0
+		bgen = new BiomeGenSubBiome(world, bgen, op++);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new HeightGenZoom(world, hgen);
 		float rVal = 1f;
 		float rMod = 0.5f;
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
 		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //1
+		bgen = new BiomeGenSubBiome(world, bgen, op++);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new BiomeGenZoom(world, hgen);
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);

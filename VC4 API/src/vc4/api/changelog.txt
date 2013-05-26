@@ -177,3 +177,5 @@ VC4-Development-0.0.1-228
 	* Improved creative items
 VC4-Development-0.0.1-229
 	* Fixed item creative bug
+VC4-Development-0.0.1-230
+	+ Added stats

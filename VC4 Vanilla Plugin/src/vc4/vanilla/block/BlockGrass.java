@@ -142,7 +142,7 @@ public class BlockGrass extends BlockMultitexture {
 	 */
 	@Override
 	public boolean canGrowPlant(Plant plant) {
-		return plant.getUid() == Vanilla.plantTreeOak.getUid() || plant.getUid() == Vanilla.plantWeed.getUid();
+		return plant.getUid() == Vanilla.plantTreeOak.getUid() || plant.getUid() == Vanilla.plantTallGrass.getUid();
 	}
 	
 	

@@ -57,6 +57,10 @@ public class ChunkPos {
 		return new ChunkPos(x >> 5, y >> 5, z >> 5);
 	}
 	
+	public static ChunkPos createFromWorldPos(Vector3l pos){
+		return new ChunkPos(pos.x >> 5, pos.y >> 5, pos.z >> 5);
+	}
+	
 	public long worldX(int cx){
 		return (x << 5) + cx;
 	}

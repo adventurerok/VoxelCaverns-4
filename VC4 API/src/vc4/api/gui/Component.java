@@ -3,8 +3,6 @@
  */
 package vc4.api.gui;
 
-import static vc4.api.gui.Border.*;
-
 import java.awt.Rectangle;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,6 +33,8 @@ public class Component {
 	private String _command = null;
 	private String _altCommand = null;
 	
+	private Resizer resizer;
+	
 	/**
 	 * @param utils the utils to set
 	 */
@@ -49,12 +49,19 @@ public class Component {
 		return utils;
 	}
 	
-	private Border _border = NONE;
+	public void setResizer(Resizer resizer) {
+		this.resizer = resizer;
+	}
+	
+	public Resizer getResizer() {
+		return resizer;
+	}
+	
 	
 	private String _name;
 	
 	public boolean isClickable(){
-		return true;
+		return _visible;
 	}
 	
 	/**
@@ -71,6 +78,7 @@ public class Component {
 	}
 	
 	public void draw(){
+		if(!isVisible()) return;
 		utils.renderComponent(this);
 		for(Component c: subComponents){
 			c.draw();
@@ -108,7 +116,7 @@ public class Component {
 	
 	public void resized(){
 		for(Component c: subComponents){
-			utils.attachBorder(getBounds(), c, c.getBorderToAttach());
+			if(c.resizer != null) c.resizer.resize(c);
 			c.resized();
 		}
 	}
@@ -121,14 +129,21 @@ public class Component {
 	}
 	
 	public void add(Component c){
-		if(c.getBorderToAttach() != NONE){
-			utils.attachBorder(getBounds(), c, c.getBorderToAttach());
-		}
 		subComponents.add(c);
 		if(c._parent != null){
 			c._parent.remove(c);
 		}
 		c._parent = this;
+		if(c.resizer != null) c.resizer.resize(c);
+	}
+	
+	public void add(Component c, int index){
+		subComponents.add(index, c);
+		if(c._parent != null){
+			c._parent.remove(c);
+		}
+		c._parent = this;
+		if(c.resizer != null) c.resizer.resize(c);
 	}
 	
 	public void remove(Component c){
@@ -143,16 +158,7 @@ public class Component {
 		_name = name;
 	}
 	
-	public Border getBorderToAttach(){
-		return _border;
-	}
 	
-	public void setBorderToAttach(Border b){
-		_border = b;
-		if(_parent != null){
-			utils.attachBorder(_parent.getBounds(), this, b);
-		}
-	}
 	
 	/**
 	 * @param command the command to set
@@ -176,6 +182,20 @@ public class Component {
 		mouseListeners.remove(l);
 	}
 	
+	public void bringToFront(){
+		if(_parent == null) return;
+		Component par = _parent;
+		par.remove(this);
+		par.add(this);
+	}
+	
+	public void bringToBack(){
+		if(_parent == null) return;
+		Component par = _parent;
+		par.remove(this);
+		par.add(this, 0);
+	}
+	
 	public void fireMouseEvent(String type, int button, int x, int y){
 		MouseEvent event = new MouseEvent(this, button, x, y);
 		String name = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
@@ -197,7 +217,7 @@ public class Component {
 	}
 	
 	public Component getHovering(Rectangle rect){
-		for(int dofor = 0; dofor < subComponents.size(); ++dofor){
+		for(int dofor = subComponents.size() - 1; dofor >= 0; --dofor){
 			if(!subComponents.get(dofor).isClickable()) continue;
 			if(rect.intersects(subComponents.get(dofor)._bounds)){
 				Component result = subComponents.get(dofor).getHovering(rect);

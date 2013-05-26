@@ -6,6 +6,8 @@ animatedtexture:
     - "blocks"
     - "items"
     - "cracks"
+    - "cursor"
+    - "crafting"
     
 shader:
     - "world"

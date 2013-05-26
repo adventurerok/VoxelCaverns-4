@@ -20,7 +20,7 @@ import vc4.api.world.World;
  */
 public class BlockRendererDefault implements BlockRenderer {
 
-	private static float shadow = 0.97f;
+	private static float shadow = 0.9625f;
 	
 	/*
 	 * (non-Javadoc)
@@ -71,31 +71,45 @@ public class BlockRendererDefault implements BlockRenderer {
 	}
 	
 	public void renderBlockFaceNorth(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
-		float e = 1;
-		float w = 1;
+		float eb = 1;
+		float wb = 1;
+		float et = 1;
+		float wt = 1;
 		if(world.getBlockType(x + 1, y - 1, z).isSolid(world, x + 1, y - 1, z, 4)){
-			e *= shadow;
-			w *= shadow;
+			eb *= shadow;
+			wb *= shadow;
+			if(world.getBlockType(x + 1, y, z - 1).isSolid(world, x + 1, y, z - 1, 1)) wb *= shadow;
+			else if(world.getBlockType(x + 1, y - 1, z - 1).isSolid(world, x + 1, y - 1, z - 1, 4)) wb *= shadow;
+			Block wB = world.getBlockType(x, y, z - 1);
+			if(wB.isSolid(world, x, y, z - 1, 1) && wB.isSolid(world, x, y, z - 1, 0)) wb *= shadow;
+			if(world.getBlockType(x + 1, y, z + 1).isSolid(world, x + 1, y, z + 1, 3)) eb *= shadow;
+			else if(world.getBlockType(x + 1, y - 1, z + 1).isSolid(world, x + 1, y - 1, z + 1, 4)) eb *= shadow;
+			Block eB = world.getBlockType(x, y, z + 1);
+			if(wB.isSolid(world, x, y, z + 1, 3) && eB.isSolid(world, x, y, z + 1, 0)) eb *= shadow;
 		}
-		if(world.getBlockType(x + 1, y, z - 1).isSolid(world, x + 1, y, z - 1, 1)) w *= shadow;
-		else if(world.getBlockType(x + 1, y - 1, z - 1).isSolid(world, x + 1, y - 1, z - 1, 4)) w *= shadow;
-		Block wB = world.getBlockType(x, y, z - 1);
-		if(wB.isSolid(world, x, y, z - 1, 1) && wB.isSolid(world, x, y, z - 1, 0)) w *= shadow;
-		if(world.getBlockType(x + 1, y, z + 1).isSolid(world, x + 1, y, z + 1, 3)) e *= shadow;
-		else if(world.getBlockType(x + 1, y - 1, z + 1).isSolid(world, x + 1, y - 1, z + 1, 4)) e *= shadow;
-		Block eB = world.getBlockType(x, y, z + 1);
-		if(wB.isSolid(world, x, y, z + 1, 3) && eB.isSolid(world, x, y, z + 1, 0)) e *= shadow;
+		if(world.getBlockType(x + 1, y + 1, z).isSolid(world, x + 1, y + 1, z, 4)){
+			et *= shadow;
+			wt *= shadow;
+			if(world.getBlockType(x + 1, y, z - 1).isSolid(world, x + 1, y, z - 1, 1)) wt *= shadow;
+			else if(world.getBlockType(x + 1, y + 1, z - 1).isSolid(world, x + 1, y + 1, z - 1, 4)) wt *= shadow;
+			Block wB = world.getBlockType(x, y, z - 1);
+			if(wB.isSolid(world, x, y, z - 1, 1) && wB.isSolid(world, x, y, z - 1, 0)) wt *= shadow;
+			if(world.getBlockType(x + 1, y, z + 1).isSolid(world, x + 1, y, z + 1, 3)) et *= shadow;
+			else if(world.getBlockType(x + 1, y + 1, z + 1).isSolid(world, x + 1, y + 1, z + 1, 4)) et *= shadow;
+			Block eB = world.getBlockType(x, y, z + 1);
+			if(wB.isSolid(world, x, y, z + 1, 3) && eB.isSolid(world, x, y, z + 1, 0)) et *= shadow;
+		}
 		render.useQuadInputMode(true);
-		render.color(color, e);
+		render.color(color, et);
 		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.color(color, w);
+		render.color(color, wt);
 		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.color(color, w);
+		render.color(color, wb);
 		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
-		render.color(color, e);
+		render.color(color, eb);
 		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 	}
@@ -247,32 +261,46 @@ public class BlockRendererDefault implements BlockRenderer {
 	}
 	
 	public void renderBlockFaceEast(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
-		float n = 1;
-		float s = 1;
+		float nb = 1;
+		float sb = 1;
+		float nt = 1;
+		float st = 1;
 		if(world.getBlockType(x, y - 1, z + 1).isSolid(world, x, y - 1, z + 1, 4)){
-			n *= shadow;
-			s *= shadow;
+			nb *= shadow;
+			sb *= shadow;
+			if(world.getBlockType(x - 1, y, z + 1).isSolid(world, x - 1, y, z + 1, 0)) sb *= shadow;
+			else if(world.getBlockType(x - 1, y - 1, z + 1).isSolid(world, x - 1, y - 1, z + 1, 4)) sb *= shadow;
+			Block sB = world.getBlockType(x - 1, y, z);
+			if(sB.isSolid(world, x - 1, y, z, 0) && sB.isSolid(world, x - 1, y, z, 1)) sb *= shadow;
+			if(world.getBlockType(x + 1, y, z + 1).isSolid(world, x + 1, y, z + 1, 2)) nb *= shadow;
+			else if(world.getBlockType(x + 1, y - 1, z + 1).isSolid(world, x + 1, y - 1, z + 1, 4)) nb *= shadow;
+			Block nB = world.getBlockType(x + 1, y, z);
+			if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 1)) nb *= shadow;
 		}
-		if(world.getBlockType(x - 1, y, z + 1).isSolid(world, x - 1, y, z + 1, 0)) s *= shadow;
-		else if(world.getBlockType(x - 1, y - 1, z + 1).isSolid(world, x - 1, y - 1, z + 1, 4)) s *= shadow;
-		Block sB = world.getBlockType(x - 1, y, z);
-		if(sB.isSolid(world, x - 1, y, z, 0) && sB.isSolid(world, x - 1, y, z, 1)) s *= shadow;
-		if(world.getBlockType(x + 1, y, z + 1).isSolid(world, x + 1, y, z + 1, 2)) n *= shadow;
-		else if(world.getBlockType(x + 1, y - 1, z + 1).isSolid(world, x + 1, y - 1, z + 1, 4)) n *= shadow;
-		Block nB = world.getBlockType(x + 1, y, z);
-		if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 1)) n *= shadow;
+		if(world.getBlockType(x, y + 1, z + 1).isSolid(world, x, y + 1, z + 1, 4)){
+			nt *= shadow;
+			st *= shadow;
+			if(world.getBlockType(x - 1, y, z + 1).isSolid(world, x - 1, y, z + 1, 0)) st *= shadow;
+			else if(world.getBlockType(x - 1, y + 1, z + 1).isSolid(world, x - 1, y + 1, z + 1, 4)) st *= shadow;
+			Block sB = world.getBlockType(x - 1, y, z);
+			if(sB.isSolid(world, x - 1, y, z, 0) && sB.isSolid(world, x - 1, y, z, 1)) st *= shadow;
+			if(world.getBlockType(x + 1, y, z + 1).isSolid(world, x + 1, y, z + 1, 2)) nt *= shadow;
+			else if(world.getBlockType(x + 1, y + 1, z + 1).isSolid(world, x + 1, y + 1, z + 1, 4)) nt *= shadow;
+			Block nB = world.getBlockType(x + 1, y, z);
+			if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 1)) nt *= shadow;
+		}
 		render.useQuadInputMode(true);
 		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
-		render.color(color, s);
+		render.color(color, st);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
 		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
-		render.color(color, n);
+		render.color(color, nt);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
 		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
-		render.color(color, n);
+		render.color(color, nb);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
-		render.color(color, s);
+		render.color(color, sb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
 
 	}
@@ -293,32 +321,46 @@ public class BlockRendererDefault implements BlockRenderer {
 	}
 	
 	public void renderBlockFaceSouth(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
-		float e = 1;
-		float w = 1;
+		float eb = 1;
+		float wb = 1;
+		float et = 1;
+		float wt = 1;
 		if(world.getBlockType(x - 1, y - 1, z).isSolid(world, x - 1, y - 1, z, 4)){
-			e *= shadow;
-			w *= shadow;
+			eb *= shadow;
+			wb *= shadow;
+			if(world.getBlockType(x - 1, y, z - 1).isSolid(world, x - 1, y, z - 1, 1)) wb *= shadow;
+			else if(world.getBlockType(x - 1, y - 1, z - 1).isSolid(world, x - 1, y - 1, z - 1, 4)) wb *= shadow;
+			Block wB = world.getBlockType(x, y, z - 1);
+			if(wB.isSolid(world, x, y, z - 1, 1) && wB.isSolid(world, x, y, z - 1, 2)) wb *= shadow;
+			if(world.getBlockType(x - 1, y, z + 1).isSolid(world, x - 1, y, z + 1, 3)) eb *= shadow;
+			else if(world.getBlockType(x - 1, y - 1, z + 1).isSolid(world, x - 1, y - 1, z + 1, 4)) eb *= shadow;
+			Block eB = world.getBlockType(x, y, z + 1);
+			if(wB.isSolid(world, x, y, z + 1, 3) && eB.isSolid(world, x, y, z + 1, 2)) eb *= shadow;
 		}
-		if(world.getBlockType(x - 1, y, z - 1).isSolid(world, x - 1, y, z - 1, 1)) w *= shadow;
-		else if(world.getBlockType(x - 1, y - 1, z - 1).isSolid(world, x - 1, y - 1, z - 1, 4)) w *= shadow;
-		Block wB = world.getBlockType(x, y, z - 1);
-		if(wB.isSolid(world, x, y, z - 1, 1) && wB.isSolid(world, x, y, z - 1, 2)) w *= shadow;
-		if(world.getBlockType(x - 1, y, z + 1).isSolid(world, x - 1, y, z + 1, 3)) e *= shadow;
-		else if(world.getBlockType(x - 1, y - 1, z + 1).isSolid(world, x - 1, y - 1, z + 1, 4)) e *= shadow;
-		Block eB = world.getBlockType(x, y, z + 1);
-		if(wB.isSolid(world, x, y, z + 1, 3) && eB.isSolid(world, x, y, z + 1, 2)) e *= shadow;
+		if(world.getBlockType(x - 1, y + 1, z).isSolid(world, x - 1, y + 1, z, 4)){
+			et *= shadow;
+			wt *= shadow;
+			if(world.getBlockType(x - 1, y, z - 1).isSolid(world, x - 1, y, z - 1, 1)) wt *= shadow;
+			else if(world.getBlockType(x - 1, y + 1, z - 1).isSolid(world, x - 1, y + 1, z - 1, 4)) wt *= shadow;
+			Block wB = world.getBlockType(x, y, z - 1);
+			if(wB.isSolid(world, x, y, z - 1, 1) && wB.isSolid(world, x, y, z - 1, 2)) wt *= shadow;
+			if(world.getBlockType(x - 1, y, z + 1).isSolid(world, x - 1, y, z + 1, 3)) et *= shadow;
+			else if(world.getBlockType(x - 1, y + 1, z + 1).isSolid(world, x - 1, y + 1, z + 1, 4)) et *= shadow;
+			Block eB = world.getBlockType(x, y, z + 1);
+			if(wB.isSolid(world, x, y, z + 1, 3) && eB.isSolid(world, x, y, z + 1, 2)) et *= shadow;
+		}
 		render.useQuadInputMode(true);
 		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
-		render.color(color, w);
+		render.color(color, wt);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
 		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
-		render.color(color, e);
+		render.color(color, et);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
 		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
-		render.color(color, e);
+		render.color(color, eb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
 		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
-		render.color(color, w);
+		render.color(color, wb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
 
 	}
@@ -338,32 +380,46 @@ public class BlockRendererDefault implements BlockRenderer {
 	}
 	
 	public void renderBlockFaceWest(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
-		float n = 1;
-		float s = 1;
+		float nb = 1;
+		float sb = 1;
+		float nt = 1;
+		float st = 1;
 		if(world.getBlockType(x, y - 1, z - 1).isSolid(world, x, y - 1, z - 1, 4)){
-			n *= shadow;
-			s *= shadow;
+			nb *= shadow;
+			sb *= shadow;
+			if(world.getBlockType(x - 1, y, z - 1).isSolid(world, x - 1, y, z - 1, 0)) sb *= shadow;
+			else if(world.getBlockType(x - 1, y - 1, z - 1).isSolid(world, x - 1, y - 1, z - 1, 4)) sb *= shadow;
+			Block sB = world.getBlockType(x - 1, y, z);
+			if(sB.isSolid(world, x - 1, y, z, 0) && sB.isSolid(world, x - 1, y, z, 3)) sb *= shadow;
+			if(world.getBlockType(x + 1, y, z - 1).isSolid(world, x + 1, y, z - 1, 2)) nb *= shadow;
+			else if(world.getBlockType(x + 1, y - 1, z - 1).isSolid(world, x + 1, y - 1, z - 1, 4)) nb *= shadow;
+			Block nB = world.getBlockType(x + 1, y, z);
+			if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 3)) nb *= shadow;
 		}
-		if(world.getBlockType(x - 1, y, z - 1).isSolid(world, x - 1, y, z - 1, 0)) s *= shadow;
-		else if(world.getBlockType(x - 1, y - 1, z - 1).isSolid(world, x - 1, y - 1, z - 1, 4)) s *= shadow;
-		Block sB = world.getBlockType(x - 1, y, z);
-		if(sB.isSolid(world, x - 1, y, z, 0) && sB.isSolid(world, x - 1, y, z, 3)) s *= shadow;
-		if(world.getBlockType(x + 1, y, z - 1).isSolid(world, x + 1, y, z - 1, 2)) n *= shadow;
-		else if(world.getBlockType(x + 1, y - 1, z - 1).isSolid(world, x + 1, y - 1, z - 1, 4)) n *= shadow;
-		Block nB = world.getBlockType(x + 1, y, z);
-		if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 3)) n *= shadow;
+		if(world.getBlockType(x, y + 1, z - 1).isSolid(world, x, y + 1, z - 1, 4)){
+			nt *= shadow;
+			st *= shadow;
+			if(world.getBlockType(x - 1, y, z - 1).isSolid(world, x - 1, y, z - 1, 0)) st *= shadow;
+			else if(world.getBlockType(x - 1, y + 1, z - 1).isSolid(world, x - 1, y + 1, z - 1, 4)) st *= shadow;
+			Block sB = world.getBlockType(x - 1, y, z);
+			if(sB.isSolid(world, x - 1, y, z, 0) && sB.isSolid(world, x - 1, y, z, 3)) st *= shadow;
+			if(world.getBlockType(x + 1, y, z - 1).isSolid(world, x + 1, y, z - 1, 2)) nt *= shadow;
+			else if(world.getBlockType(x + 1, y + 1, z - 1).isSolid(world, x + 1, y + 1, z - 1, 4)) nt *= shadow;
+			Block nB = world.getBlockType(x + 1, y, z);
+			if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 3)) nt *= shadow;
+		}
 		render.useQuadInputMode(true);
 		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
-		render.color(color, n);
+		render.color(color, nt);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
 		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
-		render.color(color, s);
+		render.color(color, st);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
 		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
-		render.color(color, s);
+		render.color(color, sb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
 		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
-		render.color(color, n);
+		render.color(color, nb);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
 
 	}
@@ -442,15 +498,46 @@ public class BlockRendererDefault implements BlockRenderer {
 	}
 	
 	public void renderBlockFaceBottom(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
+		float ne = 1;
+		float se = 1;
+		float sw = 1;
+		float nw = 1;
+		if(world.getBlockType(x + 1, y + 1, z).isSolid(world, x + 1, y + 1, z, 2)){
+			ne *= shadow;
+			nw *= shadow;
+		}
+		if(world.getBlockType(x - 1, y + 1, z).isSolid(world, x - 1, y + 1, z, 0)){
+			se *= shadow;
+			sw *= shadow;
+		}
+		if(world.getBlockType(x, y + 1, z + 1).isSolid(world, x, y + 1, z + 1, 3)){
+			ne *= shadow;
+			se *= shadow;
+		}
+		if(world.getBlockType(x, y + 1, z - 1).isSolid(world, x, y + 1, z - 1, 1)){
+			nw *= shadow;
+			sw *= shadow;
+		}
+		Block neB = world.getBlockType(x + 1, y + 1, z + 1);
+		Block nwB = world.getBlockType(x + 1, y + 1, z - 1);
+		Block seB = world.getBlockType(x - 1, y + 1, z + 1);
+		Block swB = world.getBlockType(x - 1, y + 1, z - 1);
+		if(neB.isSolid(world, x + 1, y + 1, z + 1, 2) && neB.isSolid(world, x + 1, y + 1, z + 1, 3)) ne *= shadow;
+		if(nwB.isSolid(world, x + 1, y + 1, z - 1, 2) && nwB.isSolid(world, x + 1, y + 1, z - 1, 1)) nw *= shadow;
+		if(seB.isSolid(world, x - 1, y + 1, z + 1, 0) && seB.isSolid(world, x - 1, y + 1, z + 1, 3)) se *= shadow;
+		if(swB.isSolid(world, x - 1, y + 1, z - 1, 0) && swB.isSolid(world, x - 1, y + 1, z - 1, 1)) sw *= shadow;
 		render.useQuadInputMode(true);
 		render.tex(bounds.minX, bounds.minZ, tex, 0);
-		render.color(color);
+		render.color(color, nw);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
 		render.tex(bounds.maxX, bounds.minZ, tex, 0);
+		render.color(color, sw);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
 		render.tex(bounds.maxX, bounds.maxZ, tex, 0);
+		render.color(color, se);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
 		render.tex(bounds.minX, bounds.maxZ, tex, 0);
+		render.color(color, ne);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 
 	}

@@ -6,33 +6,31 @@ package vc4.client.input;
 import vc4.api.client.ClientWindow;
 import vc4.api.input.Input;
 import vc4.api.input.Mouse;
+import vc4.api.vector.Vector2i;
 
 /**
  * @author paul
- *
+ * 
  */
-public class ClientMouse implements Mouse{
+public class ClientMouse implements Mouse {
 
 	private static int height;
-	
-	
+
 	int buttons;
-	
+
 	boolean[] pressed;
-	
+
 	float scroll;
-	
+
 	int x, y, dx, dy;
-	
+
 	/**
 	 * 
 	 */
 	public ClientMouse() {
 		Input.setMouse(this);
 	}
-	
-	
-	
+
 	private ClientMouse(int buttons, boolean[] pressed, float scroll, int x, int y, int dx, int dy) {
 		super();
 		this.buttons = buttons;
@@ -44,9 +42,9 @@ public class ClientMouse implements Mouse{
 		this.dy = dy;
 	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#leftButtonPressed()
 	 */
 	@Override
@@ -54,7 +52,9 @@ public class ClientMouse implements Mouse{
 		return buttonPressed(0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#rightButtomPressed()
 	 */
 	@Override
@@ -62,7 +62,9 @@ public class ClientMouse implements Mouse{
 		return buttonPressed(1);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#buttonPressed(int)
 	 */
 	@Override
@@ -70,7 +72,9 @@ public class ClientMouse implements Mouse{
 		return pressed[button];
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#getMouseButtons()
 	 */
 	@Override
@@ -78,7 +82,9 @@ public class ClientMouse implements Mouse{
 		return buttons;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#getX()
 	 */
 	@Override
@@ -86,7 +92,9 @@ public class ClientMouse implements Mouse{
 		return x;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#getY()
 	 */
 	@Override
@@ -94,7 +102,9 @@ public class ClientMouse implements Mouse{
 		return y;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#getDX()
 	 */
 	@Override
@@ -102,7 +112,9 @@ public class ClientMouse implements Mouse{
 		return dx;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#getDY()
 	 */
 	@Override
@@ -110,7 +122,9 @@ public class ClientMouse implements Mouse{
 		return dy;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#getDWheel()
 	 */
 	@Override
@@ -118,7 +132,9 @@ public class ClientMouse implements Mouse{
 		return scroll;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.input.Mouse#update()
 	 */
 	@Override
@@ -126,17 +142,19 @@ public class ClientMouse implements Mouse{
 		height = ClientWindow.getClientWindow().getHeight();
 		buttons = org.lwjgl.input.Mouse.getButtonCount();
 		pressed = new boolean[buttons];
-		for(int i = 0; i < buttons; ++i){
+		for (int i = 0; i < buttons; ++i) {
 			pressed[i] = org.lwjgl.input.Mouse.isButtonDown(i);
 		}
 		x = org.lwjgl.input.Mouse.getX();
 		y = height - org.lwjgl.input.Mouse.getY() - 1;
-		//dx = org.lwjgl.input.Mouse.getDX();
-		//dy = -org.lwjgl.input.Mouse.getDY();
+		// dx = org.lwjgl.input.Mouse.getDX();
+		// dy = -org.lwjgl.input.Mouse.getDY();
 		scroll = org.lwjgl.input.Mouse.getDWheel() / 120F;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
@@ -144,6 +162,9 @@ public class ClientMouse implements Mouse{
 		return new ClientMouse(buttons, pressed, scroll, x, y, dx, dy);
 	}
 
-	
+	@Override
+	public Vector2i getPos() {
+		return new Vector2i(x, y);
+	}
 
 }

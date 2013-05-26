@@ -17,7 +17,7 @@ import vc4.api.text.Strings;
  * @author paul
  *
  */
-public class GuiTypeMenu implements GuiType {
+public class ScreenTypeMenu implements ScreenType {
 
 	int startx = 10, starty = 10;
 	int rows = 0, columns = 1;
@@ -40,7 +40,7 @@ public class GuiTypeMenu implements GuiType {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void addComponentTo(Gui parent, LinkedHashMap<String, ?> yaml) {
+	public void addComponentTo(Screen parent, LinkedHashMap<String, ?> yaml) {
 		String clazz = null, text = null, action = null, alt = null;
 		ArrayList<Object> args = null;
 		float fontSize = this.fontSize;
@@ -78,7 +78,7 @@ public class GuiTypeMenu implements GuiType {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void setup(Gui c, LinkedHashMap<String, ?> yaml) {
+	public void setup(Screen c, LinkedHashMap<String, ?> yaml) {
 		for(Entry<String, ?> e : yaml.entrySet()){
 			if(e.getKey().equals("name")) c.setName(e.getValue().toString());
 			else if(e.getKey().equals("columns")) columns = ((Number)e.getValue()).intValue();
@@ -93,7 +93,7 @@ public class GuiTypeMenu implements GuiType {
 					else if(f.getKey().equals("gapy")) bgapy = val;
 				}
 			} else if(e.getKey().equals("fontsize")) fontSize = Float.parseFloat(e.getValue().toString());
-			else if(e.getKey().equals("border")) c.setBorderToAttach(Border.valueOf(e.getValue().toString().toUpperCase()));
+			else if(e.getKey().equals("border")) c.setResizer(new BorderResizer(Border.valueOf(e.getValue().toString().toUpperCase())));
 		}
 	}
 	
@@ -130,7 +130,7 @@ public class GuiTypeMenu implements GuiType {
 	 * @see vc4.api.gui.GuiType#isClickable(vc4.api.gui.Gui)
 	 */
 	@Override
-	public boolean isClickable(Gui c) {
+	public boolean isClickable(Screen c) {
 		return ClientWindow.getClientWindow().getGame().getMenuState() == state && Client.getGame().getGameState() == GameState.MENU;
 	}
 
@@ -138,7 +138,7 @@ public class GuiTypeMenu implements GuiType {
 	 * @see vc4.api.gui.GuiType#isVisible(vc4.api.gui.Gui)
 	 */
 	@Override
-	public boolean isVisible(Gui c) {
+	public boolean isVisible(Screen c) {
 		return isClickable(c);
 	}
 

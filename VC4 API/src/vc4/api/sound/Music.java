@@ -5,7 +5,7 @@ public class Music {
 	String path;
 	MusicType type;
 	
-	public static final Music TITLE = new Music("Menu_Screen", MusicType.TITLE);
+	public static final Music TITLE = new Music("Title_Theme", MusicType.TITLE);
 	public static final Music OVERWORLD = new Music("First_Day", MusicType.BIOME);
 	public static final Music NONE = null;
 	

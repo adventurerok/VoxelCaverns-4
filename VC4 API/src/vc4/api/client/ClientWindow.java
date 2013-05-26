@@ -1,6 +1,7 @@
 package vc4.api.client;
 
 import vc4.api.graphics.RenderType;
+import vc4.api.vector.Vector2i;
 
 /**
  * The Window created for the game to run in
@@ -104,6 +105,10 @@ public abstract class ClientWindow {
 	 * @return The client game or null if server
 	 */
 	public abstract ClientGame getGame();
+
+	public Vector2i getDimensions(){
+		return new Vector2i(getWidth(), getHeight());
+	}
 	
 
 }

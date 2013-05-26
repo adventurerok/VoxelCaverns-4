@@ -17,12 +17,12 @@ public class GuiInventory extends Component{
 	public ContainerInventory inventory;
 
 	public GuiInventory() {
-		
+		setResizer(new BorderResizer(Border.SOUTHCENTRE));
 	}
 	
 	private static ColorScheme getColorScheme(){
 		ClientGame g = Client.getGame();
-		return g.getColorScheme(g.getCurrentColorScheme().getString());
+		return g.getColorScheme(g.getColorSchemeSetting().getString());
 	}
 	
 	/* (non-Javadoc)
@@ -33,13 +33,6 @@ public class GuiInventory extends Component{
 		return new Rectangle(352, 128);
 	}
 	
-	/* (non-Javadoc)
-	 * @see vc4.api.gui.Component#getBorderToAttach()
-	 */
-	@Override
-	public Border getBorderToAttach() {
-		return Border.SOUTHCENTRE;
-	}
 
 	@Override
 	public void draw() {
@@ -70,7 +63,7 @@ public class GuiInventory extends Component{
 				gl.end();
 			}
 		}
-		Graphics.getClientShaderManager().bindShader("font");
+		Graphics.getClientShaderManager().bindShader("texture");
 		for (int x = 10; x > -1; x--) {
 			for (int y = 0; y < 4; y++) {
 				if (!inventory.isOpen() && y < 3) continue;

@@ -8,6 +8,10 @@ language.name=English (GB)
 language.select=Select your language
 language.title=Language
 
+stat.he_consume+=Restores {0} healing (up to {1})
+stat.he_consume-=Depletes {0} healing (down to {1})
+stat.hp_consume=Restores {0} health
+
 menu.back=Back
 menu.play=Play
 menu.quit=Quit

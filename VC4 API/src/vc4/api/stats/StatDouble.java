@@ -25,7 +25,7 @@ public class StatDouble implements Stat {
 	}
 
 	@Override
-	public Object getValue() {
+	public Double getValue() {
 		return value;
 	}
 

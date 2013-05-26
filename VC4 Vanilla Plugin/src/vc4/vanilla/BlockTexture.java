@@ -16,8 +16,9 @@ public class BlockTexture {
 	public static int kapokSapling, kapokLeaves, kapokWood, kapokBase;
 	public static int bookshelf, enchantedBookshelf, glass, fluid, obsidian, ore, stone;
 	public static int sand, cracks, woodFront, cactusBottom, cactusTop, cactusSide;
-	public static int vines;
-	public static int[] weeds = new int[9];
+	public static int vines, tallGrass, craftingTop;
+	public static int[] crops = new int[9];
+	public static int[] craftingTables = new int[5];
 	
 	public static void update(){
 		AnimatedTexture tex = Resources.getAnimatedTexture("blocks");
@@ -77,7 +78,12 @@ public class BlockTexture {
 		cactusBottom = tex.getArrayIndex("cactusbottom");
 		vines = tex.getArrayIndex("vines");
 		for(int d = 0; d < 9; ++d){
-			weeds[d] = tex.getArrayIndex("weeds" + (d + 1));
+			crops[d] = tex.getArrayIndex("weeds" + (d + 1));
 		}
+		tallGrass = tex.getArrayIndex("tallgrass");
+		for(int d = 0; d < 2; ++d){
+			craftingTables[d] = tex.getArrayIndex("craftingtable" + (d + 1));
+		}
+		craftingTop = tex.getArrayIndex("brownwood");
 	}
 }

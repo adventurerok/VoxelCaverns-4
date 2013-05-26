@@ -92,13 +92,13 @@ public class EntityLiving extends Entity {
 	
 	@Override
 	public void update() {
-		getOlder();
+		updateAge();
 		move();
 	}
 	
 	@Override
-	public void getOlder() {
-		super.getOlder();
+	public void updateAge() {
+		super.updateAge();
 		if(resistanceTime > 0) --resistanceTime;
 		else resistedDamage = 0;
 	}

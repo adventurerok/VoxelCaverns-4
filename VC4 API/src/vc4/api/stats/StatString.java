@@ -11,8 +11,13 @@ public class StatString implements Stat {
 		return Localization.getLocalization("stat." + name, value);
 	}
 
+	public StatString(String value) {
+		super();
+		this.value = value;
+	}
+
 	@Override
-	public Object getValue() {
+	public String getValue() {
 		return value;
 	}
 

@@ -65,7 +65,6 @@ public class RecursiveGenVolcano extends RecursiveGenerator {
 	}
 
 	private void createZoom(World world) {
-		lastWorld = world;
 		ZoomGenerator bgen = new BiomeGenIslands(world);
 		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenIslands(world, bgen);
@@ -74,10 +73,13 @@ public class RecursiveGenVolcano extends RecursiveGenerator {
 		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenBiome(world, bgen, Vanilla.biomes);
 		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSubBiome(world, bgen);
+		bgen = new BiomeGenSubBiome(world, bgen, 0);
 		bgen = new BiomeGenZoom(world, bgen, true);
+		bgen = new BiomeGenSubBiome(world, bgen, 1);
 		bgen = new BiomeGenZoom(world, bgen, true);
+		bgen = new BiomeGenSubBiome(world, bgen, 2);
 		volcanicCheck = bgen;
+		lastWorld = world;
 	}
 
 }

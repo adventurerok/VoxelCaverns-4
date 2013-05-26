@@ -3,17 +3,18 @@
  */
 package vc4.impl.world;
 
-import java.util.Random;
+import java.util.*;
+import java.util.Map.Entry;
 
 import vc4.api.block.Block;
 import vc4.api.entity.Entity;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.math.MathUtils;
+import vc4.api.tileentity.TileEntity;
 import vc4.api.util.EntityList;
 import vc4.api.vector.Vector3d;
-import vc4.api.world.Chunk;
-import vc4.api.world.ChunkPos;
-import vc4.api.world.World;
+import vc4.api.vector.Vector3i;
+import vc4.api.world.*;
 
 /**
  * @author paul
@@ -26,6 +27,9 @@ public class ImplChunk implements Chunk {
 	private ImplWorld world;
 	private boolean populated;
 	public EntityList entitys = new EntityList();
+	
+	
+	public volatile HashMap<Vector3i, TileEntity> tileEntitys = new HashMap<Vector3i, TileEntity>();
 
 	/**
 	 * 
@@ -38,6 +42,18 @@ public class ImplChunk implements Chunk {
 		}
 	}
 
+	public TileEntity getTileEntity(int x, int y, int z) {
+		return tileEntitys.get(new Vector3i(x, y, z));
+	}
+	
+	public void setTileEntity(int x, int y, int z, TileEntity t) {
+		if (t != null) tileEntitys.put(new Vector3i(x, y, z), t);
+		else tileEntitys.remove(new Vector3i(x, y, z));
+		
+		stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].clearRenderers();
+		notifyNear(x, y, z);
+	}
+	
 	public void setData(GeneratorOutput data) {
 		for (int d = 0; d < 8; ++d) {
 			stores[d].blocks = new short[4096];
@@ -221,11 +237,27 @@ public class ImplChunk implements Chunk {
 				world.scheduleBlockUpdate(pos.worldX(x), pos.worldY(y), pos.worldZ(z), time);
 			}
 		}
+		List<TileEntity> tiles = new ArrayList<TileEntity>(tileEntitys.values());
+		for (int dofor = tiles.size() - 1; dofor > -1; --dofor) {
+			tiles.get(dofor).updateTick();
+			if (tiles.get(dofor).remove) {
+				Vector3i pos = tiles.get(dofor).getPositionInChunk();
+//				if (unloading) return;
+				tileEntitys.remove(pos);
+				stores[((pos.x >> 4) * 2 + (pos.y >> 4)) * 2 + (pos.z >> 4)].clearRenderers();
+				notifyNear(pos.x, pos.y, pos.z);
+			}
+		}
+		tiles.clear();
+		tiles = null;
 	}
 	
 	public void drawEntitys(){
 		for(int d = 0; d < entitys.size(); ++d){
 			entitys.get(d).draw();
+		}
+		for(Entry<Vector3i, TileEntity> e : tileEntitys.entrySet()){
+			e.getValue().draw();
 		}
 	}
 

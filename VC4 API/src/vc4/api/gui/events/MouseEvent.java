@@ -10,6 +10,8 @@ public class MouseEvent extends AbstractEvent {
 	public MouseEvent(Component c, int button, int x, int y) {
 		super(c, AbstractEvent.USER_INPUT);
 		this.button = button;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public int getButtonPressed(){

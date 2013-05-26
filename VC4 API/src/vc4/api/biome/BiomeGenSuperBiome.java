@@ -15,9 +15,9 @@ public class BiomeGenSuperBiome extends ZoomGenerator {
 	
 	public BiomeGenSuperBiome(World world, ZoomGenerator parent){
 		super(world, parent);
-		//types.add(BiomeType.normal.id);
-		//types.add(BiomeType.normal.id);
-		//types.add(BiomeType.cold.id);
+		types.add(BiomeType.normal.id);
+		types.add(BiomeType.normal.id);
+		types.add(BiomeType.cold.id);
 		types.add(BiomeType.hot.id);
 	}
 	

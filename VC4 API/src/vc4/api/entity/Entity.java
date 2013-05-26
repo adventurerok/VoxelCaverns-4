@@ -1,11 +1,14 @@
 package vc4.api.entity;
 
-import java.util.HashMap;
-import java.util.Random;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 
+import vc4.api.entity.trait.Trait;
 import vc4.api.math.MathUtils;
 import vc4.api.util.AABB;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3l;
 import vc4.api.world.Chunk;
 import vc4.api.world.World;
 
@@ -45,6 +48,8 @@ public abstract class Entity {
 	
 	protected long ticksAlive = 0;
 	
+	private HashMap<String, Trait> traits = new HashMap<>();
+	
 	public Entity(World world){
 		this.world = world;
 	}
@@ -59,12 +64,18 @@ public abstract class Entity {
 	
 	public void damage(int amount, DamageSource source){
 		health -= amount;
+		onEvent("Damage");
 		if(health < 1) kill();
+	}
+	
+	public Vector3l getBlockPos(){
+		return new Vector3l(MathUtils.floor(position.x), MathUtils.floor(position.y), MathUtils.floor(position.z));
 	}
 	
 	public void kill(){
 		health = 0;
 		isDead = true;
+		onEvent("Death");
 	}
 	
 	public void damage(int amount, DamageSource source, int ticks){
@@ -260,6 +271,14 @@ public abstract class Entity {
 		return;
 	}
 	
+	public void addTrait(Trait trait){
+		traits.put(trait.name(), trait);
+	}
+	
+	public Trait getTrait(String name){
+		return traits.get(name);
+	}
+	
 	public int getMaxHealth(){
 		return 100;
 	}
@@ -269,12 +288,29 @@ public abstract class Entity {
 	}
 
 	public void update() {
-		getOlder();
+		updateAge();
+		updateTraits();
 		move(motionX, motionY, motionZ);
 		
 	}
 	
-	public void getOlder(){
+	public void updateTraits() {
+		for(Entry<String, Trait> t : traits.entrySet()){
+			t.getValue().update();
+		}
+	}
+	
+	public void onEvent(String name) {
+		for(Entry<String, Trait> t : traits.entrySet()){
+			try {
+				Method meth = t.getValue().getClass().getMethod("on" + name);
+				meth.invoke(t.getValue());
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	public void updateAge(){
 		++ticksAlive;
 	}
 
@@ -301,6 +337,10 @@ public abstract class Entity {
 	public void teleport(Vector3d pos) {
 		position = pos;
 		calculateBounds();
+	}
+
+	public World getWorld() {
+		return world;
 	}
 	
 }

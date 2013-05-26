@@ -100,5 +100,12 @@ public interface OpenGL {
 	public void vertex(double x, double y, double z);
 	public void texCoord(double s, double t, double r);
 	
+	public void bindShader(int shader);
+	public void bindShader(String name);
+	public void unbindShader();
+	public void shaderUniform1i(String var, int x);
+	public void shaderUniform1f(String var, float x);
+	public void shaderUniform3f(String var, float x, float y, float z);
+	
 
 }

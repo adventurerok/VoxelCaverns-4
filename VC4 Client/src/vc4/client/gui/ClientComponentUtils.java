@@ -142,7 +142,7 @@ public class ClientComponentUtils implements ComponentUtils {
 	
 	private ColorScheme getColorScheme(){
 		ClientGame g = ClientWindow.getClientWindow().getGame();
-		return g.getColorScheme(g.getCurrentColorScheme().getString());
+		return g.getColorScheme(g.getColorSchemeSetting().getString());
 	}
 
 	

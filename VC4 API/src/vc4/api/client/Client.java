@@ -3,6 +3,8 @@
  */
 package vc4.api.client;
 
+import vc4.api.entity.EntityPlayer;
+
 /**
  * @author paul
  *
@@ -16,6 +18,10 @@ public class Client {
 	 */
 	public static ClientGame getGame() {
 		return _game;
+	}
+	
+	public static EntityPlayer getPlayer(){
+		return _game.getPlayer();
 	}
 	
 	/**

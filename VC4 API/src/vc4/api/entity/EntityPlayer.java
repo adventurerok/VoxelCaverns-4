@@ -3,11 +3,14 @@
  */
 package vc4.api.entity;
 
-import java.util.*;
+import java.util.Random;
 
 import vc4.api.block.Block;
+import vc4.api.block.CraftingTable;
 import vc4.api.block.render.BlockRendererDefault;
 import vc4.api.container.ContainerInventory;
+import vc4.api.entity.trait.TraitCrafting;
+import vc4.api.entity.trait.TraitOpenContainers;
 import vc4.api.graphics.*;
 import vc4.api.input.*;
 import vc4.api.item.Item;
@@ -42,6 +45,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	double nowHealing = 0;
 	double healMinus = 0;
+	
 	
 	
 	public EntityPlayer(World world) {
@@ -81,6 +85,13 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		//inventory.setItem(1, new ItemStack(world.getRegisteredBlock("vanilla.vine"), 0, 99));
 		inventory.setItem(2, new ItemStack(spade, 0, 1));
 		inventory.setItem(3, new ItemStack(axe, 0, 1));
+		
+		addTrait(new TraitOpenContainers(this));
+		addTrait(new TraitCrafting(this));
+	}
+	
+	public CraftingTable getCraftingTable() {
+		return ((TraitCrafting)getTrait("crafting")).getCraftingTable();
 	}
 	
 	public void decreaseCooldown(double delta){
@@ -99,6 +110,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		if(eight % 2 == 0) return eight / 2;
 		else return ((eight - 1) / 2) + 6;
 				
+	}
+	
+	public void setMaxHealing(int maxHealing) {
+		this.maxHealing = maxHealing;
 	}
 	
 	
@@ -193,12 +208,6 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		return spawn;
 	}
 
-	/**
-	 * @return the world
-	 */
-	public World getWorld() {
-		return world;
-	}
 
 	@Override
 	public void kill() {
@@ -300,6 +309,8 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	@Override
 	public void update() {
+		
+		
 		super.update();
 		if(healing == 0) return;
 		double heal = healing / 5500d;
@@ -362,5 +373,16 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	public int reduceDamage(DamageSource source, int damage) {
 		//if(source == DamageSource.fallDamage) return 0;
 		return super.reduceDamage(source, damage);
+	}
+
+	public void dropItem(ItemStack drop) {
+		if(drop == null || !drop.checkIsNotEmpty()) return;
+		EntityItem i = new EntityItem(world);
+		i.setItem(drop.clone());
+		i.setPosition(bounds.averageX(), getEyeHeight(), bounds.averageZ());
+		i.motionX = (rand.nextDouble() - 0.5) * 2;
+		i.motionY = rand.nextDouble();
+		i.motionZ = (rand.nextDouble() - 0.5) * 2;
+		i.addToWorld();
 	}
 }

@@ -6,6 +6,7 @@ package vc4.api.client;
 import vc4.api.GameState;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.gui.Component;
+import vc4.api.gui.Cursor;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.MouseSet;
 import vc4.api.packet.Packet;
@@ -45,8 +46,10 @@ public interface ClientGame {
 	/**
 	 * @return The current color scheme
 	 */
-	public Setting<Object> getCurrentColorScheme();
-	public Setting<Object> getCurrentCrosshair();
+	public Setting<Object> getColorSchemeSetting();
+	public Setting<Object> getCrosshairSetting();
+	
+	public ColorScheme getCurrentColorScheme();
 	
 	/**
 	 * Finds the unique id of the currently displaying menu
@@ -62,4 +65,8 @@ public interface ClientGame {
 	public int getCrosshair(String name);
 	public EntityPlayer getPlayer();
 	public void handlePacket(Packet pack);
+	public String takeScreenshot();
+	public Cursor getCursor(String name);
+	public void addCursor(Cursor cursor);
+	public Component getHoveringComponent();
 }

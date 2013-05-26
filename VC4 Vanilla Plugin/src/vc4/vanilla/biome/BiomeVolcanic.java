@@ -12,8 +12,8 @@ public class BiomeVolcanic extends BiomeHilly {
 
 	int amt;
 	
-	public BiomeVolcanic(String name, BiomeType type, Color mapColor, int amt) {
-		super(name, type, mapColor);
+	public BiomeVolcanic(int id, String name, BiomeType type, Color mapColor, int amt) {
+		super(id, name, type, mapColor);
 		this.amt = amt;
 		soilDepth = amt * 3;
 	}

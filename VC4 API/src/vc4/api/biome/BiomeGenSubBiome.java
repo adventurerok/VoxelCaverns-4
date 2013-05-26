@@ -4,9 +4,11 @@ import vc4.api.world.World;
 
 public class BiomeGenSubBiome extends ZoomGenerator {
 
+	int op;
 	
-	public BiomeGenSubBiome(World world, ZoomGenerator parent) {
+	public BiomeGenSubBiome(World world, ZoomGenerator parent, int op) {
 		super(world, parent);
+		this.op = op;
 	}
 	
 	@Override
@@ -18,7 +20,7 @@ public class BiomeGenSubBiome extends ZoomGenerator {
 			for(pz = 0; pz < size; ++pz){
 				createRandom(x + px, z + pz);
 				bio = Biome.byId(result[pz * size + px]);
-				result[pz * size + px] = bio.generateSubBiome(rand);
+				result[pz * size + px] = bio.generateSubBiome(rand, op);
 			}
 		}
 		return result;

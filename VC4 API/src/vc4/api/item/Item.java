@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import vc4.api.entity.EntityPlayer;
+import vc4.api.stats.Stats;
 import vc4.api.text.Localization;
 import vc4.api.tool.Tool;
 
@@ -17,6 +18,7 @@ import vc4.api.tool.Tool;
  */
 public class Item {
 
+	
 	public final int id;
 	protected int textureIndex;
 	protected String name;
@@ -24,6 +26,7 @@ public class Item {
 	protected int maxDamage;
 	protected int maxStack = 99;
 	protected boolean overrideLeftClick;
+	protected Stats defaultStats = new Stats();
 	
 	protected static Item[] itemsList = new Item[65536];
 	public Item(int id) {
@@ -95,6 +98,10 @@ public class Item {
 	}
 	public String getLocalizedItemDescription(ItemStack stack) {
 		return Localization.getLocalization(getItemDescription(stack));
+	}
+	
+	public Stats getStats(ItemStack item){
+		return defaultStats;
 	}
 	
 	/**

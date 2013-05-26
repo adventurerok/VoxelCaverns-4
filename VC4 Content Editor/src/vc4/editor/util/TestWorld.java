@@ -11,6 +11,7 @@ import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.WorldGenerator;
 import vc4.api.sound.Music;
+import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.*;
@@ -286,6 +287,59 @@ public class TestWorld implements World {
 	@Override
 	public String[] getDebugInfo() {
 		return null;
+	}
+
+	@Override
+	public int getRegisteredBiome(String name) {
+		return 0;
+	}
+
+	@Override
+	public int getRegisteredEntity(String name) {
+		return 0;
+	}
+
+	@Override
+	public short getRegisteredCrafting(String name) {
+		return 0;
+	}
+
+	@Override
+	public void setNearbyTileEntity(long x, long y, long z, TileEntity t, Direction dir) {
+	}
+
+	@Override
+	public TileEntity getTileEntity(long x, long y, long z) {
+		return null;
+	}
+
+	@Override
+	public void setTileEntity(long x, long y, long z, TileEntity t) {
+	}
+
+	@Override
+	public Block getNearbyBlockType(long x, long y, long z, int dir) {
+		return null;
+	}
+
+	@Override
+	public TileEntity getNearbyTileEntity(long x, long y, long z, int dir) {
+		return null;
+	}
+
+	@Override
+	public TileEntity getNearbyTileEntity(long x, long y, long z, Direction dir) {
+		return null;
+	}
+
+	@Override
+	public short getNearbyBlockId(long x, long y, long z, int d) {
+		return 0;
+	}
+
+	@Override
+	public byte getNearbyBlockData(long x, long y, long z, int d) {
+		return 0;
 	}
 
 }

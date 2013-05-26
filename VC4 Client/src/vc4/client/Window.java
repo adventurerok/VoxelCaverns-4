@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 
+import vc4.api.client.ClientGame;
 import vc4.api.client.ClientWindow;
 import vc4.api.graphics.*;
 import vc4.api.graphics.texture.AnimatedTexture;
@@ -269,7 +270,7 @@ public class Window extends ClientWindow {
 	 * @return the game
 	 */
 	@Override
-	public Game getGame() {
+	public ClientGame getGame() {
 		return game;
 	}
 

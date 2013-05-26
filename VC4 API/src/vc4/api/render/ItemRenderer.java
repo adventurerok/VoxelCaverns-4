@@ -210,7 +210,7 @@ public class ItemRenderer {
 			return;
 		}
 		Item s = stack.getItem();
-		if(stack.isBlock()) Resources.getSheetTexture("blocks").bind();
+		if(stack.isBlock()) Resources.getAnimatedTexture("blocks").bind();
 		else Resources.getAnimatedTexture("items").bind();
 		int tex = s.getTextureIndex(stack);
         gl.color(s.getColor(stack));

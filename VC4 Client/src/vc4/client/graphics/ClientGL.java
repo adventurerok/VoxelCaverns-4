@@ -697,4 +697,34 @@ public class ClientGL implements OpenGL {
 		
 	}
 
+	@Override
+	public void bindShader(int shader) {
+		Graphics.getClientShaderManager().bindShader(shader);
+	}
+
+	@Override
+	public void bindShader(String name) {
+		Graphics.getClientShaderManager().bindShader(name);
+	}
+
+	@Override
+	public void unbindShader() {
+		Graphics.getClientShaderManager().unbindShader();
+	}
+
+	@Override
+	public void shaderUniform1i(String var, int x) {
+		Graphics.getClientShaderManager().shaderUniform1f(var, x);
+	}
+
+	@Override
+	public void shaderUniform1f(String var, float x) {
+		Graphics.getClientShaderManager().shaderUniform1f(var, x);
+	}
+
+	@Override
+	public void shaderUniform3f(String var, float x, float y, float z) {
+		Graphics.getClientShaderManager().shaderUniform3f(var, x, y, z);
+	}
+
 }
