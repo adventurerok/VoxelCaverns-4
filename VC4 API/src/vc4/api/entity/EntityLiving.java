@@ -93,6 +93,7 @@ public class EntityLiving extends Entity {
 	@Override
 	public void update() {
 		updateAge();
+		updateTraits();
 		move();
 	}
 	
