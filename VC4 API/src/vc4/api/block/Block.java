@@ -78,6 +78,14 @@ public class Block {
 		return this;
 	}
 	
+	public boolean overrideLeftClick(World world, long x, long y, long z){
+		return false;
+	}
+	
+	public boolean overrideRightClick(World world, long x, long y, long z){
+		return false;
+	}
+	
 	public static Block byId(int id){
 		if(id == -1) return minus;
 		return blocksList[id];
@@ -165,6 +173,14 @@ public class Block {
 			}
 		}
 		world.setBlockId(x, y, z, 0);
+	}
+	
+	public void onLeftClick(World world, long x, long y, long z, int side, EntityPlayer player, ItemStack item){
+		
+	}
+	
+	public void onRightClick(World world, long x, long y, long z, int side, EntityPlayer player, ItemStack item){
+		
 	}
 	
 	public MiningData getMiningData(World world, long x, long y, long z){

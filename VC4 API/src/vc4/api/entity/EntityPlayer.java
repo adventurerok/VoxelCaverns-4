@@ -45,6 +45,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	double nowHealing = 0;
 	double healMinus = 0;
+	private boolean paused;
 	
 	
 	
@@ -97,6 +98,14 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	public void decreaseCooldown(double delta){
 		coolDown -= delta;
 		if(coolDown < 0) coolDown = 0;
+	}
+	
+	public void setPaused(boolean paused){
+		this.paused = paused;
+	}
+	
+	public boolean isPaused() {
+		return paused;
 	}
 	
 	//NESW
@@ -232,10 +241,14 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		}
 		
 		ItemStack held = inventory.getSelectedStack();
-		if(held != null && held.hasSpecialLeftClickEvent()){
+		if(held != null && held.overrideLeftClick()){
 			held.onLeftClick(this);
 			return;
 		}
+		if(world.getBlockType(rays.x, rays.y, rays.z).overrideLeftClick(world, rays.x, rays.y, rays.z)){
+			world.getBlockType(rays.x, rays.y, rays.z).onLeftClick(world, rays.x, rays.y, rays.z, rays.side, this, held);
+			return;
+		} 
 		if(coolDown < 0.1d){
 			if(minedAmount >= 1){
 				world.getBlockType(rays.x, rays.y, rays.z).onBlockMined(world, rays.x, rays.y, rays.z, held);
@@ -279,7 +292,9 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 
 	public void rightMouseDown(double delta){
 		ItemStack held = inventory.getSelectedStack();
-		if(held != null) held.onRightClick(this);
+		if(world.getBlockType(rays.x, rays.y, rays.z).overrideRightClick(world, rays.x, rays.y, rays.z)){
+			world.getBlockType(rays.x, rays.y, rays.z).onRightClick(world, rays.x, rays.y, rays.z, rays.side, this, held);
+		} else if(held != null) held.onRightClick(this);
 	}
 	
 	/**

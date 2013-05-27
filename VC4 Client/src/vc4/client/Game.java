@@ -68,7 +68,6 @@ public class Game extends Component implements ClientGame {
 	ClientLoadingScreen loadingScreen;
 	private GameState gameState = GameState.MENU;
 	private EntityPlayer player;
-	private boolean paused = false;
 	private IngameGui ingameGui;
 	private ClientResources resources;
 	private long previousTenTicks = 0;
@@ -79,7 +78,7 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public boolean isPaused() {
-		return paused;
+		return player.isPaused();
 	}
 	
 	@Override
@@ -98,7 +97,7 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void setPaused(boolean paused) {
-		this.paused = paused;
+		player.setPaused(paused);
 	}
 
 	private Component _oldc;

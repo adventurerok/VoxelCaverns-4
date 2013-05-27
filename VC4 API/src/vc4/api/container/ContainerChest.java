@@ -19,6 +19,11 @@ public class ContainerChest extends Container{
 	public int getRows(int columns){
 		return MathUtils.ceil(getSize() / (float)columns);
 	}
+	
+	@Override
+	public String getGuiName() {
+		return "chest";
+	}
 
 
 	public ContainerChest(int slots) {

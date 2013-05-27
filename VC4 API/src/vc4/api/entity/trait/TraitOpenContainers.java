@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import vc4.api.block.OpenContainer;
 import vc4.api.entity.Entity;
+import vc4.api.tileentity.TileEntityContainer;
 
 public class TraitOpenContainers extends Trait {
 
@@ -27,6 +28,10 @@ public class TraitOpenContainers extends Trait {
 	@Override
 	public String name() {
 		return "opencontainers";
+	}
+	
+	public void open(TileEntityContainer cont){
+		containers.add(new OpenContainer(cont));
 	}
 
 	@Override

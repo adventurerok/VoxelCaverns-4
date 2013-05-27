@@ -37,6 +37,10 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 
 	protected Container() {
 	}
+	
+	public String getGuiName(){
+		return null;
+	}
 
 	protected Container(int slots) {
 		this.slots = new ItemStack[slots];

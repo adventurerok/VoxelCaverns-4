@@ -12,7 +12,7 @@ import vc4.api.input.MouseSet;
 import vc4.api.item.ItemStack;
 import vc4.api.render.*;
 
-public class ItemContainer extends Component {
+public class ItemPanel extends Panel {
 
 	private static OpenGL gl;
 
@@ -21,12 +21,14 @@ public class ItemContainer extends Component {
 
 	private int min, max;
 
-	public ItemContainer() {
+	public ItemPanel(Container cont) {
 		if (gl == null) gl = Graphics.getClientOpenGL();
+		container = cont;
 	}
 
 	@Override
 	public void draw() {
+		inventory = Client.getPlayer().getInventory();
 		int px = getX();
 		int py = getY();
 		int sx = 0, sy = 0;
@@ -73,6 +75,7 @@ public class ItemContainer extends Component {
 
 	@Override
 	public void update() {
+		inventory = Client.getPlayer().getInventory();
 		MouseSet mice = Client.getGame().getMouseSet();
 		boolean left = mice.buttonPressed(0);
 		boolean right = mice.buttonPressed(1);

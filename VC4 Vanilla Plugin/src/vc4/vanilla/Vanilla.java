@@ -39,7 +39,7 @@ public class Vanilla extends Plugin {
 	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
-	public static Block workbench;
+	public static Block workbench, chest;
 	
 	//Items
 	public static Item food;
@@ -207,6 +207,7 @@ public class Vanilla extends Plugin {
 		vines = new BlockVine(world.getRegisteredBlock("vanilla.vine"), BlockTexture.vines, "vine").setName("vine");
 		willowVines = new BlockWillowVine(world.getRegisteredBlock("vanilla.willowvine"), BlockTexture.vines, "vine").setName("vine");
 		workbench = new BlockCraftingTable(world.getRegisteredBlock("vanilla.workbench"), 0, "wood").setName("craftingtable");
+		chest = new BlockChest(world.getRegisteredBlock("vanilla.chest")).setName("chest");
 		
 		generateToolItems(world);
 		food = new ItemVanillaFood(world.getRegisteredItem("vanilla.food"));

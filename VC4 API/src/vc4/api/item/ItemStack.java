@@ -406,7 +406,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 	public boolean checkIsNotEmpty(){
 		return (amount > -2) && getId() != 0 && amount != 0;
 	}
-	public boolean hasSpecialLeftClickEvent(){
+	public boolean overrideLeftClick(){
 		return getItem().overrideLeftClick();
 	}
 

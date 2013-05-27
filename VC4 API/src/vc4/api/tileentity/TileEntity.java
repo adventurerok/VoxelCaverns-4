@@ -23,7 +23,10 @@ public abstract class TileEntity {
 	public TileEntity(World world, Vector3l pos){
 		this.world = world;
 		position = pos;
-		if(pos.x != Long.MAX_VALUE)world.setTileEntity(pos.x, pos.y, pos.z, this);
+	}
+	
+	public void addToWorld(){
+		world.setTileEntity(position.x, position.y, position.z, this);
 	}
 
 	public void moveTileEntity(Vector3l n){
