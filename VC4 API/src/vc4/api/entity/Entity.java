@@ -1,10 +1,13 @@
 package vc4.api.entity;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.jnbt.CompoundTag;
+
 import vc4.api.entity.trait.Trait;
+import vc4.api.logging.Logger;
 import vc4.api.math.MathUtils;
 import vc4.api.util.AABB;
 import vc4.api.vector.Vector3d;
@@ -14,7 +17,42 @@ import vc4.api.world.World;
 
 public abstract class Entity {
 
-	public static HashMap<Short, Class<? extends Entity>> types = new HashMap<Short, Class<? extends Entity>>();
+	private static HashMap<String, Constructor<? extends Entity>> types = new HashMap<String, Constructor<? extends Entity>>();
+	
+	static{
+		registerEntity("item", EntityItem.class);
+		registerEntity("player", EntityPlayer.class);
+	}
+	
+	public static void registerEntity(String name, Class<? extends Entity> clz){
+		try {
+			types.put(name, clz.getConstructor(World.class));
+		} catch (NoSuchMethodException | SecurityException e) {
+			Logger.getLogger(Entity.class).warning("Entity class does not have correct constructor", e);
+		}
+	}
+	
+	public static Constructor<? extends Entity> getEntityType(String name){
+		return types.get(name);
+	}
+	
+	public static Entity loadEntity(World world, CompoundTag tag){
+		short id = tag.getShort("id");
+		String name = world.getEntityName(id);
+		Constructor<? extends Entity> clz = getEntityType(name);
+		try {
+			Entity e = clz.newInstance(world);
+			e.loadSaveCompound(tag);
+			return e;
+		} catch (Exception e) {
+			Logger.getLogger(Entity.class).warning("Exception while loading entity: " + name, e);
+		}
+		return null;
+	}
+	
+	public boolean persistent(){
+		return true;
+	}
 
 	public boolean inQuicksand = false;
 	public boolean collisionHorizontal = false;
@@ -48,10 +86,12 @@ public abstract class Entity {
 	
 	protected long ticksAlive = 0;
 	
+	
 	private HashMap<String, Trait> traits = new HashMap<>();
 	
 	public Entity(World world){
 		this.world = world;
+		size = getDefaultSize();
 	}
 	
 	public Entity setPosition(double x, double y, double z){
@@ -95,7 +135,7 @@ public abstract class Entity {
 	}
 	
 	public Vector3d getDefaultSize(){
-		return new Vector3d(0.3, 1.6, 0.3);
+		return new Vector3d(0.3, 0.83, 0.3);
 	}
 	
 	public Entity addToWorld(){
@@ -294,10 +334,16 @@ public abstract class Entity {
 		
 	}
 	
+	public abstract String getName();
+	
 	public void updateTraits() {
 		for(Entry<String, Trait> t : traits.entrySet()){
 			t.getValue().update();
 		}
+	}
+	
+	public int getId(){
+		return world.getRegisteredEntity(getName());
 	}
 	
 	public void onEvent(String name) {
@@ -336,11 +382,56 @@ public abstract class Entity {
 
 	public void teleport(Vector3d pos) {
 		position = pos;
+		oldPos = pos.clone();
 		calculateBounds();
 	}
 
 	public World getWorld() {
 		return world;
 	}
+	
+	
+	/**
+	 * All other entities should override this, starting with getting the parent tag.
+	 * Then should then add their own tags, and return the result
+	 * @return The save compound
+	 */
+	public CompoundTag getSaveCompound(){
+		CompoundTag root = new CompoundTag("root");
+		root.setShort("id", (short)getId());
+		CompoundTag pos = new CompoundTag("pos");
+		pos.setDouble("x", position.x);
+		pos.setDouble("y", position.y);
+		pos.setDouble("z", position.z);
+		root.addTag(pos);
+		CompoundTag motion = new CompoundTag("motion");
+		motion.setDouble("x", motionX);
+		motion.setDouble("y", motionY);
+		motion.setDouble("z", motionZ);
+		root.addTag(motion);
+		root.setInt("hp", getHealth());
+		root.setLong("alive", ticksAlive);
+		return root;
+	}
+	
+	public void loadSaveCompound(CompoundTag tag){
+		CompoundTag pos = tag.getCompoundTag("pos");
+		position = new Vector3d();
+		position.x = pos.getDouble("x");
+		position.y = pos.getDouble("y");
+		position.z = pos.getDouble("z");
+		oldPos = position.clone();
+		calculateBounds();
+		CompoundTag motion = tag.getCompoundTag("motion");
+		motionX = motion.getDouble("x");
+		motionY = motion.getDouble("y");
+		motionZ = motion.getDouble("z");
+		health = tag.getInt("hp");
+		ticksAlive = tag.getLong("alive");
+	}
+	
+	
+	
+	
 	
 }

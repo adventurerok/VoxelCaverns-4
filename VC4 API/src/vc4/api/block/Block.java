@@ -348,7 +348,7 @@ public class Block {
 	}
 	
 	public AABB[] getCollisionSizes(World world, long x, long y, long z){
-		if(!isAir) return new AABB[]{square};
+		if(!isAir || uid == -1) return new AABB[]{square};
 		else return null;
 	}
 

@@ -27,6 +27,8 @@ public class ImplChunk implements Chunk {
 	private ImplWorld world;
 	private boolean populated;
 	public EntityList entitys = new EntityList();
+	private boolean isModified = false;
+	private boolean unloading = false;
 	
 	
 	public volatile HashMap<Vector3i, TileEntity> tileEntitys = new HashMap<Vector3i, TileEntity>();
@@ -46,12 +48,27 @@ public class ImplChunk implements Chunk {
 		return tileEntitys.get(new Vector3i(x, y, z));
 	}
 	
+	public HashMap<Vector3i, TileEntity> getTileEntitys() {
+		return tileEntitys;
+	}
+	
 	public void setTileEntity(int x, int y, int z, TileEntity t) {
+		isModified = true;
 		if (t != null) tileEntitys.put(new Vector3i(x, y, z), t);
 		else tileEntitys.remove(new Vector3i(x, y, z));
 		
 		stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].clearRenderers();
 		notifyNear(x, y, z);
+	}
+	
+	@Override
+	public void setModified(boolean modified) {
+		this.isModified = modified;
+	}
+	
+	@Override
+	public boolean isModified() {
+		return isModified;
 	}
 	
 	public void setData(GeneratorOutput data) {
@@ -99,7 +116,7 @@ public class ImplChunk implements Chunk {
 	 */
 	@Override
 	public void setBlockId(int x, int y, int z, short id) {
-		stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockId(x & 0xF, y & 0xF, z & 0xF, id);
+		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockId(x & 0xF, y & 0xF, z & 0xF, id)) isModified = true;
 		notifyNear(x, y, z);
 	}
 
@@ -110,7 +127,7 @@ public class ImplChunk implements Chunk {
 	 */
 	@Override
 	public void setBlockData(int x, int y, int z, byte data) {
-		stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockData(x & 0xF, y & 0xF, z & 0xF, data);
+		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockData(x & 0xF, y & 0xF, z & 0xF, data)) isModified = true;
 		notifyNear(x, y, z);
 	}
 
@@ -121,7 +138,7 @@ public class ImplChunk implements Chunk {
 	 */
 	@Override
 	public void setBlockIdData(int x, int y, int z, short id, byte data) {
-		stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockIdData(x & 0xF, y & 0xF, z & 0xF, id, data);
+		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockIdData(x & 0xF, y & 0xF, z & 0xF, id, data)) isModified = true;
 		notifyNear(x, y, z);
 	}
 
@@ -132,6 +149,12 @@ public class ImplChunk implements Chunk {
 		else if (y % 16 == 15) world.getBlockStoreFromWorld(pos.worldX(x), pos.worldY(y + 1), pos.worldZ(z)).clearRenderers();
 		if (z % 16 == 0) world.getBlockStoreFromWorld(pos.worldX(x), pos.worldY(y), pos.worldZ(z - 1)).clearRenderers();
 		else if (z % 16 == 15) world.getBlockStoreFromWorld(pos.worldX(x), pos.worldY(y), pos.worldZ(z + 1)).clearRenderers();
+	}
+	
+	@Override
+	public void setDirty(int x, int y, int z){
+		stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].clearRenderers();
+		notifyNear(x, y, z);
 	}
 
 	/*
@@ -264,7 +287,34 @@ public class ImplChunk implements Chunk {
 	@Override
 	public void addEntity(Entity entity) {
 		entitys.add(entity);
+		isModified = true;
 		
+	}
+
+	public void removeGraphics() {
+		for (BlockStore s : stores) {
+			s.removeGraphics();
+		}
+		
+	}
+	
+	public void removeData(){
+		for(BlockStore s : stores){
+			s.removeData();
+		}
+	}
+
+	@Override
+	public EntityList getEntityList() {
+		return entitys;
+	}
+	
+	public boolean isUnloading() {
+		return unloading;
+	}
+	
+	public void setUnloading(boolean unloading) {
+		this.unloading = unloading;
 	}
 
 }

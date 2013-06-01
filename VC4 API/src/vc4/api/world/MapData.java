@@ -12,7 +12,4 @@ public interface MapData {
 	public byte[] getBiomeMap();
 	public void setBiomeMap(byte[] bm);
 	public Vector2l getPosition();
-	public void addReference();
-	public void removeReference();
-	public int getReferences();
 }

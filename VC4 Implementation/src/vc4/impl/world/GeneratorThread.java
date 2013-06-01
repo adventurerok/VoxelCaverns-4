@@ -1,12 +1,14 @@
 package vc4.impl.world;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import vc4.api.logging.Logger;
+import vc4.api.profile.Profiler;
 import vc4.api.vector.Vector2l;
 import vc4.api.vector.Vector3d;
-import vc4.api.world.ChunkPos;
-import vc4.api.world.ComparatorClosestChunkPos;
+import vc4.api.world.*;
 
 public class GeneratorThread extends Thread {
 	
@@ -14,9 +16,11 @@ public class GeneratorThread extends Thread {
 	public static HashMap<Vector2l, ImplMapData> heights;
 	public static ImplWorld world;
 	public static boolean stop;
+	public static boolean generate = true;
 	public static Vector3d location;
 	public ConcurrentLinkedQueue<ImplChunk> generated = new ConcurrentLinkedQueue<>();
 	public ConcurrentLinkedQueue<ImplMapData> newData = new ConcurrentLinkedQueue<>();
+	public ConcurrentLinkedQueue<ImplChunk> toSave = new ConcurrentLinkedQueue<>();
 	public int num;
 	public static int maxNum;
 	
@@ -29,8 +33,12 @@ public class GeneratorThread extends Thread {
 	public void run() {
 		long start, time;
 		while(!stop){
+			Profiler.clear();
 			start = System.nanoTime();
-			if(world.loaded) generate(location);
+			if(world.loaded){
+				save();
+				if(generate) generate(location);
+			}
 			time = System.nanoTime() - start;
 			time /= 1000000;
 			if(time > 30) time = 30;
@@ -41,40 +49,97 @@ public class GeneratorThread extends Thread {
 		}
 	}
 	
+	public void save() {
+		Profiler.start("save");
+		ImplChunk c;
+		while((c = toSave.poll()) != null){
+			try {
+				Profiler.start("savechunk");
+				c.setModified(false);
+				world.getSaveFormat().writeChunk(c);
+				if(c.isUnloading()) c.removeData();
+				Profiler.stop();
+			} catch (IOException e) {
+				Logger.getLogger(GeneratorThread.class).warning("Exception occured", e);
+			}
+		}
+		Profiler.stop();
+	}
+
 	public void generate(Vector3d loc){
+		Profiler.start("load");
+		Profiler.start("find");
 		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
 		ChunkPos me = ChunkPos.createFromWorldVector(loc);
 		int y, z;
 		for (int x = -7; x < 8; ++x) {
 			for (y = -7; y < 8; ++y) {
 				for (z = -7; z < 8; ++z) {
-					
 					checkLoad(loc, me, x, y, z, closestToLoad);
 				}
 			}
 		}
+		Profiler.stop();
 		Collections.sort(closestToLoad, new ComparatorClosestChunkPos(loc));
 		for (int d = 0; d < 2; ++d) {
 			if (closestToLoad.size() <= d) break;
-			generateChunk(closestToLoad.get(d));
+			loadOrGenerate(closestToLoad.get(d));
 		}
+		Profiler.stop();
 	}
 	
-	public ImplChunk generateChunk(ChunkPos pos) {
+	public void loadOrGenerate(ChunkPos pos){
+		ImplChunk chunk = null;
+		Profiler.start("read");
+		getOrGenerate(new Vector2l(pos.x, pos.z));
+		try {
+			chunk = (ImplChunk) world.getSaveFormat().readChunk(world, pos.x, pos.y, pos.z);
+		} catch (IOException e) {
+		}
+		Profiler.stop();
+		if(chunk != null){
+			chunks.put(chunk.pos, chunk);
+			generated.add(chunk);
+		} else generateChunk(pos);
+	}
+	
+	public Chunk generateChunk(ChunkPos pos) {
+		Profiler.start("generate");
 		ImplChunk chunk = new ImplChunk(world, pos);
 		chunk.setData(world.getGenerator().generate(world, pos.x, pos.y, pos.z, getOrGenerate(new Vector2l(pos.x, pos.z))));
+		chunks.put(chunk.pos, chunk);
 		generated.add(chunk);
+		try {
+			world.getSaveFormat().writeChunk(chunk);
+		} catch (IOException e) {
+			Logger.getLogger(GeneratorThread.class).warning("Failed to save new chunk", e);
+		}
+		Profiler.stop();
 		return chunk;
 	}
 	
 	public ImplMapData getOrGenerate(Vector2l pos){
+		Profiler.start("mapdata");
 		ImplMapData data = heights.get(pos);
 		if(data == null){
-			data = new ImplMapData(pos);
-			world.getGenerator().generateMapData(world, data);
+			try {
+				data = (ImplMapData) world.getSaveFormat().readMap(world, pos.x, pos.y);
+			} catch (IOException e) {
+				Logger.getLogger(GeneratorThread.class).warning("Error while loading map data", e);
+			}
+			if(data == null){
+				data = new ImplMapData(pos);
+				world.getGenerator().generateMapData(world, data);
+				try {
+					world.getSaveFormat().writeMap(world, data);
+				} catch (IOException e) {
+					Logger.getLogger(GeneratorThread.class).warning("Error while saving map data", e);
+				}
+			}
 			heights.put(pos, data);
 			newData.add(data);
 		}
+		Profiler.stop();
 		return data;
 	}
 	

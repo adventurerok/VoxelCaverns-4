@@ -138,7 +138,7 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 	 * 
 	 */
 	public ClientSheetTextureLoader() {
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		Graphics.setSheetLoader(this);
 	}
 
@@ -475,7 +475,7 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 		 */
 		@Override
 		public void bind() {
-			Graphics.getClientOpenGL().bindTexture(getType(), getTexture());
+			Graphics.getOpenGL().bindTexture(getType(), getTexture());
 		}
 		
 	}

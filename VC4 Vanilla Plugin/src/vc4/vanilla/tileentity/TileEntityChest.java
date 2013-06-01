@@ -1,20 +1,19 @@
 package vc4.vanilla.tileentity;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.util.Random;
 
+import org.jnbt.CompoundTag;
+
 import vc4.api.container.Container;
-import vc4.api.container.ContainerChest;
 import vc4.api.entity.EntityItem;
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
 import vc4.api.math.MathUtils;
 import vc4.api.tileentity.TileEntityContainer;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.block.BlockPlanks;
+import vc4.vanilla.container.ContainerChest;
 
 public class TileEntityChest extends TileEntityContainer{
 
@@ -28,6 +27,16 @@ public class TileEntityChest extends TileEntityContainer{
 	public TileEntityChest(World world, Vector3l pos) {
 		super(world, pos);
 	}
+	
+	
+	
+	public TileEntityChest(World world) {
+		super(world);
+		chest = new ContainerChest(getCorrectSlots());
+	}
+
+
+
 	public int getCorrectSlots() {
 		switch(type){
 		case 0:
@@ -35,7 +44,7 @@ public class TileEntityChest extends TileEntityContainer{
 		case 1:
 			return 88;
 		case 2:
-			return 154;
+			return 156;
 		}
 		return 44;
 	}
@@ -43,6 +52,13 @@ public class TileEntityChest extends TileEntityContainer{
 		super(world, pos);
 		this.type = type;
 		this.subtype = subtype;
+		chest = new ContainerChest(getCorrectSlots());
+	}
+	
+	public TileEntityChest(World world, Vector3l pos, int type, int subtype) {
+		super(world, pos);
+		this.type = (byte)type;
+		this.subtype = (byte)subtype;
 		chest = new ContainerChest(getCorrectSlots());
 	}
 	
@@ -61,6 +77,10 @@ public class TileEntityChest extends TileEntityContainer{
 	
 	@Override
 	public void updateTick() {
+		if(chest.isModified()){
+			chest.setModified(false);
+			setUnsavedChanges();
+		}
 //		for(int d = 0; d < 6; ++d){
 //			int id = world.getNearbyBlockId(position.x, position.y, position.z, d);
 //			if(id != Block.lkradTransportPipe.uid) continue;
@@ -100,27 +120,35 @@ public class TileEntityChest extends TileEntityContainer{
 		setUnsavedChanges();
 		
 	}
-	@Override
-	public short getId() {
-		return 1;
-	}
-	@Override
-	public void writeAdditionalData(BitOutputStream out) throws IOException {
-//		out.writeByte((byte) 0);
-//		out.writeByte(type);
-//		out.writeByte(subtype);
-//		chest.writeTo(out);
-	}
-	@Override
-	public void readAdditionalData(BitInputStream in) throws IOException {
-//		in.readByte();
-//		type = in.readByte();
-//		subtype = in.readByte();
-//		chest = (ContainerChest) Container.readFrom(in);
-	}
+
 	@Override
 	public Container getContainer() {
 		return chest;
+	}
+	@Override
+	public String getName() {
+		return "vanilla.chest";
+	}
+	
+	@Override
+	public CompoundTag getSaveCompound() {
+		CompoundTag tag = super.getSaveCompound();
+		tag.setByte("type", type);
+		tag.setByte("sub", subtype);
+		CompoundTag items = new CompoundTag("items");
+		chest.writeContainer(world, items);
+		tag.addTag(items);
+		return tag;
+	}
+	
+	@Override
+	public void loadSaveCompound(CompoundTag tag) {
+		super.loadSaveCompound(tag);
+		type = tag.getByte("type");
+		subtype = tag.getByte("sub");
+		CompoundTag items = tag.getCompoundTag("items");
+		chest = new ContainerChest(getCorrectSlots());
+		chest = (ContainerChest) Container.readContainer(world, items);
 	}
 
 

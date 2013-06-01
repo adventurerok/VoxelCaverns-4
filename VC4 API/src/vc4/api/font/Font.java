@@ -78,7 +78,7 @@ public class Font {
 		if(!isBold){
 			try {
 				texture = Graphics.getSheetLoader().loadTexture(path);
-				OpenGL gl = Graphics.getClientOpenGL();
+				OpenGL gl = Graphics.getOpenGL();
 //				for(int d = 0; d < texture.getNumberOfFrames(); ++d){
 //					gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture.getTexture(d));
 //					gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.LINEAR, GLTextureFilter.LINEAR);

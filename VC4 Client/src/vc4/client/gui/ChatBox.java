@@ -27,7 +27,7 @@ public class ChatBox extends Component {
 	 */
 	public ChatBox() {
 		font = FontRenderer.createFontRenderer("unispaced_14", 14F);
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		setDefaultBounds(new Rectangle(0, 0, 400, 154));
 		setResizer(new BorderResizer(Border.SOUTHWEST));
 	}

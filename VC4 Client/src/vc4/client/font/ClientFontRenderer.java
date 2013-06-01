@@ -70,7 +70,7 @@ public class ClientFontRenderer extends FontRenderer {
 	public ClientFontRenderer(String font, float defaultSize){
 		this.font = Resources.getFont(font);
 		size = defaultSize;
-		if(gl == null) gl = Graphics.getClientOpenGL();
+		if(gl == null) gl = Graphics.getOpenGL();
 		if(sm == null) sm = Graphics.getClientShaderManager();
 	}
 	

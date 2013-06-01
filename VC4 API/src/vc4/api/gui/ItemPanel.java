@@ -19,10 +19,10 @@ public class ItemPanel extends Panel {
 	Container container;
 	ContainerInventory inventory;
 
-	private int min, max;
+	private int min, max = 0xffffff;
 
 	public ItemPanel(Container cont) {
-		if (gl == null) gl = Graphics.getClientOpenGL();
+		if (gl == null) gl = Graphics.getOpenGL();
 		container = cont;
 	}
 
@@ -101,8 +101,10 @@ public class ItemPanel extends Panel {
 		}
 		int hover = getHovering(msx, msy);
 		if (Client.getGame().getHoveringComponent() != this) hover = -1;
-		if (left) inventory.setHeldItemStack(container.leftClick(hover, inventory.getHeldItemStack()));
-		else inventory.setHeldItemStack(container.rightClick(hover, inventory.getHeldItemStack()));
+		if(hover != -1){
+			if (left) inventory.setHeldItemStack(container.leftClick(hover, inventory.getHeldItemStack()));
+			else inventory.setHeldItemStack(container.rightClick(hover, inventory.getHeldItemStack()));
+		}
 
 	}
 

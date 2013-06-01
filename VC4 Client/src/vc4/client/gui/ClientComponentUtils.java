@@ -92,7 +92,7 @@ public class ClientComponentUtils implements ComponentUtils {
 	 */
 	public ClientComponentUtils() {
 		Component.setUtils(this);
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		fnt14 = FontRenderer.createFontRenderer("unispaced_14", 14);
 		fnt24 = FontRenderer.createFontRenderer("unispaced_24", 24);
 	}

@@ -15,6 +15,10 @@ public class TraitOpenContainers extends Trait {
 		// TASK Auto-generated constructor stub
 	}
 	
+	public ArrayList<OpenContainer> getContainers() {
+		return containers;
+	}
+	
 	@Override
 	public void update() {
 		ArrayList<OpenContainer> news = new ArrayList<>();

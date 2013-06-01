@@ -15,7 +15,7 @@ public class Animation {
 	int currentPart = 0;
 	
 	public Animation() {
-		if(gl == null) gl = Graphics.getClientOpenGL();
+		if(gl == null) gl = Graphics.getOpenGL();
 	}
 	
 	public void loadFrames(String s){

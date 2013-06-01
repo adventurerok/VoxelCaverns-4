@@ -185,7 +185,7 @@ public final class NBTInputStream implements Closeable {
 		case NBTConstants.TYPE_ESHORT:
 			return new EShortTag(name, is.readBits((short) 24));
 		case NBTConstants.TYPE_EINT:
-			return new EIntTag(name, is.readBitsAsLong((short) 48));
+			return new EIntTag(name, is.readLongBits((short) 48));
 		case NBTConstants.TYPE_SHORT_ARRAY:
 			length = is.readInt();
 			short[] shorts = new short[length];
@@ -209,7 +209,7 @@ public final class NBTInputStream implements Closeable {
 		case NBTConstants.TYPE_EINT_ARRAY:
 			length = is.readInt();
 			longs = new long[length];
-			for(int d = 0; d < length; ++d) longs[d] = is.readBitsAsLong((short) 48);
+			for(int d = 0; d < length; ++d) longs[d] = is.readLongBits((short) 48);
 			return new EIntArrayTag(name, longs);
 		default:
 			throw new IOException("Invalid tag type: " + type + ".");

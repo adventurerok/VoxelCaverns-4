@@ -5,9 +5,12 @@ package vc4.api.entity;
 
 import java.util.Random;
 
+import org.jnbt.CompoundTag;
+
 import vc4.api.block.Block;
 import vc4.api.block.CraftingTable;
 import vc4.api.block.render.BlockRendererDefault;
+import vc4.api.container.Container;
 import vc4.api.container.ContainerInventory;
 import vc4.api.entity.trait.TraitCrafting;
 import vc4.api.entity.trait.TraitOpenContainers;
@@ -46,7 +49,8 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	double nowHealing = 0;
 	double healMinus = 0;
 	private boolean paused;
-	
+	private int maxHealth = 100;
+	private String name = "player";
 	
 	
 	public EntityPlayer(World world) {
@@ -95,6 +99,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		return ((TraitCrafting)getTrait("crafting")).getCraftingTable();
 	}
 	
+	public String getPlayerName(){
+		return name;
+	}
+	
 	public void decreaseCooldown(double delta){
 		coolDown -= delta;
 		if(coolDown < 0) coolDown = 0;
@@ -102,6 +110,11 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	public void setPaused(boolean paused){
 		this.paused = paused;
+	}
+	
+	@Override
+	public int getId() {
+		return 5;
 	}
 	
 	public boolean isPaused() {
@@ -113,12 +126,51 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		return (int) ((MathUtils.floor(((yaw * 4F) / 360F) + 0.5D) + 1) & 3);
 	}
 	
+	@Override
+	public int getMaxHealth() {
+		return maxHealth ;
+	}
+	
 	//NESW NE, SE, SW, NW
 	public int getAdvancedFacing(){
 		int eight = (int) ((MathUtils.floor(((yaw * 8F) / 360F) + 0.5D) + 1) & 7);
 		if(eight % 2 == 0) return eight / 2;
 		else return ((eight - 1) / 2) + 6;
 				
+	}
+	
+	@Override
+	public CompoundTag getSaveCompound() {
+		CompoundTag tag = super.getSaveCompound();
+		tag.setInt("heMax", maxHealing);
+		tag.setInt("hpMax", maxHealth);
+		tag.setDouble("heNow", nowHealing);
+		tag.setDouble("heMinus", healMinus);
+		CompoundTag inv = new CompoundTag("inv");
+		inventory.writeContainer(world, inv);
+		tag.addTag(inv);
+		tag.addTag(CompoundTag.createVector3dTag("spawn", this.spawn));
+		if(this.oRP != null){
+			tag.addTag(CompoundTag.createVector3lTag("minePos", this.oRP));
+			tag.setDouble("mineAmt", minedAmount);
+		}
+		return tag;
+	}
+	
+	@Override
+	public void loadSaveCompound(CompoundTag tag) {
+		super.loadSaveCompound(tag);
+		maxHealing = tag.getInt("heMax");
+		maxHealth = tag.getInt("hpMax");
+		nowHealing = tag.getDouble("heNow");
+		healMinus = tag.getDouble("heMinus");
+		CompoundTag inv = tag.getCompoundTag("inv");
+		inventory = (ContainerInventory) Container.readContainer(world, inv);
+		spawn = tag.getCompoundTag("spawn").readVector3d();
+		if(tag.hasKey("minePos")){
+			oRP = tag.getCompoundTag("minePos").readVector3l();
+			minedAmount = tag.getDouble("mineAmt");
+		}
 	}
 	
 	public void setMaxHealing(int maxHealing) {
@@ -128,7 +180,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	public void drawCube(){
 		if(rays == null || rays.isEntity) return;
-		OpenGL gl = Graphics.getClientOpenGL();
+		OpenGL gl = Graphics.getOpenGL();
 		AABB bounds = world.getBlockType(rays.x, rays.y, rays.z).getRayTraceSize(world, rays.x, rays.y, rays.z);
 		Graphics.getClientShaderManager().unbindShader();
 		gl.disable(GLFlag.CULL_FACE);
@@ -191,7 +243,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 
 	@Override
 	public Vector3d getDefaultSize() {
-		return new Vector3d(0.25, 0.9, 0.25);
+		return new Vector3d(0.25, 0.83, 0.25);
 	}
 	
 	/**
@@ -279,18 +331,22 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	public void respawn() {
 		teleport(spawn.clone());
+		loadNearbyChunks();
+	}
+	
+	public void loadNearbyChunks(){
 		ChunkPos pos = ChunkPos.createFromWorldVector(position);
 		if(!world.chunkExists(pos)){
-			world.generateChunk(pos);
+			world.loadChunk(pos);
 		}
 		ChunkPos lower = pos.add(0, -1, 0);
 		if(!world.chunkExists(lower)){
-			world.generateChunk(lower);
+			world.loadChunk(lower);
 		}
-		
 	}
 
 	public void rightMouseDown(double delta){
+		if(rays == null) return;
 		ItemStack held = inventory.getSelectedStack();
 		if(world.getBlockType(rays.x, rays.y, rays.z).overrideRightClick(world, rays.x, rays.y, rays.z)){
 			world.getBlockType(rays.x, rays.y, rays.z).onRightClick(world, rays.x, rays.y, rays.z, rays.side, this, held);
@@ -399,5 +455,15 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		i.motionY = rand.nextDouble();
 		i.motionZ = (rand.nextDouble() - 0.5) * 2;
 		i.addToWorld();
+	}
+
+	@Override
+	public String getName() {
+		return "player";
+	}
+	
+	@Override
+	public boolean persistent() {
+		return false; //Why would you "freeze" players in save files?
 	}
 }

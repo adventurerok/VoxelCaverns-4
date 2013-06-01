@@ -42,7 +42,11 @@ public class ContainerInventory extends Container {
 
 	public ContainerInventory() {
 		super(44);
-		name = "Player Inventory";
+	}
+	
+	@Override
+	public String getGuiName() {
+		return "inventory";
 	}
 
 	public ItemStack getSelectedStack() {
@@ -122,10 +126,6 @@ public class ContainerInventory extends Container {
 
 	}
 
-	@Override
-	public short getId() {
-		return 1;
-	}
 
 	/**
 	 * 
@@ -149,5 +149,10 @@ public class ContainerInventory extends Container {
 				}
 			}
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "inventory";
 	}
 }

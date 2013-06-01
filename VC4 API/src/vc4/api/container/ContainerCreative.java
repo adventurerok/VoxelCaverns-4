@@ -83,10 +83,6 @@ public class ContainerCreative extends Container {
 //		return itemStacks;
 //	}
 
-	@Override
-	public short getId() {
-		return 2;
-	}
 	
 	@Override
 	public ItemStack getItem(int slot) {
@@ -110,6 +106,11 @@ public class ContainerCreative extends Container {
 	public int getSize() {
 		if(searchTerm.isEmpty()) return creativeItems.length;
 		else return searchResults.size();
+	}
+
+	@Override
+	public String getName() {
+		return "creative";
 	}
 
 }

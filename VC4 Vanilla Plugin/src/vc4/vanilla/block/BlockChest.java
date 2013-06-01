@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import vc4.api.block.BlockMultitexture;
-import vc4.api.container.ContainerChest;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.entity.trait.TraitOpenContainers;
 import vc4.api.item.ItemStack;
@@ -13,6 +12,8 @@ import vc4.api.tileentity.TileEntity;
 import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.BlockTexture;
+import vc4.vanilla.container.ContainerChest;
 import vc4.vanilla.itementity.ItemEntityChest;
 import vc4.vanilla.tileentity.TileEntityChest;
 
@@ -25,16 +26,16 @@ public class BlockChest extends BlockMultitexture{
 	
 	@Override
 	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
-		if(side > 3) return 92;
-		else if(world.getBlockData(x, y, z) == side) return 90;
-		else return 91;
+		if(side > 3) return BlockTexture.chestTop;
+		else if(world.getBlockData(x, y, z) == side) return BlockTexture.chestFront;
+		else return BlockTexture.chestSide;
 	}
 	
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
-		if(side > 3) return 92;
-		else if(item.getDamage() == side) return 90;
-		else return 91;
+		if(side > 3) return BlockTexture.chestTop;
+		else if(item.getDamage() == side) return BlockTexture.chestFront;
+		else return BlockTexture.chestSide;
 	}
 	
 //	@Override
@@ -148,9 +149,10 @@ public class BlockChest extends BlockMultitexture{
 		TileEntityChest chest;
 		if(c instanceof TileEntityChest){
 			chest = (TileEntityChest) c;
+		} else {
+			chest = new TileEntityChest(world, new Vector3l(x, y, z), (byte)0, (byte)0);
+			chest.addToWorld();
 		}
-		chest = new TileEntityChest(world, new Vector3l(x, y, z), (byte)0, (byte)0);
-		chest.addToWorld();
 		((TraitOpenContainers)player.getTrait("opencontainers")).open(chest);
 		player.setCoolDown(200);
 	}

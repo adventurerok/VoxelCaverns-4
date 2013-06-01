@@ -12,7 +12,8 @@ public class EditorMain {
 			if(args[0].equals("-vbt")){
 				NBTEditor.main(Arrays.copyOfRange(args, 1, args.length));
 			}
+		} else {
+			NBTEditor.main(new String[0]);
 		}
-		NBTEditor.main(new String[0]);
 	}
 }

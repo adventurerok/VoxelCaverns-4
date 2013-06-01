@@ -11,7 +11,7 @@ public class CracksRenderer {
 	static OpenGL gl;
 
 	public static void renderCracks(World world, long x, long y, long z, AABB bounds, double mined) {
-		if (gl == null) gl = Graphics.getClientOpenGL();
+		if (gl == null) gl = Graphics.getOpenGL();
 		Block block = world.getBlockType(x, y, z);
 		if(block.isAir()) return;
 		if(mined > 1) mined = 1;

@@ -289,15 +289,6 @@ public class TestWorld implements World {
 		return null;
 	}
 
-	@Override
-	public int getRegisteredBiome(String name) {
-		return 0;
-	}
-
-	@Override
-	public int getRegisteredEntity(String name) {
-		return 0;
-	}
 
 	@Override
 	public short getRegisteredCrafting(String name) {
@@ -340,6 +331,63 @@ public class TestWorld implements World {
 	@Override
 	public byte getNearbyBlockData(long x, long y, long z, int d) {
 		return 0;
+	}
+
+	@Override
+	public byte getRegisteredBiome(String name) {
+		// TASK Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public short getRegisteredEntity(String name) {
+		// TASK Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Chunk loadChunk(ChunkPos pos) {
+		// TASK Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getEntityName(int id) {
+		// TASK Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getItemEntityName(int id) {
+		return null;
+	}
+
+	@Override
+	public String getTileEntityName(int id) {
+		return null;
+	}
+
+	@Override
+	public short getRegisteredItemEntity(String name) {
+		return 0;
+	}
+
+	@Override
+	public short getRegisteredTileEntity(String name) {
+		return 0;
+	}
+
+	@Override
+	public String getContainerName(int id) {
+		// TASK Auto-generated method stub
+		return null;
+	}
+
+	public short getRegisteredContainer(String name) {
+		return 0;
+	}
+
+	public void setDirty(long x, long y, long z) {
 	}
 
 }

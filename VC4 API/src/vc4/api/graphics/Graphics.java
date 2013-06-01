@@ -38,7 +38,7 @@ public class Graphics {
 	 * Finds the Client's OpenGL implementation
 	 * @return the clients OpenGL implementation, or null if server
 	 */
-	public static OpenGL getClientOpenGL(){
+	public static OpenGL getOpenGL(){
 		return _gl;
 	}
 	

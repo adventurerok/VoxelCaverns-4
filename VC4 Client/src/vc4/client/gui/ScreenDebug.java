@@ -17,6 +17,8 @@ public class ScreenDebug extends Component {
 	LinkedList<Long> frames = new LinkedList<>(); //List of frames within 1 second
 	int[] fpsSamples = new int[50];
 	int fpsSampleNo = 0;
+	long[] memorySamples = new long[50];
+	int memorySampleNo = 0;
 	
 	FontRenderer font = FontRenderer.createFontRenderer("unispaced_14", 14);
 	
@@ -40,6 +42,15 @@ public class ScreenDebug extends Component {
 		return tot / fpsSamples.length;
 	}
 	
+	public long calcMemory(){
+		long curr = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		memorySamples[memorySampleNo] = curr;
+		if(++memorySampleNo >= memorySamples.length) memorySampleNo = 0;
+		long tot = 0;
+		for(int d = 0; d < memorySamples.length; ++d) tot += memorySamples[d];
+		return tot / memorySamples.length;
+	}
+	
 	
 	@Override
 	public void draw() {
@@ -53,8 +64,8 @@ public class ScreenDebug extends Component {
 		}
 		long maxMemory = Runtime.getRuntime().maxMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
-        long freeMemory = Runtime.getRuntime().freeMemory();
-        long avaliableMemory = totalMemory - freeMemory;
+        //long freeMemory = Runtime.getRuntime().freeMemory();
+        long avaliableMemory = calcMemory();
         renderDebugLine("Used memory: " + avaliableMemory * 100L / maxMemory + "% (" + avaliableMemory / 1024L / 1024L + "MB) of " + maxMemory / 1024L / 1024L + "MB");
         renderDebugLine("Allocated memory: " + totalMemory * 100L / maxMemory + "% (" + totalMemory / 1024L / 1024L + "MB)");
 		renderDebugLine("FPS: " + calcFPS());

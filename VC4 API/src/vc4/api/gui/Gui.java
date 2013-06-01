@@ -32,6 +32,12 @@ public abstract class Gui extends Component implements MouseListener {
 	public Gui() {
 		addMouseListener(this);
 	}
+	
+	@Override
+	public Component getHovering(Rectangle rect) {
+		if(innerGui.getBounds().intersects(rect)) return innerGui.getHovering(rect);
+		return this;
+	}
 
 	@Override
 	public boolean isClickable() {
@@ -58,8 +64,9 @@ public abstract class Gui extends Component implements MouseListener {
 		if (!isVisible()) return;
 		GuiBorder bord = getBorder(Input.getClientMouse().getX(), Input.getClientMouse().getY());
 		if(Client.getGame().getHoveringComponent() != this) bord = null;
-		if (gl == null) gl = Graphics.getClientOpenGL();
+		if (gl == null) gl = Graphics.getOpenGL();
 		ColorScheme scheme = Client.getGame().getColorScheme(Client.getGame().getColorSchemeSetting().toString());
+		gl.unbindShader();
 		gl.begin(GLPrimative.QUADS);
 		gl.color(scheme.backgroundNormal);
 		if (bord != null) {
@@ -274,7 +281,7 @@ public abstract class Gui extends Component implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TASK Auto-generated method stub
+		
 
 	}
 }

@@ -1,5 +1,7 @@
 package vc4.api.entity;
 
+import org.jnbt.CompoundTag;
+
 import vc4.api.Resources;
 import vc4.api.block.Block;
 import vc4.api.graphics.Graphics;
@@ -14,7 +16,7 @@ import vc4.api.world.World;
 
 public class EntityItem extends Entity {
 
-	private static OpenGL gl = Graphics.getClientOpenGL();
+	private static OpenGL gl = Graphics.getOpenGL();
 	public ItemStack item;
 	private DataRenderer render;
 	private boolean compiled;
@@ -22,6 +24,11 @@ public class EntityItem extends Entity {
 	public EntityItem(World world) {
 		super(world);
 		
+	}
+	
+	@Override
+	public int getId() {
+		return 0;
 	}
 	
 	@Override
@@ -110,6 +117,26 @@ public class EntityItem extends Entity {
 	@Override
 	public boolean canCollide(Entity test) {
 		return false;
+	}
+
+	@Override
+	public String getName() {
+		return "item";
+	}
+	
+	@Override
+	public CompoundTag getSaveCompound() {
+		CompoundTag tag = super.getSaveCompound();
+		CompoundTag itm = new CompoundTag("item");
+		ItemStack.write(item, itm);
+		tag.addTag(itm);
+		return tag;
+	}
+	
+	@Override
+	public void loadSaveCompound(CompoundTag tag) {
+		super.loadSaveCompound(tag);
+		item = ItemStack.read(tag.getCompoundTag("item"));
 	}
 
 }

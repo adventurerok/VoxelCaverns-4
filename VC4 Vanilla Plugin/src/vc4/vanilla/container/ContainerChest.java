@@ -1,5 +1,6 @@
-package vc4.api.container;
+package vc4.vanilla.container;
 
+import vc4.api.container.Container;
 import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 
@@ -39,10 +40,6 @@ public class ContainerChest extends Container{
 		this.scroll = scroll;
 	}
 
-	@Override
-	public short getId() {
-		return 4;
-	}
 	
 	public ItemStack removeItemsFromStack(int count){
 		for(int i = 0; i < getSize(); ++i){
@@ -61,6 +58,11 @@ public class ContainerChest extends Container{
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "vanilla.chest";
 	}
 
 }

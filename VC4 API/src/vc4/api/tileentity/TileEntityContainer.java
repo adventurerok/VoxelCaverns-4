@@ -14,4 +14,11 @@ public abstract class TileEntityContainer extends TileEntity {
 		// TASK Auto-generated constructor stub
 	}
 
+	public TileEntityContainer(World world) {
+		super(world);
+		// TASK Auto-generated constructor stub
+	}
+	
+	
+
 }

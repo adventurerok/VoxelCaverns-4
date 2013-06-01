@@ -27,7 +27,7 @@ public class GuiOpenContainer extends Gui {
 		return null;
 	}
 	
-	OpenContainer container;
+	protected OpenContainer container;
 	
 	public GuiOpenContainer(OpenContainer cont) {
 		container = cont;

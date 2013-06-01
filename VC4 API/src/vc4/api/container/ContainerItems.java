@@ -9,9 +9,9 @@ public class ContainerItems extends Container {
 	 */
 	private static final long serialVersionUID = 36822208374927613L;
 
-	@Override
-	public short getId() {
-		return 3;
+	
+	public ContainerItems() {
+		// TASK Auto-generated constructor stub
 	}
 
 	public ContainerItems(int slots) {
@@ -20,6 +20,11 @@ public class ContainerItems extends Container {
 
 	public ContainerItems(ItemStack... items) {
 		super(items);
+	}
+
+	@Override
+	public String getName() {
+		return "items";
 	}
 
 }

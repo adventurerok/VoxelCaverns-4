@@ -13,6 +13,7 @@ public class DungeonStyleStone extends DungeonStyle{
 		addRoom(new WeightedRoom(new DungeonRoomStairs(), 8));
 		addRoom(new WeightedRoom(new DungeonRoomPit(), 5));
 		addRoom(new WeightedRoom(new DungeonRoomLibrary(), 2));
+		addRoom(new WeightedRoom(new DungeonRoomLoot(), 6));
 	}
 	
 	

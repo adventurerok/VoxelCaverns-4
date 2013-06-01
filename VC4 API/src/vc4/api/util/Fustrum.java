@@ -141,7 +141,7 @@ public class Fustrum {
 	}
 
 	public void drawLines() {
-		OpenGL gl = Graphics.getClientOpenGL();
+		OpenGL gl = Graphics.getOpenGL();
 		gl.begin(GLPrimative.LINE_LOOP);
 		// near plane
 		gl.vertex(ntl.x, ntl.y, ntl.z);

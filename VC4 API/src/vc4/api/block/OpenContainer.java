@@ -51,10 +51,11 @@ public class OpenContainer {
 	}
 
 	public boolean update(Entity player){
+		if(!valid) return false;
 		World world = player.getWorld();
 		if(entity == null || world.getTileEntity(pos.x, pos.y, pos.z) != entity) return valid = false;
 		Vector3l p = player.getBlockPos();
-		if(p.distanceSquared(pos) > 25) return valid = false;
+		if(p.distanceSquared(pos) > 49) return valid = false;
 		return true;
 	}
 	

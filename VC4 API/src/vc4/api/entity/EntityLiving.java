@@ -1,9 +1,11 @@
 package vc4.api.entity;
 
+import org.jnbt.CompoundTag;
+
 import vc4.api.vector.Vector3d;
 import vc4.api.world.World;
 
-public class EntityLiving extends Entity {
+public abstract class EntityLiving extends Entity {
 
 	public double yaw, pitch, forward, sideways;
 	public double fallDistance;
@@ -18,6 +20,32 @@ public class EntityLiving extends Entity {
 	public EntityLiving(World world) {
 		super(world);
 		// TASK Auto-generated constructor stub
+	}
+	
+	@Override
+	public CompoundTag getSaveCompound() {
+		CompoundTag tag = super.getSaveCompound();
+		CompoundTag rot = new CompoundTag("angle");
+		rot.setDouble("yaw", yaw);
+		rot.setDouble("pitch", pitch);
+		tag.addTag(rot);
+		tag.setInt("he", healing);
+		tag.setByte("movement", (byte) movement.ordinal());
+		tag.setByte("flying", (byte) flying.ordinal());
+		tag.setDouble("falling", fallDistance);
+		return tag;
+	}
+	
+	@Override
+	public void loadSaveCompound(CompoundTag tag) {
+		super.loadSaveCompound(tag);
+		CompoundTag rot = tag.getCompoundTag("angle");
+		yaw = rot.getDouble("yaw");
+		pitch = rot.getDouble("pitch");
+		healing = tag.getInt("he");
+		movement = MovementStyle.values()[tag.getByte("movement")];
+		flying = FlyingStyle.values()[tag.getByte("flying")];
+		fallDistance = tag.getDouble("falling");
 	}
 	
 	public void jump(){
@@ -120,7 +148,7 @@ public class EntityLiving extends Entity {
 					double base = fallDistance - 512;
 					damage((int) base, DamageSource.fallDamage, 5);
 				}
-			}
+			} else fallDistance = -256;
 		} else{
 			if(fallDistance > 4){
 				damage((int) (3.75 * fallDistance), DamageSource.fallDamage);

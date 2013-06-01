@@ -55,10 +55,10 @@ public interface World {
 	public abstract TileEntity getNearbyTileEntity(long x, long y, long z, Direction dir);
 	public abstract TileEntity getNearbyTileEntity(long x, long y, long z, int dir);
 	public List<EntityPlayer> getPlayers();
-	public abstract int getRegisteredBiome(String name);
+	public abstract byte getRegisteredBiome(String name);
 	public short getRegisteredBlock(String name);
 	public abstract short getRegisteredCrafting(String name);
-	public abstract int getRegisteredEntity(String name);
+	public abstract short getRegisteredEntity(String name);
 	public int getRegisteredItem(String name);
 	public abstract String getSaveName();
 	public long getSeed();
@@ -79,4 +79,13 @@ public interface World {
 	public void setNearbyBlockIdNoNotify(long x, long y, long z, int id, Direction dir);
 	public abstract void setNearbyTileEntity(long x, long y, long z, TileEntity t, Direction dir);
 	public abstract void setTileEntity(long x, long y, long z, TileEntity t);
+	public Chunk loadChunk(ChunkPos pos);
+	public String getEntityName(int id);
+	public String  getContainerName(int id);
+	public abstract String getItemEntityName(int id);
+	public abstract String getTileEntityName(int id);
+	public abstract short getRegisteredItemEntity(String name);
+	public abstract short getRegisteredTileEntity(String name);
+	public abstract short getRegisteredContainer(String name);
+	public abstract void setDirty(long x, long y, long z);
 }

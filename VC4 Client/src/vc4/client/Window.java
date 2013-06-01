@@ -47,7 +47,7 @@ public class Window extends ClientWindow {
 
 			PixelFormat p = new PixelFormat().withDepthBits(24).withAlphaBits(8).withStencilBits(0);
 			Display.create(p);
-			if (gl == null) gl = Graphics.getClientOpenGL();
+			if (gl == null) gl = Graphics.getOpenGL();
 
 			load();
 			resized();

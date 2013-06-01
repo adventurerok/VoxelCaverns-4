@@ -32,7 +32,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 	private ArrayList<Animation> animatedParts = new ArrayList<>();
 	
 	public ImplAnimatedTexture() {
-		if(gl == null) gl = Graphics.getClientOpenGL();
+		if(gl == null) gl = Graphics.getOpenGL();
 	}
 	
 	/* (non-Javadoc)
@@ -118,7 +118,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 	 */
 	@Override
 	public void bind() {
-		Graphics.getClientOpenGL().bindTexture(getType(), getTexture());
+		Graphics.getOpenGL().bindTexture(getType(), getTexture());
 	}
 
 	@Override

@@ -16,20 +16,20 @@ public class MathUtils {
 	
 	public static final float sin(float angle)
     {
-        return SIN_TABLE[(int)(angle * 10430.38F) & 0xffff];
+        return SIN_TABLE[(int)(angle * 651.89862F) & 0xfff];
     }
 
     public static final float cos(float angle)
     {
-        return SIN_TABLE[(int)(angle * 10430.38F + 16384F) & 0xffff];
+        return SIN_TABLE[(int)(angle * 651.89862F + 1024F) & 0xfff];
     }
     
     static{
-    	SIN_TABLE = new float[0x10000];
+    	SIN_TABLE = new float[0x1000];
 
-        for (int i = 0; i < 0x10000; i++)
+        for (int i = 0; i < 0x1000; i++)
         {
-            SIN_TABLE[i] = (float)Math.sin((i * Math.PI * 2D) / 65536D);
+            SIN_TABLE[i] = (float)Math.sin(i * 3.141592653589793D * 2.0D / 4096.0D);
         }
     }
 	

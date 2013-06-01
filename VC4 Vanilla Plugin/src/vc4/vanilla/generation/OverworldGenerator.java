@@ -192,7 +192,7 @@ public class OverworldGenerator implements WorldGenerator {
 	@Override
 	public void renderSkyBox(World world, EntityPlayer player) {
 		Vector3d pos = player.getEyePos();
-		OpenGL gl = Graphics.getClientOpenGL();
+		OpenGL gl = Graphics.getOpenGL();
 		gl.disable(GLFlag.DEPTH_TEST);
 		Graphics.getClientShaderManager().unbindShader();
 		if (pos.y < 192) {

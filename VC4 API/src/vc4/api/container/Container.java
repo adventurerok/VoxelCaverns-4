@@ -9,8 +9,10 @@ import org.jnbt.*;
 
 import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
+import vc4.api.logging.Logger;
+import vc4.api.world.World;
 
-public abstract class Container implements IContainer, Iterable<ItemStack>, Serializable {
+public abstract class Container implements IContainer, Iterable<ItemStack>, Serializable, Cloneable {
 
 	/**
 	 * 
@@ -19,20 +21,30 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	//private static IContainerGui containerGui;
 	protected boolean isOpen = false;
 	protected ItemStack[] slots;
+	protected boolean modified;
 
-	public static HashMap<Short, Class<? extends Container>> types = new HashMap<Short, Class<? extends Container>>();
+	public static HashMap<String, Constructor<? extends Container>> types = new HashMap<>();
 
-	protected String name = "Container";
 	static {
-//		registerContainer(1, ContainerInventory.class);
-//		registerContainer(2, ContainerCreative.class);
-//		registerContainer(3, ContainerArmour.class);
-//		registerContainer(4, ContainerChest.class);
-//		registerContainer(5, ContainerFurnace.class);
+		registerContainer("inventory", ContainerInventory.class);
+		registerContainer("creative", ContainerCreative.class);
+		registerContainer("items", ContainerItems.class);
 	}
 
-	public static void registerContainer(int id, Class<? extends Container> c) {
-		types.put((short) id, c);
+	public static void registerContainer(String name, Class<? extends Container> c) {
+		try {
+			types.put(name, c.getConstructor());
+		} catch (NoSuchMethodException | SecurityException e) {
+			Logger.getLogger(Container.class).warning("Exception occured", e);
+		}
+	}
+	
+	public void setModified(boolean modified) {
+		this.modified = modified;
+	}
+	
+	public boolean isModified() {
+		return modified;
 	}
 
 	protected Container() {
@@ -54,6 +66,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		for (int dofor = 0; dofor < slots.length; ++dofor) {
 			slots[dofor] = null;
 		}
+		setModified(true);
 	}
 
 	@Override
@@ -66,6 +79,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 				stack = slots[dofor].combineItemStack(stack);
 				if (stack == null || !stack.checkIsNotEmpty()) {
 					stack = null;
+					setModified(true);
 					return stack;
 				}
 			}
@@ -74,9 +88,11 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			if (slots[dofor] == null || !slots[dofor].checkIsNotEmpty()) {
 				slots[dofor] = stack;
 				stack = null;
+				setModified(true);
 				return stack;
 			}
 		}
+		setModified(true);
 		return stack;
 	}
 	
@@ -89,6 +105,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 				stack = slots[dofor].combineItemStack(stack);
 				if (stack == null || !stack.checkIsNotEmpty()) {
 					stack = null;
+					setModified(true);
 					return stack;
 				}
 			}
@@ -97,18 +114,22 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			if (slots[dofor] == null || !slots[dofor].checkIsNotEmpty()) {
 				slots[dofor] = stack;
 				stack = null;
+				setModified(true);
 				return stack;
 			}
 		}
+		setModified(true);
 		return stack;
 	}
 
 	@Override
 	public Container clone() {
-		Container c = getInstance(getId());
-		c.slots = slots;
-		c.name = name;
-		return c;
+		try {
+			return (Container) super.clone();
+		} catch (CloneNotSupportedException e) {
+			Logger.getLogger(Container.class).warning("Exception occured", e);
+		}
+		return null;
 
 	}
 
@@ -117,30 +138,8 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		isOpen = false;
 	}
 
-	/**
-	 * Gets the entity id as a 12-bit short (0-4095, inclusive)
-	 * 
-	 * @return The id of the container
-	 */
-	public abstract short getId();
+	public abstract String getName();
 
-	// public ItemStack[] toArray(){
-	// return slots;
-	// }
-	private Container getInstance(final short id) {
-		return new Container(slots.length) {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 2024203236389294409L;
-
-			@Override
-			public short getId() {
-				return id;
-			}
-		};
-	}
 
 	@Override
 	public ItemStack getItem(int slot) {
@@ -198,6 +197,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		if (items.length == slots.length) {
 			slots = items;
 		}
+		setModified(true);
 	}
 
 	@Override
@@ -207,6 +207,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		} else {
 			slots[slot] = null;
 		}
+		setModified(true);
 	}
 
 	@Override
@@ -214,6 +215,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		for (int dofor = beginIndex; dofor < endIndex; dofor++) {
 			slots[dofor] = stack.clone();
 		}
+		setModified(true);
 	}
 
 	@Override
@@ -223,6 +225,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 				return;
 			slots[beginIndex + dofor] = stacks[dofor];
 		}
+		setModified(true);
 	}
 
 	@Override
@@ -232,7 +235,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 
 	@Override
 	public String toString() {
-		return "game.voxelcaverns.data.containers.Container: " + name;
+		return "game.voxelcaverns.data.containers.Container: " + getGuiName();
 	}
 
 
@@ -241,8 +244,8 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	}
 
 
-	public void writeTo(CompoundTag tag) {
-		tag.addTag(new EByteTag("id", getId()));
+	public void writeContainer(World world, CompoundTag tag) {
+		tag.addTag(new ShortTag("id", world.getRegisteredContainer(getName())));
 		tag.setInt("size", getSize());
 		ListTag lis = new ListTag("items", CompoundTag.class);
 		for(int d = 0; d < getSize(); ++d){
@@ -252,6 +255,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			i.setInt("slot", d);
 			lis.addTag(i);
 		}
+		tag.addTag(lis);
 		tag.setBoolean("open", isOpen());
 		writeExtraData(tag);
 	}
@@ -259,11 +263,10 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	public static void initClass() {
 	}
 
-	public static Container readFrom(CompoundTag tag) {
+	public static Container readContainer(World world, CompoundTag tag) {
 		try {
-			short id = tag.getEByteTag("id").getValue();
-			Class<? extends Container> ccs = types.get(id);
-			Constructor<? extends Container> ccons = ccs.getConstructor();
+			short id = tag.getShortTag("id").getValue();
+			Constructor<? extends Container> ccons = types.get(world.getContainerName(id));
 			Container c = ccons.newInstance();
 			c.slots = new ItemStack[tag.getInt("size")];
 			ListTag lis = tag.getListTag("items");
@@ -276,8 +279,6 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			c.readExtraData(tag);
 			return c;
 		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -310,6 +311,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 
 			}
 		}
+		setModified(true);
 		return heldItem;
 	}
 	
@@ -337,7 +339,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 
 			}
 		}
-		
+		setModified(true);
 		return heldItem;
 	}
 	

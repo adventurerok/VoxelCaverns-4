@@ -39,7 +39,7 @@ public class GuiInventory extends Component{
 		int px = getX();
 		int py = getY();
 		inventory = Client.getGame().getPlayer().getInventory();
-		OpenGL gl = Graphics.getClientOpenGL();
+		OpenGL gl = Graphics.getOpenGL();
 		Graphics.getClientShaderManager().unbindShader();
 		for (int x = 10; x > -1; x--) {
 			for (int y = 0; y < 4; y++) {

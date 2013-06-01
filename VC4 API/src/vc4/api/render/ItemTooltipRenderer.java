@@ -12,7 +12,7 @@ import vc4.api.math.MathUtils;
 
 public class ItemTooltipRenderer {
 
-	private static OpenGL gl = Graphics.getClientOpenGL();
+	private static OpenGL gl = Graphics.getOpenGL();
 	public static FontRenderer renderer = FontRenderer.createFontRenderer("unispaced_14", 14);
 
 	public static void renderTooltip(ItemStack item, ToolTipType type) {

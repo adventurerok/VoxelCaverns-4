@@ -98,7 +98,7 @@ public class GuiCreative extends Component {
 	@Override
 	public void draw() {
 		//if (!SingleplayerUtils.getPlayer().getGameMode().isCreativeGui()) return;
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		ColorScheme scheme = Client.getGame().getColorScheme(Client.getGame().getColorSchemeSetting().getString());
 		int cx = getX();
 		int cy = getY();

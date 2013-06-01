@@ -1,13 +1,13 @@
 package vc4.api.tileentity;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import org.jnbt.CompoundTag;
+
+import vc4.api.entity.Entity;
+import vc4.api.logging.Logger;
 import vc4.api.vector.Vector3i;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.*;
@@ -18,13 +18,55 @@ public abstract class TileEntity {
 	public World world;
 	public boolean remove = false;
 
-	public static HashMap<Short, Class<? extends TileEntity>> types = new HashMap<Short, Class<? extends TileEntity>>();
+private static HashMap<String, Constructor<? extends TileEntity>> types = new HashMap<>();
+	
+	
+	public static void registerEntity(String name, Class<? extends TileEntity> clz){
+		try {
+			types.put(name, clz.getConstructor(World.class));
+		} catch (NoSuchMethodException | SecurityException e) {
+			Logger.getLogger(Entity.class).warning("TileEntity class does not have correct constructor", e);
+		}
+	}
+	
+	public static Constructor<? extends TileEntity> getTileEntityType(String name){
+		return types.get(name);
+	}
+	
+	public static TileEntity loadTileEntity(Chunk chunk, CompoundTag tag){
+		short id = tag.getShort("id");
+		String name = chunk.getWorld().getTileEntityName(id);
+		Constructor<? extends TileEntity> clz = getTileEntityType(name);
+		try {
+			TileEntity e = clz.newInstance(chunk.getWorld());
+			e.position = new Vector3l();
+			CompoundTag pos = tag.getCompoundTag("pos");
+			e.position.x = chunk.getChunkPos().worldX(pos.getByteTag("x").getValue());
+			e.position.y = chunk.getChunkPos().worldY(pos.getByteTag("y").getValue());
+			e.position.z = chunk.getChunkPos().worldZ(pos.getByteTag("z").getValue());
+			e.loadSaveCompound(tag);
+			return e;
+		} catch (Exception e) {
+			Logger.getLogger(Entity.class).warning("Exception while loading tileentity: " + name, e);
+		}
+		return null;
+	}
+	
+	public boolean persistent(){
+		return !remove;
+	}
 
 	public TileEntity(World world, Vector3l pos){
 		this.world = world;
 		position = pos;
 	}
 	
+	
+	public TileEntity(World world) {
+		super();
+		this.world = world;
+	}
+
 	public void addToWorld(){
 		world.setTileEntity(position.x, position.y, position.z, this);
 	}
@@ -43,79 +85,24 @@ public abstract class TileEntity {
 		return new Vector3i((int)(position.x & 31), (int)(position.y & 31), (int)(position.z & 31));
 	}
 
-	public abstract short getId();
+	public short getId(){
+		return world.getRegisteredTileEntity(getName());
+	}
+	
+	public abstract String getName();
 
 	public void updateTick(){
 
 	}
-	public abstract void writeAdditionalData(BitOutputStream out) throws IOException;
-	public abstract void readAdditionalData(BitInputStream in) throws IOException;
 	public void draw(){
 
 	}
 	
 	public void setChunkRedraw(){
-		//world.setChunkBlockDirty(position.x, position.y, position.z);
-	}
-
-	public static void writeTileEntity(TileEntity e, BitOutputStream out){
-		Vector3i p = new Vector3i((int)(e.position.x & 31), (int)(e.position.y & 31), (int) (e.position.z & 31));
-		try{
-			out.writeShort(e.getId());
-			out.writeByte((byte) p.x);
-			out.writeByte((byte) p.y);
-			out.writeByte((byte) p.z);
-			e.writeAdditionalData(out);
-		} catch(IOException exc){
-			exc.printStackTrace();
-		}
-	}
-
-	public static Map.Entry<Vector3i, TileEntity> readTileEntity(BitInputStream in, World world, ChunkPos c){
-		try{
-			short id = in.readShort();
-			Vector3i cpos = new Vector3i();
-			cpos.x = in.readByte();
-			cpos.y = in.readByte();
-			cpos.z = in.readByte();
-			Vector3l pos = new Vector3l();
-			pos.x = c.worldX(cpos.x);
-			pos.y = c.worldY(cpos.y);
-			pos.z = c.worldZ(cpos.z);
-			TileEntity e;
-			try{
-				Class<? extends TileEntity> ecls = types.get(id);
-				Constructor<? extends TileEntity> econs = ecls.getConstructor(World.class, Vector3l.class);
-				e = econs.newInstance(world, new Vector3l(Long.MAX_VALUE, 0, 0));
-			} catch(NullPointerException exc){
-				throw new RuntimeException("TileEntity ID " + id + " Exception", exc);
-			}
-			e.position = pos;
-			e.readAdditionalData(in);
-			return new Entry<Vector3i, TileEntity>(cpos, e);
-		} catch(IOException e){
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
+		world.setDirty(position.x, position.y, position.z);
 	}
 
 
-	public static void registerEntity(short id, Class<? extends TileEntity> c){
-		types.put(id, c);
-	}
 	
 	static{
 //		registerEntity((short) 1, TileEntityChest.class);
@@ -197,9 +184,24 @@ public abstract class TileEntity {
 	public static void initClass(){}
 	
 	public void setUnsavedChanges(){
-//		try{
-//			getChunk().setUnsavedChanges(true);
-//		} catch(NullPointerException e){}
+		try{
+			getChunk().setModified(true);
+		} catch(Exception e){}
+	}
+	
+	public void loadSaveCompound(CompoundTag tag){
+		
+	}
+	
+	public CompoundTag getSaveCompound(){
+		CompoundTag root = new CompoundTag("root");
+		root.setShort("id", getId());
+		CompoundTag pos = new CompoundTag("pos");
+		pos.setByte("x", (byte) (position.x & 31));
+		pos.setByte("y", (byte) (position.y & 31));
+		pos.setByte("z", (byte) (position.z & 31));
+		root.addTag(pos);
+		return root;
 	}
 
 }

@@ -27,7 +27,21 @@ public class BlockStore {
 	int oldCompile;
 	
 	
+	public short[] getBlocks() {
+		return blocks;
+	}
 	
+	public void setBlocks(short[] blocks) {
+		this.blocks = blocks;
+	}
+	
+	public byte[] getData() {
+		return data;
+	}
+	
+	public void setData(byte[] data) {
+		this.data = data;
+	}
 	
 	BlockStore(int xMod, int yMod, int zMod) {
 		super();
@@ -55,53 +69,67 @@ public class BlockStore {
 		return (x * 16 + z) * 16 + y;
 	}
 	
-	public void setBlockId(int x, int y, int z, short id){
+	public boolean setBlockId(int x, int y, int z, short id){
 		if(blocks == null && id != 0){
 			blocks = new short[4096];
 			blocks[arrayCalc(x, y, z)] = id;
+			clearRenderers();
+			return true;
 		} else {
 			int ac = arrayCalc(x, y, z);
 			if(blocks != null && blocks[ac] != id){
 				blocks[ac] = id;
+				clearRenderers();
+				return true;
 			}
 		}
-		clearRenderers();
+		return false;
 	}
 	
 
-	public void setBlockData(int x, int y, int z, byte d){
+	public boolean setBlockData(int x, int y, int z, byte d){
 		if(data == null && d != 0){
 			data = new byte[4096];
 			data[arrayCalc(x, y, z)] = d;
+			clearRenderers();
+			return true;
 		} else {
 			int ac = arrayCalc(x, y, z);
 			if(data != null && data[ac] != d){
 				data[ac] = d;
+				clearRenderers();
+				return true;
 			}
 		}
-		clearRenderers();
+		return false;
 	}
 	
-	public void setBlockIdData(int x, int y, int z, short id, byte d){
+	public boolean setBlockIdData(int x, int y, int z, short id, byte d){
+		boolean ret = false;
 		if(blocks == null && id != 0){
 			blocks = new short[4096];
 			blocks[arrayCalc(x, y, z)] = id;
+			ret = true;
 		} else {
 			int ac = arrayCalc(x, y, z);
 			if(blocks != null && blocks[ac] != id){
 				blocks[ac] = id;
+				ret = true;
 			}
 		}
 		if(data == null && d != 0){
 			data = new byte[4096];
 			data[arrayCalc(x, y, z)] = d;
+			ret = true;
 		} else {
 			int ac = arrayCalc(x, y, z);
 			if(data != null && data[ac] != d){
 				data[ac] = d;
+				ret = true;
 			}
 		}
-		clearRenderers();
+		if(ret) clearRenderers();
+		return ret;
 	}
 	
 	public void calculateData(Chunk c){
@@ -150,19 +178,21 @@ public class BlockStore {
 	 * 
 	 */
 	public void empty() {
-		blocks = null;
-		data = null;
-//		if(oldData != null){
-//			for(DataRenderer r : oldData){
-//				if(r != null) r.destroy();
-//			}
-//		}
+		removeData();
+		removeGraphics();
+	}
+
+	public void removeGraphics() {
 		if(currentData != null){
 			for(DataRenderer r : currentData){
 				if(r != null) r.destroy();
 			}
 		}
-//		oldData = null;
+	}
+	
+	public void removeData(){
+		blocks = null;
+		data = null;
 	}
 
 }

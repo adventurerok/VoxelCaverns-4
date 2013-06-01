@@ -43,7 +43,7 @@ public class DataRenderer implements Renderer {
 	 * 
 	 */
 	public DataRenderer() {
-		if(gl == null) gl = Graphics.getClientOpenGL();
+		if(gl == null) gl = Graphics.getOpenGL();
 	}
 	
 	/* (non-Javadoc)

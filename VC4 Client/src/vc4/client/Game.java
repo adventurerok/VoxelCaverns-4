@@ -40,7 +40,6 @@ import vc4.api.text.Localization;
 import vc4.api.util.*;
 import vc4.api.vector.Vector2f;
 import vc4.api.vector.Vector3d;
-import vc4.api.world.ChunkPos;
 import vc4.api.yaml.ThreadYaml;
 import vc4.client.camera.PlayerController;
 import vc4.client.gui.*;
@@ -366,18 +365,13 @@ public class Game extends Component implements ClientGame {
 		add(chatBox = new ChatBox());
 		world = new ImplWorld("World");
 		try {
-			world.save();
+			world.saveInfo();
 		} catch (IOException e) {
 			Logger.getLogger(Game.class).warning("Exception occured", e);
 		}
-		player = new EntityPlayer(world);
-		player.setPosition(12, 30, 12);
-		player.setSpawn(new Vector3d(0, 40, 0));
-		world.generateChunk(ChunkPos.createFromWorldVector(player.position));
-		player.addToWorld();
-		world.addPlayer(player);
+		player = world.loadPlayer("player");
 		camera = new PlayerController(player);
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		ingameGui = new IngameGui();
 		add(ingameGui);
 		ingameGui.resized();
@@ -391,6 +385,8 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void unload() {
+		world.savePlayer(player);
+		world.unload();
 		saveSettingsFile(DirectoryLocator.getPath() + "/settings/");
 		SoundManager.dispose();
 	}

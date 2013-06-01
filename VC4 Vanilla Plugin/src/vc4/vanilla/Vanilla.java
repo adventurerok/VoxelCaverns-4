@@ -8,23 +8,29 @@ import java.util.ArrayList;
 
 import vc4.api.biome.*;
 import vc4.api.block.*;
+import vc4.api.container.Container;
 import vc4.api.crafting.CraftingManager;
 import vc4.api.generator.GeneratorList;
 import vc4.api.generator.PlantGrowth;
+import vc4.api.gui.GuiOpenContainer;
 import vc4.api.item.Item;
 import vc4.api.plugin.Plugin;
 import vc4.api.sound.Music;
 import vc4.api.sound.MusicType;
+import vc4.api.tileentity.TileEntity;
 import vc4.api.tool.*;
 import vc4.api.world.World;
 import vc4.vanilla.biome.*;
 import vc4.vanilla.block.*;
+import vc4.vanilla.container.ContainerChest;
 import vc4.vanilla.crafting.RecipesBlocks;
 import vc4.vanilla.generation.*;
 import vc4.vanilla.generation.dungeon.Dungeon;
 import vc4.vanilla.generation.trees.*;
+import vc4.vanilla.gui.GuiChest;
 import vc4.vanilla.item.ItemTool;
 import vc4.vanilla.item.ItemVanillaFood;
+import vc4.vanilla.tileentity.TileEntityChest;
 
 /**
  * @author paul
@@ -145,6 +151,8 @@ public class Vanilla extends Plugin {
 		GeneratorList.registerPlantGen(plantTreeWillow, new TreeGenWillow());
 		GeneratorList.registerPlantGen(plantTreeRedwood, new TreeGenRedwood());
 		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
+		
+		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
 	}
 
 	/* (non-Javadoc)
@@ -154,12 +162,9 @@ public class Vanilla extends Plugin {
 	public void onDisable() {
 		
 	}
-
+	
 	@Override
-	public void onWorldLoad(World world) {
-		BlockTexture.update();
-		ItemTexture.update();
-		
+	public void loadCraftingItems(World world) {
 		craftingSaw = world.getRegisteredCrafting("vanilla.saw");
 		craftingHammer = world.getRegisteredCrafting("vanilla.hammer");
 		craftingTable = world.getRegisteredCrafting("vanilla.table");
@@ -170,7 +175,16 @@ public class Vanilla extends Plugin {
 		CraftingManager.setToolIcon(craftingTable, "table");
 		CraftingManager.setToolIcon(craftingEnchantedBook, "enchantedbook");
 		CraftingManager.setToolIcon(craftingFurnace, "furnace");
-		
+	}
+
+	@Override
+	public void preWorldLoad(World world) {
+		BlockTexture.update();
+		ItemTexture.update();
+	}
+	
+	@Override
+	public void loadBlocks(World world) {
 		grass = new BlockGrass(world.getRegisteredBlock("vanilla.grass"), Material.getMaterial("grass")).setName("grass");
 		dirt = new Block(world.getRegisteredBlock("vanilla.dirt"), BlockTexture.dirt, Material.getMaterial("dirt")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 20).setTimes(0.45, 0.01, 0.22)).setName("dirt");
 		logV = new BlockLog(world.getRegisteredBlock("vanilla.log.V"), Material.getMaterial("wood"), 0).setMineData(new MiningData().setRequired(ToolType.axe).setPowers(0, 1, 25).setTimes(3, 0.1, 1.25)).setName("log");
@@ -208,11 +222,16 @@ public class Vanilla extends Plugin {
 		willowVines = new BlockWillowVine(world.getRegisteredBlock("vanilla.willowvine"), BlockTexture.vines, "vine").setName("vine");
 		workbench = new BlockCraftingTable(world.getRegisteredBlock("vanilla.workbench"), 0, "wood").setName("craftingtable");
 		chest = new BlockChest(world.getRegisteredBlock("vanilla.chest")).setName("chest");
-		
+	}
+	
+	@Override
+	public void loadItems(World world) {
 		generateToolItems(world);
 		food = new ItemVanillaFood(world.getRegisteredItem("vanilla.food"));
-		
-		
+	}
+	
+	@Override
+	public void loadBiomes(World world) {
 		biomeOcean = new BiomeOcean(world.getRegisteredBiome("vanilla.ocean")).setHeights(oceans);
 		biomePlains = new BiomePlains(world.getRegisteredBiome("vanilla.plains"), "plains", BiomeType.normal, Color.green);
 		biomeDesert = new BiomeHilly(world.getRegisteredBiome("vanilla.desert"), "desert", BiomeType.hot, Color.yellow);
@@ -285,8 +304,25 @@ public class Vanilla extends Plugin {
 		hot.add(Vanilla.biomeDesert.id);
 		hot.add(Vanilla.biomeVolcanic.id);
 		biomes.add(hot);
-		
+	}
+	
+	@Override
+	public void loadTileEntities(World world) {
+		TileEntity.registerEntity("vanilla.chest", TileEntityChest.class);
+	}
+	
+	@Override
+	public void loadContainers(World world) {
+		Container.registerContainer("vanilla.chest", ContainerChest.class);
+	}
+	
+	@Override
+	public void loadCraftingRecipes(World world) {
 		CraftingManager.addRecipes(new RecipesBlocks());
+	}
+	
+	@Override
+	public void onWorldLoad(World world) {
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
 	}

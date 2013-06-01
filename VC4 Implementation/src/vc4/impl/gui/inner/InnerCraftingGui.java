@@ -30,7 +30,7 @@ public class InnerCraftingGui extends Panel {
 	public short[] currentItem = new short[0];
 
 	public InnerCraftingGui() {
-		if (gl == null) gl = Graphics.getClientOpenGL();
+		if (gl == null) gl = Graphics.getOpenGL();
 	}
 
 	@Override

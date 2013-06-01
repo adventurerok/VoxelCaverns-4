@@ -5,12 +5,16 @@ package vc4.client.gui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import vc4.api.GameState;
 import vc4.api.Resources;
+import vc4.api.block.OpenContainer;
 import vc4.api.client.Client;
 import vc4.api.client.ClientWindow;
 import vc4.api.entity.EntityPlayer;
+import vc4.api.entity.trait.TraitOpenContainers;
 import vc4.api.font.FontRenderer;
 import vc4.api.graphics.*;
 import vc4.api.gui.*;
@@ -25,6 +29,8 @@ import vc4.impl.gui.*;
  */
 public class IngameGui extends Component {
 
+	private HashMap<OpenContainer, GuiOpenContainer> ocGui = new HashMap<>();
+	
 	OpenGL gl;
 	
 	GuiInventory invGui;
@@ -79,7 +85,7 @@ public class IngameGui extends Component {
 		if(!isVisible()) return;
 		ColorScheme scheme = Client.getGame().getColorScheme(Client.getGame().getColorSchemeSetting().toString());
 		EntityPlayer player = Client.getGame().getPlayer();
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		Graphics.getClientShaderManager().bindShader("texture");
 		Resources.getSheetTexture("gui").bind();
 		{
@@ -174,6 +180,25 @@ public class IngameGui extends Component {
 	@Override
 	public void update() {
 		if(!isVisible()) return;
+		TraitOpenContainers oc = (TraitOpenContainers) Client.getPlayer().getTrait("opencontainers");
+		//HashMap<OpenContainer, GuiOpenContainer> nGui = new HashMap<>();
+		for(OpenContainer o : oc.getContainers()){
+			GuiOpenContainer g = ocGui.get(o);
+			if(g == null){
+				g = GuiOpenContainer.createContainerGui(o);
+				add(g);
+				g.setBounds(g.getDefaultBounds());
+				g.resized();
+			}
+			ocGui.put(o, g);
+		}
+		ArrayList<OpenContainer> toRem = new ArrayList<>(ocGui.keySet());
+		toRem.removeAll(oc.getContainers());
+		for(OpenContainer o : toRem){
+			GuiOpenContainer g = ocGui.remove(o);
+			remove(g);
+		}
+		//ocGui = nGui;
 		super.update();
 	}
 	

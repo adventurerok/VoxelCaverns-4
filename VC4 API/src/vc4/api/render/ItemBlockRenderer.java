@@ -20,7 +20,7 @@ public class ItemBlockRenderer {
 	private static float tix, tiy, tiz, tax, tay, taz;
 	
 	public static void renderItemBlock(ItemStack stack, int x, int y){
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		current = stack;
 		position = new Vector2f(x, y);
 		if(stack == null || !stack.checkIsNotEmpty() || !stack.isBlock()) return;

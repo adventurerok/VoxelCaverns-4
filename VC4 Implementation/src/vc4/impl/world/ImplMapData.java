@@ -11,7 +11,6 @@ public class ImplMapData implements MapData{
 	
 	volatile byte[] biomes;
 	volatile int[] heightMap;
-	volatile int reference;
 	
 	
 	
@@ -47,18 +46,6 @@ public class ImplMapData implements MapData{
 	@Override
 	public Vector2l getPosition() {
 		return pos;
-	}
-	@Override
-	public void addReference() {
-		reference++;
-	}
-	@Override
-	public void removeReference() {
-		if(reference > 0) reference--;
-	}
-	@Override
-	public int getReferences() {
-		return reference;
 	}
 	
 	public double distanceSquared(Vector3d loc){

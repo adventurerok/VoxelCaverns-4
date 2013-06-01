@@ -39,6 +39,8 @@ import java.util.Map;
 
 import vc4.api.io.BitInputStream;
 import vc4.api.io.BitOutputStream;
+import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3l;
 
 /**
  * The <code>TAG_Compound</code> tag.
@@ -98,6 +100,9 @@ public final class CompoundTag extends Tag {
 	}
 	public double getDouble(String name){
 		return getDoubleTag(name).getValue();
+	}
+	public byte getByte(String name){
+		return getByteTag(name).getValue();
 	}
 	public DoubleTag getDoubleTag(String name){
 		return (DoubleTag) getTag(name);
@@ -268,6 +273,42 @@ public final class CompoundTag extends Tag {
 
 	public void setNibble(String name, byte def) {
 		addTag(new NibbleTag(name, def));
+	}
+
+	public void setByte(String name, byte b) {
+		addTag(new ByteTag(name, b));
+	}
+
+	public static CompoundTag createVector3dTag(String name, Vector3d vect) {
+		CompoundTag tag = new CompoundTag(name);
+		tag.setDouble("x", vect.x);
+		tag.setDouble("y", vect.y);
+		tag.setDouble("z", vect.z);
+		return tag;
+	}
+	
+	public Vector3d readVector3d(){
+		Vector3d res = new Vector3d();
+		res.x = getDouble("x");
+		res.y = getDouble("y");
+		res.z = getDouble("z");
+		return res;
+	}
+	
+	public Vector3l readVector3l(){
+		Vector3l res = new Vector3l();
+		res.x = getLong("x");
+		res.y = getLong("y");
+		res.z = getLong("z");
+		return res;
+	}
+
+	public static CompoundTag createVector3lTag(String name, Vector3l vect) {
+		CompoundTag tag = new CompoundTag(name);
+		tag.setLong("x", vect.x);
+		tag.setLong("y", vect.y);
+		tag.setLong("z", vect.z);
+		return tag;
 	}
 
 }

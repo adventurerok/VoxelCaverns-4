@@ -47,7 +47,7 @@ public class ItemRenderer {
 			stack.setDamage(0);
 			return;
 		}
-		gl = Graphics.getClientOpenGL();
+		gl = Graphics.getOpenGL();
 		current = stack;
 		position = new Vector2f(x, y);
 		Graphics.getClientShaderManager().bindShader("texture");
