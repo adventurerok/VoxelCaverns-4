@@ -6,6 +6,7 @@ import java.util.List;
 import vc4.api.font.Font;
 import vc4.api.graphics.texture.AnimatedTexture;
 import vc4.api.graphics.texture.SheetTexture;
+import vc4.api.model.Model;
 
 public abstract class Resources {
 
@@ -15,6 +16,7 @@ public abstract class Resources {
 	public abstract SheetTexture agetSheetTexture(String name);
 	public abstract Font agetFont(String name);
 	public abstract List<URL> agetResourceURLs();
+	public abstract Model agetModel(String name);
 	
 	public static AnimatedTexture getAnimatedTexture(String name){
 		return _res.agetAnimatedTexture(name);
@@ -24,6 +26,10 @@ public abstract class Resources {
 	}
 	public static Font getFont(String name){
 		return _res.agetFont(name);
+	}
+	
+	public static Model getModel(String name){
+		return _res.agetModel(name);
 	}
 	
 	public static List<URL> getResourceURLs(){

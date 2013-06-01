@@ -1,14 +1,37 @@
 package vc4.api.model;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
+import vc4.api.Resources;
+import vc4.api.logging.Logger;
 import vc4.api.vector.Vector3f;
 
 public class Model {
 
 	HashMap<String, ModelPart> parts = new HashMap<>();
 	ArrayList<ModelPart> parentParts = new ArrayList<>();
+	
+	public static Model loadModel(String name){
+		InputStream i;
+		for(URL l : Resources.getResourceURLs()){
+			try {
+				URL n = new URL(l.toString() + "/model/" + name + ".vml");
+				try{
+					 i = n.openStream();
+					 Model mod = new Model();
+					 mod.loadModel(i);
+					 return mod;
+				} catch(IOException e){
+				}
+			} catch (MalformedURLException e) {
+				Logger.getLogger(Model.class).warning("Exception occured", e);
+			}
+		}
+		throw new RuntimeException("Model does not exist: " + name);
+	}
 	
 	public void loadModel(InputStream in) throws IOException{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));

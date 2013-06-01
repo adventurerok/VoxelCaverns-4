@@ -10,6 +10,7 @@ import java.util.*;
 
 import javax.imageio.ImageIO;
 
+import vc4.api.Resources;
 import vc4.api.graphics.*;
 import vc4.api.graphics.texture.AnimatedTexture;
 import vc4.api.logging.Logger;
@@ -25,6 +26,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 	int width, height;
 	boolean smooth = true, mipmap = true;
 	boolean prefix = true;
+	double yRatio = 1;
 	
 	GLTexture type = GLTexture.TEX_2D_ARRAY;
 	
@@ -139,12 +141,26 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 		Collections.sort(images);
 		String yml = images.get(0).image.toString();
 		yml = yml.substring(0, yml.lastIndexOf("/"));
-		yml = yml + "/texture.yml";
+		yml = yml.substring(yml.lastIndexOf("/"), yml.length());
+		for(URL res : Resources.getResourceURLs()){
+			try {
+				URL ymlFile = new URL(res.toString() + yml + "/texture.yml");
+				YamlMap map = new YamlMap(ymlFile.openStream());
+				if(map.hasKey("type")) type = GLTexture.valueOf(map.getString("type").toUpperCase());
+				if(map.hasKey("prefix")) prefix = map.getBoolean("prefix");
+				if(map.hasKey("yscale")) yRatio = map.getDouble("yscale");
+				break;
+			} catch (Exception e) {
+			}
+		}
 		try{
 			URL ymlFile = new URL(yml);
 			YamlMap map = new YamlMap(ymlFile.openStream());
 			type = GLTexture.valueOf(map.getString("type").toUpperCase());
 			prefix = map.getBoolean("prefix");
+			if(map.hasKey("yscale")){
+				yRatio = map.getDouble("yscale");
+			}
 		} catch(IOException e){
 			
 		}
@@ -156,7 +172,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 				BufferedImage img = ImageIO.read(i.getImageStream()); //Begin testing image
 				if((img.getWidth() & -img.getWidth()) != img.getWidth()) continue;
 				if(img.getWidth() > 512) continue; //1024 is too big
-				if(img.getHeight() % img.getWidth() != 0 || img.getHeight() < img.getWidth()) continue; //Test passed if false
+				if(img.getHeight() % (int)(img.getWidth() * yRatio) != 0 || img.getHeight() < (img.getWidth() * yRatio)) continue; //Test passed if false
 				if(img.getWidth() > widest) widest = img.getWidth();
 				toLoad.add(new LoadingImage(i.texName, img, i.txt));
 			} catch (IOException e) {
@@ -167,12 +183,12 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 		for(LoadingImage i : toLoad){
 			int bigger = widest / i.image.getWidth();
 			if(bigger > 1){
-				int h = i.image.getHeight() * bigger;
+				int h = (int) (i.image.getHeight() * bigger * yRatio);
 				i.image = scale(i.image, widest, h);
 			}
-			if(i.image.getWidth() != i.image.getHeight()){
+			if((i.image.getWidth() * yRatio) != i.image.getHeight()){
 				forAnimation.add(i);
-				i = new LoadingImage(i.name, i.image.getSubimage(0, 0, widest, widest), i.txt);
+				i = new LoadingImage(i.name, i.image.getSubimage(0, 0, widest, (int)(widest * yRatio)), i.txt);
 			}
 			sizedImages.add(i);
 			
@@ -180,13 +196,13 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 		arraysize = sizedImages.size();
 		if(prefix) arraysize += 2;
 		width = widest;
-		height = widest;
+		height = (int) (widest * yRatio);
 		ByteBuffer data = BufferUtils.createByteBuffer(width * height * arraysize * 4);
 		int index = prefix ? 2 : 0;
 		if(prefix){
 			indexNames.put("transparent", 0);
 			indexNames.put("white", 1);
-			int oneFrame = widest * widest;
+			int oneFrame = width * height;
 			for(int d = 0; d < oneFrame; ++d){
 				data.put((byte) 255);
 				data.put((byte) 255);
@@ -205,8 +221,8 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 			BufferedImage b = i.image;
 			int[] pixels = new int[b.getWidth() * b.getHeight()];
 			b.getRGB(0, 0, b.getWidth(), b.getHeight(), pixels, 0, b.getWidth());
-			for (int y = 0; y < widest; y++) {
-				for (int x = 0; x < widest; x++) {
+			for (int y = 0; y < width; y++) {
+				for (int x = 0; x < height; x++) {
 					int pixel = pixels[y * b.getWidth() + x];
 					if(((pixel >> 24) & 0xFF) < 2){
 						data.put((byte) 255);
@@ -238,17 +254,17 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 			Animation ani = new Animation();
 			ani.zOffset = getArrayIndex(i.name);
 			ani.width = widest;
-			ani.height = widest;
+			ani.height = (int) (widest * yRatio);
 			ani.depth = 1;
 			BufferedImage img = i.image;
-			ani.parts = new ByteBuffer[i.image.getHeight() / i.image.getWidth()];
+			ani.parts = new ByteBuffer[(int) (i.image.getHeight() / (i.image.getWidth() * yRatio))];
 			for(int d = 0; d < ani.parts.length; ++d){
-				BufferedImage sub = img.getSubimage(0, d * widest, widest, widest);
-				ByteBuffer buf = BufferUtils.createByteBuffer(widest * widest * 4);
+				BufferedImage sub = img.getSubimage(0, d * height, width, height);
+				ByteBuffer buf = BufferUtils.createByteBuffer(width * height * 4);
 				int[] pixels = new int[sub.getWidth() * sub.getHeight()];
 				sub.getRGB(0, 0, sub.getWidth(), sub.getHeight(), pixels, 0, sub.getWidth());
 				for (int y = 0; y < widest; y++) {
-					for (int x = 0; x < widest; x++) {
+					for (int x = 0; x < height; x++) {
 						int pixel = pixels[y * sub.getWidth() + x];
 						if(((pixel >> 24) & 0xFF) < 2){
 							buf.put((byte) 255);

@@ -135,7 +135,7 @@ public abstract class Entity {
 	}
 	
 	public Vector3d getDefaultSize(){
-		return new Vector3d(0.3, 0.83, 0.3);
+		return new Vector3d(0.3, 0.93, 0.3);
 	}
 	
 	public Entity addToWorld(){

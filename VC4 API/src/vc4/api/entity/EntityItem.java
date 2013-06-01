@@ -4,8 +4,7 @@ import org.jnbt.CompoundTag;
 
 import vc4.api.Resources;
 import vc4.api.block.Block;
-import vc4.api.graphics.Graphics;
-import vc4.api.graphics.OpenGL;
+import vc4.api.graphics.*;
 import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 import vc4.api.render.DataRenderer;
@@ -18,7 +17,7 @@ public class EntityItem extends Entity {
 
 	private static OpenGL gl = Graphics.getOpenGL();
 	public ItemStack item;
-	private DataRenderer render;
+	private Renderer render;
 	private boolean compiled;
 	
 	public EntityItem(World world) {

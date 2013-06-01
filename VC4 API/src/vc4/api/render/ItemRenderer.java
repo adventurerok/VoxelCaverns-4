@@ -203,7 +203,7 @@ public class ItemRenderer {
 	public static void renderItem3D(ItemStack stack, float x, float y, float z){
 		if(stack.isBlock() && Block.byId(stack.getId()).render3d(stack.getData())){
 			Resources.getSheetTexture("blocks").bind();
-			DataRenderer d = new DataRenderer();
+			Renderer d = new DataRenderer();
 			Block.byId(stack.getId()).getRenderer().renderBlock(stack, x - 0.5f, y - 0.5f, z - 0.5f, d);
 			d.compile();
 			d.render();

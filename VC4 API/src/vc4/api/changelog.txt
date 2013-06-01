@@ -181,3 +181,7 @@ VC4-Development-0.0.1-230
 	+ Added stats
 VC4-Development-0.0.1-231
 	+ VBT Save format
+VC4-Development-0.0.1-232
+	+ Saving and loading
+VC4-Development-0.0.1-233
+	+ Added model support

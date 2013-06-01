@@ -221,6 +221,21 @@ public class DataRenderer implements Renderer {
 		color((color.getRed() / 255f) * multiply, (color.getGreen() / 255f) * multiply, (color.getBlue() / 255f) * multiply, color.getAlpha() / 255f);
 		
 	}
+
+	@Override
+	public void color(Vector4f color) {
+		this.color = color;
+	}
+
+	@Override
+	public void tex(Vector4f tex) {
+		this.tex = tex;
+	}
+
+	@Override
+	public void addVertex(Vector3d vertex) {
+		addVertex(vertex.x, vertex.y, vertex.z);
+	}
 	
 
 }

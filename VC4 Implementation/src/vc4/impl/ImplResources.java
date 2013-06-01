@@ -13,6 +13,7 @@ import vc4.api.graphics.Graphics;
 import vc4.api.graphics.shader.ShaderManager;
 import vc4.api.graphics.texture.*;
 import vc4.api.logging.Logger;
+import vc4.api.model.Model;
 import vc4.api.sound.Audio;
 import vc4.api.yaml.ThreadYaml;
 import vc4.impl.plugin.PluginLoader;
@@ -22,6 +23,7 @@ public class ImplResources extends Resources {
 	private HashMap<String, AnimatedTexture> animatedTextures = new HashMap<>();
 	private HashMap<String, SheetTexture> sheetTextures = new HashMap<>();
 	private HashMap<String, Font> fonts = new HashMap<>();
+	private HashMap<String, Model> models = new HashMap<>();
 	
 	public HashMap<String, AnimatedTexture> getAnimatedTextures() {
 		return animatedTextures;
@@ -62,6 +64,7 @@ public class ImplResources extends Resources {
 		ArrayList<String> lAnimatedTextures = new ArrayList<String>();
 		ArrayList<String> lShaders = new ArrayList<String>();
 		ArrayList<String> lFonts = new ArrayList<String>();
+		ArrayList<String> lModels = new ArrayList<String>();
 		ArrayList<Entry<String, ArrayList<String>>> lGuis = new ArrayList<Entry<String, ArrayList<String>>>();
 		Yaml yaml = ThreadYaml.getYamlForThread();
 		for(URL url : PluginLoader.getResourceURLs()){
@@ -88,6 +91,7 @@ public class ImplResources extends Resources {
 					else if (e.getKey().equals("font")) lFonts.addAll(values);
 					else if (e.getKey().equals("music")) lMusic.addAll(values);
 					else if (e.getKey().equals("sound")) lSounds.addAll(values);
+					else if (e.getKey().equals("model")) lModels.addAll(values);
 				}
 			} catch(IOException e){}
 		}
@@ -125,7 +129,12 @@ public class ImplResources extends Resources {
 			}
 
 		}
+		for(String s : lModels){
+			Logger.getLogger("VC4").fine("Loading model: " + s);
+			models.put(s, Model.loadModel(s));
+		}
 		for(String s : lSounds){
+			Logger.getLogger("VC4").fine("Loading sound: " + s);
 			Audio.loadSound(s);
 		}
 		for(String s : lMusic){
@@ -133,6 +142,7 @@ public class ImplResources extends Resources {
 			Audio.loadMusic(s);
 		}
 		for (String s : lFonts) {
+			Logger.getLogger("VC4").fine("Loading font: " + s);
 			fonts.put(s, new Font(s));
 		}
 		loadGui(lGuis);
@@ -143,6 +153,11 @@ public class ImplResources extends Resources {
 	@Override
 	public List<URL> agetResourceURLs() {
 		return PluginLoader.getResourceURLs();
+	}
+
+	@Override
+	public Model agetModel(String name) {
+		return models.get(name);
 	}
 	
 

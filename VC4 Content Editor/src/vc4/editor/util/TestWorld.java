@@ -383,10 +383,12 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	@Override
 	public short getRegisteredContainer(String name) {
 		return 0;
 	}
 
+	@Override
 	public void setDirty(long x, long y, long z) {
 	}
 

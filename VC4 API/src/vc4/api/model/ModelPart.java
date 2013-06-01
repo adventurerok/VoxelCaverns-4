@@ -13,7 +13,7 @@ public class ModelPart {
 	private Vector3f rotation = new Vector3f();
 	private Vector3d offset = new Vector3d();
 	private DataRenderer render = new DataRenderer();
-	private ArrayList<ModelPart> children;
+	private ArrayList<ModelPart> children = new ArrayList<>();
 	
 	public void addChild(ModelPart child){
 		children.add(child);
@@ -26,6 +26,7 @@ public class ModelPart {
 	public void load(String[] lines){
 		String[] parts;
 		for(int d = 0; d < lines.length; ++d){
+			if(lines[d].startsWith("#")) continue;
 			parts = lines[d].split(" ");
 			if(parts[0].equals("offset")) offset = vect3d(parts);
 			else if(parts[0].equals("c")) render.color(vect4f(parts, 1));
@@ -52,11 +53,25 @@ public class ModelPart {
 	
 	
 	private Vector3d vect3d(String[] parts){
-		return new Vector3d(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
+		return new Vector3d(parseDouble(parts[1]), parseDouble(parts[2]), parseDouble(parts[3]));
 	}
 	
 	private Vector4f vect4f(String[] parts, float def){
-		if(parts.length > 4) return new Vector4f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
-		return new Vector4f(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3]), def);
+		if(parts.length > 4) return new Vector4f(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3]), parseFloat(parts[4]));
+		return new Vector4f(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3]), def);
+	}
+	
+	private float parseFloat(String s){
+		String[] parts = s.split("/");
+		double top = Double.parseDouble(parts[0]);
+		double bot = parts.length > 1 ? Double.parseDouble(parts[1]) : 1d;
+		return (float) (top / bot);
+	}
+	
+	private double parseDouble(String s){
+		String[] parts = s.split("/");
+		double top = Double.parseDouble(parts[0]);
+		double bot = parts.length > 1 ? Double.parseDouble(parts[1]) : 1d;
+		return top / bot;
 	}
 }

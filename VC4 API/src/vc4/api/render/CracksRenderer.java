@@ -20,7 +20,7 @@ public class CracksRenderer {
 		gl.disable(GLFlag.CULL_FACE);
 		Graphics.getClientShaderManager().bindShader("texture3d");
 		Resources.getAnimatedTexture("cracks").bind();
-		DataRenderer render = new DataRenderer();
+		Renderer render = new DataRenderer();
 		block.getRenderer().renderBlockCracks(world, x, y, z, render, mined);
 		render.compile();
 		render.render();

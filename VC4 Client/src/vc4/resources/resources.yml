@@ -2,12 +2,16 @@ sheettexture:
     - "crosshair"
     - "gui"
     
+model:
+    - "human"
+    
 animatedtexture:
     - "blocks"
     - "items"
     - "cracks"
     - "cursor"
     - "crafting"
+    - "human"
     
 shader:
     - "world"
