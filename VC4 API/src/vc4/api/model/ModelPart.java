@@ -2,8 +2,7 @@ package vc4.api.model;
 
 import java.util.ArrayList;
 
-import vc4.api.client.Client;
-import vc4.api.graphics.*;
+import vc4.api.graphics.OpenGL;
 import vc4.api.render.DataRenderer;
 import vc4.api.vector.*;
 
@@ -14,10 +13,10 @@ public class ModelPart {
 	private Vector3f rotation = new Vector3f();
 	private Vector3d offset = new Vector3d();
 	private DataRenderer render = new DataRenderer();
-	private ModelPart child;
+	private ArrayList<ModelPart> children;
 	
-	public void setChild(ModelPart child) {
-		this.child = child;
+	public void addChild(ModelPart child){
+		children.add(child);
 	}
 	
 	public void setRotation(Vector3f rotation) {
@@ -45,7 +44,7 @@ public class ModelPart {
 		gl.rotate(rotation.y, 0, 1, 0);
 		gl.translate(offset.x, offset.y, offset.z);
 		render.render();
-		if(child != null) child.draw();
+		for(int d = 0; d < children.size(); ++d) children.get(d).draw();
 		gl.popMatrix();
 	}
 	
