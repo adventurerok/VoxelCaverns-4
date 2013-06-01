@@ -32,6 +32,8 @@ public class ModelPart {
 			else if(parts[0].equals("t")) render.tex(vect4f(parts, 0));
 			else if(parts[0].equals("v")){
 				render.addVertex(vect3d(parts));
+			} else if(parts[0].equals("qi")){
+				render.useQuadInputMode(Boolean.parseBoolean(parts[1]));
 			}
 		}
 		render.compile();
