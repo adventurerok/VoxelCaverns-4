@@ -726,5 +726,10 @@ public class ClientGL implements OpenGL {
 	public void shaderUniform3f(String var, float x, float y, float z) {
 		Graphics.getClientShaderManager().shaderUniform3f(var, x, y, z);
 	}
+	
+	@Override
+	public void shaderUniform4f(String var, float x, float y, float z, float w){
+		Graphics.getClientShaderManager().shaderUniform4f(var, x, y, z, w);
+	}
 
 }

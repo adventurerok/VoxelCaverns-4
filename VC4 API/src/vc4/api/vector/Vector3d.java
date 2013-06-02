@@ -245,6 +245,16 @@ public class Vector3d implements Vector3<Vector3d> {
 		return new Vector3d(x * val, y * val, z * val);
 	}
 
+	public double horizontalDistance(Vector3d vec) {
+		return Math.sqrt(horizontalDistanceSquared(vec));
+	}
+
+	public double horizontalDistanceSquared(Vector3d vec) {
+		double nx = x - vec.x;
+		double nz = z - vec.z;
+		
+		return nx * nx + nz * nz; 
+	}
 	
 
 }

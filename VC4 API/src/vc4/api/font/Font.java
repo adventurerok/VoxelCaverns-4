@@ -79,11 +79,11 @@ public class Font {
 			try {
 				texture = Graphics.getSheetLoader().loadTexture(path);
 				OpenGL gl = Graphics.getOpenGL();
-//				for(int d = 0; d < texture.getNumberOfFrames(); ++d){
-//					gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture.getTexture(d));
-//					gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.LINEAR, GLTextureFilter.LINEAR);
-//					gl.generateMipmap(GLTexture.TEX_2D_ARRAY);
-//				}
+				for(int d = 0; d < texture.getNumberOfFrames(); ++d){
+					gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture.getTexture(d));
+					gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.LINEAR, GLTextureFilter.LINEAR);
+					gl.generateMipmap(GLTexture.TEX_2D_ARRAY);
+				}
 				gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 			} catch (IOException e) {
 				Logger.getLogger(Font.class).warning("Failed to load font texture", e);

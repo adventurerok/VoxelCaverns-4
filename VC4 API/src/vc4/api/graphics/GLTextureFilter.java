@@ -18,6 +18,8 @@ public enum GLTextureFilter {
 	
 	private GLTextureFilter(int glnum, int mipn, int mipl) {
 		this.glnum = glnum;
+		this.mipn = mipn;
+		this.mipl = mipl;
 	}
 	
 	public int getGlInt(){

@@ -77,4 +77,10 @@ public class Model {
 			p.draw();
 		}
 	}
+
+	public void reset() {
+		for(ModelPart m : parts.values()){
+			m.setRotation(new Vector3f(0, 0, 0));
+		}
+	}
 }

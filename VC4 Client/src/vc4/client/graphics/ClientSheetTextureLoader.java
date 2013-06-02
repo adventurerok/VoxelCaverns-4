@@ -338,8 +338,8 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 				int texid = gl.genTextures();
 				gl.bindTexture(GLTexture.TEX_2D_ARRAY, texid);
 				gl.texImage3D(GLTexture.TEX_2D_ARRAY, 0, GLInternalFormat.RGBA8, texture.width, texture.height, finalArraySize, false, GLFormat.RGBA, GLType.UNSIGNED_BYTE, texData);
-				gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.LINEAR, null);
-				//gl.texParameterMagFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.NEAREST);
+				texture.setMipmap(false);
+				texture.setSmooth(false);
 				
 				gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 				

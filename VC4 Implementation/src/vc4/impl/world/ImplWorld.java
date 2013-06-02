@@ -13,8 +13,7 @@ import vc4.api.biome.Biome;
 import vc4.api.block.Block;
 import vc4.api.client.Client;
 import vc4.api.crafting.CraftingManager;
-import vc4.api.entity.Entity;
-import vc4.api.entity.EntityPlayer;
+import vc4.api.entity.*;
 import vc4.api.generator.*;
 import vc4.api.graphics.*;
 import vc4.api.io.SaveFormat;
@@ -288,6 +287,7 @@ public class ImplWorld implements World {
 			d.s.currentData[2].render();
 		}
 		gl.disable(GLFlag.CULL_FACE);
+		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 	}
 
 	public void drawBackground(EntityPlayer player) {
@@ -693,6 +693,53 @@ public class ImplWorld implements World {
 			b = getBlockType(px, py, pz);
 			b.nearbyBlockChanged(this, px, py, pz, dir.opposite());
 		}
+	}
+	
+	@Override
+	public RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach) {
+		Vector3d start = entity.getEyePos();
+		AABB checkBounds = entity.bounds.include(end.x, end.y, end.z).expand(1F, 1F, 1F);
+		EntityList entities = getEntitiesInBoundsExcluding(checkBounds, entity);
+		Entity pointing = null;
+		double closest = reach + 1;
+		Vector3d vector = null;
+
+		for (int i = 0; i < entities.size(); i++) {
+			Entity ne = entities.get(i);
+
+			if (!ne.includeInRayTrace() || ne.isDead) {
+				continue;
+			}
+
+			AABB aabb = ne.bounds.expand(0.1F, 0.1F, 0.1F);
+			RayTraceResult rtr = aabb.calculateIntercept(start, end);
+			
+			if (rtr == null) {
+				continue;
+			}
+
+			if (aabb.isVecInside(start)) {
+				if (0.0D < closest || closest == 0.0D) {
+					pointing = ne;
+					closest = 0.0D;
+					vector = rtr.vector;
+				}
+
+				continue;
+			}
+
+			double dist = start.distance(rtr.vector);
+
+			if (dist < closest || closest == 0.0D) {
+				pointing = ne;
+				closest = dist;
+				vector = rtr.vector;
+			}
+		}
+
+		if (pointing != null) { return new RayTraceResult(pointing, vector); }
+
+		return null;
 	}
 
 	@Override

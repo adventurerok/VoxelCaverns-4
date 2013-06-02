@@ -20,6 +20,7 @@ shader:
     - "shapes"
     - "texture"
     - "texture3d"
+    - "model"
     
 font:
     - "unispaced_24"

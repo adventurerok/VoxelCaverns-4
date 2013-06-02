@@ -122,6 +122,12 @@ public class ClientShaderManager implements ShaderManager {
 		int u = uniformLocation(var);
 		glUniform3fARB(u, x, y, z);
 	}
+	
+	@Override
+	public void shaderUniform4f(String var, float x, float y, float z, float w) {
+		int u = uniformLocation(var);
+		glUniform4fARB(u, x, y, z, w);
+	}
 
 	protected static boolean printLogInfo(int obj) {
 		IntBuffer iVal = BufferUtils.createIntBuffer(1);

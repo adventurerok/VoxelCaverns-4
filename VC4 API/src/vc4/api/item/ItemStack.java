@@ -498,6 +498,10 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 		getItem().onLeftClick(player, this);
 		
 	}
+	public int getAttackDamage() {
+		if(getStats().hasStat("attackdamage")) return getStats().getStatInt("attackdamage");
+		else return 3;
+	}
 
 
 

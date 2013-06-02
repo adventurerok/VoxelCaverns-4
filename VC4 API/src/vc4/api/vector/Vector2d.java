@@ -47,6 +47,22 @@ public class Vector2d implements Vector2<Vector2d>{
 		this.x = x;
 		this.y = y;
 	}
+	
+	public double dot(Vector2d other) {
+		return (x * other.x + y * other.y);
+	}
+
+	public double angle(Vector2d other) {
+		return Math.atan2(other.y - y, other.x - x);
+	}
+
+	public double lengthSquared() {
+		return x * x + y * y;
+	}
+
+	public double length() {
+		return Math.sqrt(lengthSquared());
+	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)

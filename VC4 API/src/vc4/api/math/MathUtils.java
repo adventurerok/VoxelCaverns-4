@@ -78,4 +78,12 @@ public class MathUtils {
         return x <= (int)x ? i : i + 1;
 	}
 
+	public static float clamp(float val, float min, float max) {
+		return Math.max(min, Math.min(val, max));
+	}
+	
+	public static double clamp(double val, double min, double max) {
+		return Math.max(min, Math.min(val, max));
+	}
+
 }

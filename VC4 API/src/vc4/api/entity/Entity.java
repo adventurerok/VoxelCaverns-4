@@ -122,6 +122,10 @@ public abstract class Entity {
 		if(world.getTime() % ticks == 0) damage(amount, source);
 	}
 	
+	public boolean includeInRayTrace(){
+		return false;
+	}
+	
 	
 	public int getHealth() {
 		return health;
@@ -428,6 +432,10 @@ public abstract class Entity {
 		motionZ = motion.getDouble("z");
 		health = tag.getInt("hp");
 		ticksAlive = tag.getLong("alive");
+	}
+
+	public void onRightClick(EntityPlayer player) {
+		
 	}
 	
 	

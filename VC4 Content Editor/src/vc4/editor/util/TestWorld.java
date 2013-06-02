@@ -7,8 +7,7 @@ import org.jnbt.CompoundTag;
 
 import vc4.api.biome.Biome;
 import vc4.api.block.Block;
-import vc4.api.entity.Entity;
-import vc4.api.entity.EntityPlayer;
+import vc4.api.entity.*;
 import vc4.api.generator.WorldGenerator;
 import vc4.api.sound.Music;
 import vc4.api.tileentity.TileEntity;
@@ -391,5 +390,11 @@ public class TestWorld implements World {
 	@Override
 	public void setDirty(long x, long y, long z) {
 	}
+
+	@Override
+	public RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach) {
+		return null;
+	}
+
 
 }

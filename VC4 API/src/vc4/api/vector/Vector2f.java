@@ -7,11 +7,13 @@ import vc4.api.math.MathUtils;
 
 /**
  * @author paul
- *
+ * 
  */
-public class Vector2f implements Vector2<Vector2f>{
+public class Vector2f implements Vector2<Vector2f> {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -23,7 +25,28 @@ public class Vector2f implements Vector2<Vector2f>{
 		return result;
 	}
 
-	/* (non-Javadoc)
+	public float dot(Vector2f other) {
+		return (x * other.x + y * other.y);
+	}
+
+	public float angle(Vector2f other) {
+		float dls = dot(other) / length() * other.length();
+		if (dls < -1.0F) dls = -1.0F;
+		else if (dls > 1.0F) dls = 1.0F;
+		return (float) Math.acos(dls);
+	}
+
+	public float lengthSquared() {
+		return x * x + y * y;
+	}
+
+	public float length() {
+		return (float) Math.sqrt(lengthSquared());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -38,14 +61,16 @@ public class Vector2f implements Vector2<Vector2f>{
 	}
 
 	public float x, y;
-	
+
 	public Vector2f(float x, float y) {
 		super();
 		this.x = x;
 		this.y = y;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)
 	 */
 	@Override
@@ -53,20 +78,24 @@ public class Vector2f implements Vector2<Vector2f>{
 		return new Vector2f(x + vec.x, y + vec.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#multiply(java.lang.Object)
 	 */
 	@Override
 	public Vector2f multiply(Vector2f vec) {
 		return new Vector2f(x * vec.x, y * vec.y);
 	}
-	
+
 	@Override
-	public Vector2f clone(){
+	public Vector2f clone() {
 		return new Vector2f(x, y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#subtract(java.lang.Object)
 	 */
 	@Override
@@ -74,7 +103,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return new Vector2f(x - vec.x, y - vec.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#divide(java.lang.Object)
 	 */
 	@Override
@@ -82,7 +113,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return new Vector2f(x / vec.x, y / vec.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#abs()
 	 */
 	@Override
@@ -90,7 +123,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return new Vector2f(Math.abs(x), Math.abs(y));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#negate()
 	 */
 	@Override
@@ -98,7 +133,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return new Vector2f(-x, -y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distanceSquared(java.lang.Object)
 	 */
 	@Override
@@ -108,7 +145,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return nx * nx + ny * ny;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distance(java.lang.Object)
 	 */
 	@Override
@@ -116,7 +155,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return Math.sqrt(distanceSquared(vec));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2f()
 	 */
 	@Override
@@ -124,7 +165,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return clone();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2i()
 	 */
 	@Override
@@ -132,7 +175,9 @@ public class Vector2f implements Vector2<Vector2f>{
 		return new Vector2i(MathUtils.floor(x), MathUtils.floor(y));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2l()
 	 */
 	@Override
@@ -140,14 +185,14 @@ public class Vector2f implements Vector2<Vector2f>{
 		return new Vector2l(MathUtils.floor(x), MathUtils.floor(y));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2d()
 	 */
 	@Override
 	public Vector2d toVector2d() {
 		return new Vector2d(x, y);
 	}
-
-	
 
 }

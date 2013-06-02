@@ -52,6 +52,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	private int maxHealth = 100;
 	private String name = "player";
 	
+	private long entityAttackTick = 0;
 	
 	public EntityPlayer(World world) {
 		super(world);
@@ -282,9 +283,26 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	//delta in ms
 	public void leftMouseDown(double delta){
-		if(rays == null || rays.isEntity){
+		if(rays == null){
 			return;
 		}
+		if(rays.isEntity) leftMouseDownEntity(delta);
+		else leftMouseDownBlock(delta);
+		
+	}
+	
+	private void leftMouseDownEntity(double delta){
+		if(ticksAlive - entityAttackTick > 3){
+			int damage = 0;
+			ItemStack held = inventory.getSelectedStack();
+			if(held == null) damage = 3;
+			else damage = held.getAttackDamage();
+			rays.entity.damage(damage, DamageSource.melee(this, held));
+		}
+		entityAttackTick = ticksAlive;
+	}
+	
+	private void leftMouseDownBlock(double delta){
 		if(oRP != null && (oRP.x != rays.x || oRP.y != rays.y || oRP.z != rays.z)){
 			minedAmount = 0;
 			oRP = new Vector3l(rays.x, rays.y, rays.z);
@@ -326,7 +344,11 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	 */
 	public void rayTrace(Vector3d look, double dist) {
 		Vector3d end = getEyePos().add(look.x * dist, look.y * dist, look.z * dist);
-		rays = world.rayTraceBlocks(getEyePos(), end, 200);
+		RayTraceResult blocks = world.rayTraceBlocks(getEyePos(), end, 200);
+		double bDist = blocks != null ? blocks.vector.distanceSquared(position) : 1000000;
+		RayTraceResult entitys = world.rayTraceEntitys(this, end, 200);
+		double eDist = entitys != null ? entitys.vector.distanceSquared(position) : 1000000;
+		rays = bDist < eDist ? blocks : entitys;
 	}
 	
 	public void respawn() {
@@ -347,10 +369,14 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 
 	public void rightMouseDown(double delta){
 		if(rays == null) return;
-		ItemStack held = inventory.getSelectedStack();
-		if(world.getBlockType(rays.x, rays.y, rays.z).overrideRightClick(world, rays.x, rays.y, rays.z)){
-			world.getBlockType(rays.x, rays.y, rays.z).onRightClick(world, rays.x, rays.y, rays.z, rays.side, this, held);
-		} else if(held != null) held.onRightClick(this);
+		if(rays.isEntity){
+			rays.entity.onRightClick(this);
+		} else {
+			ItemStack held = inventory.getSelectedStack();
+			if(world.getBlockType(rays.x, rays.y, rays.z).overrideRightClick(world, rays.x, rays.y, rays.z)){
+				world.getBlockType(rays.x, rays.y, rays.z).onRightClick(world, rays.x, rays.y, rays.z, rays.side, this, held);
+			} else if(held != null) held.onRightClick(this);
+		}
 	}
 	
 	/**

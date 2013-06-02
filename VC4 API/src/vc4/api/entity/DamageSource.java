@@ -1,5 +1,6 @@
 package vc4.api.entity;
 
+import vc4.api.item.ItemStack;
 import vc4.api.vector.Vector3l;
 
 public class DamageSource {
@@ -11,10 +12,14 @@ public class DamageSource {
 	private Vector3l blockPos;
 
 	private EntityLiving attacker;
-
+	private ItemStack weapon;
 	private Entity projectile;
 	
 	public static final DamageSource fallDamage = new DamageSource("falling", 0);
+	
+	public static final DamageSource melee(EntityLiving attacker, ItemStack weapon){
+		return new DamageSource("melee", 1).setAttacker(attacker).setWeapon(weapon);
+	}
 
 	public DamageSource(String name, int id) {
 		super();
@@ -31,6 +36,9 @@ public class DamageSource {
 	}
 	public int getId() {
 		return id;
+	}
+	public ItemStack getWeapon() {
+		return weapon;
 	}
 	public String getName() {
 		return name;
@@ -55,6 +63,11 @@ public class DamageSource {
 
 	public DamageSource setAttacker(EntityLiving attacker) {
 		this.attacker = attacker;
+		return this;
+	}
+	
+	public DamageSource setWeapon(ItemStack weapon) {
+		this.weapon = weapon;
 		return this;
 	}
 

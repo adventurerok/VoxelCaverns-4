@@ -2,6 +2,7 @@ package vc4.api.model;
 
 import java.util.ArrayList;
 
+import vc4.api.graphics.Graphics;
 import vc4.api.graphics.OpenGL;
 import vc4.api.render.DataRenderer;
 import vc4.api.vector.*;
@@ -41,11 +42,12 @@ public class ModelPart {
 	}
 	
 	public void draw(){
+		if(gl == null) gl = Graphics.getOpenGL();
 		gl.pushMatrix();
+		gl.translate(offset.x, offset.y, offset.z);
+		gl.rotate(rotation.y, 0, 1, 0);
 		gl.rotate(rotation.z, 0, 0, 1);
 		gl.rotate(rotation.x, 1, 0, 0);
-		gl.rotate(rotation.y, 0, 1, 0);
-		gl.translate(offset.x, offset.y, offset.z);
 		render.render();
 		for(int d = 0; d < children.size(); ++d) children.get(d).draw();
 		gl.popMatrix();

@@ -8,6 +8,7 @@ import java.util.Random;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.VillagerNames;
 import vc4.vanilla.generation.dungeon.style.*;
 
 /**
@@ -32,6 +33,7 @@ public class Dungeon {
 	World world;
 
 	public ArrayList<RoomBB> rooms = new ArrayList<>();
+	public ArrayList<String> lastNames = new ArrayList<>();
 	DungeonStyle style;
 
 	public Dungeon(World world, long minX, long minY, long minZ, long maxX, long maxY, long maxZ, Random rand) {
@@ -92,6 +94,18 @@ public class Dungeon {
 	
 	public World getWorld() {
 		return world;
+	}
+	
+	public String randomFirstName(){
+		return VillagerNames.getRandomFirst(getRand());
+	}
+	
+	public String randomLastName(){
+		int num = rand.nextInt(lastNames.size() + 1);
+		if(num < lastNames.size()) return lastNames.get(num);
+		String name = VillagerNames.getRandomLast(getRand());
+		lastNames.add(name);
+		return name;
 	}
 	
 	public static DungeonStyle getDungeonStyle(World world, long x, long y, long z, Random rand){

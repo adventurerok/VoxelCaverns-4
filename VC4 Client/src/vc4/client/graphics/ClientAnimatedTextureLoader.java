@@ -142,7 +142,7 @@ public class ClientAnimatedTextureLoader implements AnimatedTextureLoader{
 	public AnimatedTexture loadTexture(String path) throws IOException {
 		path = path.replace(".", "/");
 		ArrayList<LoadableAnimatedImage> imgs = getLoadableImages(getImageURLs(path));
-		return new ImplAnimatedTexture().load(imgs);
+		return new ClientAnimatedTexture().load(imgs);
 	}
 
 	private static ArrayList<LoadableAnimatedImage> getLoadableImages(ArrayList<URL> urls) throws IOException {

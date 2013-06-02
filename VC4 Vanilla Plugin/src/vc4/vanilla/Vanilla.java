@@ -10,6 +10,7 @@ import vc4.api.biome.*;
 import vc4.api.block.*;
 import vc4.api.container.Container;
 import vc4.api.crafting.CraftingManager;
+import vc4.api.entity.Entity;
 import vc4.api.generator.GeneratorList;
 import vc4.api.generator.PlantGrowth;
 import vc4.api.gui.GuiOpenContainer;
@@ -24,6 +25,7 @@ import vc4.vanilla.biome.*;
 import vc4.vanilla.block.*;
 import vc4.vanilla.container.ContainerChest;
 import vc4.vanilla.crafting.RecipesBlocks;
+import vc4.vanilla.entity.EntityVillager;
 import vc4.vanilla.generation.*;
 import vc4.vanilla.generation.dungeon.Dungeon;
 import vc4.vanilla.generation.trees.*;
@@ -153,6 +155,8 @@ public class Vanilla extends Plugin {
 		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
 		
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
+		
+		VillagerNames.load();
 	}
 
 	/* (non-Javadoc)
@@ -175,6 +179,11 @@ public class Vanilla extends Plugin {
 		CraftingManager.setToolIcon(craftingTable, "table");
 		CraftingManager.setToolIcon(craftingEnchantedBook, "enchantedbook");
 		CraftingManager.setToolIcon(craftingFurnace, "furnace");
+	}
+	
+	@Override
+	public void loadEntities(World world) {
+		Entity.registerEntity("vanilla.villager", EntityVillager.class);
 	}
 
 	@Override

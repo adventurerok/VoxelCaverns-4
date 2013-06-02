@@ -16,6 +16,10 @@ public class Stats {
 		return ((StatInt)stats.get(name)).value;
 	}
 	
+	public boolean hasStat(String name){
+		return stats.get(name) != null;
+	}
+	
 	public int getStatInt(String name, int def){
 		try{
 			return ((StatInt)stats.get(name)).value;

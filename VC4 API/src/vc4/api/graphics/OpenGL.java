@@ -106,6 +106,7 @@ public interface OpenGL {
 	public void shaderUniform1i(String var, int x);
 	public void shaderUniform1f(String var, float x);
 	public void shaderUniform3f(String var, float x, float y, float z);
+	public abstract void shaderUniform4f(String var, float x, float y, float z, float w);
 	
 
 }

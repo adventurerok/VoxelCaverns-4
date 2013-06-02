@@ -17,7 +17,7 @@ import vc4.api.logging.Logger;
 import vc4.api.util.BufferUtils;
 import vc4.api.yaml.YamlMap;
 
-public class ImplAnimatedTexture implements AnimatedTexture{
+public class ClientAnimatedTexture implements AnimatedTexture{
 
 	private static OpenGL gl;
 	
@@ -33,7 +33,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 	private HashMap<String, Integer> indexNames = new HashMap<>();
 	private ArrayList<Animation> animatedParts = new ArrayList<>();
 	
-	public ImplAnimatedTexture() {
+	public ClientAnimatedTexture() {
 		if(gl == null) gl = Graphics.getOpenGL();
 	}
 	
@@ -144,7 +144,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 		yml = yml.substring(yml.lastIndexOf("/"), yml.length());
 		for(URL res : Resources.getResourceURLs()){
 			try {
-				URL ymlFile = new URL(res.toString() + yml + "/texture.yml");
+				URL ymlFile = new URL(res.toString() + "/animatedtexture" + yml + "/texture.yml");
 				YamlMap map = new YamlMap(ymlFile.openStream());
 				if(map.hasKey("type")) type = GLTexture.valueOf(map.getString("type").toUpperCase());
 				if(map.hasKey("prefix")) prefix = map.getBoolean("prefix");
@@ -153,17 +153,6 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 			} catch (Exception e) {
 			}
 		}
-		try{
-			URL ymlFile = new URL(yml);
-			YamlMap map = new YamlMap(ymlFile.openStream());
-			type = GLTexture.valueOf(map.getString("type").toUpperCase());
-			prefix = map.getBoolean("prefix");
-			if(map.hasKey("yscale")){
-				yRatio = map.getDouble("yscale");
-			}
-		} catch(IOException e){
-			
-		}
 		int widest = 0; //So we know which image is widest
 		
 		ArrayList<LoadingImage> toLoad = new ArrayList<>();
@@ -171,7 +160,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 			try {
 				BufferedImage img = ImageIO.read(i.getImageStream()); //Begin testing image
 				if((img.getWidth() & -img.getWidth()) != img.getWidth()) continue;
-				if(img.getWidth() > 512) continue; //1024 is too big
+				if(img.getWidth() > 1024) continue; //1024 is too big
 				if(img.getHeight() % (int)(img.getWidth() * yRatio) != 0 || img.getHeight() < (img.getWidth() * yRatio)) continue; //Test passed if false
 				if(img.getWidth() > widest) widest = img.getWidth();
 				toLoad.add(new LoadingImage(i.texName, img, i.txt));
@@ -221,8 +210,8 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 			BufferedImage b = i.image;
 			int[] pixels = new int[b.getWidth() * b.getHeight()];
 			b.getRGB(0, 0, b.getWidth(), b.getHeight(), pixels, 0, b.getWidth());
-			for (int y = 0; y < width; y++) {
-				for (int x = 0; x < height; x++) {
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
 					int pixel = pixels[y * b.getWidth() + x];
 					if(((pixel >> 24) & 0xFF) < 2){
 						data.put((byte) 255);
@@ -242,7 +231,9 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 		int texid = gl.genTextures();
 		gl.bindTexture(type, texid);
 		gl.texImage3D(type, 0, GLInternalFormat.RGBA8, width, height, arraysize, false, GLFormat.RGBA, GLType.UNSIGNED_BYTE, data);
-		gl.texParameterMinFilter(type, GLTextureFilter.LINEAR, null);
+		
+		setMipmap(false);
+		setSmooth(false);
 		
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 		
@@ -263,8 +254,8 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 				ByteBuffer buf = BufferUtils.createByteBuffer(width * height * 4);
 				int[] pixels = new int[sub.getWidth() * sub.getHeight()];
 				sub.getRGB(0, 0, sub.getWidth(), sub.getHeight(), pixels, 0, sub.getWidth());
-				for (int y = 0; y < widest; y++) {
-					for (int x = 0; x < height; x++) {
+				for (int y = 0; y < height; y++) {
+					for (int x = 0; x < width; x++) {
 						int pixel = pixels[y * sub.getWidth() + x];
 						if(((pixel >> 24) & 0xFF) < 2){
 							buf.put((byte) 255);
@@ -285,7 +276,7 @@ public class ImplAnimatedTexture implements AnimatedTexture{
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(i.txt.openStream()))) {
 				ani.loadFrames(reader.readLine());
 			} catch (IOException e) {
-				Logger.getLogger(ImplAnimatedTexture.class).warning("Error while loading " + i.name, e);
+				Logger.getLogger(ClientAnimatedTexture.class).warning("Error while loading " + i.name, e);
 			}
 			animatedParts.add(ani);
 		}
