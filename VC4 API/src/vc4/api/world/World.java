@@ -89,4 +89,6 @@ public interface World {
 	public abstract void setDirty(long x, long y, long z);
 	public abstract RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach);
 	public void broadcast(String message, Vector3d pos, double radius);
+	public abstract String getTraitName(int id);
+	public abstract short getRegisteredTrait(String name);
 }

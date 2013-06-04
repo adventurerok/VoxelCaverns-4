@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.jnbt.CompoundTag;
+import org.jnbt.ListTag;
 
 import vc4.api.entity.trait.Trait;
 import vc4.api.logging.Logger;
@@ -415,6 +416,12 @@ public abstract class Entity {
 		root.addTag(motion);
 		root.setInt("hp", getHealth());
 		root.setLong("alive", ticksAlive);
+		ListTag trs = new ListTag("traits", CompoundTag.class);
+		for(Trait t : traits.values()){
+			if(!t.persistent()) continue;
+			trs.addTag(t.getSaveCompound());
+		}
+		root.addTag(trs);
 		return root;
 	}
 	
@@ -432,6 +439,19 @@ public abstract class Entity {
 		motionZ = motion.getDouble("z");
 		health = tag.getInt("hp");
 		ticksAlive = tag.getLong("alive");
+		traits.clear();
+		if(tag.hasKey("traits")){
+			ListTag trs = tag.getListTag("traits");
+			while(trs.hasNext()){
+				try{
+					CompoundTag tal = (CompoundTag) trs.getNextTag();
+					Trait rait = Trait.loadTrait(this, tal);
+					traits.put(rait.name(), rait);
+				} catch(Exception e){
+					Logger.getLogger(Entity.class).info("Failed to load trait");
+				}
+			}
+		}
 	}
 
 	public void onRightClick(EntityPlayer player) {

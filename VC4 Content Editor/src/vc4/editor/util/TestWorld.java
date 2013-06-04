@@ -402,5 +402,15 @@ public class TestWorld implements World {
 		
 	}
 
+	@Override
+	public String getTraitName(int id) {
+		return null;
+	}
+
+	@Override
+	public short getRegisteredTrait(String name) {
+		return 0;
+	}
+
 
 }

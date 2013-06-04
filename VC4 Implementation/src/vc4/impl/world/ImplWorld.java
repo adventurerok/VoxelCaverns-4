@@ -74,7 +74,7 @@ public class ImplWorld implements World {
 	private Dictionary registeredTileEntitys = new Dictionary(5);
 	private Dictionary registeredItemEntitys = new Dictionary(5).put("enchantment", 0);
 	private Dictionary registeredContainers = new Dictionary(5);
-	private Dictionary registeredTraits = new Dictionary(5);
+	private Dictionary registeredTraits = new Dictionary(25).put("inventory", 0);
 	private long seed = new Random().nextLong();
 	private long time;
 	private String generatorName = "overworld";
@@ -1187,6 +1187,7 @@ public class ImplWorld implements World {
 		return (short) registeredEntitys.get(name);
 	}
 	
+	@Override
 	public short getRegisteredTrait(String name) {
 		return (short) registeredTraits.get(name);
 	}
@@ -1318,6 +1319,7 @@ public class ImplWorld implements World {
 		return registeredItemEntitys.getName(id);
 	}
 	
+	@Override
 	public String getTraitName(int id) {
 		return registeredTraits.getName(id);
 	}

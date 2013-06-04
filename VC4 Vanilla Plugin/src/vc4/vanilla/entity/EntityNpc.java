@@ -2,8 +2,8 @@ package vc4.vanilla.entity;
 
 import org.jnbt.CompoundTag;
 
-import vc4.api.entity.EntityLiving;
-import vc4.api.entity.EntityPlayer;
+import vc4.api.entity.*;
+import vc4.api.entity.trait.TraitInventory;
 import vc4.api.math.MathUtils;
 import vc4.api.sound.Audio;
 import vc4.api.world.World;
@@ -39,6 +39,12 @@ public class EntityNpc extends EntityLiving {
 		ais.put("free", new AIFreeNPCs(this, 15, 0.25));
 		ais.put("look", new AILookAtOthers(this, 15));
 		stateChanged();
+		addTrait(new TraitInventory(this));
+	}
+	
+	@Override
+	public Entity addToWorld() {
+		return super.addToWorld();
 	}
 
 	@Override
