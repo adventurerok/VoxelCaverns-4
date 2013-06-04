@@ -192,3 +192,15 @@ item.hoe.platinum.name=Platinum Hoe
 
 item.food.cheese.name=Cheese
 item.food.bread.name=Bread
+
+villager.help1=Help me!
+villager.help2=Someone, please help!
+villager.trapped1=I'm trapped
+villager.trapped2=I'm a bit stuck here.
+villager.trapped3=Can anyone get me out of this?
+villager.thanks1=Thank you
+villager.thanks2=Many thanks!
+
+faction.friendly=You are now friendly with {0}
+faction.enemy=You are now enemy with {0}
+faction.neutral=You are now neutral with {0}

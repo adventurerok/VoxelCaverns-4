@@ -311,4 +311,13 @@ public final class CompoundTag extends Tag {
 		return tag;
 	}
 
+	public double getDouble(String name, double def) {
+		try{
+			return getDoubleTag(name).getValue();
+		} catch(Exception e){
+			setDouble(name, def);
+			return def;
+		}
+	}
+
 }

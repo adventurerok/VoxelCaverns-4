@@ -259,6 +259,7 @@ public class Game extends Component implements ClientGame {
 		}
 		super.update();
 		if (gameState == GameState.SINGLEPLAYER) {
+			SoundManager.setListener(player);
 			if (Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
 			camera.handleInput(delta);
 			player.decreaseCooldown(delta);

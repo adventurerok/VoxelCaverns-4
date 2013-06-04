@@ -25,7 +25,7 @@ import vc4.vanilla.biome.*;
 import vc4.vanilla.block.*;
 import vc4.vanilla.container.ContainerChest;
 import vc4.vanilla.crafting.RecipesBlocks;
-import vc4.vanilla.entity.EntityVillager;
+import vc4.vanilla.entity.EntityNpc;
 import vc4.vanilla.generation.*;
 import vc4.vanilla.generation.dungeon.Dungeon;
 import vc4.vanilla.generation.trees.*;
@@ -156,7 +156,7 @@ public class Vanilla extends Plugin {
 		
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
 		
-		VillagerNames.load();
+		NpcNames.load();
 	}
 
 	/* (non-Javadoc)
@@ -183,7 +183,7 @@ public class Vanilla extends Plugin {
 	
 	@Override
 	public void loadEntities(World world) {
-		Entity.registerEntity("vanilla.villager", EntityVillager.class);
+		Entity.registerEntity("vanilla.villager", EntityNpc.class);
 	}
 
 	@Override

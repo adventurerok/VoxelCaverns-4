@@ -10,7 +10,8 @@ import vc4.api.client.Client;
 import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
-import vc4.vanilla.entity.EntityVillager;
+import vc4.vanilla.entity.EntityNpc;
+import vc4.vanilla.entity.EntityNpc.NpcState;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.Dungeon;
 import vc4.vanilla.generation.dungeon.RoomBB;
@@ -69,12 +70,13 @@ public class DungeonRoomBase extends DungeonRoom {
 				}
 			}
 		}
-		EntityVillager prisoner = new EntityVillager(world);
+		EntityNpc prisoner = new EntityNpc(world);
 		prisoner.setPosition(sx + 4, start.y + 0.93, sz + 4);
 		prisoner.yaw = dungeon.getRand().nextInt(360) + dungeon.getRand().nextDouble();
 		prisoner.setFirstName(dungeon.randomFirstName());
 		prisoner.setLastName(dungeon.randomLastName());
 		prisoner.setMan(dungeon.getRand().nextBoolean());
+		prisoner.setState(NpcState.TRAPPED);
 		prisoner.addToWorld();
 		result.add(door.clone().setNewRoomDir(door.dir.opposite()));
 		result.add(door.move(7, door.dir));

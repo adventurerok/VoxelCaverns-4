@@ -21,6 +21,7 @@ shader:
     - "texture"
     - "texture3d"
     - "model"
+    - "model_mt"
     
 font:
     - "unispaced_24"

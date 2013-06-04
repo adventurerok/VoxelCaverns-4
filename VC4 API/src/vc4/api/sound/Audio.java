@@ -2,6 +2,9 @@ package vc4.api.sound;
 
 import java.io.IOException;
 
+import vc4.api.entity.Entity;
+import vc4.api.vector.Vector3d;
+
 public abstract class Audio {
 
 	private static Audio audio;
@@ -34,6 +37,12 @@ public abstract class Audio {
 	}
 	public static void playSound(String name, double x, double y, double z, float volume, float pitch){
 		audio.aplaySound(name, x, y, z, volume, pitch);
+	}
+	public static void playSound(String name, Vector3d pos, float volume, float pitch){
+		audio.aplaySound(name, pos.x, pos.y, pos.z, volume, pitch);
+	}
+	public static void playSound(String name, Entity e, float volume, float pitch){
+		playSound(name, e.position, volume, pitch);
 	}
 	
 }

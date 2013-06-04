@@ -8,7 +8,7 @@ import java.util.Random;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
-import vc4.vanilla.VillagerNames;
+import vc4.vanilla.NpcNames;
 import vc4.vanilla.generation.dungeon.style.*;
 
 /**
@@ -97,13 +97,13 @@ public class Dungeon {
 	}
 	
 	public String randomFirstName(){
-		return VillagerNames.getRandomFirst(getRand());
+		return NpcNames.getRandomFirst(getRand());
 	}
 	
 	public String randomLastName(){
 		int num = rand.nextInt(lastNames.size() + 1);
 		if(num < lastNames.size()) return lastNames.get(num);
-		String name = VillagerNames.getRandomLast(getRand());
+		String name = NpcNames.getRandomLast(getRand());
 		lastNames.add(name);
 		return name;
 	}

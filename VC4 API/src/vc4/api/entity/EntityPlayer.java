@@ -10,6 +10,7 @@ import org.jnbt.CompoundTag;
 import vc4.api.block.Block;
 import vc4.api.block.CraftingTable;
 import vc4.api.block.render.BlockRendererDefault;
+import vc4.api.client.Client;
 import vc4.api.container.Container;
 import vc4.api.container.ContainerInventory;
 import vc4.api.entity.trait.TraitCrafting;
@@ -138,6 +139,14 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		if(eight % 2 == 0) return eight / 2;
 		else return ((eight - 1) / 2) + 6;
 				
+	}
+	
+	public void message(String text){
+		Client.getGame().printChatLine(text);
+	}
+	
+	public void message(String sender, String text){
+		message("<" + sender + "{c:f}>: " + text);
 	}
 	
 	@Override

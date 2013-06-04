@@ -5,14 +5,14 @@ import java.util.Random;
 
 import vc4.api.logging.Logger;
 
-public class VillagerNames {
+public class NpcNames {
 
 	private static Names firstNames;
 	private static Names lastNames;
 	
 	
 	public static void load(){
-		InputStream in = VillagerNames.class.getClassLoader().getResourceAsStream("vc4/vanilla/resources/text/villagernames.txt");
+		InputStream in = NpcNames.class.getClassLoader().getResourceAsStream("vc4/vanilla/resources/text/villagernames.txt");
 		try(BufferedReader read = new BufferedReader(new InputStreamReader(in))){
 			String[] lines = new String[7];
 			for(int d = 0; d < 7; ++d){
@@ -20,7 +20,7 @@ public class VillagerNames {
 			}
 			load(lines);
 		} catch (IOException e) {
-			Logger.getLogger(VillagerNames.class).warning("Error while reading Villager Names", e);
+			Logger.getLogger(NpcNames.class).warning("Error while reading Villager Names", e);
 		}
 	}
 

@@ -1327,4 +1327,13 @@ public class ImplWorld implements World {
 		return registeredContainers.getName(id);
 	}
 
+	@Override
+	public void broadcast(String message, Vector3d pos, double radius) {
+		radius *= radius;
+		for(EntityPlayer p : players){
+			if(p.position.distanceSquared(pos) > radius) continue;
+			p.message(message);
+		}
+	}
+
 }

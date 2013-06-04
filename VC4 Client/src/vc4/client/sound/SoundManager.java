@@ -9,6 +9,7 @@ import paulscode.sound.codecs.CodecJOrbis;
 import paulscode.sound.codecs.CodecWav;
 import paulscode.sound.libraries.LibraryLWJGLOpenAL;
 import vc4.api.entity.EntityLiving;
+import vc4.api.logging.Logger;
 import vc4.api.math.MathUtils;
 import vc4.api.sound.Audio;
 import vc4.api.sound.Music;
@@ -106,7 +107,10 @@ public class SoundManager extends Audio{
 		//if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
 
 		Sound sound = sounds.getRandomSound(name);
-		if (sound == null) return;
+		if (sound == null){
+			Logger.getLogger("VC4").info("No sound found: " + name);
+			return;
+		}
 
 		String source = "SOURCE_" + soundId;
 		++soundId;
@@ -122,7 +126,10 @@ public class SoundManager extends Audio{
 		//if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
 
 		Sound sound = sounds.getRandomSound(name);
-		if (sound == null) return;
+		if (sound == null){
+			Logger.getLogger("VC4").info("No sound found: " + name);
+			return;
+		}
 
 		String source = "SOURCE_" + soundId;
 		++soundId;

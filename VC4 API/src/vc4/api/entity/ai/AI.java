@@ -5,8 +5,9 @@ import vc4.api.entity.EntityLiving;
 
 public abstract class AI {
 
-	EntityLiving owner;
+	protected EntityLiving owner;
 	boolean isRunning;
+	private boolean disabled;
 
 	public AI(EntityLiving owner) {
 		super();
@@ -15,6 +16,14 @@ public abstract class AI {
 	
 	public boolean isRunning() {
 		return isRunning;
+	}
+	
+	public int conflictId(){
+		return 0;
+	}
+	
+	public int priority(){
+		return 100;
 	}
 	
 	public void setRunning(boolean isRunning) {
@@ -26,4 +35,12 @@ public abstract class AI {
 	public abstract void start();
 	
 	public abstract boolean update();
+
+	public boolean isDisabled() {
+		return disabled;
+	}
+	
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 }

@@ -88,4 +88,5 @@ public interface World {
 	public abstract short getRegisteredContainer(String name);
 	public abstract void setDirty(long x, long y, long z);
 	public abstract RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach);
+	public void broadcast(String message, Vector3d pos, double radius);
 }

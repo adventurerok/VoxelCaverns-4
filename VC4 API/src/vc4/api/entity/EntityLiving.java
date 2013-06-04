@@ -1,6 +1,6 @@
 package vc4.api.entity;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.jnbt.CompoundTag;
 
@@ -27,17 +27,36 @@ public abstract class EntityLiving extends Entity {
 	public byte resistanceTime = 20;
 	public int resistedDamage = 100000;
 	public int healing = 25;
-	
+
 	public double walkSwing = 0;
 	public double walkSwingSin = 0;
-	
+
 	public double headYaw = Double.NaN;
-	
-	protected ArrayList<AI> ais = new ArrayList<>();
+
+	protected HashMap<String, AI> ais = new HashMap<>();
 
 	public EntityLiving(World world) {
 		super(world);
 		if (font == null) font = FontRenderer.createFontRenderer("unispaced_24", 0.15f);
+	}
+
+	public void lookAtEntity(Entity entity) {
+		double xDif = entity.position.x - position.x;
+		double zDif = entity.position.z - position.z;
+		double yDif;
+
+		if (entity instanceof EntityLiving) {
+			EntityLiving entityliving = (EntityLiving) entity;
+			yDif = (getEyeHeight()) - entityliving.getEyeHeight();
+		} else {
+			yDif = entity.position.y - getEyeHeight();
+		}
+
+		double dist = Math.sqrt(xDif * xDif + zDif * zDif);
+		float newYaw = (float) ((Math.atan2(zDif, xDif) * 180D) / Math.PI) - 90F;
+		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
+		pitch = -newPitch;
+		yaw = newYaw;
 	}
 
 	@Override
@@ -73,7 +92,7 @@ public abstract class EntityLiving extends Entity {
 			motionY = 0.7;
 		}
 	}
-	
+
 	@Override
 	public boolean includeInRayTrace() {
 		return true;
@@ -101,22 +120,60 @@ public abstract class EntityLiving extends Entity {
 		renderHumanModel(skin, null);
 	}
 
-	public void setModelRotations(Model model){
+	public void setModelRotations(Model model) {
 		double headY = headYaw == Double.NaN ? 0 : yaw + headYaw;
-		model.setRotation("head", new Vector3f(MathUtils.clamp((float) pitch, -30, 30), (float)headY, 0));
-		model.setRotation("leftarm", new Vector3f((float)walkSwing, 0, 0));
-		model.setRotation("rightarm", new Vector3f((float)-walkSwing, 0, 0));
-		model.setRotation("leftleg", new Vector3f((float)-walkSwing, 0, 0));
-		model.setRotation("rightleg", new Vector3f((float)walkSwing, 0, 0));
-		//System.out.println(walkSwing);
+		model.setRotation("head", new Vector3f(MathUtils.clamp((float) pitch, -30, 30), (float) headY, 0));
+		model.setRotation("leftarm", new Vector3f((float) walkSwing, 0, 0));
+		model.setRotation("rightarm", new Vector3f((float) -walkSwing, 0, 0));
+		model.setRotation("leftleg", new Vector3f((float) -walkSwing, 0, 0));
+		model.setRotation("rightleg", new Vector3f((float) walkSwing, 0, 0));
+		// System.out.println(walkSwing);
 	}
-	
+
 	public void renderHumanModel(String skin, String name) {
 		OpenGL gl = Graphics.getOpenGL();
 		gl.bindShader("model");
 		gl.shaderUniform1f("modelIndex", Resources.getAnimatedTexture("human").getArrayIndex(skin));
 		Vector4f colorMod = new Vector4f(1, 1, 1, 1);
-		if(resistanceTime > 0) colorMod.y = colorMod.z = 0;
+		if (resistanceTime > 0) colorMod.y = colorMod.z = 0;
+		gl.shaderUniform4f("colorMod", colorMod.x, colorMod.y, colorMod.z, colorMod.w);
+		Resources.getAnimatedTexture("human").bind();
+		Model model = Resources.getModel("human");
+		model.reset();
+		setModelRotations(model);
+		gl.pushMatrix();
+		gl.translate(position.x, position.y, position.z);
+		gl.pushMatrix();
+		gl.rotate((float) -yaw, 0, 1, 0);
+		model.draw();
+		gl.popMatrix();
+		if (name != null && !name.isEmpty()) {
+			gl.translate(0, size.y + 0.25, 0);
+			EntityPlayer plr = Client.getPlayer();
+			Vector2d myGrid = new Vector2d(position.x, position.z);
+			Vector2d plrGrid = new Vector2d(plr.position.x, plr.position.z);
+			double textYaw = myGrid.angle(plrGrid);
+			textYaw = Math.toDegrees(textYaw);
+			gl.rotate((float) -textYaw + 90, 0, 1, 0);
+			double textPitch = new Vector2d(0, position.y).angle(new Vector2d(plrGrid.distance(myGrid), plr.position.y));
+			textPitch = Math.toDegrees(textPitch);
+			gl.rotate((float) (180 - textPitch), 1, 0, 0);
+			name = "{f:b}" + name;
+			Vector2f textSize = font.measureString(name, 0.15f);
+			font.resetStyles();
+			font.renderString(-(textSize.x / 2), 0, name);
+		}
+		gl.popMatrix();
+		gl.unbindShader();
+	}
+
+	public void renderHumanModel(String skin, String name, String mt) {
+		OpenGL gl = Graphics.getOpenGL();
+		gl.bindShader("model_mt");
+		gl.shaderUniform1f("modelIndex", Resources.getAnimatedTexture("human").getArrayIndex(skin));
+		gl.shaderUniform1f("mtIndex", Resources.getAnimatedTexture("human").getArrayIndex(mt));
+		Vector4f colorMod = new Vector4f(1, 1, 1, 1);
+		if (resistanceTime > 0) colorMod.y = colorMod.z = 0;
 		gl.shaderUniform4f("colorMod", colorMod.x, colorMod.y, colorMod.z, colorMod.w);
 		Resources.getAnimatedTexture("human").bind();
 		Model model = Resources.getModel("human");
@@ -202,11 +259,29 @@ public abstract class EntityLiving extends Entity {
 		if (resistanceTime > 0) --resistanceTime;
 		else resistedDamage = 0;
 	}
-	
-	public void updateAIs(){
-		for(AI i : ais){
-			if(!i.isRunning()){
-				if(!i.shouldStart()) continue;
+
+	public void updateAIs() {
+		outside: for (AI i : ais.values()) {
+			if (i.isDisabled()) continue;
+			if (!i.isRunning()) {
+				for (AI j : ais.values()) {
+					if (i == j) continue;
+					if(!j.isRunning() || j.isDisabled()) continue;
+					int cf = i.conflictId() & j.conflictId();
+					if (cf == 0) continue;
+					if(j.priority() >= i.priority()) continue outside;
+
+				}
+				if (!i.shouldStart()) continue;
+				for (AI j : ais.values()) {
+					if (i == j) continue;
+					if(!j.isRunning() || j.isDisabled()) continue;
+					int cf = i.conflictId() & j.conflictId();
+					if (cf == 0) continue;
+					if (i.priority() > j.priority()) j.setRunning(false);
+					else continue outside;
+
+				}
 				i.setRunning(true);
 				i.start();
 			} else {
@@ -240,19 +315,20 @@ public abstract class EntityLiving extends Entity {
 		}
 		move(motionX, motionY, motionZ);
 		double moved = position.horizontalDistance(oldPos);
-		if(moved < 0.005){
+		if (moved < 0.005) {
 			walkSwing *= 0.5;
-			//walkSwingSin = 0;
-		}
-		else {
-			moved *= 100;
+			// walkSwingSin = 0;
+		} else {
+			moved *= 5;
 			walkSwingSin += moved;
-			walkSwing = MathUtils.sin((float) moved) * 85;
+			walkSwing = MathUtils.sin((float) walkSwingSin) * 85;
 		}
 		if (collisionHorizontal && movement == MovementStyle.SPRINT) movement = MovementStyle.WALK;
 	}
 
 	boolean sneaking;
+
+	protected int knockback;
 
 	public boolean isSneaking() {
 		return movement == MovementStyle.SNEAK;
@@ -281,5 +357,11 @@ public abstract class EntityLiving extends Entity {
 		fallDistance = 0;
 		resistanceTime = 20;
 		resistedDamage = 100000;
+	}
+
+	public void setHorizontalVelocity(double x, double z) {
+		if (knockback > 0) return;
+		motionX = x;
+		motionZ = z;
 	}
 }

@@ -396,5 +396,11 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	@Override
+	public void broadcast(String message, Vector3d pos, double radius) {
+		// TASK Auto-generated method stub
+		
+	}
+
 
 }
