@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vc4.vanilla.generation;
+package vc4.vanilla.generation.world;
 
 import java.util.*;
 
@@ -18,8 +18,12 @@ import vc4.api.vector.Vector3l;
 import vc4.api.world.MapData;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
+import vc4.vanilla.generation.chunk.ChunkGenChasms;
 import vc4.vanilla.generation.dungeon.room.DungeonRoomBase;
-import vc4.vanilla.generation.trees.TreeGenBasic;
+import vc4.vanilla.generation.plant.tree.TreeGenBasic;
+import vc4.vanilla.generation.populate.*;
+import vc4.vanilla.generation.recursive.RecursiveGenCaves;
+import vc4.vanilla.generation.recursive.RecursiveGenVolcano;
 
 /**
  * @author paul

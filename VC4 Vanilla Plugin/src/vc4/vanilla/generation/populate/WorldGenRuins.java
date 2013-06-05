@@ -1,5 +1,4 @@
-package vc4.vanilla.generation;
-
+package vc4.vanilla.generation.populate;
 
 import java.util.Random;
 
@@ -9,35 +8,39 @@ import vc4.api.generator.WorldPopulator;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 
-public class WorldGenDungeons implements WorldPopulator{
+public class WorldGenRuins implements WorldPopulator{
 
 	@Override
-	public void populate(World world, long x, long y, long z) {
-		Random rand = world.createRandom(x, y, z, 15625684286L);
-		Biome b = world.getBiome(x << 5, z << 5);
-		boolean badBiome = b.getType().equals(BiomeType.ocean) && y > -3;
-		if(y > -1 || badBiome) return;
-		if(rand.nextInt(150) != 0) return;
+	public void populate(World world, long x, long y, long z){
+		Random rand = world.createRandom(x, y, z, 10879072L);
+		if(rand.nextInt(50) != 0) return;
 		x <<= 5;
 		y <<= 5;
 		z <<= 5;
 		x += rand.nextInt(32);
 		y += rand.nextInt(32);
 		z += rand.nextInt(32);
+		if(world.getBlockId(x, y + 1, z) != Vanilla.dirt.uid && world.getBlockId(x, y + 1, z) != Vanilla.grass.uid) return;
+		if(world.getBlockId(x + 6, y + 1, z) != Vanilla.dirt.uid && world.getBlockId(x + 6, y + 1, z) != Vanilla.grass.uid) return;
+		if(world.getBlockId(x, y + 1, z + 6) != Vanilla.dirt.uid && world.getBlockId(x, y + 1, z + 6) != Vanilla.grass.uid) return;
+		if(world.getBlockId(x + 6, y + 1, z + 6) != Vanilla.dirt.uid && world.getBlockId(x + 6, y + 1, z + 6) != Vanilla.grass.uid) return;
+		if(world.getBlockId(x + 3, y + 5, z + 3) == Vanilla.dirt.uid || world.getBlockId(x + 3, y + 5, z + 3) == Vanilla.grass.uid) return;
+		Biome b = world.getBiome(x, z);
+		if(!b.getType().equals(BiomeType.normal)) return;
 		byte data = (byte) (rand.nextBoolean() ? 15 : 4);
+		int cz, h, cy;
 		for(int cx = 0; cx < 7; ++cx){
-			for(int cy = 0; cy < 6; ++cy){
-				for(int cz = 0; cz < 7; ++cz){
-					if(cx == 0 || cy == 0 || cz == 0 || cx == 6 || cy == 5 || cz == 6){
-						if(world.getBlockId(x + cx, y + cy, z + cz) == 0) continue;
+			for(cz = 0; cz < 7; ++cz){
+				world.setBlockId(x + cx, y, z + cz, rand.nextInt(2) == 0 ? Vanilla.mossBrick.uid : Vanilla.brick.uid);
+				world.setBlockData(x + cx, y, z + cz, data);
+				if(cx == 0 || cx == 6 || cz == 0 || cz == 6){
+					h = rand.nextInt(4) + 2;
+					for(cy = 1; cy < h; ++cy){
 						world.setBlockIdData(x + cx, y + cy, z + cz, rand.nextInt(2) == 0 ? Vanilla.mossBrick.uid : Vanilla.brick.uid, data);
-					} else {
-						world.setBlockId(x + cx, y + cy, z + cz, 0);
 					}
 				}
 			}
 		}
-		
 //		int cx = 1 + rand.nextInt(5);
 //		int cz = 1 + rand.nextInt(5);
 //		world.setBlockIdData(x + cx, y + 1, z + cz, Block.chest.uid, rand.nextByte((byte) 4));
@@ -57,11 +60,11 @@ public class WorldGenDungeons implements WorldPopulator{
 //			chest.chest.setItem(slot, new ItemStack(Block.brick.uid, 4, 1 + rand.nextInt(rand.nextInt(88) + 2)));
 //		}
 //
-//		//bones
-//		int skull = rand.nextInt(rand.nextInt(6) + 1);
+//		//skulls
+//		int skull = rand.nextInt(rand.nextInt(3) + 1);
 //		for(int dofor = 0; dofor < skull; ++dofor){
 //			int slot = rand.nextInt(44);
-//			chest.chest.setItem(slot, new ItemStack(Item.loot.shiftedIndex(), 1, 1 + rand.nextInt(rand.nextInt(54) + 3)));
+//			chest.chest.setItem(slot, new ItemStack(Item.loot.shiftedIndex(), 2, 1 + rand.nextInt(rand.nextInt(4) + 1)));
 //		}
 //
 //		//tools
@@ -86,6 +89,6 @@ public class WorldGenDungeons implements WorldPopulator{
 //			int slot = rand.nextInt(44);
 //			chest.chest.setItem(slot, new ItemStack(tool, rand.nextInt(rand.nextInt(196) + 1), 1));
 //		}
+		
 	}
-
 }

@@ -1,4 +1,4 @@
-package vc4.vanilla.generation;
+package vc4.vanilla.generation.plant.tree;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ import vc4.vanilla.Vanilla;
 public abstract class TreeGen implements PlantGenerator{
 
 	protected World world;
-	protected Random rand;
+	public Random rand;
 	
 	public TreeGen() {
 		// TASK Auto-generated constructor stub

@@ -13,6 +13,7 @@ import vc4.api.vector.Vector3l;
 public class Door {
 
 	public Vector3l left, right;
+	public int width = 2;
 	public Direction dir;
 	
 	/* (non-Javadoc)
@@ -22,6 +23,8 @@ public class Door {
 	public Door clone() {
 		return new Door(left, right, dir);
 	}
+	
+	
 
 	public Door(Vector3l left, Vector3l right, Direction dir) {
 		super();
@@ -46,9 +49,18 @@ public class Door {
 		return di;
 	}
 	
+	public Door setWidth(int width) {
+		this.width = width;
+		return this;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
 	public Door setNewRoomDir(Direction dir){
 		this.dir = dir;
-		if(left.equals(right.move(1, dir.clockwise()))){
+		if(left.equals(right.move(width, dir.clockwise()))){
 			Vector3l ri = right;
 			right = left;
 			left = ri;
@@ -58,5 +70,15 @@ public class Door {
 
 	public Door move(int amount, Direction dir) {
 		return new Door(left.move(amount, dir), right.move(amount, dir), dir);
+	}
+
+
+
+	public Door(Vector3l pos, Direction dir) {
+		super();
+		this.left = pos;
+		this.right = pos;
+		this.dir = dir;
+		width = 1;
 	}
 }

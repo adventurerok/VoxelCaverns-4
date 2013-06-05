@@ -1,11 +1,10 @@
-package vc4.vanilla.generation.trees;
+package vc4.vanilla.generation.plant.tree;
 
 import java.util.Random;
 
 import vc4.api.block.Plant;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
-import vc4.vanilla.generation.TreeGen;
 
 public class TreeGenRedwood extends TreeGen {
 

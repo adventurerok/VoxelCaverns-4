@@ -1,4 +1,4 @@
-package vc4.vanilla.generation;
+package vc4.vanilla.generation.recursive;
 
 import java.util.Random;
 

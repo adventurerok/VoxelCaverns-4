@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vc4.vanilla.generation;
+package vc4.vanilla.generation.populate;
 
 import java.util.Random;
 
