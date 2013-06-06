@@ -83,7 +83,7 @@ public class Dungeon {
 	}
 	
 	public boolean addRoom(RoomBB bb){
-		if(hasRoom(bb)) return false;
+		if(hasRoom(bb.expand(1))) return false;
 		rooms.add(bb);
 		return true;
 	}

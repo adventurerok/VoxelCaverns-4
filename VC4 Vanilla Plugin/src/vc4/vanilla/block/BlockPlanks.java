@@ -15,7 +15,6 @@ public class BlockPlanks extends BlockMultitexture {
 	
 	public BlockPlanks(short uid) {
 		super(uid, 1, Material.getMaterial("wood"), BlockTexture.woodFront);
-		// TASK Auto-generated constructor stub
 	}
 	public static Color[] backColors = new Color[]{
 		new Color(0x7F3300), //Oak

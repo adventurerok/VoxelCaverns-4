@@ -1,11 +1,11 @@
 package vc4.vanilla.itementity;
 
 import java.awt.Color;
-import java.io.IOException;
 
 import org.jnbt.CompoundTag;
 
 import vc4.api.itementity.ItemEntity;
+import vc4.api.world.World;
 import vc4.vanilla.block.BlockPlanks;
 
 public class ItemEntityChest extends ItemEntity {
@@ -51,10 +51,6 @@ public class ItemEntityChest extends ItemEntity {
 		return Color.white;
 	}
 
-	@Override
-	public short getId() {
-		return 1;
-	}
 
 	@Override
 	public ItemEntity clone() {
@@ -97,18 +93,25 @@ public class ItemEntityChest extends ItemEntity {
 		return equals(entity);
 	}
 
+	
 	@Override
-	public void writeAdditionalData(CompoundTag tag) throws IOException {
+	public CompoundTag getSaveCompound(World world) {
+		CompoundTag tag = super.getSaveCompound(world);
 		tag.setNibble("type", type);
 		tag.setNibble("sub", subtype);
-		
+		return tag;
 	}
 
 	@Override
-	public void readAdditionalData(CompoundTag tag) throws IOException {
+	public void loadSaveCompound(World world, CompoundTag tag) {
+		super.loadSaveCompound(world, tag);
 		type = tag.getNibble("type");
 		subtype = tag.getNibble("sub");
-		
+	}
+
+	@Override
+	public String getName() {
+		return "vanilla.chest";
 	}
 	
 	

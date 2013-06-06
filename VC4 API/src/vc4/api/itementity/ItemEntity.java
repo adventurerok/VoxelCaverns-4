@@ -1,20 +1,24 @@
 package vc4.api.itementity;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 import org.jnbt.CompoundTag;
-import org.jnbt.ShortTag;
+
+import vc4.api.entity.Entity;
+import vc4.api.logging.Logger;
+import vc4.api.world.World;
 
 public abstract class ItemEntity {
 
 	
-	public static HashMap<Short, Class<? extends ItemEntity>> types = new HashMap<Short, Class<? extends ItemEntity>>();
+	public static HashMap<String, Constructor<? extends ItemEntity>> types = new HashMap<>();
 	
-	public abstract void writeAdditionalData(CompoundTag tag) throws IOException;
-	public abstract void readAdditionalData(CompoundTag tag) throws IOException;
-	public abstract short getId();
+	public abstract String getName();
+	
+	public short getId(World world){
+		return world.getRegisteredItemEntity(getName());
+	}
 	
 	public boolean canCombine(ItemEntity entity){
 		return false;
@@ -22,38 +26,45 @@ public abstract class ItemEntity {
 	@Override
 	public abstract ItemEntity clone();
 	
-	public static void writeItemEntity(ItemEntity e, CompoundTag tag) throws IOException{
-		tag.addTag(new ShortTag("id", e.getId()));
-		e.writeAdditionalData(tag);
+	public CompoundTag getSaveCompound(World world){
+		CompoundTag tag = new CompoundTag("tag");
+		tag.setShort("id", getId(world));
+		return tag;
 	}
-	public static ItemEntity readItemEntity(CompoundTag tag) throws IOException{
+	
+	public static Constructor<? extends ItemEntity> getItemEntityType(String name){
+		return types.get(name);
+	}
+	
+	public void loadSaveCompound(World world, CompoundTag tag){
+		
+	}
+	
+	public static ItemEntity loadItemEntity(World world, CompoundTag tag){
+		short id = tag.getShort("id");
+		String name = world.getItemEntityName(id);
+		Constructor<? extends ItemEntity> clz = getItemEntityType(name);
 		try {
-			ItemEntity e = types.get(tag.getShortTag("id").getValue()).getConstructor().newInstance();
-			e.readAdditionalData(tag);
+			ItemEntity e = clz.newInstance();
+			e.loadSaveCompound(world, tag);
 			return e;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Logger.getLogger(Entity.class).warning("Exception while loading item entity: " + name, e);
 		}
 		return null;
 	}
 	
-	public static void registerEntity(short id, Class<? extends ItemEntity> c){
-		types.put(id, c);
+	public static void registerEntity(String name, Class<? extends ItemEntity> c){
+		try {
+			types.put(name, c.getConstructor());
+		} catch (NoSuchMethodException | SecurityException e) {
+			Logger.getLogger(ItemEntity.class).warning("Failed to register itementity: " + name, e);
+		}
 	}
 	
 	public static void initClass(){}
 	
 	static{
-		registerEntity((short)0, ItemEntityEnchantment.class);
+		registerEntity("enchantment", ItemEntityEnchantment.class);
 	}
 }

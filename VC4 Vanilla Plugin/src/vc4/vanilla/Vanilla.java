@@ -15,6 +15,7 @@ import vc4.api.generator.GeneratorList;
 import vc4.api.generator.PlantGrowth;
 import vc4.api.gui.GuiOpenContainer;
 import vc4.api.item.Item;
+import vc4.api.itementity.ItemEntity;
 import vc4.api.plugin.Plugin;
 import vc4.api.sound.Music;
 import vc4.api.sound.MusicType;
@@ -34,6 +35,7 @@ import vc4.vanilla.generation.world.*;
 import vc4.vanilla.gui.GuiChest;
 import vc4.vanilla.item.ItemTool;
 import vc4.vanilla.item.ItemVanillaFood;
+import vc4.vanilla.itementity.ItemEntityChest;
 import vc4.vanilla.tileentity.TileEntityChest;
 
 /**
@@ -49,7 +51,7 @@ public class Vanilla extends Plugin {
 	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
-	public static Block workbench, chest;
+	public static Block workbench, chest, table;
 	
 	//Items
 	public static Item food;
@@ -233,12 +235,18 @@ public class Vanilla extends Plugin {
 		willowVines = new BlockWillowVine(world.getRegisteredBlock("vanilla.willowvine"), BlockTexture.vines, "vine").setName("vine");
 		workbench = new BlockCraftingTable(world.getRegisteredBlock("vanilla.workbench"), 0, "wood").setName("craftingtable");
 		chest = new BlockChest(world.getRegisteredBlock("vanilla.chest")).setName("chest");
+		table = new BlockTable(world.getRegisteredBlock("vanilla.table")).setName("table");
 	}
 	
 	@Override
 	public void loadItems(World world) {
 		generateToolItems(world);
 		food = new ItemVanillaFood(world.getRegisteredItem("vanilla.food"));
+	}
+	
+	@Override
+	public void loadItemEntities(World world) {
+		ItemEntity.registerEntity("vanilla.chest", ItemEntityChest.class);
 	}
 	
 	@Override

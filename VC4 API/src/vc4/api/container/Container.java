@@ -188,7 +188,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	}
 
 
-	protected void readExtraData(CompoundTag tag) {
+	protected void readExtraData(World world, CompoundTag tag) {
 
 	}
 
@@ -239,7 +239,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	}
 
 
-	protected void writeExtraData(CompoundTag tag) {
+	protected void writeExtraData(World world, CompoundTag tag) {
 
 	}
 
@@ -251,13 +251,13 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		for(int d = 0; d < getSize(); ++d){
 			if(getItem(d) == null || !getItem(d).checkIsNotEmpty()) continue;
 			CompoundTag i = new CompoundTag("item");
-			ItemStack.write(getItem(d), i);
+			ItemStack.write(world, getItem(d), i);
 			i.setInt("slot", d);
 			lis.addTag(i);
 		}
 		tag.addTag(lis);
 		tag.setBoolean("open", isOpen());
-		writeExtraData(tag);
+		writeExtraData(world, tag);
 	}
 
 	public static void initClass() {
@@ -272,11 +272,11 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			ListTag lis = tag.getListTag("items");
 			while(lis.hasNext()){
 				CompoundTag t = (CompoundTag) lis.getNextTag();
-				ItemStack i = ItemStack.read(t);
+				ItemStack i = ItemStack.read(world, t);
 				c.slots[t.getInt("slot")] = i;
 			}
 			c.isOpen = tag.getBoolean("open");
-			c.readExtraData(tag);
+			c.readExtraData(world, tag);
 			return c;
 		} catch (SecurityException e) {
 			e.printStackTrace();

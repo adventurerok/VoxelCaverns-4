@@ -127,7 +127,7 @@ public class EntityItem extends Entity {
 	public CompoundTag getSaveCompound() {
 		CompoundTag tag = super.getSaveCompound();
 		CompoundTag itm = new CompoundTag("item");
-		ItemStack.write(item, itm);
+		ItemStack.write(world, item, itm);
 		tag.addTag(itm);
 		return tag;
 	}
@@ -135,7 +135,7 @@ public class EntityItem extends Entity {
 	@Override
 	public void loadSaveCompound(CompoundTag tag) {
 		super.loadSaveCompound(tag);
-		item = ItemStack.read(tag.getCompoundTag("item"));
+		item = ItemStack.read(world, tag.getCompoundTag("item"));
 	}
 
 }

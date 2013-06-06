@@ -1,11 +1,15 @@
 package vc4.vanilla.generation.village.building;
 
-import java.util.Random;
+import java.util.*;
+import java.util.Map.Entry;
 
 import vc4.api.client.Client;
+import vc4.api.math.MathUtils;
+import vc4.api.util.Adjustment;
 import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.Vanilla;
 import vc4.vanilla.entity.EntityNpc;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
@@ -15,8 +19,18 @@ import vc4.vanilla.generation.village.style.VillageStyle;
 
 public class BuildingHouse implements Building {
 
+	private static HashMap<Adjustment, Integer> furniture = new HashMap<>();
+	private static Village lastVille;
+	
+	public static void loadFurnature(Village ville){
+		furniture.clear();
+		furniture.put(new Adjustment(6, 3, 0), (int)Vanilla.table.uid);
+		lastVille = ville;
+	}
+	
 	@Override
 	public void generate(World world, Door door, Village ville) {
+		if(ville != lastVille) loadFurnature(ville);
 		Vector3l start = door.left;
 		start = start.move(3, door.dir.counterClockwise());
 		if(!ville.inBounds(start)) return;
@@ -28,14 +42,14 @@ public class BuildingHouse implements Building {
 		long sz = Math.min(start.z, end.z);
 		long ex = Math.max(start.x, end.x);
 		long ez = Math.max(start.z, end.z);
-		RoomBB bb = new RoomBB(sx + 1, start.y, sz + 1, ex - 1, start.y + 3, ez - 1);
+		RoomBB bb = new RoomBB(sx - 1, start.y, sz - 1, ex + 1, start.y + 3, ez + 1);
 		if(!ville.addRoom(bb)) return;
 		for(long x = sx; x <= ex; ++x){
 			for(long z = sz; z <= ez; ++z){
-				for(long y = start.y - 1; y < start.y + 5; ++y){
+				for(long y = start.y - 1; y < start.y + 4; ++y){
 					boolean xWall = x == sx || x == ex;
 					boolean zWall = z == sz || z == ez;
-					if(y == start.y - 1 || y == start.y + 4){
+					if(y == start.y - 1 || y == start.y + 3){
 						if(xWall || zWall) ville.setLogBlock(x, y, z);
 						else ville.setPlankBlock(x, y, z);
 					} else if(xWall || zWall){
@@ -45,10 +59,20 @@ public class BuildingHouse implements Building {
 				}
 			}
 		}
+		for(Entry<Adjustment, Integer> s : furniture.entrySet()){
+			Vector3l pal = s.getKey().adjust(door.left, door.dir);
+			world.setBlockId(pal.x, pal.y, pal.z, s.getValue());
+		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
 		ville.setEmptyBlock(door.left.x, door.left.y + 1, door.left.z);
 		ville.setEmptyBlock(door.right.x, door.right.y, door.right.z);
 		ville.setEmptyBlock(door.right.x, door.right.y + 1, door.right.z);
+		Vector3l backLeft = door.left.move(1, door.dir.opposite());
+		Vector3l backRight = door.right.move(1, door.dir.opposite());
+		ville.setEmptyBlock(backLeft.x, backLeft.y, backLeft.z);
+		ville.setEmptyBlock(backLeft.x, backLeft.y + 1, backLeft.z);
+		ville.setEmptyBlock(backRight.x, backRight.y, backRight.z);
+		ville.setEmptyBlock(backRight.x, backRight.y + 1, backRight.z);
 		EntityNpc npc = new EntityNpc(world);
 		npc.setPosition(sx + 4, start.y + 0.93, sz + 4);
 		npc.yaw = ville.getRand().nextInt(360) + ville.getRand().nextDouble();
@@ -60,8 +84,8 @@ public class BuildingHouse implements Building {
 	
 	public void generate(World world, long x, long y, long z){
 		Random rand = world.createRandom(x, y, z, 1263763L);
-		if(y < 0 || y > 4) return;
-		if(rand.nextInt(Client.debugMode() ? 50 : 500) != 0) return;
+		if(y < -1 || y > 4) return;
+		if(rand.nextInt(Client.debugMode() ? 150 : 500) != 0) return;
 		x <<= 5;
 		y <<= 5;
 		z <<= 5;
@@ -86,9 +110,12 @@ public class BuildingHouse implements Building {
 			}
 			if(hy - ly > 4) continue;
 			Building room = nextRoom(ville.getStyle(), rand);
-			Door door = Door.genDoor(new Vector3l(bx, ay, bz), Direction.getDirection(rand.nextInt(4)));
+			Direction dir =  Direction.getDirection(rand.nextInt(4));
+			Door door = Door.genDoor(new Vector3l(bx, MathUtils.floor(((ay + ly + hy) / 3d) + 1), bz), dir);
+			door.setNewRoomDir(dir.counterClockwise());
 			room.generate(world, door, ville);
 		}
+		lastVille = null;
 	}
 	
 	public static Building nextRoom(VillageStyle style, Random rand){

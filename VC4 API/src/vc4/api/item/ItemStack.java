@@ -14,10 +14,12 @@ import vc4.api.crafting.CraftingStack;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.itementity.ItemEntity;
 import vc4.api.itementity.ItemEntityEnchantment;
+import vc4.api.logging.Logger;
 import vc4.api.stats.Stats;
 import vc4.api.tool.Tool;
 import vc4.api.util.ColorUtils;
 import vc4.api.util.NumberUtils;
+import vc4.api.world.World;
 
 
 /**
@@ -443,43 +445,40 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 		out.writeShort(damage);
 		out.writeInt(amount);
 	}
-	public static void write(ItemStack s, CompoundTag tag){
-		try {
-			tag.setShort("id", s == null ? 0 : s.itemId);
-			if(s == null || !s.checkIsNotEmpty()) return;
-			tag.setShort("damage", s.damage);
-			tag.setInt("amount", s.amount);
-			if(s.entities.size() > 0){
-				ListTag lis = new ListTag("entitys", CompoundTag.class);
-				for(int d = 0; d < s.entities.size(); ++d){
-					CompoundTag t = new CompoundTag("entity");
-					ItemEntity.writeItemEntity(s.entities.get(d), t);
-					lis.addTag(t);
+	public static void write(World world, ItemStack s, CompoundTag tag){
+		tag.setShort("id", s == null ? 0 : s.itemId);
+		if(s == null || !s.checkIsNotEmpty()) return;
+		tag.setShort("damage", s.damage);
+		tag.setInt("amount", s.amount);
+		if(s.entities.size() > 0){
+			ListTag lis = new ListTag("entitys", CompoundTag.class);
+			for(int d = 0; d < s.entities.size(); ++d){
+				try{
+					lis.addTag(s.entities.get(d).getSaveCompound(world));
+				} catch(Exception e){
+					Logger.getLogger("VC4").info("Failed to save ItemEntity", e);
 				}
-				tag.addTag(lis);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			tag.addTag(lis);
 		}
 	}
-	public static ItemStack read(CompoundTag in){
-		try {
-			short id = in.getShort("id");
-			if(id == 0) return null;
-			ItemStack s = new ItemStack(id);
-			s.damage = in.getShort("damage");
-			s.amount = in.getInt("amount");
-			if(in.hasKey("entitys")){
-				ListTag lis = in.getListTag("entitys");
-				while(lis.hasNext()){
-					s.entities.add(ItemEntity.readItemEntity((CompoundTag) lis.getNextTag()));
+	public static ItemStack read(World world, CompoundTag in){
+		short id = in.getShort("id");
+		if(id == 0) return null;
+		ItemStack s = new ItemStack(id);
+		s.damage = in.getShort("damage");
+		s.amount = in.getInt("amount");
+		if(in.hasKey("entitys")){
+			ListTag lis = in.getListTag("entitys");
+			while(lis.hasNext()){
+				try{
+					s.entities.add(ItemEntity.loadItemEntity(world, (CompoundTag) lis.getNextTag()));
+				} catch(Exception e){
+					Logger.getLogger("VC4").info("Failed to read ItemEntity", e);
 				}
 			}
-			return s;
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		return null;
+		return s;
 	}
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		itemId = in.readShort();

@@ -14,7 +14,7 @@ public class VillageStyle {
 	
 	
 	public boolean canGenerate(World world, long x, long y, long z){
-		return y < -32;
+		return y > -32 && y < 129;
 	}
 	
 	

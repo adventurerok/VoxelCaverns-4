@@ -12,6 +12,7 @@ public class TraitInventory extends Trait {
 	
 	public TraitInventory(Entity entity) {
 		super(entity);
+		inventory = new ContainerItems(44);
 	}
 
 	@Override

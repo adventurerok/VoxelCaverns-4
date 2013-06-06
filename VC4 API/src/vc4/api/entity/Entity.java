@@ -439,7 +439,12 @@ public abstract class Entity {
 		motionZ = motion.getDouble("z");
 		health = tag.getInt("hp");
 		ticksAlive = tag.getLong("alive");
+		HashMap<String, Trait> newTraits = new HashMap<>();
+		for(Trait t : traits.values()){
+			if(!t.persistent()) newTraits.put(t.name(), t);
+		}
 		traits.clear();
+		traits = newTraits;
 		if(tag.hasKey("traits")){
 			ListTag trs = tag.getListTag("traits");
 			while(trs.hasNext()){

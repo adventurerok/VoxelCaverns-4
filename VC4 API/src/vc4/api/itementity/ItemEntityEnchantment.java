@@ -1,9 +1,10 @@
 package vc4.api.itementity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jnbt.*;
+
+import vc4.api.world.World;
 
 public class ItemEntityEnchantment extends ItemEntity {
 
@@ -41,15 +42,20 @@ public class ItemEntityEnchantment extends ItemEntity {
 
 	public ArrayList<Short> enchantments = new ArrayList<Short>();
 	
+	
 	@Override
-	public void writeAdditionalData(CompoundTag tag) throws IOException {
+	public CompoundTag getSaveCompound(World world) {
+		CompoundTag tag = super.getSaveCompound(world);
 		ListTag lis = new ListTag("ench", ShortTag.class);
 		for(int d = 0; d < enchantments.size(); ++d) lis.addTag(new ShortTag("val", enchantments.get(d)));
 		tag.addTag(lis);
+		return tag;
 	}
 
+	
 	@Override
-	public void readAdditionalData(CompoundTag tag) throws IOException {
+	public void loadSaveCompound(World world, CompoundTag tag) {
+		super.loadSaveCompound(world, tag);
 		ListTag lis = tag.getListTag("ench");
 		enchantments.clear();
 		while(lis.hasNext()){
@@ -73,10 +79,7 @@ public class ItemEntityEnchantment extends ItemEntity {
 		enchantments.add(ench);
 	}
 
-	@Override
-	public short getId() {
-		return 0;
-	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -84,6 +87,11 @@ public class ItemEntityEnchantment extends ItemEntity {
 		ItemEntityEnchantment e = new ItemEntityEnchantment();
 		e.enchantments = (ArrayList<Short>) enchantments.clone();
 		return e;
+	}
+
+	@Override
+	public String getName() {
+		return "enchantment";
 	}
 
 }

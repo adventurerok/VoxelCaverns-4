@@ -23,6 +23,7 @@ public class Village {
 	public ArrayList<String> lastNames = new ArrayList<>();
 	
 	byte woodType;
+	byte logType;
 	byte brickType;
 	
 	VillageStyle style;
@@ -68,11 +69,13 @@ public class Village {
 		this.rand = rand;
 		this.world = world;
 		woodType = (byte) rand.nextInt(7);
+		logType = (byte) rand.nextInt(7);
 		brickType = 0;
+		style = getVillageStyle(world, minX + maxX  / 2, maxY, minZ + maxZ / 2, rand);
 	}
 	
 	public void setLogBlock(long x, long y, long z){
-		world.setBlockIdDataNoNotify(x, y, z, Vanilla.logV.uid, woodType);
+		world.setBlockIdDataNoNotify(x, y, z, Vanilla.logV.uid, logType);
 	}
 	
 	public void setCobbleBlock(long x, long y, long z){
