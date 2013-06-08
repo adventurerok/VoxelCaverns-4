@@ -11,7 +11,6 @@ import vc4.api.entity.Entity;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.math.MathUtils;
 import vc4.api.tileentity.TileEntity;
-import vc4.api.util.EntityList;
 import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3i;
 import vc4.api.world.*;
@@ -26,7 +25,7 @@ public class ImplChunk implements Chunk {
 	ChunkPos pos;
 	private ImplWorld world;
 	private boolean populated;
-	public EntityList entitys = new EntityList();
+	public ArrayList<Entity> entitys = new ArrayList<>();
 	private boolean isModified = false;
 	private boolean unloading = false;
 	
@@ -228,7 +227,7 @@ public class ImplChunk implements Chunk {
 	}
 
 	public void update(Random rand) {
-		EntityList alive = new EntityList();
+		ArrayList<Entity> alive = new ArrayList<>();
 		Entity e;
 		long qx, qy, qz;
 		for (int dofor = entitys.size() - 1; dofor > -1; --dofor) {
@@ -305,7 +304,7 @@ public class ImplChunk implements Chunk {
 	}
 
 	@Override
-	public EntityList getEntityList() {
+	public ArrayList<Entity> getEntityList() {
 		return entitys;
 	}
 	

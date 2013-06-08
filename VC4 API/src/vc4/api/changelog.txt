@@ -185,3 +185,5 @@ VC4-Development-0.0.1-232
 	+ Saving and loading
 VC4-Development-0.0.1-233
 	+ Added model support
+VC4-Development-0.0.1-234
+	+ Added TextureCoords for rotating textures

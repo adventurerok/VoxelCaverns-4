@@ -2,6 +2,7 @@ package vc4.impl.io;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -13,7 +14,6 @@ import vc4.api.logging.Logger;
 import vc4.api.profile.Profiler;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.util.DirectoryLocator;
-import vc4.api.util.EntityList;
 import vc4.api.vector.Vector2l;
 import vc4.api.world.*;
 import vc4.impl.world.*;
@@ -87,7 +87,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		return chunk;
 	}
 
-	@SuppressWarnings("resource")
+	@SuppressWarnings({ "resource", "unchecked" })
 	@Override
 	public void writeChunk(Chunk c) throws IOException {
 		Profiler.start("writechunk");
@@ -98,7 +98,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		CompoundTag root = new CompoundTag("root");
 		root.setBoolean("populated", chunk.isPopulated());
 		ListTag elist = new ListTag("entitys", CompoundTag.class);
-		EntityList lis = c.getEntityList().clone();
+		List<Entity> lis = (List<Entity>)c.getEntityList().clone();
 		for(int d = 0; d < lis.size(); ++d){
 			if(!lis.get(d).persistent()) continue;
 			CompoundTag tag = lis.get(d).getSaveCompound();

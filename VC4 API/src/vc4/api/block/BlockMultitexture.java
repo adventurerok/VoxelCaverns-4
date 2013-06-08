@@ -5,6 +5,7 @@ package vc4.api.block;
 
 import java.awt.Color;
 
+import vc4.api.graphics.TextureCoords;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
 
@@ -35,8 +36,14 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 		super(uid, texture, m);
 		
 	}
+	
 
 	public BlockMultitexture(short uid, int texture, Material m, int mtIndex) {
+		super(uid, texture, m);
+		this.mtIndex = mtIndex;
+	}
+	
+	public BlockMultitexture(int uid, int texture, Material m, int mtIndex) {
 		super(uid, texture, m);
 		this.mtIndex = mtIndex;
 	}
@@ -87,6 +94,16 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 	@Override
 	public boolean multitextureUsed(byte data, int side) {
 		return true;
+	}
+
+	@Override
+	public void setOrientationMultitexture(World world, long x, long y, long z, int side, TextureCoords coords) {
+		
+	}
+
+	@Override
+	public void setOrientationMultitexture(ItemStack item, int side, TextureCoords coords) {
+
 	}
 
 }

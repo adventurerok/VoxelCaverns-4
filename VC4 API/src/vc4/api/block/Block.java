@@ -9,6 +9,7 @@ import java.util.*;
 import vc4.api.block.render.*;
 import vc4.api.entity.EntityItem;
 import vc4.api.entity.EntityPlayer;
+import vc4.api.graphics.TextureCoords;
 import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.api.text.Localization;
@@ -204,6 +205,14 @@ public class Block {
 	 */
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
 		return textureIndex;
+	}
+	
+	public void setOrientation(World world, long x, long y, long z, int side, TextureCoords coords){
+		
+	}
+	
+	public void setOrientation(ItemStack item, int side, TextureCoords coords){
+		
 	}
 	
 	public int getTextureIndex(ItemStack item, int side){

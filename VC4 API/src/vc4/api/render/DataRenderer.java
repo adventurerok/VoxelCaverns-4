@@ -236,6 +236,12 @@ public class DataRenderer implements Renderer {
 	public void addVertex(Vector3d vertex) {
 		addVertex(vertex.x, vertex.y, vertex.z);
 	}
+
+	@Override
+	public void tex(Vector3f tex) {
+		tex(tex.x, tex.y, tex.z, 0);
+		
+	}
 	
 
 }

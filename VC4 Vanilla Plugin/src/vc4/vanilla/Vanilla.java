@@ -51,7 +51,7 @@ public class Vanilla extends Plugin {
 	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
-	public static Block workbench, chest, table;
+	public static Block workbench, chest, table, chair;
 	
 	//Items
 	public static Item food;
@@ -236,6 +236,7 @@ public class Vanilla extends Plugin {
 		workbench = new BlockCraftingTable(world.getRegisteredBlock("vanilla.workbench"), 0, "wood").setName("craftingtable");
 		chest = new BlockChest(world.getRegisteredBlock("vanilla.chest")).setName("chest");
 		table = new BlockTable(world.getRegisteredBlock("vanilla.table")).setName("table");
+		chair = new BlockChair(world.getRegisteredBlock("vanilla.chair")).setName("chair");
 	}
 	
 	@Override

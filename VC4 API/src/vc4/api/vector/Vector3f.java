@@ -29,6 +29,10 @@ public class Vector3f implements Vector3<Vector3f> {
 		this.z = z;
 	}
 
+	public Vector3f(double x, double y, double z) {
+		this((float)x, (float)y, (float)z);
+	}
+
 	@Override
 	public Vector3f add(Vector3f vec) {
 		return new Vector3f(x + vec.x, y + vec.y, z + vec.z);

@@ -333,7 +333,7 @@ public class ImplWorld implements World {
 	public AABB[] getAABBsInBounds(AABB bounds, Entity exclude) {
 		List<AABB> list = getBlockCollisionInBounds(bounds);
 		if (list == null) list = new ArrayList<AABB>();
-		EntityList entities = getEntitiesInBoundsExcluding(bounds, exclude);
+		List<Entity> entities = getEntitiesInBoundsExcluding(bounds, exclude);
 		for (int dofor = 0; dofor < entities.size(); ++dofor) {
 			if (entities.get(dofor).bounds != null && entities.get(dofor).canCollide(exclude)) {
 				list.add(entities.get(dofor).bounds);
@@ -435,10 +435,10 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public EntityList getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
 		if (bounds == null) return null;
 
-		EntityList list = new EntityList();
+		List<Entity> list = new ArrayList<>();
 		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
 		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
 		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
@@ -465,10 +465,10 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public EntityList getEntitiesInBounds(AABB bounds) {
+	public List<Entity> getEntitiesInBounds(AABB bounds) {
 		if (bounds == null) return null;
 
-		EntityList list = new EntityList();
+		List<Entity> list = new ArrayList<>();
 		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
 		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
 		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
@@ -699,7 +699,7 @@ public class ImplWorld implements World {
 	public RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach) {
 		Vector3d start = entity.getEyePos();
 		AABB checkBounds = entity.bounds.include(end.x, end.y, end.z).expand(1F, 1F, 1F);
-		EntityList entities = getEntitiesInBoundsExcluding(checkBounds, entity);
+		List<Entity> entities = getEntitiesInBoundsExcluding(checkBounds, entity);
 		Entity pointing = null;
 		double closest = reach + 1;
 		Vector3d vector = null;
@@ -1013,6 +1013,15 @@ public class ImplWorld implements World {
 
 	@SuppressWarnings("unchecked")
 	public void updateTick(Vector3d loc) {
+		for(EntityPlayer plr : players){
+			plr.addTickSinceUpdate();
+			if(plr.getTicksSinceUpdate() > 5){
+				plr.world = this;
+				plr.addToWorld();
+				plr.setTicksSinceUpdate(0);
+				Logger.getLogger("VC4").info("Found player " + plr.getPlayerName() + " not in world");
+			}
+		}
 		Profiler.clear();
 		infiniteWorld(loc);
 		Profiler.start("update");
@@ -1336,6 +1345,40 @@ public class ImplWorld implements World {
 			if(p.position.distanceSquared(pos) > radius) continue;
 			p.message(message);
 		}
+	}
+
+	@Override
+	public List<Entity> getCollidableEntitiesInBounds(AABB bounds) {
+		if (bounds == null) return null;
+
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long y, z;
+		int dofor;
+		ImplChunk c;
+		Entity e;
+		for (long x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						e = c.entitys.get(dofor);
+						if (e != null && e.canCollide(null) && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
 	}
 
 }

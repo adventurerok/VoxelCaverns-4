@@ -207,17 +207,6 @@ public class TestWorld implements World {
 		return null;
 	}
 
-	@Override
-	public EntityList getEntitiesInBounds(AABB bounds) {
-		// TASK Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public EntityList getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
-		// TASK Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public double getFallAcceleration() {
@@ -410,6 +399,24 @@ public class TestWorld implements World {
 	@Override
 	public short getRegisteredTrait(String name) {
 		return 0;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBounds(AABB bounds) {
+		// TASK Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
+		// TASK Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Entity> getCollidableEntitiesInBounds(AABB bounds) {
+		// TASK Auto-generated method stub
+		return null;
 	}
 
 

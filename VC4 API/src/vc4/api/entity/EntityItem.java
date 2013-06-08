@@ -1,5 +1,7 @@
 package vc4.api.entity;
 
+import java.util.List;
+
 import org.jnbt.CompoundTag;
 
 import vc4.api.Resources;
@@ -9,7 +11,6 @@ import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 import vc4.api.render.DataRenderer;
 import vc4.api.render.ItemRenderer;
-import vc4.api.util.EntityList;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.World;
 
@@ -46,7 +47,7 @@ public class EntityItem extends Entity {
 			isDead = true;
 			return;
 		}
-		EntityList entities = world.getEntitiesInBoundsExcluding(bounds.expand(1, 1, 1), this);
+		List<Entity> entities = world.getEntitiesInBoundsExcluding(bounds.expand(1, 1, 1), this);
 		for(int d = 0; d < entities.size(); ++d){
 			Entity e = entities.get(d);
 			if(e == null) continue;

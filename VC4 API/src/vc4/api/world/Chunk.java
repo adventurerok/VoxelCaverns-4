@@ -3,8 +3,9 @@
  */
 package vc4.api.world;
 
+import java.util.ArrayList;
+
 import vc4.api.entity.Entity;
-import vc4.api.util.EntityList;
 
 /**
  * @author paul
@@ -20,7 +21,7 @@ public interface Chunk {
 	public ChunkPos getChunkPos();
 	public World getWorld();
 	public void addEntity(Entity entity);
-	public EntityList getEntityList();
+	public ArrayList<Entity> getEntityList();
 	public abstract boolean isModified();
 	public abstract void setModified(boolean modified);
 	public abstract void setDirty(int x, int y, int z);

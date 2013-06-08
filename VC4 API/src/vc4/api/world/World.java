@@ -36,8 +36,9 @@ public interface World {
 	public Chunk getChunk(ChunkPos pos);
 	public Chunk getChunk(long x, long y, long z);
 	public abstract String[] getDebugInfo();
-	public EntityList getEntitiesInBounds(AABB bounds);
-	public EntityList getEntitiesInBoundsExcluding(AABB bounds, Entity exclude);
+	public List<Entity> getEntitiesInBounds(AABB bounds);
+	public List<Entity> getCollidableEntitiesInBounds(AABB bounds);
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude);
 	public double getFallAcceleration();
 	public double getFallMaxSpeed();
 	public WorldGenerator getGenerator();

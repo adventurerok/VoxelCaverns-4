@@ -1,10 +1,12 @@
 package vc4.vanilla.entity.ai;
 
-import vc4.api.entity.*;
+import java.util.List;
+
+import vc4.api.entity.Entity;
+import vc4.api.entity.EntityLiving;
 import vc4.api.entity.ai.AI;
 import vc4.api.math.MathUtils;
 import vc4.api.util.AABB;
-import vc4.api.util.EntityList;
 import vc4.vanilla.entity.EntityNpc;
 import vc4.vanilla.entity.EntityNpc.NpcState;
 
@@ -34,7 +36,7 @@ public class AIFreeNPCs extends AI {
 	public boolean shouldStart() {
 		double shortest = max;
 		EntityNpc close = null;
-		EntityList titys = owner.world.getEntitiesInBoundsExcluding(owner.bounds.expand(15, 15, 15), owner);
+		List<Entity> titys = owner.world.getEntitiesInBoundsExcluding(owner.bounds.expand(15, 15, 15), owner);
 		for(int d = 0; d < titys.size(); ++d){
 			Entity ett = titys.get(d);
 			if(!(ett instanceof EntityNpc)) continue;

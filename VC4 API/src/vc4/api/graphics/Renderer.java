@@ -5,8 +5,7 @@ package vc4.api.graphics;
 
 import java.awt.Color;
 
-import vc4.api.vector.Vector3d;
-import vc4.api.vector.Vector4f;
+import vc4.api.vector.*;
 
 
 /**
@@ -36,5 +35,6 @@ public interface Renderer {
 	public abstract void tex(Vector4f tex);
 	public abstract void color(Vector4f color);
 	public abstract void addVertex(Vector3d vertex);
+	public abstract void tex(Vector3f tex);
 
 }

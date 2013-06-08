@@ -9,6 +9,7 @@ import vc4.api.block.Block;
 import vc4.api.block.IBlockMultitexture;
 import vc4.api.block.render.BlockRenderer;
 import vc4.api.graphics.Renderer;
+import vc4.api.graphics.TextureCoords;
 import vc4.api.item.ItemStack;
 import vc4.api.util.AABB;
 import vc4.api.world.Chunk;
@@ -57,20 +58,20 @@ public class BlockRendererDefault implements BlockRenderer {
 			}
 	}
 
-	public void renderBlockFaceNorth(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceNorth(double x, double y, double z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		render.useQuadInputMode(true);
 		render.color(color);
-		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
-		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 	}
 	
-	public void renderBlockFaceNorth(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceNorth(World world, long x, long y, long z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		float eb = 1;
 		float wb = 1;
 		float et = 1;
@@ -101,40 +102,42 @@ public class BlockRendererDefault implements BlockRenderer {
 		}
 		render.useQuadInputMode(true);
 		render.color(color, et);
-		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
 		render.color(color, wt);
-		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
 		render.color(color, wb);
-		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
 		render.color(color, eb);
-		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 	}
 	
 	public void renderBlockFace(double x, double y, double z, Block block, ItemStack item, Renderer render, AABB bounds, int side){
 		int tex = block.getTextureIndex(item, side);
 		Color color = block.getColor(item, side);
+		TextureCoords cor = new TextureCoords(bounds, side, tex);
+		block.setOrientation(item, side, cor);
 		switch (side) {
 			case 0:
-				renderBlockFaceNorth(x, y, z, render, bounds, tex, color);
+				renderBlockFaceNorth(x, y, z, render, bounds, cor, color);
 				break;
 			case 1:
-				renderBlockFaceEast(x, y, z, render, bounds, tex, color);
+				renderBlockFaceEast(x, y, z, render, bounds, cor, color);
 				break;
 			case 2:
-				renderBlockFaceSouth(x, y, z, render, bounds, tex, color);
+				renderBlockFaceSouth(x, y, z, render, bounds, cor, color);
 				break;
 			case 3:
-				renderBlockFaceWest(x, y, z, render, bounds, tex, color);
+				renderBlockFaceWest(x, y, z, render, bounds, cor, color);
 				break;
 			case 4:
-				renderBlockFaceTop(x, y, z, render, bounds, tex, color);
+				renderBlockFaceTop(x, y, z, render, bounds, cor, color);
 				break;
 			case 5:
-				renderBlockFaceBottom(x, y, z, render, bounds, tex, color);
+				renderBlockFaceBottom(x, y, z, render, bounds, cor, color);
 				break;
 
 		}
@@ -144,24 +147,26 @@ public class BlockRendererDefault implements BlockRenderer {
 		if(!block.multitextureUsed(item.getData(), side)) return;
 		int tex = block.getTextureIndexMultitexture(item, side);
 		Color color = block.getColorMultitexture(item, side);
+		TextureCoords cor = new TextureCoords(bounds, side, tex);
+		block.setOrientationMultitexture(item, side, cor);
 		switch (side) {
 			case 0:
-				renderBlockFaceNorth(x, y, z, render, bounds, tex, color);
+				renderBlockFaceNorth(x, y, z, render, bounds, cor, color);
 				break;
 			case 1:
-				renderBlockFaceEast(x, y, z, render, bounds, tex, color);
+				renderBlockFaceEast(x, y, z, render, bounds, cor, color);
 				break;
 			case 2:
-				renderBlockFaceSouth(x, y, z, render, bounds, tex, color);
+				renderBlockFaceSouth(x, y, z, render, bounds, cor, color);
 				break;
 			case 3:
-				renderBlockFaceWest(x, y, z, render, bounds, tex, color);
+				renderBlockFaceWest(x, y, z, render, bounds, cor, color);
 				break;
 			case 4:
-				renderBlockFaceTop(x, y, z, render, bounds, tex, color);
+				renderBlockFaceTop(x, y, z, render, bounds, cor, color);
 				break;
 			case 5:
-				renderBlockFaceBottom(x, y, z, render, bounds, tex, color);
+				renderBlockFaceBottom(x, y, z, render, bounds, cor, color);
 				break;
 
 		}
@@ -170,24 +175,26 @@ public class BlockRendererDefault implements BlockRenderer {
 	public void renderBlockFace(World world, long x, long y, long z, Block block, Renderer render, AABB bounds, int side) {
 		int tex = block.getTextureIndex(world, x, y, z, side);
 		Color color = block.getColor(world, x, y, z, side);
+		TextureCoords cor = new TextureCoords(bounds, side, tex);
+		block.setOrientation(world, x, y, z, side, cor);
 		switch (side) {
 			case 0:
-				renderBlockFaceNorth(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceNorth(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 1:
-				renderBlockFaceEast(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceEast(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 2:
-				renderBlockFaceSouth(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceSouth(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 3:
-				renderBlockFaceWest(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceWest(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 4:
-				renderBlockFaceTop(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceTop(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 5:
-				renderBlockFaceBottom(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceBottom(world, x, y, z, render, bounds, cor, color);
 				break;
 
 		}
@@ -198,22 +205,22 @@ public class BlockRendererDefault implements BlockRenderer {
 		Color color = Color.white;
 		switch (side) {
 			case 0:
-				renderBlockFaceNorth(x, y, z, render, bounds, amount, color);
+				renderBlockFaceNorth(x, y, z, render, bounds, new TextureCoords(bounds, side, amount), color);
 				break;
 			case 1:
-				renderBlockFaceEast(x, y, z, render, bounds, amount, color);
+				renderBlockFaceEast(x, y, z, render, bounds, new TextureCoords(bounds, side, amount), color);
 				break;
 			case 2:
-				renderBlockFaceSouth(x, y, z, render, bounds, amount, color);
+				renderBlockFaceSouth(x, y, z, render, bounds, new TextureCoords(bounds, side, amount), color);
 				break;
 			case 3:
-				renderBlockFaceWest(x, y, z, render, bounds, amount, color);
+				renderBlockFaceWest(x, y, z, render, bounds, new TextureCoords(bounds, side, amount), color);
 				break;
 			case 4:
-				renderBlockFaceTop(x, y, z, render, bounds, amount, color);
+				renderBlockFaceTop(x, y, z, render, bounds, new TextureCoords(bounds, side, amount), color);
 				break;
 			case 5:
-				renderBlockFaceBottom(x, y, z, render, bounds, amount, color);
+				renderBlockFaceBottom(x, y, z, render, bounds, new TextureCoords(bounds, side, amount), color);
 				break;
 
 		}
@@ -223,44 +230,46 @@ public class BlockRendererDefault implements BlockRenderer {
 	public void renderBlockFace(World world, long x, long y, long z, IBlockMultitexture block, Renderer render, AABB bounds, int side) {
 		int tex = block.getTextureIndexMultitexture(world, x, y, z, side);
 		Color color = block.getColorMultitexture(world, x, y, z, side);
+		TextureCoords cor = new TextureCoords(bounds, side, tex);
+		block.setOrientationMultitexture(world, x, y, z, side, cor);
 		switch (side) {
 			case 0:
-				renderBlockFaceNorth(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceNorth(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 1:
-				renderBlockFaceEast(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceEast(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 2:
-				renderBlockFaceSouth(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceSouth(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 3:
-				renderBlockFaceWest(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceWest(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 4:
-				renderBlockFaceTop(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceTop(world, x, y, z, render, bounds, cor, color);
 				break;
 			case 5:
-				renderBlockFaceBottom(world, x, y, z, render, bounds, tex, color);
+				renderBlockFaceBottom(world, x, y, z, render, bounds, cor, color);
 				break;
 
 		}
 	}
 
-	public void renderBlockFaceEast(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceEast(double x, double y, double z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
 
 	}
 	
-	public void renderBlockFaceEast(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceEast(World world, long x, long y, long z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		float nb = 1;
 		float sb = 1;
 		float nt = 1;
@@ -290,37 +299,37 @@ public class BlockRendererDefault implements BlockRenderer {
 			if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 1)) nt *= shadow;
 		}
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, st);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, nt);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, nb);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, sb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
 
 	}
 
 
-	public void renderBlockFaceSouth(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceSouth(double x, double y, double z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
 
 	}
 	
-	public void renderBlockFaceSouth(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceSouth(World world, long x, long y, long z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		float eb = 1;
 		float wb = 1;
 		float et = 1;
@@ -350,36 +359,36 @@ public class BlockRendererDefault implements BlockRenderer {
 			if(wB.isSolid(world, x, y, z + 1, 3) && eB.isSolid(world, x, y, z + 1, 2)) et *= shadow;
 		}
 		render.useQuadInputMode(true);
-		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, wt);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, et);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, eb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, wb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
 
 	}
 
-	public void renderBlockFaceWest(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceWest(double x, double y, double z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
-		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
 
 	}
 	
-	public void renderBlockFaceWest(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceWest(World world, long x, long y, long z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		float nb = 1;
 		float sb = 1;
 		float nt = 1;
@@ -409,36 +418,36 @@ public class BlockRendererDefault implements BlockRenderer {
 			if(sB.isSolid(world, x + 1, y, z, 2) && nB.isSolid(world, x + 1, y, z, 3)) nt *= shadow;
 		}
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, nt);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, 1 - bounds.maxY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, st);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, sb);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
-		render.tex(bounds.minX, 1 - bounds.minY, tex, 0);
+		render.tex(tex.next());
 		render.color(color, nb);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
 
 	}
 
-	public void renderBlockFaceTop(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceTop(double x, double y, double z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.minX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
 
 	}
 	
-	public void renderBlockFaceTop(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceTop(World world, long x, long y, long z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		float ne = 1;
 		float se = 1;
 		float sw = 1;
@@ -468,36 +477,36 @@ public class BlockRendererDefault implements BlockRenderer {
 		if(seB.isSolid(world, x - 1, y + 1, z + 1, 0) && seB.isSolid(world, x - 1, y + 1, z + 1, 3)) se *= shadow;
 		if(swB.isSolid(world, x - 1, y + 1, z - 1, 0) && swB.isSolid(world, x - 1, y + 1, z - 1, 1)) sw *= shadow;
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, sw);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, nw);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, ne);
 		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
-		render.tex(bounds.minX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, se);
 		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
 
 	}
 
-	public void renderBlockFaceBottom(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceBottom(double x, double y, double z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(bounds.minX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 
 	}
 	
-	public void renderBlockFaceBottom(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
+	public void renderBlockFaceBottom(World world, long x, long y, long z, Renderer render, AABB bounds, TextureCoords tex, Color color) {
 		float ne = 1;
 		float se = 1;
 		float sw = 1;
@@ -527,16 +536,16 @@ public class BlockRendererDefault implements BlockRenderer {
 		if(seB.isSolid(world, x - 1, y + 1, z + 1, 0) && seB.isSolid(world, x - 1, y + 1, z + 1, 3)) se *= shadow;
 		if(swB.isSolid(world, x - 1, y + 1, z - 1, 0) && swB.isSolid(world, x - 1, y + 1, z - 1, 1)) sw *= shadow;
 		render.useQuadInputMode(true);
-		render.tex(bounds.minX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, nw);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.minZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, sw);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
-		render.tex(bounds.maxX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, se);
 		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
-		render.tex(bounds.minX, bounds.maxZ, tex, 0);
+		render.tex(tex.next());
 		render.color(color, ne);
 		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 

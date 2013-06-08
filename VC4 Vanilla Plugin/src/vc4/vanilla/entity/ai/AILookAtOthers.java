@@ -1,9 +1,10 @@
 package vc4.vanilla.entity.ai;
 
+import java.util.List;
+
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityLiving;
 import vc4.api.entity.ai.AI;
-import vc4.api.util.EntityList;
 
 public class AILookAtOthers extends AI {
 
@@ -25,7 +26,7 @@ public class AILookAtOthers extends AI {
 	public boolean shouldStart() {
 		double shortest = max;
 		EntityLiving close = null;
-		EntityList titys = owner.world.getEntitiesInBoundsExcluding(owner.bounds.expand(15, 15, 15), owner);
+		List<Entity> titys = owner.world.getEntitiesInBoundsExcluding(owner.bounds.expand(15, 15, 15), owner);
 		for(int d = 0; d < titys.size(); ++d){
 			Entity ett = titys.get(d);
 			if(!(ett instanceof EntityLiving)) continue;

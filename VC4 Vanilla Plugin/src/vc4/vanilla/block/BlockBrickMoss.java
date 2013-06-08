@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.Random;
 
 import vc4.api.block.IBlockMultitexture;
+import vc4.api.graphics.TextureCoords;
 import vc4.api.item.ItemStack;
 import vc4.api.util.Direction;
 import vc4.api.world.World;
@@ -90,6 +91,16 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 			world.setNearbyBlockIdData(x, y, z, uid, data, dir);
 		}
 		return 0;
+	}
+
+	@Override
+	public void setOrientationMultitexture(World world, long x, long y, long z, int side, TextureCoords coords) {
+		
+	}
+
+	@Override
+	public void setOrientationMultitexture(ItemStack item, int side, TextureCoords coords) {
+		
 	}
 
 }

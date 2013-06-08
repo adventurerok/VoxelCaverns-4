@@ -52,6 +52,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	private boolean paused;
 	private int maxHealth = 100;
 	private String name = "player";
+	private int ticksSinceUpdate;
 	
 	private long entityAttackTick = 0;
 	
@@ -126,6 +127,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	//NESW
 	public int getSimpleFacing(){
 		return (int) ((MathUtils.floor(((yaw * 4F) / 360F) + 0.5D) + 1) & 3);
+	}
+	
+	public void setTicksSinceUpdate(int ticksSinceUpdate) {
+		this.ticksSinceUpdate = ticksSinceUpdate;
 	}
 	
 	@Override
@@ -413,10 +418,17 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		this.spawn = spawn;
 	}
 	
+	public void addTickSinceUpdate(){
+		ticksSinceUpdate++;
+	}
+	
+	public int getTicksSinceUpdate() {
+		return ticksSinceUpdate;
+	}
+	
 	@Override
 	public void update() {
-		
-		
+		ticksSinceUpdate = 0;
 		super.update();
 		if(healing == 0) return;
 		double heal = healing / 5500d;

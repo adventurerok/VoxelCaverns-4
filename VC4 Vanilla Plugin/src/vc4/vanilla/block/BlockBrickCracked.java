@@ -6,6 +6,7 @@ package vc4.vanilla.block;
 import java.awt.Color;
 
 import vc4.api.block.IBlockMultitexture;
+import vc4.api.graphics.TextureCoords;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
 import vc4.vanilla.BlockTexture;
@@ -76,6 +77,16 @@ public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 	@Override
 	public boolean multitextureUsed(byte data, int side) {
 		return true;
+	}
+
+	@Override
+	public void setOrientationMultitexture(World world, long x, long y, long z, int side, TextureCoords coords) {
+		
+	}
+
+	@Override
+	public void setOrientationMultitexture(ItemStack item, int side, TextureCoords coords) {
+		
 	}
 	
 

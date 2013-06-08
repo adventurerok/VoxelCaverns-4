@@ -12,7 +12,7 @@ import vc4.api.world.World;
 public class BlockRendererTable extends BlockRendererDefault {
 
 	AABB top = AABB.getBoundingBox(0, 1, 15/16d, 1, 0, 1);
-	AABB[] legs = new AABB[]{AABB.getBoundingBox(0, 1/16d, 0, 1, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 1, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 1, 15/16d, 1d), AABB.getBoundingBox(0, 1/16d, 0, 1, 15/16d, 1d)};
+	AABB[] legs = new AABB[]{AABB.getBoundingBox(0, 1/16d, 0, 15/16d, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 15/16d, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 15/16d, 15/16d, 1d), AABB.getBoundingBox(0, 1/16d, 0, 15/16d, 15/16d, 1d)};
 	@Override
 	public void renderBlock(Chunk c, int cx, int cy, int cz, Block block, byte data, Renderer[] renderers) {
 		long x = c.getChunkPos().worldX(cx);

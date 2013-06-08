@@ -1,7 +1,7 @@
 package vc4.vanilla.generation.village.building;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Random;
 
 import vc4.api.client.Client;
 import vc4.api.math.MathUtils;
@@ -15,16 +15,19 @@ import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
 import vc4.vanilla.generation.village.Village;
 import vc4.vanilla.generation.village.WeightedBuilding;
+import vc4.vanilla.generation.village.furnature.*;
 import vc4.vanilla.generation.village.style.VillageStyle;
 
 public class BuildingHouse implements Building {
 
-	private static HashMap<Adjustment, Integer> furniture = new HashMap<>();
+	private static ArrayList<Furnature> furniture = new ArrayList<>();
 	private static Village lastVille;
 	
 	public static void loadFurnature(Village ville){
 		furniture.clear();
-		furniture.put(new Adjustment(6, 3, 0), (int)Vanilla.table.uid);
+		furniture.add(new FurnatureWood(new Adjustment(6, 3, 0), Vanilla.table.uid));
+		furniture.add(new FurnatureChair(new Adjustment(5, 3, 0), Vanilla.chair.uid, 2));
+		furniture.add(new FurnatureBasic(new Adjustment(1, -2, 0), Vanilla.workbench.uid, 0));
 		lastVille = ville;
 	}
 	
@@ -54,14 +57,18 @@ public class BuildingHouse implements Building {
 						else ville.setPlankBlock(x, y, z);
 					} else if(xWall || zWall){
 						if(xWall && zWall) ville.setLogBlock(x, y, z);
-						else ville.setPlankBlock(x, y, z);
+						else if(y == start.y + 1){
+							boolean nxWall = x == sx + 1 || x == ex - 1;
+							boolean nzWall = z == sz + 1 || z == ez - 1;
+							if(nxWall || nzWall) ville.setPlankBlock(x, y, z);
+							else ville.setGlassBlock(x, y, z);
+						} else ville.setPlankBlock(x, y, z);
 					} else ville.setEmptyBlock(x, y, z);
 				}
 			}
 		}
-		for(Entry<Adjustment, Integer> s : furniture.entrySet()){
-			Vector3l pal = s.getKey().adjust(door.left, door.dir);
-			world.setBlockId(pal.x, pal.y, pal.z, s.getValue());
+		for(Furnature f : furniture){
+			f.place(ville, door.left, door.dir);
 		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
 		ville.setEmptyBlock(door.left.x, door.left.y + 1, door.left.z);
