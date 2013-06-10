@@ -22,4 +22,5 @@ public interface WorldGenerator {
 	public Music getBiomeMusic(EntityPlayer player);
 	public void renderSkyBox(World world, EntityPlayer player);
 	public void generateMapData(World world, MapData data);
+	public boolean generatePlants(World world, long x, long y, long z);
 }

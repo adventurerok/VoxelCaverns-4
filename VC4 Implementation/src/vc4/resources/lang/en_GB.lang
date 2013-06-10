@@ -18,3 +18,11 @@ menu.quit=Quit
 menu.settings=Settings
 menu.settings.colorscheme=Colourscheme={0}
 menu.settings.crosshair=Crosshair={0}
+
+gui.creative.pages=Page {0} of {1}
+
+area.enter=You are in
+
+area.wilderness=Wilderness
+area.village={0} Village
+area.dungeon=Dungeon of {0}

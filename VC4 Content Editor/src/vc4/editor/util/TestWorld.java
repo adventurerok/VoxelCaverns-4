@@ -419,5 +419,25 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	@Override
+	public String getAreaName(int id) {
+		return null;
+	}
+
+	@Override
+	public short getRegisteredArea(String name) {
+		return 0;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBounds(AABB bounds, Class<? extends Entity> type) {
+		return null;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude) {
+		return null;
+	}
+
 
 }

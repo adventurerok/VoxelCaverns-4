@@ -4,8 +4,10 @@
 package vc4.vanilla;
 
 import java.awt.Color;
+import java.io.*;
 import java.util.ArrayList;
 
+import vc4.api.area.Area;
 import vc4.api.biome.*;
 import vc4.api.block.*;
 import vc4.api.container.Container;
@@ -14,6 +16,7 @@ import vc4.api.entity.Entity;
 import vc4.api.generator.GeneratorList;
 import vc4.api.generator.PlantGrowth;
 import vc4.api.gui.GuiOpenContainer;
+import vc4.api.io.Dictionary;
 import vc4.api.item.Item;
 import vc4.api.itementity.ItemEntity;
 import vc4.api.plugin.Plugin;
@@ -21,7 +24,9 @@ import vc4.api.sound.Music;
 import vc4.api.sound.MusicType;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.tool.*;
+import vc4.api.util.DirectoryLocator;
 import vc4.api.world.World;
+import vc4.vanilla.area.AreaVillage;
 import vc4.vanilla.biome.*;
 import vc4.vanilla.block.*;
 import vc4.vanilla.container.ContainerChest;
@@ -36,6 +41,7 @@ import vc4.vanilla.gui.GuiChest;
 import vc4.vanilla.item.ItemTool;
 import vc4.vanilla.item.ItemVanillaFood;
 import vc4.vanilla.itementity.ItemEntityChest;
+import vc4.vanilla.npc.*;
 import vc4.vanilla.tileentity.TileEntityChest;
 
 /**
@@ -44,6 +50,8 @@ import vc4.vanilla.tileentity.TileEntityChest;
  */
 public class Vanilla extends Plugin {
 
+	static Dictionary trades = new Dictionary();
+	
 	//Blocks
 	public static Block grass, dirt, logV, logX, logZ, leaf, brick, mossBrick;
 	public static Block sand, glass, ore, hellrock, lava, oreHell, water, obsidian;
@@ -51,7 +59,7 @@ public class Vanilla extends Plugin {
 	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
-	public static Block workbench, chest, table, chair;
+	public static Block workbench, chest, table, chair, gravel;
 	
 	//Items
 	public static Item food;
@@ -81,12 +89,14 @@ public class Vanilla extends Plugin {
 	public static ToolMaterial materialUnholy = new ToolMaterial("unholy", 5120, 750);
 	public static ToolMaterial materialSacred = new ToolMaterial("sacred", 5120, 750);
 	
+	
+	//Music
 	public static Music musicOverworld = new Music("First_Day", MusicType.BIOME);
 	public static Music musicDesert = new Music("Desert_Theme", MusicType.BIOME);
 	public static Music musicHell = new Music("A_Night_Out", MusicType.BIOME);
 	public static Music musicSky = new Music("Ocean_Theme", MusicType.BIOME);
 	
-	
+	//Biomes
 	public static BiomeHeightModel hills = new BiomeHeightModel(75, 25, 80, 10);
 	public static BiomeHeightModel oceans = new BiomeHeightModel(-38, -80, 1, -100);
 	public static BiomeHeightModel trenchs = new BiomeHeightModel(-70, -125, -10, -140);
@@ -105,8 +115,13 @@ public class Vanilla extends Plugin {
 	public static Biome biomeSnowForestHills;
 	public static Biome biomeTrench;
 	
+	//Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
 	public static short craftingEnchantedBook;
+	
+	//Trades
+	public static Trade tradeBlades, tradeArmor, tradePotions, tradeHealing, tradePickaxes;
+	public static Trade tradeGuard;
 	
 	public static ArrayList<ArrayList<Integer>> biomes;
 	
@@ -161,6 +176,7 @@ public class Vanilla extends Plugin {
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
 		
 		NpcNames.load();
+		VillageNames.load();
 	}
 
 	/* (non-Javadoc)
@@ -188,6 +204,11 @@ public class Vanilla extends Plugin {
 	@Override
 	public void loadEntities(World world) {
 		Entity.registerEntity("vanilla.villager", EntityNpc.class);
+	}
+	
+	@Override
+	public void loadAreas(World world) {
+		Area.registerArea("vanilla.village", AreaVillage.class);
 	}
 
 	@Override
@@ -237,6 +258,7 @@ public class Vanilla extends Plugin {
 		chest = new BlockChest(world.getRegisteredBlock("vanilla.chest")).setName("chest");
 		table = new BlockTable(world.getRegisteredBlock("vanilla.table")).setName("table");
 		chair = new BlockChair(world.getRegisteredBlock("vanilla.chair")).setName("chair");
+		gravel = new BlockGravel(world.getRegisteredBlock("vanilla.gravel")).setName("gravel");
 	}
 	
 	@Override
@@ -249,6 +271,17 @@ public class Vanilla extends Plugin {
 	public void loadItemEntities(World world) {
 		ItemEntity.registerEntity("vanilla.chest", ItemEntityChest.class);
 	}
+	
+	public void loadTrades(World world){
+		tradeBlades = new Trade("blades").addToList();
+		tradeArmor = new Trade("armor").addToList();
+		tradeHealing = new Trade("healing").addToList();
+		tradePotions = new Trade("potions").addToList();
+		tradePickaxes = new Trade("pickaxes").addToList();
+		tradeGuard = new Trade("guard");
+	}
+	
+	
 	
 	@Override
 	public void loadBiomes(World world) {
@@ -345,6 +378,25 @@ public class Vanilla extends Plugin {
 	public void onWorldLoad(World world) {
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
+		try {
+			loadDict(trades = new Dictionary(), DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/trades.dictionary");
+		} catch (FileNotFoundException e) {
+		}
+		loadTrades(world);
+	}
+	
+	@Override
+	public void onWorldSave(World world) {
+		try {
+			trades.save(new FileOutputStream(DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/trades.dictionary"));
+		} catch (FileNotFoundException e) {
+		}
+	}
+	
+	private void loadDict(Dictionary dict, String path) throws FileNotFoundException{
+		File file = new File(path);
+		if(!file.exists()) return;
+		dict.load(new FileInputStream(file));
 	}
 	
 	public ArrayList<ArrayList<Integer>> getBiomes() {
@@ -358,6 +410,14 @@ public class Vanilla extends Plugin {
 				new ItemTool(world.getRegisteredItem(name), types[d], materials[f]);
 			}
 		}
+	}
+	
+	public static int getRegisteredTrade(String name){
+		return trades.get(name);
+	}
+	
+	public static String getTradeName(int id){
+		return trades.getName(id);
 	}
 
 }

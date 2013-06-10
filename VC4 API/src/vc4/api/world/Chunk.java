@@ -5,6 +5,7 @@ package vc4.api.world;
 
 import java.util.ArrayList;
 
+import vc4.api.area.Area;
 import vc4.api.entity.Entity;
 
 /**
@@ -25,4 +26,6 @@ public interface Chunk {
 	public abstract boolean isModified();
 	public abstract void setModified(boolean modified);
 	public abstract void setDirty(int x, int y, int z);
+	public abstract void addArea(Area ar);
+	public abstract ArrayList<Area> getAreas();
 }

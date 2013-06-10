@@ -52,6 +52,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	private boolean paused;
 	private int maxHealth = 100;
 	private String name = "player";
+	private String area = "{l:area.wilderness}";
 	private int ticksSinceUpdate;
 	
 	private long entityAttackTick = 0;
@@ -122,6 +123,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	public boolean isPaused() {
 		return paused;
+	}
+	
+	public String getArea() {
+		return area;
 	}
 	
 	//NESW
@@ -293,6 +298,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	public double getMinedAmount() {
 		return minedAmount;
+	}
+	
+	public void setArea(String area) {
+		this.area = area;
 	}
 	
 	//delta in ms

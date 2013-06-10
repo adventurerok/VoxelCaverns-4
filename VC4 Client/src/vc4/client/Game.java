@@ -71,6 +71,7 @@ public class Game extends Component implements ClientGame {
 	private ClientResources resources;
 	private long previousTenTicks = 0;
 	private Fustrum fustrum = new Fustrum();
+	
 
 	/**
 	 * @return the paused
@@ -259,6 +260,9 @@ public class Game extends Component implements ClientGame {
 		}
 		super.update();
 		if (gameState == GameState.SINGLEPLAYER) {
+			long oldTime = world.getTime();
+			String oldArea = player.getArea();
+			player.setArea("{l:area.wilderness}");
 			SoundManager.setListener(player);
 			if (Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
 			camera.handleInput(delta);
@@ -275,6 +279,9 @@ public class Game extends Component implements ClientGame {
 			if(keys.keyPressed(Key.C)) ingameGui.toggleVisibility("crafting");
 			if(keys.keyPressed(Key.X)) ingameGui.toggleVisibility("armour");
 			if(keys.keyPressed(Key.Z)) ingameGui.toggleVisibility("game");
+			if(oldTime != world.getTime() && oldArea != player.getArea()){
+				printChatLine("{l:area.enter} " + player.getArea());
+			}
 		}
 		if(Input.getClientKeyboard().keyPressed(Key.F6)){
 			JOptionPane.showMessageDialog(null, "Hovering: " + _currentc.toString());

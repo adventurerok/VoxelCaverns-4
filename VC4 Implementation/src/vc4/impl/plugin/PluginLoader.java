@@ -197,7 +197,14 @@ public class PluginLoader {
 		for (Plugin p : loadedPlugins.values())
 			p.loadBiomes(world);
 		for (Plugin p : loadedPlugins.values())
+			p.loadAreas(world);
+		for (Plugin p : loadedPlugins.values())
 			p.onWorldLoad(world);
 
+	}
+	
+	public static void onWorldSave(World world){
+		for (Plugin p : loadedPlugins.values())
+			p.onWorldSave(world);
 	}
 }

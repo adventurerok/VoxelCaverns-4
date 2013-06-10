@@ -8,8 +8,8 @@ import java.util.Random;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
-import vc4.vanilla.NpcNames;
 import vc4.vanilla.generation.dungeon.style.*;
+import vc4.vanilla.npc.NpcNames;
 
 /**
  * @author paul

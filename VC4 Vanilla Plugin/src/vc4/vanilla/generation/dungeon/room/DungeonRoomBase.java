@@ -77,6 +77,7 @@ public class DungeonRoomBase extends DungeonRoom {
 		prisoner.setLastName(dungeon.randomLastName());
 		prisoner.setMan(dungeon.getRand().nextBoolean());
 		prisoner.setState(NpcState.TRAPPED);
+		prisoner.setSkinId((byte) dungeon.getRand().nextInt());
 		prisoner.addToWorld();
 		result.add(door.clone().setNewRoomDir(door.dir.opposite()));
 		result.add(door.move(7, door.dir));

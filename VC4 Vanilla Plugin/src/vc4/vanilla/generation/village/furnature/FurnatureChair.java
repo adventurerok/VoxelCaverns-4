@@ -20,5 +20,6 @@ public class FurnatureChair extends Furnature{
 	public FurnatureChair(Adjustment pos, int bid, int dir) {
 		super(pos);
 		this.bid = bid;
+		this.dir = dir;
 	}
 }

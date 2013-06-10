@@ -31,4 +31,5 @@ public interface AnimatedTexture {
 	 */
 	public void bind();
 	public abstract void updateAnimation(int tickTime);
+	public abstract boolean hasArrayIndex(String tex);
 }

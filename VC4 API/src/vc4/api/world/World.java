@@ -92,4 +92,8 @@ public interface World {
 	public void broadcast(String message, Vector3d pos, double radius);
 	public abstract String getTraitName(int id);
 	public abstract short getRegisteredTrait(String name);
+	public abstract String getAreaName(int id);
+	public abstract short getRegisteredArea(String name);
+	public abstract List<Entity> getEntitiesInBounds(AABB bounds, Class<? extends Entity> type);
+	public abstract List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude);
 }

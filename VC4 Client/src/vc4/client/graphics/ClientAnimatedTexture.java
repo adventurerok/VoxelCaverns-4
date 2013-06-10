@@ -129,6 +129,11 @@ public class ClientAnimatedTexture implements AnimatedTexture{
 	}
 	
 	@Override
+	public boolean hasArrayIndex(String tex){
+		return indexNames.containsKey(tex);
+	}
+	
+	@Override
 	public void updateAnimation(int tickTime){
 		bind();
 		for(Animation a : animatedParts){

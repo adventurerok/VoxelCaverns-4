@@ -5,11 +5,11 @@ import java.util.Random;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
-import vc4.vanilla.NpcNames;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.RoomBB;
 import vc4.vanilla.generation.village.style.VillageStyle;
 import vc4.vanilla.generation.village.style.VillageStyleBasic;
+import vc4.vanilla.npc.NpcNames;
 
 public class Village {
 
@@ -38,6 +38,10 @@ public class Village {
 	
 	public static void addStyle(VillageStyle style){
 		styles.add(style);
+	}
+	
+	public void setRand(Random rand) {
+		this.rand = rand;
 	}
 	
 	public static VillageStyle getVillageStyle(World world, long x, long y, long z, Random rand){

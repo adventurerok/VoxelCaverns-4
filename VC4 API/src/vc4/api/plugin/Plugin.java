@@ -48,6 +48,10 @@ public abstract class Plugin {
 	public void loadEntities(World world) {
 
 	}
+	
+	public void loadAreas(World world){
+		
+	}
 
 	public void loadTileEntities(World world) {
 
@@ -63,6 +67,10 @@ public abstract class Plugin {
 
 	public void onWorldLoad(World world) {
 
+	}
+	
+	public void onWorldSave(World world) {
+		
 	}
 
 	public void loadCraftingRecipes(World world) {

@@ -1,4 +1,4 @@
-package vc4.impl;
+package vc4.api.io;
 
 import java.io.*;
 import java.util.Map.Entry;

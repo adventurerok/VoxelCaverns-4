@@ -6,6 +6,7 @@ package vc4.impl.world;
 import java.util.*;
 import java.util.Map.Entry;
 
+import vc4.api.area.Area;
 import vc4.api.block.Block;
 import vc4.api.entity.Entity;
 import vc4.api.generator.GeneratorOutput;
@@ -26,6 +27,7 @@ public class ImplChunk implements Chunk {
 	private ImplWorld world;
 	private boolean populated;
 	public ArrayList<Entity> entitys = new ArrayList<>();
+	public ArrayList<Area> areas = new ArrayList<>();
 	private boolean isModified = false;
 	private boolean unloading = false;
 	
@@ -58,6 +60,16 @@ public class ImplChunk implements Chunk {
 		
 		stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].clearRenderers();
 		notifyNear(x, y, z);
+	}
+	
+	@Override
+	public ArrayList<Area> getAreas() {
+		return areas;
+	}
+	
+	@Override
+	public void addArea(Area ar){
+		areas.add(ar);
 	}
 	
 	@Override
@@ -227,6 +239,9 @@ public class ImplChunk implements Chunk {
 	}
 
 	public void update(Random rand) {
+		for(int d = areas.size() - 1; d > -1; --d){
+			areas.get(d).updateTick();
+		}
 		ArrayList<Entity> alive = new ArrayList<>();
 		Entity e;
 		long qx, qy, qz;

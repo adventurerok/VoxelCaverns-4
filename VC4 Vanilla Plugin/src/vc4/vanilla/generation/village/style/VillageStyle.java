@@ -10,7 +10,11 @@ public class VillageStyle {
 	private ArrayList<WeightedBuilding> rooms = new ArrayList<>();
 	private int maxRooms = 75;
 	
+	private int totalWeight;
 	
+	public int getTotalWeight() {
+		return totalWeight;
+	}
 	
 	
 	public boolean canGenerate(World world, long x, long y, long z){
@@ -27,8 +31,17 @@ public class VillageStyle {
 	}
 
 	
-	public void addRoom(WeightedBuilding room){
+	public void addBuilding(WeightedBuilding room){
 		rooms.add(room);
+		calcWeight();
+	}
+	
+	private void calcWeight(){
+		int max = 0;
+		for(WeightedBuilding d : getBuildings()){
+			max += d.getWeight();
+		}
+		totalWeight = max;
 	}
 	
 	public ArrayList<WeightedBuilding> getBuildings() {

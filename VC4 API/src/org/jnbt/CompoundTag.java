@@ -39,6 +39,7 @@ import java.util.Map;
 
 import vc4.api.io.BitInputStream;
 import vc4.api.io.BitOutputStream;
+import vc4.api.util.AABB;
 import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3l;
 
@@ -287,6 +288,28 @@ public final class CompoundTag extends Tag {
 		return tag;
 	}
 	
+	public static CompoundTag createAABBTag(String name, AABB bb){
+		CompoundTag tag = new CompoundTag(name);
+		tag.setDouble("mix", bb.minX);
+		tag.setDouble("miy", bb.minY);
+		tag.setDouble("miz", bb.minZ);
+		tag.setDouble("max", bb.maxX);
+		tag.setDouble("may", bb.maxY);
+		tag.setDouble("maz", bb.maxZ);
+		return tag;
+	}
+	
+	public AABB readAABB(){
+		AABB res = AABB.getBoundingBox(0, 0, 0, 0, 0, 0);
+		res.minX = getDouble("mix");
+		res.minY = getDouble("miy");
+		res.minZ = getDouble("miz");
+		res.maxX = getDouble("max");
+		res.maxY = getDouble("may");
+		res.maxZ = getDouble("maz");
+		return res;
+	}
+	
 	public Vector3d readVector3d(){
 		Vector3d res = new Vector3d();
 		res.x = getDouble("x");
@@ -317,6 +340,15 @@ public final class CompoundTag extends Tag {
 		} catch(Exception e){
 			setDouble(name, def);
 			return def;
+		}
+	}
+
+	public byte getByte(String name, int def) {
+		try{
+			return getByteTag(name).getValue();
+		} catch(Exception e){
+			setByte(name, (byte)def);
+			return (byte) def;
 		}
 	}
 

@@ -8,6 +8,7 @@ import java.util.zip.GZIPOutputStream;
 
 import org.jnbt.*;
 
+import vc4.api.area.Area;
 import vc4.api.entity.Entity;
 import vc4.api.io.*;
 import vc4.api.logging.Logger;
@@ -61,7 +62,18 @@ public class VCH4SaveFormat implements SaveFormat {
 					}
 				}
 			}
-			
+			if(root.hasKey("areas")){
+				ListTag tlist = root.getListTag("areas");
+				while(tlist.hasNext()){
+					CompoundTag ent = (CompoundTag) tlist.getNextTag();
+					try{
+						Area tile = Area.loadArea(world, ent);
+						chunk.areas.add(tile);
+					} catch(Exception e){
+						Logger.getLogger("VC4").warning("Failed to load area " + world.getTileEntityName(ent.getShort("id")), e);
+					}
+				}
+			}
 			for(int d = 0; d < 8; ++d){
 				BlockStore store = chunk.getBlockStore(d);
 				int bt = in.readByte();
@@ -112,6 +124,13 @@ public class VCH4SaveFormat implements SaveFormat {
 			tlist.addTag(tag);
 		}
 		root.addTag(tlist);
+		ListTag alist = new ListTag("areas", CompoundTag.class);
+		for(Area a : chunk.getAreas()){
+			if(!a.persistent()) continue;
+			CompoundTag tag = a.getSaveCompound();
+			alist.addTag(tag);
+		}
+		root.addTag(alist);
 		short[] blocks;
 		byte[] data;
 		try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(path))))) {

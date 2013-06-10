@@ -24,7 +24,7 @@ import vc4.vanilla.generation.plant.tree.TreeGenBasic;
 import vc4.vanilla.generation.populate.*;
 import vc4.vanilla.generation.recursive.RecursiveGenCaves;
 import vc4.vanilla.generation.recursive.RecursiveGenVolcano;
-import vc4.vanilla.generation.village.building.BuildingHouse;
+import vc4.vanilla.generation.village.VillageGenerator;
 
 /**
  * @author paul
@@ -36,7 +36,7 @@ public class OverworldGenerator implements WorldGenerator {
 	private WorldGenRuins ruinsGen = new WorldGenRuins();
 	private WorldGenOres oresGen = new WorldGenOres();
 	private DungeonRoomBase dungeonGen = new DungeonRoomBase();
-	private BuildingHouse villageGen = new BuildingHouse();
+	private VillageGenerator villageGen = new VillageGenerator();
 	private WorldGenUndergroundLake waterLakeGen;
 	private WorldGenUndergroundLake lavaLakeGen;
 	private WorldGenDungeons dungeonsGen = new WorldGenDungeons();
@@ -187,6 +187,7 @@ public class OverworldGenerator implements WorldGenerator {
 		}
 		if(world.getGeneratorTag().getBoolean("villages", true)){
 			villageGen.generate(world, x, y, z);
+			villageGen.generateExtra(world, x, y, z);
 		}
 		if (world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);
 		if (y > 30) {
@@ -300,6 +301,11 @@ public class OverworldGenerator implements WorldGenerator {
 		data.setBiomeMap(biomes);
 		data.setHeightMap(hgen.generate(wx, wz, 32));
 		
+	}
+	
+	@Override
+	public boolean generatePlants(World world, long x, long y, long z) {
+		return true;
 	}
 	
 

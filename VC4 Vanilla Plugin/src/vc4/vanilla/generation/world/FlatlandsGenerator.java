@@ -94,4 +94,9 @@ public class FlatlandsGenerator implements WorldGenerator {
 	public void generateMapData(World world, MapData data) {
 	}
 
+	@Override
+	public boolean generatePlants(World world, long x, long y, long z) {
+		return true;
+	}
+
 }

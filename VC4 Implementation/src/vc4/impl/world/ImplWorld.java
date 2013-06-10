@@ -27,7 +27,7 @@ import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
 import vc4.api.vector.*;
 import vc4.api.world.*;
-import vc4.impl.Dictionary;
+import vc4.api.io.Dictionary;
 import vc4.impl.plugin.PluginLoader;
 
 /**
@@ -75,6 +75,7 @@ public class ImplWorld implements World {
 	private Dictionary registeredItemEntitys = new Dictionary(5).put("enchantment", 0);
 	private Dictionary registeredContainers = new Dictionary(5);
 	private Dictionary registeredTraits = new Dictionary(25).put("inventory", 0);
+	private Dictionary registeredAreas = new Dictionary(10);
 	private long seed = new Random().nextLong();
 	private long time;
 	private String generatorName = "overworld";
@@ -121,6 +122,7 @@ public class ImplWorld implements World {
 		loadDict(registeredTileEntitys, dirPath + "tileentitys.dictionary");
 		loadDict(registeredItemEntitys, dirPath + "itementitys.dictionary");
 		loadDict(registeredTraits, dirPath + "traits.dictionary");
+		loadDict(registeredAreas, dirPath + "areas.dictionary");
 		try (NBTInputStream in = new NBTInputStream(new FileInputStream(wld), true)) {
 			loadSaveCompound((CompoundTag) in.readTag());
 		}
@@ -135,6 +137,7 @@ public class ImplWorld implements World {
 	public SaveFormat getSaveFormat() {
 		return saveFormat;
 	}
+	
 
 	@SuppressWarnings("unchecked")
 	private void startGenThreads(int num) {
@@ -463,6 +466,37 @@ public class ImplWorld implements World {
 
 		return list;
 	}
+	
+	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude) {
+		if (bounds == null) return null;
+
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		for (long x = minX; x <= maxX; ++x) {
+			for (long y = minY; y <= maxY; ++y) {
+				for (long z = minZ; z <= maxZ; ++z) {
+					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (int dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						Entity e = c.entitys.get(dofor);
+						if(!type.isAssignableFrom(e.getClass())) continue;
+						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
 
 	@Override
 	public List<Entity> getEntitiesInBounds(AABB bounds) {
@@ -487,6 +521,41 @@ public class ImplWorld implements World {
 					// long start = System.nanoTime();
 					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
 						e = c.entitys.get(dofor);
+						if (e != null && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	@Override
+	public List<Entity> getEntitiesInBounds(AABB bounds, Class<? extends Entity> type) {
+		if (bounds == null) return null;
+
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long y, z;
+		int dofor;
+		ImplChunk c;
+		Entity e;
+		for (long x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						e = c.entitys.get(dofor);
+						if(!type.isAssignableFrom(e.getClass())) continue;
 						if (e != null && bounds.intersectsWith(e.bounds)) list.add(e);
 					}
 					// long time = System.nanoTime() - start;
@@ -649,6 +718,7 @@ public class ImplWorld implements World {
 		if (data == null) return false;
 		GeneratorList.getWorldGenerator(generatorName).populate(this, x, y, z);
 		if (y < -8 || y > 8) return true;
+		if(!getGenerator().generatePlants(this, x, y, z)) return true;
 		ArrayList<PlantGrowth> growing = new ArrayList<>();
 		growing.addAll(data.getBiome(0, 0).getPlants());
 		growing.addAll(data.getBiome(31, 0).getPlants());
@@ -1128,10 +1198,12 @@ public class ImplWorld implements World {
 		registeredTileEntitys.save(new FileOutputStream(dirPath + "tileentitys.dictionary"));
 		registeredItemEntitys.save(new FileOutputStream(dirPath + "itementitys.dictionary"));
 		registeredTraits.save(new FileOutputStream(dirPath + "traits.dictionary"));
+		registeredAreas.save(new FileOutputStream(dirPath + "areas.dictionary"));
 		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
 		NBTOutputStream out = new NBTOutputStream(new FileOutputStream(wld), true);
 		out.writeTag(getSaveCompound());
 		out.close();
+		PluginLoader.onWorldSave(this);
 	}
 
 	public void unloadChunks() {
@@ -1194,6 +1266,11 @@ public class ImplWorld implements World {
 	@Override
 	public short getRegisteredEntity(String name) {
 		return (short) registeredEntitys.get(name);
+	}
+	
+	@Override
+	public short getRegisteredArea(String name) {
+		return (short) registeredAreas.get(name);
 	}
 	
 	@Override
@@ -1331,6 +1408,11 @@ public class ImplWorld implements World {
 	@Override
 	public String getTraitName(int id) {
 		return registeredTraits.getName(id);
+	}
+	
+	@Override
+	public String getAreaName(int id) {
+		return registeredAreas.getName(id);
 	}
 	
 	@Override

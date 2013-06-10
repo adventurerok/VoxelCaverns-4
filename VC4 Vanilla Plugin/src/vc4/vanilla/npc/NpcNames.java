@@ -1,4 +1,4 @@
-package vc4.vanilla;
+package vc4.vanilla.npc;
 
 import java.io.*;
 import java.util.Random;
@@ -12,7 +12,7 @@ public class NpcNames {
 	
 	
 	public static void load(){
-		InputStream in = NpcNames.class.getClassLoader().getResourceAsStream("vc4/vanilla/resources/text/villagernames.txt");
+		InputStream in = NpcNames.class.getClassLoader().getResourceAsStream("vc4/vanilla/resources/text/npcnames.txt");
 		try(BufferedReader read = new BufferedReader(new InputStreamReader(in))){
 			String[] lines = new String[7];
 			for(int d = 0; d < 7; ++d){
@@ -20,7 +20,7 @@ public class NpcNames {
 			}
 			load(lines);
 		} catch (IOException e) {
-			Logger.getLogger(NpcNames.class).warning("Error while reading Villager Names", e);
+			Logger.getLogger(NpcNames.class).warning("Error while reading NPC Names", e);
 		}
 	}
 
@@ -42,26 +42,5 @@ public class NpcNames {
 	
 	public static String getRandomLast(Random rand){
 		return lastNames.getRandomName(rand);
-	}
-	
-	private static class Names{
-		String[] start, middle, end;
-
-		public Names(String[] start, String[] middle, String[] end) {
-			super();
-			this.start = start;
-			this.middle = middle;
-			this.end = end;
-		}
-		
-		public String getRandomName(Random rand){
-			return start[rand.nextInt(start.length)] + middle[rand.nextInt(middle.length)] + end[rand.nextInt(end.length)];
-		}
-		
-		public int maxNames(){
-			return start.length * middle.length * end.length;
-		}
-		
-		
 	}
 }
