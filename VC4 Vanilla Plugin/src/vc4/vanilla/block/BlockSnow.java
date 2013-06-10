@@ -13,6 +13,16 @@ public class BlockSnow extends Block {
 	}
 	
 	@Override
+	public boolean canStandIn() {
+		return true;
+	}
+	
+	@Override
+	public boolean canStandOn() {
+		return false;
+	}
+	
+	@Override
 	public AABB getRenderSize(World world, long x, long y, long z) {
 		double height = 0.125 * (world.getBlockData(x, y, z) + 1);
 		return AABB.getBoundingBox(0, 1, 0, height, 0, 1);

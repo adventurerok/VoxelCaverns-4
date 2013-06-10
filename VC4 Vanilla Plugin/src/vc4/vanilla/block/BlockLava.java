@@ -26,6 +26,16 @@ public class BlockLava extends BlockFluid {
 		
 	}
 	
+	@Override
+	public boolean canStandIn() {
+		return false;
+	}
+	
+	@Override
+	public boolean canStandOn() {
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see vc4.api.block.Block#getColor(vc4.api.item.ItemStack, int)
 	 */

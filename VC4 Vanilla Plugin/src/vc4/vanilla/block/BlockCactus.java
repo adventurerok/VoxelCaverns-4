@@ -21,6 +21,11 @@ public class BlockCactus extends Block {
 	}
 	
 	@Override
+	public boolean canStandOn() {
+		return false;
+	}
+	
+	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
 		if(world.getBlockId(x, y + 1, z) != uid) return new AABB[]{top};
 		return new AABB[]{bounds};

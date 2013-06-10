@@ -25,6 +25,16 @@ public class BlockTallGrass extends Block {
 	}
 	
 	@Override
+	public boolean canStandIn() {
+		return true;
+	}
+	
+	@Override
+	public boolean canStandOn() {
+		return false;
+	}
+	
+	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
 		return null;
 	}

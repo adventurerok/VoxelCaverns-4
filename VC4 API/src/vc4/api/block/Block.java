@@ -42,6 +42,8 @@ public class Block {
 	protected MiningData mineData = new MiningData();
 
 	private boolean solid = true;
+	private boolean standable = true;
+	private boolean standinable = false;
 	
 	protected static Random rand = new Random();
 	
@@ -114,6 +116,14 @@ public class Block {
 		long oz = z + d.getZ();
 		if(world.getBlockType(ox, oy, oz).isSolid(world, ox, oy, oz, d.opposite().getId())) return false;
 		return true;
+	}
+	
+	public boolean canStandOn(){
+		return standable && !isAir;
+	}
+	
+	public boolean canStandIn(){
+		return standinable || isAir;
 	}
 	
 	public int getRendererToUse(byte data, int side){

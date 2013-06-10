@@ -29,6 +29,16 @@ public class BlockWater extends BlockFluid {
 		
 	}
 	
+	@Override
+	public boolean canStandOn() {
+		return false;
+	}
+	
+	@Override
+	public boolean canStandIn() {
+		return true;
+	}
+	
 	/* (non-Javadoc)
 	 * @see vc4.api.block.Block#getColor(vc4.api.item.ItemStack, int)
 	 */

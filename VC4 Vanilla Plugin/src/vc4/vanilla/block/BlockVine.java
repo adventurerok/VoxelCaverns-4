@@ -21,6 +21,16 @@ public class BlockVine extends Block {
 		renderer = new BlockRendererFace();
 		mineData = new MiningData().setRequired(ToolType.axe).setTimes(0.5, 0.03, 0.25).setPowers(0, 1, 25);
 	}
+	
+	@Override
+	public boolean canStandIn() {
+		return true;
+	}
+	
+	@Override
+	public boolean canStandOn() {
+		return false;
+	}
 
 	@Override
 	public int getRendererToUse(byte data, int side) {
