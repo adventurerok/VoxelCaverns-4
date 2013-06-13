@@ -131,7 +131,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	//NESW
 	public int getSimpleFacing(){
-		return (int) ((MathUtils.floor(((yaw * 4F) / 360F) + 0.5D) + 1) & 3);
+		return (int) ((MathUtils.floor(((moveYaw * 4F) / 360F) + 0.5D) + 1) & 3);
 	}
 	
 	public void setTicksSinceUpdate(int ticksSinceUpdate) {
@@ -145,7 +145,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	//NESW NE, SE, SW, NW
 	public int getAdvancedFacing(){
-		int eight = (int) ((MathUtils.floor(((yaw * 8F) / 360F) + 0.5D) + 1) & 7);
+		int eight = (int) ((MathUtils.floor(((moveYaw * 8F) / 360F) + 0.5D) + 1) & 7);
 		if(eight % 2 == 0) return eight / 2;
 		else return ((eight - 1) / 2) + 6;
 				

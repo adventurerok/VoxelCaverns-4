@@ -66,10 +66,11 @@ public final class ListTag extends Tag {
 	 * @param type The type of item in the list.
 	 * @param value The value.
 	 */
-	public ListTag(String name, Class<? extends Tag> type, List<Tag> value) {
+	@SuppressWarnings("unchecked")
+	public ListTag(String name, Class<? extends Tag> type, List<? extends Tag> value) {
 		super(name);
 		this.type = type;
-		this.value = value;
+		this.value = (List<Tag>) value;
 	}
 	
 	public void addTag(Tag t){

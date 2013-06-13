@@ -10,19 +10,28 @@ import org.jnbt.ListTag;
 import vc4.api.entity.trait.Trait;
 import vc4.api.logging.Logger;
 import vc4.api.math.MathUtils;
+import vc4.api.path.astar.Agent;
 import vc4.api.util.AABB;
 import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.Chunk;
 import vc4.api.world.World;
 
-public abstract class Entity {
+public abstract class Entity implements Agent{
 
 	private static HashMap<String, Constructor<? extends Entity>> types = new HashMap<String, Constructor<? extends Entity>>();
 	
 	static{
 		registerEntity("item", EntityItem.class);
 		registerEntity("player", EntityPlayer.class);
+	}
+	
+	public Vector3d getEyePos() {
+		return new Vector3d(position.x, getEyeHeight(), position.z);
+	}
+	
+	public double getEyeHeight(){
+		return position.y;
 	}
 	
 	public static void registerEntity(String name, Class<? extends Entity> clz){

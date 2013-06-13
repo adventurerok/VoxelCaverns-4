@@ -4,6 +4,7 @@
 package vc4.api.vector;
 
 import vc4.api.math.MathUtils;
+import vc4.api.util.Direction;
 
 /**
  * @author paul
@@ -25,6 +26,17 @@ public class Vector3d implements Vector3<Vector3d> {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public Vector3d adjust(Vector3d adj, Direction dir){
+		Vector3d res = clone();
+		res.x += dir.getX() * adj.x;
+		res.z += dir.getZ() * adj.x;
+		res.y += adj.y;
+		Direction right = dir.clockwise();
+		res.x += right.getX() * adj.z;
+		res.z += right.getZ() * adj.z;
+		return res;
 	}
 
 	@Override

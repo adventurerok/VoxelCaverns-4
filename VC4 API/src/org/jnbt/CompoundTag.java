@@ -40,8 +40,7 @@ import java.util.Map;
 import vc4.api.io.BitInputStream;
 import vc4.api.io.BitOutputStream;
 import vc4.api.util.AABB;
-import vc4.api.vector.Vector3d;
-import vc4.api.vector.Vector3l;
+import vc4.api.vector.*;
 
 /**
  * The <code>TAG_Compound</code> tag.
@@ -325,12 +324,28 @@ public final class CompoundTag extends Tag {
 		res.z = getLong("z");
 		return res;
 	}
+	
+	public Vector3i readVector3i(){
+		Vector3i res = new Vector3i();
+		res.x = getInt("x");
+		res.y = getInt("y");
+		res.z = getInt("z");
+		return res;
+	}
 
 	public static CompoundTag createVector3lTag(String name, Vector3l vect) {
 		CompoundTag tag = new CompoundTag(name);
 		tag.setLong("x", vect.x);
 		tag.setLong("y", vect.y);
 		tag.setLong("z", vect.z);
+		return tag;
+	}
+	
+	public static CompoundTag createVector3iTag(String name, Vector3i vect) {
+		CompoundTag tag = new CompoundTag(name);
+		tag.setInt("x", vect.x);
+		tag.setInt("y", vect.y);
+		tag.setInt("z", vect.z);
 		return tag;
 	}
 

@@ -7,6 +7,7 @@ import org.jnbt.CompoundTag;
 import vc4.api.Resources;
 import vc4.api.client.Client;
 import vc4.api.entity.ai.AI;
+import vc4.api.entity.ai.MovementHandler;
 import vc4.api.font.FontRenderer;
 import vc4.api.graphics.Graphics;
 import vc4.api.graphics.OpenGL;
@@ -19,24 +20,26 @@ public abstract class EntityLiving extends Entity {
 
 	static FontRenderer font;
 
-	public double yaw, pitch, forward, sideways;
+	public double moveYaw, movePitch, forward, sideways, lookYaw, lookPitch;
 	public double fallDistance;
 	public MovementStyle movement = MovementStyle.WALK;
 	public FlyingStyle flying = FlyingStyle.WALK;
-
+	public boolean looking = false;
+	
 	public byte resistanceTime = 20;
 	public int resistedDamage = 100000;
 	public int healing = 25;
 
 	public double walkSwing = 0;
 	public double walkSwingSin = 0;
-
-	public double headYaw = Double.NaN;
+	
+	MovementHandler moveHandler;
 
 	protected HashMap<String, AI> ais = new HashMap<>();
 
 	public EntityLiving(World world) {
 		super(world);
+		moveHandler = new MovementHandler(this);
 		if (font == null) font = FontRenderer.createFontRenderer("unispaced_24", 0.15f);
 	}
 
@@ -55,16 +58,95 @@ public abstract class EntityLiving extends Entity {
 		double dist = Math.sqrt(xDif * xDif + zDif * zDif);
 		float newYaw = (float) ((Math.atan2(zDif, xDif) * 180D) / Math.PI) - 90F;
 		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
-		pitch = -newPitch;
-		yaw = newYaw;
+		lookPitch = -newPitch;
+		lookYaw = newYaw;
+	}
+	
+	public void targetEntity(Entity entity) {
+		double xDif = entity.position.x - position.x;
+		double zDif = entity.position.z - position.z;
+		double yDif;
+
+		if (entity instanceof EntityLiving) {
+			EntityLiving entityliving = (EntityLiving) entity;
+			yDif = (getEyeHeight()) - entityliving.getEyeHeight();
+		} else {
+			yDif = entity.position.y - getEyeHeight();
+		}
+
+		double dist = Math.sqrt(xDif * xDif + zDif * zDif);
+		float newYaw = (float) ((Math.atan2(zDif, xDif) * 180D) / Math.PI) - 90F;
+		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
+		movePitch = -newPitch;
+		moveYaw = newYaw;
+	}
+	
+	public void lookTargetEntity(Entity entity) {
+		double xDif = entity.position.x - position.x;
+		double zDif = entity.position.z - position.z;
+		double yDif;
+
+		if (entity instanceof EntityLiving) {
+			EntityLiving entityliving = (EntityLiving) entity;
+			yDif = (getEyeHeight()) - entityliving.getEyeHeight();
+		} else {
+			yDif = entity.position.y - getEyeHeight();
+		}
+
+		double dist = Math.sqrt(xDif * xDif + zDif * zDif);
+		float newYaw = (float) ((Math.atan2(zDif, xDif) * 180D) / Math.PI) - 90F;
+		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
+		movePitch = lookPitch = -newPitch;
+		moveYaw = lookYaw = newYaw;
+	}
+	
+	public void lookAtVector(Vector3d vector) {
+		double xDif = vector.x - position.x;
+		double zDif = vector.z - position.z;
+		double yDif = vector.y - getEyeHeight();
+		double dist = Math.sqrt(xDif * xDif + zDif * zDif);
+		float newYaw = (float) ((Math.atan2(zDif, xDif) * 180D) / Math.PI) - 90F;
+		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
+		lookPitch = -newPitch;
+		lookYaw = newYaw;
+	}
+	
+	public double lookPitch(){
+		return looking ? lookPitch : movePitch;
+	}
+	
+	public double lookYaw(){
+		return looking ? lookYaw : moveYaw;
+	}
+	
+	public void lookTargetVector(Vector3d vector) {
+		double xDif = vector.x - position.x;
+		double zDif = vector.z - position.z;
+		double yDif = vector.y - getEyeHeight();
+		double dist = Math.sqrt(xDif * xDif + zDif * zDif);
+		float newYaw = (float) ((Math.atan2(zDif, xDif) * 180D) / Math.PI) - 90F;
+		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
+		lookPitch = movePitch = -newPitch;
+		lookYaw = moveYaw = newYaw;
+	}
+	
+	public void targetVector(Vector3d vector) {
+		double xDif = vector.x - position.x;
+		double zDif = vector.z - position.z;
+		double yDif = vector.y - getEyeHeight();
+		double dist = Math.sqrt(xDif * xDif + zDif * zDif);
+		float newYaw = (float) ((Math.atan2(zDif, xDif) * 180D) / Math.PI) - 90F;
+		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
+		movePitch = -newPitch;
+		moveYaw = newYaw;
 	}
 
 	@Override
 	public CompoundTag getSaveCompound() {
 		CompoundTag tag = super.getSaveCompound();
 		CompoundTag rot = new CompoundTag("angle");
-		rot.setDouble("yaw", yaw);
-		rot.setDouble("pitch", pitch);
+		rot.setDouble("yaw", moveYaw);
+		rot.setDouble("pitch", movePitch);
 		tag.addTag(rot);
 		tag.setInt("he", healing);
 		tag.setByte("movement", (byte) movement.ordinal());
@@ -77,12 +159,16 @@ public abstract class EntityLiving extends Entity {
 	public void loadSaveCompound(CompoundTag tag) {
 		super.loadSaveCompound(tag);
 		CompoundTag rot = tag.getCompoundTag("angle");
-		yaw = rot.getDouble("yaw");
-		pitch = rot.getDouble("pitch");
+		moveYaw = rot.getDouble("yaw");
+		movePitch = rot.getDouble("pitch");
 		healing = tag.getInt("he");
 		movement = MovementStyle.values()[tag.getByte("movement")];
 		flying = FlyingStyle.values()[tag.getByte("flying")];
 		fallDistance = tag.getDouble("falling");
+	}
+	
+	public MovementHandler getMoveHandler() {
+		return moveHandler;
 	}
 
 	public void jump() {
@@ -104,6 +190,7 @@ public abstract class EntityLiving extends Entity {
 		} else movement = MovementStyle.SNEAK;
 	}
 
+	@Override
 	public double getEyeHeight() {
 		return position.y + getDefaultSize().y - 0.15;
 	}
@@ -121,8 +208,8 @@ public abstract class EntityLiving extends Entity {
 	}
 
 	public void setModelRotations(Model model) {
-		double headY = headYaw == Double.NaN ? 0 : yaw + headYaw;
-		model.setRotation("head", new Vector3f(MathUtils.clamp((float) pitch, -30, 30), (float) headY, 0));
+		double headY = lookYaw() == Double.NaN ? 0 : moveYaw - lookYaw();
+		model.setRotation("head", new Vector3f(MathUtils.clamp((float) lookPitch, -30, 30), (float) headY, 0));
 		model.setRotation("leftarm", new Vector3f((float) walkSwing, 0, 0));
 		model.setRotation("rightarm", new Vector3f((float) -walkSwing, 0, 0));
 		model.setRotation("leftleg", new Vector3f((float) -walkSwing, 0, 0));
@@ -144,7 +231,7 @@ public abstract class EntityLiving extends Entity {
 		gl.pushMatrix();
 		gl.translate(position.x, position.y, position.z);
 		gl.pushMatrix();
-		gl.rotate((float) -yaw, 0, 1, 0);
+		gl.rotate((float) -moveYaw, 0, 1, 0);
 		model.draw();
 		gl.popMatrix();
 		if (name != null && !name.isEmpty()) {
@@ -182,7 +269,7 @@ public abstract class EntityLiving extends Entity {
 		gl.pushMatrix();
 		gl.translate(position.x, position.y, position.z);
 		gl.pushMatrix();
-		gl.rotate((float) -yaw, 0, 1, 0);
+		gl.rotate((float) -moveYaw, 0, 1, 0);
 		model.draw();
 		gl.popMatrix();
 		if (name != null && !name.isEmpty()) {
@@ -205,9 +292,6 @@ public abstract class EntityLiving extends Entity {
 		gl.unbindShader();
 	}
 
-	public Vector3d getEyePos() {
-		return new Vector3d(position.x, getEyeHeight(), position.z);
-	}
 
 	@Override
 	public void damage(int amount, DamageSource source) {
@@ -229,10 +313,10 @@ public abstract class EntityLiving extends Entity {
 	// Useful for walking with delta
 	public void walk(double forward, double sideways) {
 		double fMod = flying != FlyingStyle.WALK ? 2.2 : 1;
-		double xmotion = -forward * movement.getSpeed() * fMod * Math.sin(Math.toRadians(yaw));
-		double zmotion = forward * movement.getSpeed() * fMod * Math.cos(Math.toRadians(yaw));
-		xmotion += sideways * movement.getSpeed() * fMod * Math.sin(Math.toRadians(yaw - 90));
-		zmotion -= sideways * movement.getSpeed() * fMod * Math.cos(Math.toRadians(yaw - 90));
+		double xmotion = -forward * movement.getSpeed() * fMod * Math.sin(Math.toRadians(moveYaw));
+		double zmotion = forward * movement.getSpeed() * fMod * Math.cos(Math.toRadians(moveYaw));
+		xmotion += sideways * movement.getSpeed() * fMod * Math.sin(Math.toRadians(moveYaw - 90));
+		zmotion -= sideways * movement.getSpeed() * fMod * Math.cos(Math.toRadians(moveYaw - 90));
 		motionX += xmotion;
 		motionZ += zmotion;
 	}
@@ -291,6 +375,7 @@ public abstract class EntityLiving extends Entity {
 	}
 
 	public void move() {
+		moveHandler.update();
 		motionX *= 0.6;
 		motionZ *= 0.6;
 		if (flying == FlyingStyle.WALK) {

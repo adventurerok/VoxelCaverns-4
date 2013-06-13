@@ -1,5 +1,6 @@
 package vc4.api.util;
 
+import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3l;
 
 public class Adjustment {
@@ -33,5 +34,18 @@ public class Adjustment {
 		z += right.getZ() * sideways;
 		y += up;
 		return new Vector3l(x, y, z);
+	}
+	
+	public Vector3d adjust(Vector3d to, Direction dir){
+		double x = to.x;
+		double y = to.y;
+		double z = to.z;
+		x += dir.getX() * forward;
+		z += dir.getZ() * forward;
+		Direction right = dir.clockwise();
+		x += right.getX() * sideways;
+		z += right.getZ() * sideways;
+		y += up;
+		return new Vector3d(x, y, z);
 	}
 }

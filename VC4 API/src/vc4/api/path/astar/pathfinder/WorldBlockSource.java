@@ -6,9 +6,18 @@ public class WorldBlockSource extends BlockSource{
 
 	World world;
 	
+	
+	
 	@Override
 	public int getBlockTypeIdAt(long x, long y, long z) {
 		return world.getBlockId(x, y, z);
+	}
+
+
+
+	public WorldBlockSource(World world) {
+		super();
+		this.world = world;
 	}
 
 }

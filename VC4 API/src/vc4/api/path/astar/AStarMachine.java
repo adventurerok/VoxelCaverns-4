@@ -93,6 +93,7 @@ public class AStarMachine<N extends AStarNode, P extends Plan> {
                 neighbour.parent = node;
             }
             if (maxIterations >= 0 && iterations++ >= maxIterations) {
+            	System.out.println("Err: Exceded max iterations");
                 return null;
             }
         }
