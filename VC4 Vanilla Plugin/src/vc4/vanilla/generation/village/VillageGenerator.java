@@ -76,6 +76,7 @@ public class VillageGenerator {
 			door.setNewRoomDir(dir);
 			build.generate(world, door, ville);
 		}
+		ville.getStyle().getWall().generate(world, x, z, ville);
 	}
 	
 	public static Building nextRoom(VillageStyle style, int num){
@@ -97,7 +98,7 @@ public class VillageGenerator {
 	public ArrayList<BuildingInfo> getBuildings(World world, Village ville, Random rand, long x, long z){
 		Vector2l centre = new Vector2l(x, z);
 		ArrayList<BuildingInfo> roomData = new ArrayList<>();
-		int rooms = 8 + rand.nextInt(15);
+		int rooms = 10 + rand.nextInt(20);
 		for(int a = 0; a < rooms; ++a){
 			long bx = x - 35 + rand.nextInt(70);
 			long bz = z - 35 + rand.nextInt(70);

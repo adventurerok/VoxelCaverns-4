@@ -3,17 +3,23 @@ package vc4.vanilla.generation.village.style;
 import java.util.ArrayList;
 
 import vc4.api.world.World;
+import vc4.vanilla.generation.village.Wall;
 import vc4.vanilla.generation.village.WeightedBuilding;
 
 public class VillageStyle {
 
 	private ArrayList<WeightedBuilding> rooms = new ArrayList<>();
+	protected Wall wall;
 	private int maxRooms = 75;
 	
 	private int totalWeight;
 	
 	public int getTotalWeight() {
 		return totalWeight;
+	}
+	
+	public Wall getWall() {
+		return wall;
 	}
 	
 	
