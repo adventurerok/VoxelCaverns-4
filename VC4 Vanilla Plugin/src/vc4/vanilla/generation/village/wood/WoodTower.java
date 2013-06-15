@@ -2,6 +2,7 @@ package vc4.vanilla.generation.village.wood;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
 import vc4.vanilla.generation.village.Building;
@@ -73,11 +74,16 @@ public class WoodTower implements Building {
 				}
 			}
 		}
+		Vector3l supLeft = door.left.move(3, door.dir);
+		Vector3l supRight = door.right.move(3, door.dir);
 		Vector3l ladLeft = door.left.move(4, door.dir);
 		Vector3l ladRight = door.right.move(4, door.dir);
+		int ladDir = door.dir.opposite().id();
 		for(long y = start.y; y < start.y + 18; ++y){
-			ville.setPlankBlock(ladLeft.x, y, ladLeft.z);
-			ville.setPlankBlock(ladRight.x, y, ladRight.z);
+			ville.setPlankBlock(supLeft.x, y, supLeft.z);
+			ville.setPlankBlock(supRight.x, y, supRight.z);
+			world.setBlockIdData(ladLeft.x, y, ladLeft.z, Vanilla.ladder.uid, ladDir);
+			world.setBlockIdData(ladRight.x, y, ladRight.z, Vanilla.ladder.uid, ladDir);
 		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
 		ville.setEmptyBlock(door.left.x, door.left.y + 1, door.left.z);

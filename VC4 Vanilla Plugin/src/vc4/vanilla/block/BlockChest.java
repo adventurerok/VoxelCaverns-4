@@ -115,7 +115,7 @@ public class BlockChest extends BlockMultitexture{
 	
 	@Override
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
-		world.setBlockIdData(x, y, z, uid, Direction.getOpposite(player.getSimpleFacing()).getId());
+		world.setBlockIdData(x, y, z, uid, Direction.getOpposite(player.getSimpleFacing()).id());
 		ItemEntityChest chest = null;
 		for(int dofor = 0; dofor < item.entities.size(); ++dofor){
 			if(item.entities.get(dofor) instanceof ItemEntityChest){

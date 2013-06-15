@@ -35,7 +35,7 @@ public class BlockBrickHalf extends BlockBrick implements IBlockHalf{
 		Direction dir = Direction.getDirection(side);
 		Block b = world.getNearbyBlockType(x, y, z, dir);
 		if(b == null) return true;
-		boolean sol = !b.isSolid(world, x + dir.getX(), y + dir.getY(), z + dir.getZ(), dir.opposite().getId());
+		boolean sol = !b.isSolid(world, x + dir.getX(), y + dir.getY(), z + dir.getZ(), dir.opposite().id());
 		if(side > 3 || sol == true) return sol;
 		if(b instanceof IBlockHalf){
 			boolean up = (world.getNearbyBlockData(x, y, z, dir) & 16) != 0;

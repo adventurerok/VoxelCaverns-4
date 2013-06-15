@@ -149,7 +149,7 @@ public class BlockVine extends Block {
 	
 	public boolean checkNearby(World world, long x, long y, long z, int side){
 		Block b = world.getNearbyBlockType(x, y, z, Direction.getDirection(side));
-		return b.uid == Vanilla.leaf.uid || b.isSolid(world, x, y, z, Direction.getOpposite(side).getId());
+		return b.uid == Vanilla.leaf.uid || b.isSolid(world, x, y, z, Direction.getOpposite(side).id());
 	}
 
 	@Override

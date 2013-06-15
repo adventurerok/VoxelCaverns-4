@@ -13,7 +13,7 @@ public class FurnatureChair extends Furnature{
 	@Override
 	public void place(Village ville, Vector3l start, Direction dir) {
 		start = pos.adjust(start, dir);
-		int dat = 1 << ((dir.getId() + this.dir) & 3);
+		int dat = 1 << ((dir.id() + this.dir) & 3);
 		ville.getWorld().setBlockIdData(start.x, start.y, start.z, bid, dat);
 	}
 

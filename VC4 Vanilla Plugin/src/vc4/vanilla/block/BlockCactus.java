@@ -68,7 +68,7 @@ public class BlockCactus extends Block {
 	@Override
 	public boolean renderSide(World world, long x, long y, long z, int side) {
 		if(side < 4) return true;
-		boolean sol = world.getNearbyBlockType(x, y, z, Direction.getDirection(side)).isSolid(world, x, y, z, Direction.getDirection(side).opposite().getId());
+		boolean sol = world.getNearbyBlockType(x, y, z, Direction.getDirection(side)).isSolid(world, x, y, z, Direction.getDirection(side).opposite().id());
 		boolean cact = world.getNearbyBlockId(x, y, z, Direction.getDirection(side)) == uid;
 		return !sol && !cact;
 	}

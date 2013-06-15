@@ -44,7 +44,7 @@ public class BlockPlanksStairs extends BlockPlanks {
 		double hitY = player.getRays().vector.y - y;
 		int add = 0;
 		if(hitY > 0.5) add = 16;
-		world.setBlockIdData(x, y, z, uid, add + item.getData() + Direction.getDirection(player.getSimpleFacing()).opposite().getId());
+		world.setBlockIdData(x, y, z, uid, add + item.getData() + Direction.getDirection(player.getSimpleFacing()).opposite().id());
 		item.decrementAmount();
 	}
 	
@@ -60,7 +60,7 @@ public class BlockPlanksStairs extends BlockPlanks {
 		boolean upside = (data & 16) != 0;
 		if(side == 4 && upside) return true;
 		else if(!upside && side == 5) return true;
-		return Direction.getDirection(dir).opposite().getId() == side;
+		return Direction.getDirection(dir).opposite().id() == side;
 	}
 	
 	@Override

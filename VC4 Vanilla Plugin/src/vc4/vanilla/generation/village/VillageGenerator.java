@@ -118,7 +118,7 @@ public class VillageGenerator {
 			int dir = rand.nextInt(4);
 			Vector2l buildPos = new Vector2l(bx, bz);
 			Vector2l frontPos = new Vector2l(bx + Direction.getDirection(dir).getX(), bz + Direction.getDirection(dir).getZ());
-			if(frontPos.distanceSquared(centre) - buildPos.distanceSquared(centre) > 48) dir = Direction.getOpposite(dir).getId();
+			if(frontPos.distanceSquared(centre) - buildPos.distanceSquared(centre) > 48) dir = Direction.getOpposite(dir).id();
 			BuildingInfo info = new BuildingInfo(new Vector3l(bx, fy, bz), type, dir);
 			roomData.add(info);
 			
