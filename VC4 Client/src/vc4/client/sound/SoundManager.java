@@ -150,7 +150,7 @@ public class SoundManager extends Audio{
 		double posY = l.position.y;
 		double posZ = l.position.z;
 		player.setListenerPosition((float) posX, (float) posY, (float) posZ);
-		float yaw = (float) l.yaw;
+		float yaw = (float) l.moveYaw;
 		float xAngle = MathUtils.cos(-yaw * 0.01745329F - (float) Math.PI);
 		float yAngle = MathUtils.sin(-yaw * 0.01745329F - (float) Math.PI);
 		player.setListenerOrientation(-yAngle, 0.0F, -xAngle, 0, 1, 0);

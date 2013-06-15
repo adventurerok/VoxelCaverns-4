@@ -60,7 +60,7 @@ public class AStarNavigationStrategy extends AbstractPathStrategy {
 		double dY = vector.z - entity.position.z;
 		double xzDistance = dX * dX + dZ * dZ;
 		double distance = xzDistance + dY * dY;
-		if (distance > 0 && dY > 0 && xzDistance <= 4.205) {
+		if (distance > 0 && dY > 0.4 && xzDistance <= 4.205) {
 			// 2.75 -> 4.205 (allow for diagonal jumping)
 			entity.jump();
 		}

@@ -55,7 +55,7 @@ public class AIChasePlayer extends AI {
 			target = null;
 			return false;
 		}
-		owner.lookAtEntity(target);
+		owner.lookTargetEntity(target);
 		boolean b = false;
 		if(ds < 0.05){
 			owner.setHorizontalVelocity(0, 0);

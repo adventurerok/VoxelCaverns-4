@@ -1,6 +1,5 @@
 package vc4.vanilla.generation.village;
 
-import vc4.vanilla.generation.village.building.Building;
 
 public class WeightedBuilding {
 

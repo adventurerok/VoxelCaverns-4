@@ -72,7 +72,7 @@ public class DungeonRoomBase extends DungeonRoom {
 		}
 		EntityNpc prisoner = new EntityNpc(world);
 		prisoner.setPosition(sx + 4, start.y + 0.93, sz + 4);
-		prisoner.yaw = dungeon.getRand().nextInt(360) + dungeon.getRand().nextDouble();
+		prisoner.moveYaw = dungeon.getRand().nextInt(360) + dungeon.getRand().nextDouble();
 		prisoner.setFirstName(dungeon.randomFirstName());
 		prisoner.setLastName(dungeon.randomLastName());
 		prisoner.setMan(dungeon.getRand().nextBoolean());

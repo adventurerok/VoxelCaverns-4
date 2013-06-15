@@ -10,7 +10,6 @@ import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
 import vc4.vanilla.area.AreaVillage;
 import vc4.vanilla.generation.dungeon.Door;
-import vc4.vanilla.generation.village.building.Building;
 import vc4.vanilla.generation.village.style.VillageStyle;
 import vc4.vanilla.npc.VillageNames;
 

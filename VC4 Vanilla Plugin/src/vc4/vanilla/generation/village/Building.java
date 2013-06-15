@@ -1,8 +1,7 @@
-package vc4.vanilla.generation.village.building;
+package vc4.vanilla.generation.village;
 
 import vc4.api.world.World;
 import vc4.vanilla.generation.dungeon.Door;
-import vc4.vanilla.generation.village.Village;
 
 public interface Building {
 

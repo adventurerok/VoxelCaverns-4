@@ -1,12 +1,13 @@
-package vc4.vanilla.generation.village.building;
+package vc4.vanilla.generation.village.wood;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
+import vc4.vanilla.generation.village.Building;
 import vc4.vanilla.generation.village.Village;
 
-public class BuildingMine implements Building {
+public class WoodMine implements Building {
 
 	@Override
 	public void generate(World world, Door door, Village ville) {

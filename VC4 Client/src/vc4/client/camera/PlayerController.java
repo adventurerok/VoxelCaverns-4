@@ -34,44 +34,44 @@ public class PlayerController extends FPCamera {
 	@Override
 	public void yaw(double amount) {
 		// increment the yaw by the amount param
-		player.yaw += amount;
+		player.moveYaw += amount;
 	}
 
 	// increment the camera's current yaw rotation
 	@Override
 	public void pitch(double amount) {
 		// increment the pitch by the amount param
-		player.pitch += amount;
-		if (player.pitch > 90) player.pitch = 90;
-		if (player.pitch < -90) player.pitch = -90;
+		player.movePitch += amount;
+		if (player.movePitch > 90) player.movePitch = 90;
+		if (player.movePitch < -90) player.movePitch = -90;
 	}
 
 	// moves the camera forward relative to its current rotation (yaw)
 	@Override
 	public void walkForward(double distance) {
-		player.motionX -= distance * Math.sin(Math.toRadians(player.yaw));
-		player.motionZ += distance * Math.cos(Math.toRadians(player.yaw));
+		player.motionX -= distance * Math.sin(Math.toRadians(player.moveYaw));
+		player.motionZ += distance * Math.cos(Math.toRadians(player.moveYaw));
 	}
 
 	// moves the camera backward relative to its current rotation (yaw)
 	@Override
 	public void walkBackwards(double distance) {
-		player.motionX += distance * Math.sin(Math.toRadians(player.yaw));
-		player.motionZ -= distance * Math.cos(Math.toRadians(player.yaw));
+		player.motionX += distance * Math.sin(Math.toRadians(player.moveYaw));
+		player.motionZ -= distance * Math.cos(Math.toRadians(player.moveYaw));
 	}
 
 	// strafes the camera left relitive to its current rotation (yaw)
 	@Override
 	public void strafeLeft(double distance) {
-		player.motionX += distance * Math.sin(Math.toRadians(player.yaw + 90));
-		player.motionZ -= distance * Math.cos(Math.toRadians(player.yaw + 90));
+		player.motionX += distance * Math.sin(Math.toRadians(player.moveYaw + 90));
+		player.motionZ -= distance * Math.cos(Math.toRadians(player.moveYaw + 90));
 	}
 
 	// strafes the camera right relitive to its current rotation (yaw)
 	@Override
 	public void strafeRight(double distance) {
-		player.motionX += distance * Math.sin(Math.toRadians(player.yaw - 90));
-		player.motionZ -= distance * Math.cos(Math.toRadians(player.yaw - 90));
+		player.motionX += distance * Math.sin(Math.toRadians(player.moveYaw - 90));
+		player.motionZ -= distance * Math.cos(Math.toRadians(player.moveYaw - 90));
 	}
 
 	// translates and rotate the matrix so that it looks through the camera
@@ -154,9 +154,9 @@ public class PlayerController extends FPCamera {
 	@Override
 	public void rotate() {
 		// roatate the pitch around the X axis
-		GL11.glRotated(player.pitch, 1.0f, 0.0f, 0.0f);
+		GL11.glRotated(player.movePitch, 1.0f, 0.0f, 0.0f);
 		// roatate the yaw around the Y axis
-		GL11.glRotated(player.yaw, 0.0f, 1.0f, 0.0f);
+		GL11.glRotated(player.moveYaw, 0.0f, 1.0f, 0.0f);
 	}
 
 	@Override
@@ -166,10 +166,10 @@ public class PlayerController extends FPCamera {
 	}
 
 	public Vector3d getLook() {
-		double f = Math.cos(-player.yaw * 0.01745329F - Math.PI);
-		double f2 = Math.sin(-player.yaw * 0.01745329F - Math.PI);
-		double f4 = -Math.cos(player.pitch * 0.01745329F);
-		double f6 = Math.sin(player.pitch * 0.01745329F);
+		double f = Math.cos(-player.moveYaw * 0.01745329F - Math.PI);
+		double f2 = Math.sin(-player.moveYaw * 0.01745329F - Math.PI);
+		double f4 = -Math.cos(player.movePitch * 0.01745329F);
+		double f6 = Math.sin(player.movePitch * 0.01745329F);
 		return new Vector3d(f2 * f4, f6, f * f4);
 	}
 

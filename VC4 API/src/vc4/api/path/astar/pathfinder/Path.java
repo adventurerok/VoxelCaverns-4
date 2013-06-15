@@ -24,10 +24,10 @@ public class Path implements Plan {
                 continue;
             Vector3l vector = node.location;
             if (last != null && vector.y == last.y) {
-                if (node.blockSource.getMaterialAt(vector) == 0
-                        && node.blockSource.getMaterialAt(last) == 0) {
-                    continue;
-                }
+//                if (node.blockSource.getMaterialAt(vector) == 0
+//                        && node.blockSource.getMaterialAt(last) == 0) {
+//                    continue;
+//                }
             }
             last = vector;
             path.add(new PathEntry(vector, node.callbacks));

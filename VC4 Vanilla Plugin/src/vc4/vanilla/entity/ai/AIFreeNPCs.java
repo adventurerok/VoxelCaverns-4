@@ -5,8 +5,7 @@ import java.util.List;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityLiving;
 import vc4.api.entity.ai.AI;
-import vc4.api.math.MathUtils;
-import vc4.api.util.AABB;
+import vc4.api.entity.ai.Movement;
 import vc4.vanilla.entity.EntityNpc;
 import vc4.vanilla.entity.EntityNpc.NpcState;
 
@@ -15,6 +14,8 @@ public class AIFreeNPCs extends AI {
 	EntityNpc target;
 	double max;
 	double speed;
+	
+	Movement move;
 	
 	public AIFreeNPCs(EntityLiving owner, double maxRange, double speed) {
 		super(owner);
@@ -49,6 +50,7 @@ public class AIFreeNPCs extends AI {
 			}
 		}
 		target = close;
+		if(target != null) owner.getMoveHandler().setExecuting(move = new Movement(target, 1, true));
 		return close != null;
 	}
 
@@ -61,37 +63,42 @@ public class AIFreeNPCs extends AI {
 	public boolean update() {
 		if(target.getState() != NpcState.TRAPPED){
 			target = null;
+			owner.getMoveHandler().clearExecuting();
 			return false;
 		}
 		double ds = target.position.distanceSquared(owner.position);
 		if(ds > max){
 			target = null;
+			owner.getMoveHandler().clearExecuting();
 			return false;
 		} else if(ds < 2){
 			target.free();
 			target = null;
+			owner.getMoveHandler().clearExecuting();
 			return false;
 		}
-		owner.lookAtEntity(target);
-		boolean b = false;
-		if(ds < 0.05){
-			owner.setHorizontalVelocity(0, 0);
-			if(target.position.y > owner.position.y) owner.jump();
-		} else {
-			owner.walk(speed, 0);
-		}
-		if(owner.collisionHorizontal && target.position.y > (owner.position.y + 0.43F) && !b){
-			owner.jump();
-		} else{
-			AABB[] nb = owner.world.getBlockType(MathUtils.floor(owner.position.x), MathUtils.floor(owner.bounds.minY - 0.2D), MathUtils.floor(owner.position.z)).getCollisionBounds(owner.world, MathUtils.floor(owner.position.x), MathUtils.floor(owner.bounds.minY - 0.2D), MathUtils.floor(owner.position.z));
-			 if(nb != null && nb.length != 0 && nb[0] != null) b = true;
-			 if(target.position.y < (owner.position.y - 0.93F)) b = true;
-			 if(!b){
-				 owner.jump();
-			 }
-		}
-		
+		if(!owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().setExecuting(move);
 		return true;
+//		owner.lookTargetEntity(target);
+//		boolean b = false;
+//		if(ds < 0.05){
+//			owner.setHorizontalVelocity(0, 0);
+//			if(target.position.y > owner.position.y) owner.jump();
+//		} else {
+//			owner.walk(speed, 0);
+//		}
+//		if(owner.collisionHorizontal && target.position.y > (owner.position.y + 0.43F) && !b){
+//			owner.jump();
+//		} else{
+//			AABB[] nb = owner.world.getBlockType(MathUtils.floor(owner.position.x), MathUtils.floor(owner.bounds.minY - 0.2D), MathUtils.floor(owner.position.z)).getCollisionBounds(owner.world, MathUtils.floor(owner.position.x), MathUtils.floor(owner.bounds.minY - 0.2D), MathUtils.floor(owner.position.z));
+//			 if(nb != null && nb.length != 0 && nb[0] != null) b = true;
+//			 if(target.position.y < (owner.position.y - 0.93F)) b = true;
+//			 if(!b){
+//				 owner.jump();
+//			 }
+//		}
+//		
+//		return true;
 	}
 
 }

@@ -26,12 +26,15 @@ import vc4.impl.world.*;
  * 
  */
 public class VCH4SaveFormat implements SaveFormat {
+	
+	private static final boolean ENABLED = false;
 
 	public static VCH4SaveFormat VCH4_SAVE_FORMAT = new VCH4SaveFormat();
 
 	@SuppressWarnings("resource")
 	@Override
 	public Chunk readChunk(World world, long x, long y, long z) throws FileNotFoundException, IOException {
+		if(!ENABLED)  return null;
 		String path = DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/chunks/" + y + "/" + z + "/" + x + ".vch4";
 		File file = new File(path);
 		if (!file.exists()) return null;
@@ -102,6 +105,7 @@ public class VCH4SaveFormat implements SaveFormat {
 	@SuppressWarnings({ "resource", "unchecked" })
 	@Override
 	public void writeChunk(Chunk c) throws IOException {
+		if(!ENABLED) return;
 		Profiler.start("writechunk");
 		ImplChunk chunk = (ImplChunk) c;
 		String path = DirectoryLocator.getPath() + "/worlds/" + chunk.getWorld().getSaveName() + "/chunks/" + chunk.getChunkPos().y + "/" + chunk.getChunkPos().z + "/" + chunk.getChunkPos().x + ".vch4";
@@ -199,6 +203,7 @@ public class VCH4SaveFormat implements SaveFormat {
 	@SuppressWarnings("resource")
 	@Override
 	public MapData readMap(World world, long x, long z) throws IOException {
+		if(!ENABLED) return null;
 		String path = DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/map/" + z + "/" + x + ".vmd4";
 		File file = new File(path);
 		if(!file.exists()) return null;
@@ -227,6 +232,7 @@ public class VCH4SaveFormat implements SaveFormat {
 	@SuppressWarnings("resource")
 	@Override
 	public void writeMap(World world, MapData map) throws IOException {
+		if(!ENABLED) return;
 		String path = DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/map/" + map.getPosition().y + "/" + map.getPosition().x + ".vmd4";
 		File file = new File(path);
 		file.getParentFile().mkdirs();

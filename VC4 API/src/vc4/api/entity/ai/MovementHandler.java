@@ -1,6 +1,5 @@
 package vc4.api.entity.ai;
 
-import vc4.api.entity.Entity;
 import vc4.api.entity.EntityLiving;
 import vc4.api.path.*;
 import vc4.api.vector.Vector3d;
@@ -10,85 +9,66 @@ public class MovementHandler implements Navigator{
 	AStarNavigationStrategy astar;
 	TargetType type = TargetType.NONE;
 	
-	double x, y, z, speed;
-	boolean update;
 	
 	EntityLiving entity;
-	Entity target;
 	
-	Vector3d pathPos = null;
-	int lastUpdate = 0;
+	private Vector3d pathPos = null;
+	private int lastUpdate = 0;
+	private int tickDown = 0;
 	
-	public void targetVector(double x, double y, double z, double speed){
-		astar = null;
-		type = TargetType.LOCATION;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.speed = speed;
-		update = true;
+	Movement executing;
+	
+	public void setExecuting(Movement movement){
+		executing = movement;
+		if(movement == null || !movement.isPathfind()) astar = null;
+		else if(movement != null && movement.isPathfind()){
+			if(movement.getTargetType() == TargetType.LOCATION) astar = new AStarNavigationStrategy(entity, movement.position.clone());
+			else astar = new AStarNavigationStrategy(entity, movement.getTarget().position.clone());
+		}
 	}
 	
 	public void targetAstarVector(double x, double y, double z, double speed){
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.speed = speed;
-		update = true;
-	}
-	
-	public void pathfindVector(double x, double y, double z, double speed){
-		type = TargetType.LOCATION;
-		astar = new AStarNavigationStrategy(entity, new Vector3d(x, y, z));
-		this.speed = speed;
-	}
-	
-	public void pathfindEntity(Entity entity, double speed){
-		type = TargetType.ENTITY;
-		target = entity;
-		astar = new AStarNavigationStrategy(this.entity, pathPos = target.position.clone());
-		this.speed = speed;
-		lastUpdate = 0;
+		executing.position = new Vector3d(x, y, z);
+		executing.speed = speed;
 	}
 	
 	
-	public void targetEntity(Entity entity, double speed){
+	public void clearExecuting(){
 		astar = null;
-		if(entity == null){
-			clearTarget();
-			return;
-		}
-		target = entity;
-		type = TargetType.ENTITY;
-		this.speed = speed;
+		executing = null;
 	}
 	
-	public void clearTarget(){
-		astar = null;
-		type = TargetType.NONE;
-		update = false;
-		target = null;
+	public Movement getExecuting() {
+		return executing;
+	}
+	
+	public boolean isExecuting(){
+		return executing != null;
+	}
+	
+	public boolean isExecuting(Movement movement){
+		return executing == movement;
 	}
 	
 	public void update(){
-		if(type == null || type == TargetType.NONE) return;
-		if(type == TargetType.ENTITY){
-			if(target == null ||target.isDead){
-				clearTarget();
+		if(executing == null) return;
+		if(executing.getTargetType() == TargetType.ENTITY){
+			if(executing.getTarget() == null || executing.getTarget().isDead){
+				clearExecuting();
 				return;
 			}
 			if(astar != null){
-//				if(lastUpdate > 5 && pathPos.distanceSquared(target.position) > 2){
-//					astar = new AStarNavigationStrategy(this.entity, pathPos = target.getEyePos());
-//					lastUpdate = 0;
-//				}
+				if(lastUpdate > 5 && pathPos.distanceSquared(executing.getTarget().position) > 2){
+					astar = new AStarNavigationStrategy(this.entity, pathPos = executing.getTarget().position.clone());
+					lastUpdate = 0;
+				}
 				++lastUpdate;
 				updateVector();
 			} else {
-				entity.lookTargetEntity(target);
-				entity.walk(speed, 0);
+				entity.lookTargetEntity(executing.getTarget());
+				entity.walk(executing.getSpeed(), 0);
 				
-				if(target.position.y > entity.position.y + 0.1 && target.position.horizontalDistanceSquared(entity.position) < 3){
+				if(executing.getTarget().position.y > entity.position.y + 0.1 && executing.getTarget().position.horizontalDistanceSquared(entity.position) < 3){
 					entity.jump();
 				}
 			}
@@ -100,15 +80,20 @@ public class MovementHandler implements Navigator{
 	private void updateVector(){
 		if(astar != null){
 			if(astar.update()){
-				return;
-			}
-		}
-		entity.lookTargetVector(new Vector3d(x, y, z));
-		entity.walk(speed, 0);
+				if(tickDown == -1){
+					tickDown = 4;
+				} else if(tickDown == 0){
+					astar = null;
+				}
+				--tickDown;
+			} else tickDown = -1;
+		} else tickDown = -1;
+		entity.lookTargetVector(executing.getPosition());
+		entity.walk(executing.getSpeed(), 0);
 		
-		double dx = x - entity.position.x;
-		double dz = z - entity.position.z;
-		if(y > entity.position.y + 0.1 && dx * dx + dz * dz < 3){
+		double dx = executing.getPosition().x - entity.position.x;
+		double dz = executing.getPosition().z - entity.position.z;
+		if(executing.getPosition().y > entity.position.y + 0.25 && dx * dx + dz * dz < 3){
 			entity.jump();
 		}
 	}

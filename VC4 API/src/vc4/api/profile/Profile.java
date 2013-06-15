@@ -52,7 +52,7 @@ public class Profile {
                 this.times.put(this.section, Long.valueOf(diff));
             }
 
-            if (diff > 100L * 1000000L)
+            if (diff > 300L * 1000000L)
             {
                 System.out.println("Section: " + section + " took to long (" + (diff / 1000000) + "ms)");
             }
