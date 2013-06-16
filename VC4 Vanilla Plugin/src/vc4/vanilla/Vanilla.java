@@ -32,14 +32,14 @@ import vc4.vanilla.block.*;
 import vc4.vanilla.container.ContainerChest;
 import vc4.vanilla.crafting.RecipesBlocks;
 import vc4.vanilla.entity.EntityNpc;
+import vc4.vanilla.entity.EntityZombie;
 import vc4.vanilla.generation.dungeon.Dungeon;
 import vc4.vanilla.generation.plant.PlantGenCactus;
 import vc4.vanilla.generation.plant.tree.*;
 import vc4.vanilla.generation.populate.WorldGenOres;
 import vc4.vanilla.generation.world.*;
 import vc4.vanilla.gui.GuiChest;
-import vc4.vanilla.item.ItemTool;
-import vc4.vanilla.item.ItemVanillaFood;
+import vc4.vanilla.item.*;
 import vc4.vanilla.itementity.ItemEntityChest;
 import vc4.vanilla.npc.*;
 import vc4.vanilla.tileentity.TileEntityChest;
@@ -62,7 +62,7 @@ public class Vanilla extends Plugin {
 	public static Block workbench, chest, table, chair, gravel, ladder;
 	
 	//Items
-	public static Item food;
+	public static Item food, spawnStick;
 	
 	//Plants
 	public static Plant plantTreeOak;
@@ -204,6 +204,7 @@ public class Vanilla extends Plugin {
 	@Override
 	public void loadEntities(World world) {
 		Entity.registerEntity("vanilla.villager", EntityNpc.class);
+		Entity.registerEntity("vanilla.zombie", EntityZombie.class);
 	}
 	
 	@Override
@@ -377,6 +378,7 @@ public class Vanilla extends Plugin {
 	
 	@Override
 	public void onWorldLoad(World world) {
+		spawnStick = new ItemSpawnWand(world.getRegisteredItem("vanilla.spawnwand"));
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
 		try {

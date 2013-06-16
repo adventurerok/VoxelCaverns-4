@@ -98,6 +98,7 @@ public class EntityItem extends Entity {
 			gl.popMatrix();
 			
 		} else {
+			gl.bindShader("texture");
 			gl.pushMatrix();
 			gl.translate(position.x, position.y + 0.1 + (MathUtils.sin(world.getTime() / 5f) * 0.1), position.z);
 			gl.scale(0.4f, 0.4f, 0.4f);

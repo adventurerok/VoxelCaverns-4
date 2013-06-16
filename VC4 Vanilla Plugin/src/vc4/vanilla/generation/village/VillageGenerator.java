@@ -60,11 +60,11 @@ public class VillageGenerator {
 		z += 16;
 		Village ville = new Village(world, x - 40, y - 30, z - 40, x + 40, y + 30, z + 40, rand);
 		if(ville.getStyle() == null) return;
+		ArrayList<BuildingInfo> roomData = getBuildings(world, ville, rand, x, z);
 		AreaVillage area = new AreaVillage(world);
 		area.setBounds(AABB.getBoundingBox(x - 40, x + 40, y - 30, y + 30, z - 40, z + 40));
 		area.setVillageName((VillageNames.getRandomFirst(rand) + " " + VillageNames.getRandomLast(rand)).trim());
 		area.addToWorld();
-		ArrayList<BuildingInfo> roomData = getBuildings(world, ville, rand, x, z);
 		ArrayList<Path> paths = getPaths(roomData);
 		for(Path p : paths){
 			p.generate(world);
@@ -76,7 +76,7 @@ public class VillageGenerator {
 			door.setNewRoomDir(dir);
 			build.generate(world, door, ville);
 		}
-		ville.getStyle().getWall().generate(world, x, z, ville);
+		if(rand.nextInt(3) == 0) ville.getStyle().getWall().generate(world, x, z, ville);
 	}
 	
 	public static Building nextRoom(VillageStyle style, int num){
@@ -98,7 +98,7 @@ public class VillageGenerator {
 	public ArrayList<BuildingInfo> getBuildings(World world, Village ville, Random rand, long x, long z){
 		Vector2l centre = new Vector2l(x, z);
 		ArrayList<BuildingInfo> roomData = new ArrayList<>();
-		int rooms = 10 + rand.nextInt(20);
+		int rooms = 15 + rand.nextInt(25);
 		for(int a = 0; a < rooms; ++a){
 			long bx = x - 35 + rand.nextInt(70);
 			long bz = z - 35 + rand.nextInt(70);

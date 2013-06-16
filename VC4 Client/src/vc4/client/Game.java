@@ -126,6 +126,11 @@ public class Game extends Component implements ClientGame {
 		return _currentc;
 	}
 
+	@Override
+	public ImplWorld getWorld() {
+		return world;
+	}
+	
 	/**
 	 * 
 	 */
@@ -372,6 +377,7 @@ public class Game extends Component implements ClientGame {
 		currentMenu = menus.get("main");
 		add(chatBox = new ChatBox());
 		world = new ImplWorld("World");
+		world.loadWorld();
 		try {
 			world.saveInfo();
 		} catch (IOException e) {

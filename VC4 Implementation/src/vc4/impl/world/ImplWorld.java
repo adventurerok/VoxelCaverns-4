@@ -100,6 +100,9 @@ public class ImplWorld implements World {
 	 */
 	public ImplWorld(String saveName) {
 		this.saveName = saveName;
+	}
+	
+	public void loadWorld(){
 		try {
 			loadInfo();
 		} catch (IOException e) {

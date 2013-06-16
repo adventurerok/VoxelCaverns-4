@@ -13,8 +13,8 @@ public class DungeonStyle {
 
 	protected int brickId, mossId, type;
 	private ArrayList<WeightedRoom> rooms = new ArrayList<>();
-	private double roomFailChance = 0.4;
-	private int maxRooms = 75;
+	private double roomFailChance = 0.25;
+	private int maxRooms = 125;
 	
 	protected LootChest loot = new LootChest();
 	

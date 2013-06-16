@@ -43,4 +43,6 @@ public abstract class AI {
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
 	}
+
+	public abstract void stop();
 }

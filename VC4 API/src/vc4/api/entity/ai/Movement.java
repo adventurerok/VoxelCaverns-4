@@ -40,6 +40,7 @@ public class Movement {
 		this.speed = speed;
 		this.pathfind = pathfind;
 		this.targetType = TargetType.ENTITY;
+		this.position = target.position.clone();
 	}
 
 	public Movement(Vector3d position, double speed, boolean pathfind) {

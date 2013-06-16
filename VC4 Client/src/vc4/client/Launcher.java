@@ -22,6 +22,7 @@ public class Launcher implements ClientLauncher{
 		new ClientResources();
 		System.setProperty("org.lwjgl.librarypath", new File(DirectoryLocator.getPath() + "/bin/natives/").getAbsolutePath());
 		GameLoader.load(new ChatBoxHandler(), new FileOutputHandler());
+		new ClientVoxelCaverns();
 		new ClientGL();
 		new ClientAnimatedTextureLoader();
 		new ClientSheetTextureLoader();

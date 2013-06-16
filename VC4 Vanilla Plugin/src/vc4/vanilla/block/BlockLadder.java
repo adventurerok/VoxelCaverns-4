@@ -99,6 +99,7 @@ public class BlockLadder extends Block {
 	@Override
 	public void onEntityTickInside(World world, long x, long y, long z, Entity entity) {
 		if (entity.isDead) return;
+		if(!(entity instanceof EntityLiving)) return;
 		EntityLiving creature = (EntityLiving) entity;
 		if (creature.isSneaking()) creature.motionY = 0;
 		creature.fallDistance = 0;
@@ -135,6 +136,7 @@ public class BlockLadder extends Block {
 	@Override
 	public void onEntityCollideHorizontal(World world, long x, long y, long z, Entity entity) {
 		if (entity.isDead) return;
+		if(!(entity instanceof EntityLiving)) return;
 		EntityLiving creature = (EntityLiving) entity;
 		creature.fallDistance = 0;
 		creature.motionY = getClimbSpeed(world, x, y, z);

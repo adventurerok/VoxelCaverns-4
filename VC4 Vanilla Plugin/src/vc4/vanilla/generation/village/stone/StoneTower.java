@@ -1,4 +1,4 @@
-package vc4.vanilla.generation.village.wood;
+package vc4.vanilla.generation.village.stone;
 
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
@@ -8,7 +8,7 @@ import vc4.vanilla.generation.dungeon.RoomBB;
 import vc4.vanilla.generation.village.Building;
 import vc4.vanilla.generation.village.Village;
 
-public class WoodTower implements Building {
+public class StoneTower implements Building {
 
 	@Override
 	public void generate(World world, Door door, Village ville) {
@@ -31,17 +31,17 @@ public class WoodTower implements Building {
 					boolean xWall = x == sx || x == ex;
 					boolean zWall = z == sz || z == ez;
 					if(y == start.y - 1 || y == start.y + 3){
-						if(xWall || zWall) ville.setLogBlock(x, y, z);
+						if(xWall || zWall) ville.setBrickBlock(x, y, z);
 						else if(y == start.y + 3 && (x == sx + 3 || x == sx + 4) && (z == sz + 3 || z == sz + 4)) ville.setEmptyBlock(x, y, z);
-						else ville.setPlankBlock(x, y, z);
+						else ville.setCobbleBlock(x, y, z);
 					} else if(xWall || zWall){
-						if(xWall && zWall) ville.setLogBlock(x, y, z);
+						if(xWall && zWall) ville.setBrickBlock(x, y, z);
 						else if(y == start.y + 1){
 							boolean nxWall = x == sx + 1 || x == ex - 1;
 							boolean nzWall = z == sz + 1 || z == ez - 1;
-							if(nxWall || nzWall) ville.setPlankBlock(x, y, z);
+							if(nxWall || nzWall) ville.setCobbleBlock(x, y, z);
 							else ville.setGlassBlock(x, y, z);
-						} else ville.setPlankBlock(x, y, z);
+						} else ville.setCobbleBlock(x, y, z);
 					} else ville.setEmptyBlock(x, y, z);
 				}
 			}
@@ -54,10 +54,10 @@ public class WoodTower implements Building {
 				boolean nzWall = z == sz + 2 || z == ez - 2;
 				if(!xWall && !zWall) continue;
 				for(long y = start.y + 4; y < start.y + 17; ++ y){
-					if(xWall && zWall) ville.setLogBlock(x, y, z);
-					else if((y - start.y) % 4 == 0) ville.setLogBlock(x, y, z);
+					if(xWall && zWall) ville.setBrickBlock(x, y, z);
+					else if((y - start.y) % 4 == 0) ville.setBrickBlock(x, y, z);
 					else if((y - start.y + 2) % 4 == 0 && !nxWall && !nzWall) ville.setGlassBlock(x, y, z);
-					else ville.setPlankBlock(x, y, z);
+					else ville.setCobbleBlock(x, y, z);
 				}
 			}
 		}
@@ -67,12 +67,12 @@ public class WoodTower implements Building {
 					boolean xWall = x == sx || x == ex;
 					boolean zWall = z == sz || z == ez;
 					if(y == start.y + 17){
-						if(xWall || zWall) ville.setLogBlock(x, y, z);
+						if(xWall || zWall) ville.setBrickBlock(x, y, z);
 						else if((x == sx + 3 || x == sx + 4) && (z == sz + 3 || z == sz + 4)) ville.setEmptyBlock(x, y, z);
-						else ville.setPlankBlock(x, y, z);
+						else ville.setCobbleBlock(x, y, z);
 					} else if(xWall || zWall){
-						if(xWall && zWall) ville.setLogBlock(x, y, z);
-						else ville.setPlankBlock(x, y, z);
+						if(xWall && zWall) ville.setBrickBlock(x, y, z);
+						else ville.setCobbleBlock(x, y, z);
 					} else ville.setEmptyBlock(x, y, z);
 				}
 			}
@@ -83,8 +83,8 @@ public class WoodTower implements Building {
 		Vector3l ladRight = door.right.move(4, door.dir);
 		int ladDir = door.dir.opposite().id();
 		for(long y = start.y; y < start.y + 18; ++y){
-			ville.setPlankBlock(supLeft.x, y, supLeft.z);
-			ville.setPlankBlock(supRight.x, y, supRight.z);
+			ville.setCobbleBlock(supLeft.x, y, supLeft.z);
+			ville.setCobbleBlock(supRight.x, y, supRight.z);
 			world.setBlockIdData(ladLeft.x, y, ladLeft.z, Vanilla.ladder.uid, ladDir);
 			world.setBlockIdData(ladRight.x, y, ladRight.z, Vanilla.ladder.uid, ladDir);
 		}

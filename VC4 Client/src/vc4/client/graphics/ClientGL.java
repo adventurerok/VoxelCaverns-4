@@ -661,8 +661,8 @@ public class ClientGL implements OpenGL {
 	 */
 	@Override
 	public void vertexWithTexture(float x, float y, float z, float r, float s, float t) {
-		vertex(x, y, z);
 		texCoord(r, s, t);
+		vertex(x, y, z);
 	}
 
 	/* (non-Javadoc)

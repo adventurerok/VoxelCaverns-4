@@ -7,8 +7,7 @@ import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.RoomBB;
-import vc4.vanilla.generation.village.style.VillageStyle;
-import vc4.vanilla.generation.village.style.VillageStyleWood;
+import vc4.vanilla.generation.village.style.*;
 import vc4.vanilla.npc.NpcNames;
 
 public class Village {
@@ -34,6 +33,7 @@ public class Village {
 	
 	static{
 		addStyle(new VillageStyleWood());
+		addStyle(new VillageStyleStone());
 	}
 	
 	public static void addStyle(VillageStyle style){

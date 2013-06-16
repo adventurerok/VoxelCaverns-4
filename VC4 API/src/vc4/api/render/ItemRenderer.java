@@ -232,24 +232,24 @@ public class ItemRenderer {
         float smn = 0F;
         //float sector = 1 / 32F;
         gl.begin(GLPrimative.QUADS);
-        gl.vertexWithTexture(x, y, z, 0, 0, tid);
-        gl.vertexWithTexture(f, y, z, 1, 0, tid);
-        gl.vertexWithTexture(f, y + 1F, z, 1, 1, tid);
-        gl.vertexWithTexture(x, y + 1, z, 0, 1, tid);
-        gl.vertexWithTexture(x, y + 1, z - f1, 0, 1, tid);
-        gl.vertexWithTexture(f, y + 1, z - f1, 1, 1, tid);
-        gl.vertexWithTexture(f, y, z - f1, 1, 0, tid);
-        gl.vertexWithTexture(x, y, z - f1, 0, 0, tid);
+        gl.vertexWithTexture(x, y, z, 0, 1, tid);
+        gl.vertexWithTexture(f, y, z, 1, 1, tid);
+        gl.vertexWithTexture(f, y + 1F, z, 1, 0, tid);
+        gl.vertexWithTexture(x, y + 1F, z, 0, 0, tid);
+        gl.vertexWithTexture(x, y + 1, z - f1, 0, 0, tid);
+        gl.vertexWithTexture(f, y + 1, z - f1, 1, 0, tid);
+        gl.vertexWithTexture(f, y, z - f1, 1, 1, tid);
+        gl.vertexWithTexture(x, y, z - f1, 0, 1, tid);
 
         for (int i = 0; i < 32; i++)
         {
             float f2 = i / 32F;
             float f6 = (0 + (1 - 0) * f2) - smn;
             float f10 = 1 * f2;
-            gl.vertexWithTexture(x + f10, y, z - f1, f6, 0, tid);
-            gl.vertexWithTexture(x + f10, y, z, f6, 0, tid);
-            gl.vertexWithTexture(x + f10, y + 1, z, f6, 1, tid);
-            gl.vertexWithTexture(x + f10, y + 1, z - f1, f6, 1, tid);
+            gl.vertexWithTexture(x + f10, y, z - f1, f6, 1, tid);
+            gl.vertexWithTexture(x + f10, y, z, f6, 1, tid);
+            gl.vertexWithTexture(x + f10, y + 1, z, f6, 0, tid);
+            gl.vertexWithTexture(x + f10, y + 1, z - f1, f6, 0, tid);
         }
 
 
@@ -258,17 +258,17 @@ public class ItemRenderer {
             float f3 = j / 32F;
             float f7 = (0 + (1 - 0) * f3) - smn;
             float f11 = 1 * f3;
-            gl.vertexWithTexture(x + f11, y + 1, z - f1, f7, 1, tid);
-            gl.vertexWithTexture(x + f11, y + 1, z, f7, 1, tid);
-            gl.vertexWithTexture(x + f11, y, z, f7, 0, tid);
-            gl.vertexWithTexture(x + f11, y, z - f1, f7, 0, tid);
+            gl.vertexWithTexture(x + f11, y + 1, z - f1, f7, 0, tid);
+            gl.vertexWithTexture(x + f11, y + 1, z, f7, 0, tid);
+            gl.vertexWithTexture(x + f11, y, z, f7, 1, tid);
+            gl.vertexWithTexture(x + f11, y, z - f1, f7, 1, tid);
         }
 
 
         for (int k = 0; k < 32; k++)
         {
             float f4 = k / 32F;
-            float f8 = (0 + (1 - 0) * f4) - smn;
+            float f8 = 1 - ((0 + (1 - 0) * f4) - smn);
             float f12 = 1 * f4;
             gl.vertexWithTexture(x, y + f12, z, 0, f8, tid);
             gl.vertexWithTexture(f, y + f12, z, 1, f8, tid);
@@ -280,7 +280,7 @@ public class ItemRenderer {
         for (int l = 0; l < 32; l++)
         {
             float f5 = l / 32F;
-            float f9 = (0 + (1 - 0) * f5) - smn;
+            float f9 = 1 - ((0 + (1 - 0) * f5) - smn);
             float f13 = 1 * f5;
             gl.vertexWithTexture(f, y + f13, z, 1, f9, tid);
             gl.vertexWithTexture(x, y + f13, z, 0, f9, tid);

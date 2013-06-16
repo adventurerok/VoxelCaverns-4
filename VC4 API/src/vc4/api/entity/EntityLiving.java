@@ -11,6 +11,7 @@ import vc4.api.entity.ai.MovementHandler;
 import vc4.api.font.FontRenderer;
 import vc4.api.graphics.Graphics;
 import vc4.api.graphics.OpenGL;
+import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 import vc4.api.model.Model;
 import vc4.api.vector.*;
@@ -42,6 +43,18 @@ public abstract class EntityLiving extends Entity {
 		moveHandler = new MovementHandler(this);
 		if (font == null) font = FontRenderer.createFontRenderer("unispaced_24", 0.15f);
 	}
+	
+	public void dropItem(ItemStack drop){
+		if(drop == null || !drop.checkIsNotEmpty()) return;
+		Vector3d epos = new Vector3d(bounds.averageX(), getEyeHeight(), bounds.averageZ());
+		EntityItem i = new EntityItem(world);
+		i.setPosition(epos);
+		i.setItem(drop);
+		i.motionX = (rand.nextDouble() - 0.5) * 2;
+		i.motionY = rand.nextDouble();
+		i.motionZ = (rand.nextDouble() - 0.5) * 2;
+		i.addToWorld();
+	}
 
 	public void lookAtEntity(Entity entity) {
 		double xDif = entity.position.x - position.x;
@@ -60,6 +73,23 @@ public abstract class EntityLiving extends Entity {
 		float newPitch = (float) (-((Math.atan2(yDif, dist) * 180D) / Math.PI));
 		lookPitch = -newPitch;
 		lookYaw = newYaw;
+	}
+	
+	public void throwItem(ItemStack item){
+		if (item == null || !item.checkIsNotEmpty()) return;
+		double pitch = lookPitch();
+		double yaw = lookYaw();
+
+		double power = 2;
+
+		EntityItem drop = new EntityItem(world);
+		drop.setItem(item);
+		drop.setPosition(getEyePos().clone());
+
+		drop.motionY += 1.4 * Math.tan(Math.toRadians(pitch));
+		drop.motionX -= power * Math.sin(Math.toRadians(yaw));
+		drop.motionZ += power * Math.cos(Math.toRadians(yaw));
+		drop.addToWorld();
 	}
 	
 	public void targetEntity(Entity entity) {
@@ -332,6 +362,8 @@ public abstract class EntityLiving extends Entity {
 	@Override
 	public void update() {
 		updateAge();
+		preMove();
+		updateSurroundings();
 		updateTraits();
 		updateAIs();
 		move();
@@ -362,19 +394,25 @@ public abstract class EntityLiving extends Entity {
 					if(!j.isRunning() || j.isDisabled()) continue;
 					int cf = i.conflictId() & j.conflictId();
 					if (cf == 0) continue;
-					if (i.priority() > j.priority()) j.setRunning(false);
+					if (i.priority() > j.priority()){
+						j.stop();
+						j.setRunning(false);
+					}
 					else continue outside;
 
 				}
 				i.setRunning(true);
 				i.start();
 			} else {
-				i.setRunning(i.update());
+				if(!i.update()){
+					i.stop();
+					i.setRunning(false);
+				}
 			}
 		}
 	}
-
-	public void move() {
+	
+	public void preMove(){
 		moveHandler.update();
 		motionX *= 0.6;
 		motionZ *= 0.6;
@@ -398,6 +436,9 @@ public abstract class EntityLiving extends Entity {
 			}
 			fallDistance = 0;
 		}
+	}
+
+	public void move() {
 		move(motionX, motionY, motionZ);
 		double moved = position.horizontalDistance(oldPos);
 		if (moved < 0.005) {

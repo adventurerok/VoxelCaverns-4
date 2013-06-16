@@ -1,11 +1,11 @@
-package vc4.vanilla.generation.village.wood;
+package vc4.vanilla.generation.village.stone;
 
 import vc4.api.math.MathUtils;
 import vc4.api.world.World;
 import vc4.vanilla.generation.village.Village;
 import vc4.vanilla.generation.village.Wall;
 
-public class WoodWall implements Wall {
+public class StoneWall implements Wall {
 
 	@Override
 	public void generate(World world, long x, long z, Village ville) {
@@ -35,12 +35,12 @@ public class WoodWall implements Wall {
 					boolean par = px == sx || px == ex;
 					for(long py = y - 2; py <= y + 5; ++ py){
 						if(!par && py != y + 4 && py > y){
-							if(py < y + 4 && (pz == z - 1 || pz == z + 2)) ville.setPlankBlock(px, py, pz);
+							if(py < y + 4 && (pz == z - 1 || pz == z + 2)) ville.setCobbleBlock(px, py, pz);
 							else ville.setEmptyBlock(px, py, pz);
 						}
-						else if(par && (py == y + 4 || py == y)) ville.setLogBlock(px, py, pz);
+						else if(par && (py == y + 4 || py == y)) ville.setBrickBlock(px, py, pz);
 						else if(par && py > y && py < y + 4 && (pz == z || pz == z + 1)) ville.setEmptyBlock(px, py, pz);
-						else ville.setPlankBlock(px, py, pz);
+						else ville.setCobbleBlock(px, py, pz);
 					}
 				}
 			}
@@ -70,12 +70,12 @@ public class WoodWall implements Wall {
 					boolean par = pz == sz || pz == ez;
 					for(long py = y - 2; py <= y + 5; ++ py){
 						if(!par && py != y + 4 && py > y){
-							if(py < y + 4 && (px == x - 1 || px == x + 2)) ville.setPlankBlock(px, py, pz);
+							if(py < y + 4 && (px == x - 1 || px == x + 2)) ville.setCobbleBlock(px, py, pz);
 							else ville.setEmptyBlock(px, py, pz);
 						}
-						else if(par && (py == y + 4 || py == y)) ville.setLogBlock(px, py, pz);
+						else if(par && (py == y + 4 || py == y)) ville.setBrickBlock(px, py, pz);
 						else if(par && py > y && py < y + 4 && (px == x || px == x + 1)) ville.setEmptyBlock(px, py, pz);
-						else ville.setPlankBlock(px, py, pz);
+						else ville.setCobbleBlock(px, py, pz);
 					}
 				}
 			}
@@ -107,11 +107,11 @@ public class WoodWall implements Wall {
 				for (long pz = sz; pz <= ez; ++pz) {
 					boolean zSide = pz == sz || pz == ez;
 					for (long py = y - 2; py <= y + 9; ++py) {
-						if (xSide && zSide) ville.setLogBlock(px, py, pz);
+						if (xSide && zSide) ville.setBrickBlock(px, py, pz);
 						else if (xSide || zSide) {
-							if (py == y || py == y + 4 || py == y + 8) ville.setLogBlock(px, py, pz);
-							else ville.setPlankBlock(px, py, pz);
-						} else if (py == y || py == y + 4 || py == y + 8) ville.setPlankBlock(px, py, pz);
+							if (py == y || py == y + 4 || py == y + 8) ville.setBrickBlock(px, py, pz);
+							else ville.setCobbleBlock(px, py, pz);
+						} else if (py == y || py == y + 4 || py == y + 8) ville.setCobbleBlock(px, py, pz);
 						else ville.setEmptyBlock(px, py, pz);
 					}
 				}

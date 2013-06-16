@@ -134,6 +134,12 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		return (int) ((MathUtils.floor(((moveYaw * 4F) / 360F) + 0.5D) + 1) & 3);
 	}
 	
+	@Override
+	public void draw() {
+		if(Client.getPlayer() == this) return;
+		renderHumanModel("man", name);
+	}
+	
 	public void setTicksSinceUpdate(int ticksSinceUpdate) {
 		this.ticksSinceUpdate = ticksSinceUpdate;
 	}
@@ -202,7 +208,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		if(rays == null || rays.isEntity) return;
 		OpenGL gl = Graphics.getOpenGL();
 		AABB bounds = world.getBlockType(rays.x, rays.y, rays.z).getRayTraceSize(world, rays.x, rays.y, rays.z);
-		Graphics.getClientShaderManager().unbindShader();
+		gl.unbindShader();
 		gl.disable(GLFlag.CULL_FACE);
 		float s = 0.003f;
 		float minX = (float) bounds.minX;
@@ -293,9 +299,17 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	@Override
 	public void kill() {
 		health = (int) Math.max(100, getMaxHealth() * 0.65);
+		dropItems();
 		respawn();
 	}
 	
+	public void dropItems() {
+		for(ItemStack i : inventory){
+			dropItem(i);
+		}
+		inventory.clear();
+	}
+
 	public double getMinedAmount() {
 		return minedAmount;
 	}
@@ -475,6 +489,18 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 				inventory.setSelectedIndex(d - 1);
 			}
 		}
+		if(keys.keyPressed(Key.Q)){
+			ItemStack itm = inventory.getSelectedStack();
+			if(itm != null && itm.checkIsNotEmpty()){
+				if(keys.keyPressed(Key.CONTROL)){
+					throwItem(itm);
+					inventory.setSelectedStack(null);
+				} else {
+					itm.decrementAmount();
+					throwItem(itm.clone().setAmount(1));
+				}
+			}
+		}
 		if(keys.keyPressed(Key.NUM_0)) inventory.setSelectedIndex(9);
 		if(keys.keyPressed(Key.MINUS)) inventory.setSelectedIndex(10);
 		if(keys.keyPressed(Key.EQUALS)) inventory.sort();
@@ -502,16 +528,6 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		return super.reduceDamage(source, damage);
 	}
 
-	public void dropItem(ItemStack drop) {
-		if(drop == null || !drop.checkIsNotEmpty()) return;
-		EntityItem i = new EntityItem(world);
-		i.setItem(drop.clone());
-		i.setPosition(bounds.averageX(), getEyeHeight(), bounds.averageZ());
-		i.motionX = (rand.nextDouble() - 0.5) * 2;
-		i.motionY = rand.nextDouble();
-		i.motionZ = (rand.nextDouble() - 0.5) * 2;
-		i.addToWorld();
-	}
 
 	@Override
 	public String getName() {

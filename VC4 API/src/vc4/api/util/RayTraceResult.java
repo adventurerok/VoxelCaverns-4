@@ -3,6 +3,7 @@ package vc4.api.util;
 import vc4.api.entity.Entity;
 import vc4.api.math.MathUtils;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3l;
 
 public class RayTraceResult {
 
@@ -21,6 +22,10 @@ public class RayTraceResult {
 		this.z = z;
 		this.side = side;
 		this.vector = vector;
+	}
+	
+	public Vector3l getBlockPos(){
+		return new Vector3l(x, y, z);
 	}
 
 	public RayTraceResult(Entity pointing, Vector3d vector) {

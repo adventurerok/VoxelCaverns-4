@@ -57,4 +57,8 @@ public class AILookAtOthers extends AI {
 		return true;
 	}
 
+	@Override
+	public void stop() {
+	}
+
 }

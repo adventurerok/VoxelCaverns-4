@@ -31,7 +31,7 @@ public class Biome {
 	public Music music = new Music("First_Day", MusicType.BIOME);
 	public Color grassColor = new Color(0x1C8F1C);
 	public Color waterColor = new Color(0, 156, 254, 128);
-	public Color plantColor = new Color(0x267F00);
+	public Color plantColor = new Color(0x269100);
 	
 	public ArrayList<PlantGrowth> plants = new ArrayList<>();
 	

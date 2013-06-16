@@ -35,13 +35,13 @@ public class BlockRendererStairs extends BlockRendererDefault {
 				if(mt != null) renderBlockFace(c.getWorld(), x, y, z, mt, renderers[1], bounds, 5);
 			}
 		}
-		int opp = Direction.getDirection(facing).opposite().getId();
+		int opp = Direction.getDirection(facing).opposite().id();
 		if(block.renderSide(c.getWorld(), x, y, z, opp)){
 			renderBlockFace(c.getWorld(), x, y, z, block, renderers[1], bounds, opp);
 			if(mt != null)  renderBlockFace(c.getWorld(), x, y, z, mt, renderers[1], bounds, opp);
 		}
-		int left = Direction.getDirection(facing).counterClockwise().getId();
-		int right = Direction.getDirection(facing).clockwise().getId();
+		int left = Direction.getDirection(facing).counterClockwise().id();
+		int right = Direction.getDirection(facing).clockwise().id();
 		boolean renderLeft = block.renderSide(c.getWorld(), x, y, z, left);
 		boolean renderRight = block.renderSide(c.getWorld(), x, y, z, right);
 		boolean renderForwards = block.renderSide(c.getWorld(), x, y, z, facing);
@@ -95,10 +95,10 @@ public class BlockRendererStairs extends BlockRendererDefault {
 		} else {
 			renderBlockFaceCracks(world, x, y, z, block, render, bounds, 5, amount);
 		}
-		int opp = Direction.getDirection(facing).opposite().getId();
+		int opp = Direction.getDirection(facing).opposite().id();
 		renderBlockFaceCracks(world, x, y, z, block, render, bounds, opp, amount);
-		int left = Direction.getDirection(facing).counterClockwise().getId();
-		int right = Direction.getDirection(facing).clockwise().getId();
+		int left = Direction.getDirection(facing).counterClockwise().id();
+		int right = Direction.getDirection(facing).clockwise().id();
 		
 		bounds = AABB.getBoundingBox(0, 1, upside ? 2/3d : 0, upside ? 1 : 1/3d, 0, 1);
 		renderBlockFaceCracks(world, x, y, z, block, render, bounds, left, amount);

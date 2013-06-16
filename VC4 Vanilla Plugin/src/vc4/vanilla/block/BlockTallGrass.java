@@ -16,7 +16,7 @@ import vc4.vanilla.Vanilla;
 
 public class BlockTallGrass extends Block {
 
-	public static Color grass = new Color(0x267F00);
+	public static Color grass = new Color(0x269100);
 	
 	public BlockTallGrass(int uid) {
 		super(uid, 0, "weeds");

@@ -1,12 +1,14 @@
 package vc4.api.entity;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
 
 import org.jnbt.CompoundTag;
 import org.jnbt.ListTag;
 
+import vc4.api.VoxelCaverns;
 import vc4.api.entity.trait.Trait;
 import vc4.api.logging.Logger;
 import vc4.api.math.MathUtils;
@@ -26,6 +28,10 @@ public abstract class Entity implements Agent{
 		registerEntity("player", EntityPlayer.class);
 	}
 	
+	public static Set<String> getEntityNames(){
+		return types.keySet();
+	}
+	
 	public Vector3d getEyePos() {
 		return new Vector3d(position.x, getEyeHeight(), position.z);
 	}
@@ -34,8 +40,10 @@ public abstract class Entity implements Agent{
 		return position.y;
 	}
 	
+	
 	public static void registerEntity(String name, Class<? extends Entity> clz){
 		try {
+			VoxelCaverns.getCurrentWorld().getRegisteredEntity(name);
 			types.put(name, clz.getConstructor(World.class));
 		} catch (NoSuchMethodException | SecurityException e) {
 			Logger.getLogger(Entity.class).warning("Entity class does not have correct constructor", e);
@@ -112,6 +120,15 @@ public abstract class Entity implements Agent{
 		return this;
 	}
 	
+	
+	public Entity setPosition(Vector3d position) {
+		this.position = position;
+		oldPos = position.clone();
+		size = getDefaultSize();
+		calculateBounds();
+		return this;
+	}
+
 	public void damage(int amount, DamageSource source){
 		health -= amount;
 		onEvent("Damage");
@@ -343,6 +360,7 @@ public abstract class Entity implements Agent{
 
 	public void update() {
 		updateAge();
+		updateSurroundings();
 		updateTraits();
 		move(motionX, motionY, motionZ);
 		
@@ -372,6 +390,28 @@ public abstract class Entity implements Agent{
 
 	public void updateAge(){
 		++ticksAlive;
+	}
+	
+	public void updateSurroundings() {
+		boolean alsoCollide = true;
+		inQuicksand = false;
+		if (collisionHorizontal && alsoCollide) {
+			long x = MathUtils.floor(position.x);
+			long y = MathUtils.floor(bounds.minY);
+			long z = MathUtils.floor(position.z);
+			world.getBlockType(x, y, z).onEntityCollideHorizontal(world, x, y, z, this);
+		} else {
+			long x = MathUtils.floor(position.x);
+			long y = MathUtils.floor(bounds.minY);
+			long z = MathUtils.floor(position.z);
+			world.getBlockType(x, y, z).onEntityTickInside(world, x, y, z, this);
+		}
+		if (onGround) {
+			long x = MathUtils.floor(position.x);
+			long y = MathUtils.floor(bounds.minY - 0.1F);
+			long z = MathUtils.floor(position.z);
+			world.getBlockType(x, y, z).onEntityStandOn(world, x, y, z, this);
+		}
 	}
 
 	public boolean needsRemoving() {

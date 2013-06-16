@@ -12,6 +12,7 @@ import vc4.api.input.MouseSet;
 import vc4.api.packet.Packet;
 import vc4.api.util.Fustrum;
 import vc4.api.util.Setting;
+import vc4.api.world.World;
 
 /**
  * @author paul
@@ -69,4 +70,5 @@ public interface ClientGame {
 	public Cursor getCursor(String name);
 	public void addCursor(Cursor cursor);
 	public Component getHoveringComponent();
+	public abstract World getWorld();
 }
