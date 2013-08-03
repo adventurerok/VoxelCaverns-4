@@ -72,6 +72,8 @@ public class Game extends Component implements ClientGame {
 	private long previousTenTicks = 0;
 	private Fustrum fustrum = new Fustrum();
 	
+	private boolean showGui = true;
+	
 
 	/**
 	 * @return the paused
@@ -166,7 +168,7 @@ public class Game extends Component implements ClientGame {
 		}
 		gl.disable(GLFlag.DEPTH_TEST);
 		getWindow().enterRenderMode(RenderType.GUI);
-		if (gameState == GameState.SINGLEPLAYER && !isPaused()) {
+		if (showGui && gameState == GameState.SINGLEPLAYER && !isPaused()) {
 			Graphics.getClientShaderManager().bindShader("texture");
 			Resources.getSheetTexture("crosshair").bind();
 			int w = getWindow().getWidth() / 2 - 64;
@@ -184,8 +186,8 @@ public class Game extends Component implements ClientGame {
 			gl.vertex(w, h + 128);
 			gl.end();
 		}
-		super.draw();
-		if(!Mouse.isGrabbed()){
+		if(showGui) super.draw();
+		if(showGui && !Mouse.isGrabbed()){
 			Color col = Color.green;
 			Graphics.getClientShaderManager().bindShader("texture");
 			Resources.getAnimatedTexture("cursor").bind();
@@ -294,9 +296,15 @@ public class Game extends Component implements ClientGame {
 		if (Input.getClientKeyboard().keyReleased(Key.F2)) {
 			takeScreenshot();
 		}
+		if(Input.getClientKeyboard().keyPressed(Key.F1)) showGui ^= true;
 		long time = System.nanoTime() - _lastFrame;
 		_lastFrame = System.nanoTime();
 		if (time > 0) delta = time / 1000000D;
+	}
+	
+	@Override
+	public boolean guiVisible() {
+		return showGui;
 	}
 
 	@Override

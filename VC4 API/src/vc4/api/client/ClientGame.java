@@ -71,4 +71,5 @@ public interface ClientGame {
 	public void addCursor(Cursor cursor);
 	public Component getHoveringComponent();
 	public abstract World getWorld();
+	public abstract boolean guiVisible();
 }

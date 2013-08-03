@@ -33,6 +33,7 @@ public interface World {
 	public byte getBlockData(long x, long y, long z);
 	public short getBlockId(long x, long y, long z);
 	public Block getBlockType(long x, long y, long z);
+	public byte getBlockLight(long x, long y, long z);
 	public Chunk getChunk(ChunkPos pos);
 	public Chunk getChunk(long x, long y, long z);
 	public abstract String[] getDebugInfo();
@@ -46,6 +47,7 @@ public interface World {
 	public MapData getMapData(long x, long z);
 	public Music getMusic(EntityPlayer player);
 	public abstract String getName();
+	public byte getNearbyBlockLight(long x, long y, long z, Direction dir);
 	public byte getNearbyBlockData(long x, long y, long z, Direction dir);
 	public abstract byte getNearbyBlockData(long x, long y, long z, int d);
 	public short getNearbyBlockId(long x, long y, long z, Direction dir);

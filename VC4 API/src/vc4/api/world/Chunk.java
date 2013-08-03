@@ -19,6 +19,7 @@ public interface Chunk {
 	public void setBlockId(int x, int y, int z, short id);
 	public void setBlockData(int x, int y, int z, byte data);
 	public void setBlockIdData(int x, int y, int z, short id, byte data);
+	public byte getBlockLight(int x, int y, int z);
 	public ChunkPos getChunkPos();
 	public World getWorld();
 	public void addEntity(Entity entity);

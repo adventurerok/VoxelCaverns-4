@@ -24,6 +24,7 @@ public class MovementHandler implements Navigator{
 		else if(movement != null && movement.isPathfind()){
 			if(movement.getTargetType() == TargetType.LOCATION) astar = new AStarNavigationStrategy(entity, movement.position.clone());
 			else astar = new AStarNavigationStrategy(entity, movement.getTarget().position.clone());
+			pathPos = movement.getTarget().position.clone();
 		}
 	}
 	

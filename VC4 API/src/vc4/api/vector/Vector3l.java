@@ -138,6 +138,16 @@ public class Vector3l implements Vector3<Vector3l> {
 		if (z != other.z) return false;
 		return true;
 	}
+	
+	public boolean horizontalEquals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Vector3l other = (Vector3l) obj;
+		if (x != other.x) return false;
+		if (z != other.z) return false;
+		return true;
+	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector3#toVector3d()

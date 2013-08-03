@@ -20,7 +20,7 @@ public class SoundManager extends Audio{
 
 	protected static long soundId;
 	protected static long musicId;
-	protected static int fadeTime = 2;
+	protected static int fadeTime = 2048;
 	
 	static String musicSource;
 	static Music musicObject;
@@ -64,42 +64,28 @@ public class SoundManager extends Audio{
 		music.addSounds(sGroup);
 	}
 	
+	
 	public static void playMusic(String name){
+		if(name == null){
+			if(musicSource != null) player.fadeOut(musicSource, null, null, fadeTime);
+			musicPath = musicSource = null;
+			musicObject = null;
+			return;
+		}
 		if(name.equals(musicPath)) return;
 		Sound sound = music.getRandomSound(name);
 		if (sound == null) return;
-		String source = "MUSIC_" + soundId;
-		++musicId;
-		if(musicSource != null){
-			//player.fadeOut(musicSource, null, 2000);
-			player.stop(musicSource);
+		if(musicPath != null){
+			player.fadeOutIn(musicSource, sound.location, sound.location.toString(), fadeTime, fadeTime);
+			musicPath = name;
+		} else {
+			musicSource = "MUSIC_" + soundId;
+			musicPath = name;
+			++musicId;
+			player.newStreamingSource(true, musicSource, sound.location, sound.location.toString(), true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
+			player.play(musicSource);
 		}
-		player.backgroundMusic(source, sound.location, sound.location.toString(), true);
-		player.play(source);
-		musicSource = source;
-		musicPath = name;
 	}
-	
-//	public static void playMusic(String name){
-//		if(name == null){
-//			if(musicSource != null) player.fadeOut(musicSource, null, null, fadeTime);
-//			musicPath = musicSource = null;
-//			musicObject = null;
-//			return;
-//		}
-//		if(name.equals(musicPath)) return;
-//		Sound sound = music.getRandomSound(name);
-//		if (sound == null) return;
-//		if(musicPath != null){
-//			player.fadeOutIn(musicSource, sound.location, sound.location.toString(), fadeTime, fadeTime);
-//		} else {
-//			musicSource = "MUSIC_" + soundId;
-//			musicPath = name;
-//			++musicId;
-//			player.newStreamingSource(true, musicSource, sound.location, sound.location.toString(), true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
-//			player.play(musicSource);
-//		}
-//	}
 	
 	
 

@@ -264,7 +264,7 @@ public abstract class EntityLiving extends Entity {
 		gl.rotate((float) -moveYaw, 0, 1, 0);
 		model.draw();
 		gl.popMatrix();
-		if (name != null && !name.isEmpty()) {
+		if (name != null && !name.isEmpty() && Client.getGame().guiVisible()) {
 			gl.translate(0, size.y + 0.25, 0);
 			EntityPlayer plr = Client.getPlayer();
 			Vector2d myGrid = new Vector2d(position.x, position.z);
@@ -302,7 +302,7 @@ public abstract class EntityLiving extends Entity {
 		gl.rotate((float) -moveYaw, 0, 1, 0);
 		model.draw();
 		gl.popMatrix();
-		if (name != null && !name.isEmpty()) {
+		if (name != null && !name.isEmpty() && Client.getGame().guiVisible()) {
 			gl.translate(0, size.y + 0.25, 0);
 			EntityPlayer plr = Client.getPlayer();
 			Vector2d myGrid = new Vector2d(position.x, position.z);
