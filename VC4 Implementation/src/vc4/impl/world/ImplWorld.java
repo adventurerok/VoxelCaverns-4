@@ -309,9 +309,11 @@ public class ImplWorld implements World {
 		for (BlockStoreDist d : render) {
 			d.s.currentData[1].render();
 		}
+		gl.disableVertexArrribArray(6);
 		for (ImplChunk c : chunks.values()) {
 			c.drawEntitys();
 		}
+		gl.enableVertexArrribArray(6);
 		gl.bindShader("world");
 		gl.shaderUniform3f("skyLight", skylightColor.x, skylightColor.y, skylightColor.z);
 		gl.enable(GLFlag.CULL_FACE);

@@ -19,6 +19,11 @@ public class Vector3f implements Vector3<Vector3f> {
 		// TASK Auto-generated constructor stub
 	}
 	
+	@Override
+	public String toString() {
+		return "Vector3f[" + x + ", " + y + ", " + z + "]";
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

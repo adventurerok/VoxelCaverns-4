@@ -189,3 +189,5 @@ VC4-Development-0.0.1-234
 	+ Added TextureCoords for rotating textures
 VC4-Development-0.0.1-235
 	+ Added areas
+VC4-Development-0.0.1-236
+	+ Lighting

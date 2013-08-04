@@ -13,7 +13,7 @@ public class ColorUtils {
 	static{
 		Vector3f c = new Vector3f(1, 1, 1);
 			for(int i = 15; i > -1; --i){
-				lightColors[i] = c;
+				lightColors[i] = c.clone();
 				c.x *= 0.83F;
 				c.y *= 0.83F;
 				c.z *= 0.83F;

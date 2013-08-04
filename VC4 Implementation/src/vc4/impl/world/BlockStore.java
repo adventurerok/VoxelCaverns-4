@@ -19,7 +19,7 @@ public class BlockStore {
 
 	public short[] blocks;
 	public byte[] data;
-	public byte[] light;
+	public byte[] light = new byte[4096];
 	
 //	public DataRenderer oldData[];
 	public ChunkRenderer currentData[] = new ChunkRenderer[3];
@@ -70,7 +70,7 @@ public class BlockStore {
 	}
 	
 	public byte getBlockLight(int x, int y, int z){
-		return light != null ? light[arrayCalc(x, y, z)] : 15;
+		return light != null ? light[arrayCalc(x, y, z)] : 0;
 	}
 	
 	public double distance(Vector3d pos, Chunk chunk){
@@ -120,7 +120,7 @@ public class BlockStore {
 	}
 	
 	public boolean setBlockLight(int x, int y, int z, byte d){
-		if(light == null && d != 15){
+		if(light == null && d != 0){
 			light = new byte[4096];
 			light[arrayCalc(x, y, z)] = d;
 			clearRenderers();

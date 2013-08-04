@@ -47,6 +47,14 @@ public class Block {
 	protected static Random rand = new Random();
 
 	protected static Block[] blocksList = new Block[2048];
+	public static byte[] blockOpacity = new byte[2048];
+	public static byte[] blockLight = new byte[2048];
+	
+	static{
+		
+		Arrays.fill(blockOpacity, (byte)15);
+		blockOpacity[0] = 1;
+	}
 
 	public Block(short uid, int texture, Material m) {
 		super();
@@ -63,6 +71,16 @@ public class Block {
 
 	public Block setMineData(MiningData mineData) {
 		this.mineData = mineData;
+		return this;
+	}
+	
+	public Block setLightOpacity(int opac){
+		blockOpacity[uid] = (byte) opac;
+		return this;
+	}
+	
+	public Block setLightLevel(int lvl){
+		blockLight[uid] = (byte) lvl;
 		return this;
 	}
 

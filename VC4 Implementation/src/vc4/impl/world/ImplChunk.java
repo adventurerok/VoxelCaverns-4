@@ -22,6 +22,12 @@ import vc4.api.world.*;
  */
 public class ImplChunk implements Chunk {
 
+	protected static final byte n_0 = 0;
+	protected static final byte n_15 = 15;
+	protected static final byte n_16 = 16;
+
+	protected static final short s_0 = 0;
+	
 	BlockStore[] stores = new BlockStore[8];
 	ChunkPos pos;
 	private ImplWorld world;
@@ -127,8 +133,16 @@ public class ImplChunk implements Chunk {
 	 */
 	@Override
 	public void setBlockId(int x, int y, int z, short id) {
-		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockId(x & 0xF, y & 0xF, z & 0xF, id)) isModified = true;
-		notifyNear(x, y, z);
+		short old = getBlockId(x, y, z);
+		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockId(x & 0xF, y & 0xF, z & 0xF, id)){
+			isModified = true;
+			checkLight(x, y, z, old);
+			notifyNear(x, y, z);
+		}
+	}
+	
+	public void setBlockLight(int x, int y, int z, byte light) {
+		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockLight(x & 0xF, y & 0xF, z & 0xF, light)) isModified = true;
 	}
 
 	/*
@@ -149,8 +163,12 @@ public class ImplChunk implements Chunk {
 	 */
 	@Override
 	public void setBlockIdData(int x, int y, int z, short id, byte data) {
-		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockIdData(x & 0xF, y & 0xF, z & 0xF, id, data)) isModified = true;
-		notifyNear(x, y, z);
+		short old = getBlockId(x, y, z);
+		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockIdData(x & 0xF, y & 0xF, z & 0xF, id, data)){
+			isModified = true;
+			checkLight(x, y, z, old);
+			notifyNear(x, y, z);
+		}
 	}
 
 	public void notifyNear(int x, int y, int z) {
@@ -334,6 +352,88 @@ public class ImplChunk implements Chunk {
 	@Override
 	public byte getBlockLight(int x, int y, int z) {
 		return stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].getBlockLight(x & 0xF, y & 0xF, z & 0xF);
+	}
+	
+	protected byte getBlockLightWithBBCheck(int x, int y, int z){
+		if (x < 0 || y < 0 || z < 0 || x > 31 || y > 31 || z > 31) {
+			ImplChunk c = world.getChunk(pos.getCoordOfNearbyChunk(x, y, z));
+			if (c != null) {
+				return c.getBlockLightWithBBCheck(x & 31, y & 31, z & 31);
+			}
+			return n_0;
+		}
+		return getBlockLight(x, y, z);
+	}
+	
+	public void updateLight(int x, int y, int z){
+		if (x < 0 || y < 0 || z < 0 || x > 31 || y > 31 || z > 31) {
+			ImplChunk c = world.getChunk(pos.getCoordOfNearbyChunk(x, y, z));
+			if (c != null) {
+				c.updateLight(x & 31, y & 31, z & 31);
+			}
+			return;
+		}
+		byte blockLight = Block.blockLight[getBlockId(x, y, z)];
+		byte opacity = Block.blockOpacity[getBlockId(x, y, z)];
+		byte l_0 = getBlockLightWithBBCheck(x + 1, y, z);
+		byte l_1 = getBlockLightWithBBCheck(x, y, z + 1);
+		byte l_2 = getBlockLightWithBBCheck(x - 1, y, z);
+		byte l_3 = getBlockLightWithBBCheck(x, y, z - 1);
+		byte l_4 = getBlockLightWithBBCheck(x, y + 1, z);
+		byte l_5 = getBlockLightWithBBCheck(x, y - 1, z);
+		if((l_0 & 0xF) > opacity){
+			l_0 = (byte) ((l_0 & 0xF) - opacity);
+		} else l_0 = n_0;
+		if((l_1 & 0xF) > opacity){
+			l_1 = (byte) ((l_1 & 0xF) - opacity);
+		} else l_1 = n_0;
+		if((l_2 & 0xF) > opacity){
+			l_2 = (byte) ((l_2 & 0xF) - opacity);
+		} else l_2 = n_0;
+		if((l_3 & 0xF) > opacity){
+			l_3 = (byte) ((l_3 & 0xF) - opacity);
+		} else l_3 = n_0;
+		if((l_4 & 0xF) > opacity){
+			l_4 = (byte) ((l_4 & 0xF) - opacity);
+		} else l_4 = n_0;
+		if((l_5 & 0xF) > opacity){
+			l_5 = (byte) ((l_5 & 0xF) - opacity);
+		} else l_5 = n_0;
+		if((l_0 & 0xF) > (blockLight & 0xF)){
+			blockLight = l_0;
+		}
+		if((l_1 & 0xF) > (blockLight & 0xF)){
+			blockLight = l_1;
+		}
+		if((l_2 & 0xF) > (blockLight & 0xF)){
+			blockLight = l_2;
+		}
+		if((l_3 & 0xF) > (blockLight & 0xF)){
+			blockLight = l_3;
+		}
+		if((l_4 & 0xF) > (blockLight & 0xF)){
+			blockLight = l_4;
+		}
+		if((l_5 & 0xF) > (blockLight & 0xF)){
+			blockLight = l_5;
+		}
+		
+		if(getBlockLight(x, y, z) != blockLight){
+			setBlockLight(x, y, z, blockLight);
+			updateLight(x + 1, y, z);
+			updateLight(x, y, z + 1);
+			updateLight(x - 1, y, z);
+			updateLight(x, y, z - 1);
+			updateLight(x, y + 1, z);
+			updateLight(x, y - 1, z);
+			//setDirty(x, y, z);
+		}
+		
+	}
+	
+	protected void checkLight(int x, int y, int z, short bid) {
+		if (!populated) return;
+		if ((Block.blockLight[bid] != Block.blockLight[getBlockId(x, y, z)]) || (Block.blockOpacity[bid] != Block.blockOpacity[getBlockId(x, y, z)])) updateLight(x, y, z);
 	}
 
 }

@@ -36,6 +36,7 @@ public class BlockRendererFace implements BlockRenderer {
 		long y = c.getChunkPos().worldY(cy);
 		long z = c.getChunkPos().worldZ(cz);
 		if (block.isAir()) return;
+		if(c.getBlockLight(cx, cy, cz) > 4) System.out.println("Size");
 		Vector3f light = ColorUtils.getLightColor(c.getBlockLight(cx, cy, cz));
 		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
 		AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);

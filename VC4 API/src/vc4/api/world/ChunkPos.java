@@ -97,6 +97,10 @@ public class ChunkPos {
 		Vector3d me = new Vector3d(worldX(16), worldY(16), worldZ(16));
 		return me.distanceSquared(loc);
 	}
+
+	public ChunkPos getCoordOfNearbyChunk(int cx, int cy, int cz){
+		return createFromWorldPos((x << 5) + cx, (y << 5) + cy, (z << 5) + cz);
+	}
 	
 	
 	
