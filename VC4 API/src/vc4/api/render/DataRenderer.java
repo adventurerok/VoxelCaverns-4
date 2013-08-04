@@ -242,6 +242,11 @@ public class DataRenderer implements Renderer {
 		tex(tex.x, tex.y, tex.z, 0);
 		
 	}
+
+	@Override
+	public void light(float r, float g, float b, boolean sky) {
+		//Not Needed
+	}
 	
 
 }

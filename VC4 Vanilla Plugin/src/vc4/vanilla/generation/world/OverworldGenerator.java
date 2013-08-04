@@ -72,7 +72,7 @@ public class OverworldGenerator implements WorldGenerator {
 	}
 
 	public int[] getNoiseDiff(MapData data, long y) {
-		int[] res = Arrays.copyOf(data.getHeightMap(), 1024);
+		int[] res = Arrays.copyOf(data.getGenHeightMap(), 1024);
 		for (int cx = 0; cx < 32; ++cx) {
 			for (int cz = 0; cz < 32; ++cz) {
 				res[cz * 32 + cx] = (int) (res[cz * 32 + cx] - ((y << 5) + 31));
@@ -299,7 +299,7 @@ public class OverworldGenerator implements WorldGenerator {
 		byte[] biomes = new byte[32 * 32];
 		for(int d = 0; d < 1024; ++d) biomes[d] = (byte) intBiomes[d];
 		data.setBiomeMap(biomes);
-		data.setHeightMap(hgen.generate(wx, wz, 32));
+		data.setGenHeightMap(hgen.generate(wx, wz, 32));
 		
 	}
 	

@@ -1,7 +1,9 @@
 package vc4.vanilla.generation.village.stone;
 
+import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
 import vc4.vanilla.generation.village.Building;
@@ -39,12 +41,38 @@ public class StoneMine implements Building {
 				}
 			}
 		}
+		Vector3l[] lads = new Vector3l[8];
+		Direction clock = door.dir.clockwise();
+		lads[0] = door.left.move(5, door.dir);
+		lads[1] = door.left.move(4, door.dir).move(2, clock);
+		lads[2] = door.left.move(2, door.dir);
+		lads[3] = door.left.move(4, door.dir).move(-1, clock);
+		lads[4] = door.right.move(5, door.dir);
+		lads[5] = door.left.move(3, door.dir).move(2, clock);
+		lads[6] = door.right.move(2, door.dir);
+		lads[7] = door.left.move(3, door.dir).move(-1, clock);
+		int ind;
+		Vector3l c;
 		for (long x = sx + 1; x <= ex - 1; ++x) {
 			boolean xWall = x == sx + 1 || x == ex - 1;
 			for (long z = sz + 1; z <= ez - 1; ++z) {
 				boolean zWall = z == sz + 1 || z == ez - 1;
 				for (long y = start.y - 1; y > start.y - 20; --y) {
-					if (xWall || zWall) ville.setCobbleBlock(x, y, z);
+					if (xWall || zWall){
+						ville.setCobbleBlock(x, y, z);
+						continue;
+					}
+					c = new Vector3l(x, y, z);
+					ind = -1;
+					for(int num = 0; num < 8; ++num){
+						if(c.horizontalEquals(lads[num])){
+							ind = num;
+							break;
+						}
+					}
+					if(ind != -1){
+						world.setBlockIdData(x, y, z, Vanilla.ladder.uid, ((ind & 3) + door.dir.id()) & 3);
+					} else if(y == start.y - 1 || (y & 127) == 0) ville.setGlassBlock(x, y, z);
 					else ville.setEmptyBlock(x, y, z);
 				}
 			}
@@ -81,23 +109,41 @@ public class StoneMine implements Building {
 		if(((y << 5) | 31) <= depth) return;
 		long sy = Math.min(door.left.y - 10, (y << 5) | 31);
 		long ey = Math.max(y << 5, depth);
-		Vector3l a = null;
-		Vector3l b = null;
+		Vector3l[] lads = new Vector3l[8];
+		Direction clock = door.dir.clockwise();
+		lads[0] = door.left.move(5, door.dir);
+		lads[1] = door.left.move(4, door.dir).move(2, clock);
+		lads[2] = door.left.move(2, door.dir);
+		lads[3] = door.left.move(4, door.dir).move(-1, clock);
+		lads[4] = door.right.move(5, door.dir);
+		lads[5] = door.left.move(3, door.dir).move(2, clock);
+		lads[6] = door.right.move(2, door.dir);
+		lads[7] = door.left.move(3, door.dir).move(-1, clock);
+		int ind;
+		Vector3l c;
 		for (long ay = sy; ay >= ey; --ay) {
 			boolean spec = (ay & 127) == 0;
-			if(spec){
-				a = door.left.move(5, door.dir);
-				b = door.right.move(5, door.dir);
-			}
 			for (long x = sx + 1; x <= ex - 1; ++x) {
 				boolean xWall = x == sx + 1 || x == ex - 1;
 				for (long z = sz + 1; z <= ez - 1; ++z) {
 					boolean zWall = z == sz + 1 || z == ez - 1;
-					if (xWall || zWall) ville.setCobbleBlock(x, ay, z);
+					if (xWall || zWall){
+						ville.setCobbleBlock(x, ay, z);
+						continue;
+					}
+					c = new Vector3l(x, ay, z);
+					ind = -1;
+					for(int num = 0; num < 8; ++num){
+						if(c.horizontalEquals(lads[num])){
+							ind = num;
+							break;
+						}
+					}
+					if(ind != -1){
+						world.setBlockIdData(x, ay, z, Vanilla.ladder.uid, ((ind & 3) + door.dir.id()) & 3);
+					}
 					else if(spec){
-						Vector3l c = new Vector3l(x, ay, z);
-						if(c.equals(a) || c.equals(b)) ville.setEmptyBlock(x, ay, z);
-						else ville.setGlassBlock(x, ay, z);
+						ville.setGlassBlock(x, ay, z);
 					}
 					else ville.setEmptyBlock(x, ay, z);
 

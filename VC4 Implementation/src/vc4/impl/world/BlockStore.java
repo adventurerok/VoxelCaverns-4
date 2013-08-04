@@ -4,9 +4,10 @@
 package vc4.impl.world;
 
 import vc4.api.block.Block;
-import vc4.api.render.DataRenderer;
+import vc4.api.render.ChunkRenderer;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.Chunk;
+import vc4.api.world.MapData;
 
 /**
  * @author paul
@@ -18,9 +19,10 @@ public class BlockStore {
 
 	public short[] blocks;
 	public byte[] data;
+	public byte[] light;
 	
 //	public DataRenderer oldData[];
-	public DataRenderer currentData[] = new DataRenderer[3];
+	public ChunkRenderer currentData[] = new ChunkRenderer[3];
 	int compileState = 0;
 	
 	public int xMod, yMod, zMod;
@@ -43,6 +45,15 @@ public class BlockStore {
 		this.data = data;
 	}
 	
+	public BlockStore setLight(byte[] light) {
+		this.light = light;
+		return this;
+	}
+	
+	public byte[] getLight() {
+		return light;
+	}
+	
 	BlockStore(int xMod, int yMod, int zMod) {
 		super();
 		this.xMod = xMod;
@@ -56,6 +67,10 @@ public class BlockStore {
 	
 	public byte getBlockData(int x, int y, int z){
 		return data != null ? data[arrayCalc(x, y, z)] : 0;
+	}
+	
+	public byte getBlockLight(int x, int y, int z){
+		return light != null ? light[arrayCalc(x, y, z)] : 15;
 	}
 	
 	public double distance(Vector3d pos, Chunk chunk){
@@ -104,6 +119,23 @@ public class BlockStore {
 		return false;
 	}
 	
+	public boolean setBlockLight(int x, int y, int z, byte d){
+		if(light == null && d != 15){
+			light = new byte[4096];
+			light[arrayCalc(x, y, z)] = d;
+			clearRenderers();
+			return true;
+		} else {
+			int ac = arrayCalc(x, y, z);
+			if(light != null && light[ac] != d){
+				light[ac] = d;
+				clearRenderers();
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean setBlockIdData(int x, int y, int z, short id, byte d){
 		boolean ret = false;
 		if(blocks == null && id != 0){
@@ -132,11 +164,11 @@ public class BlockStore {
 		return ret;
 	}
 	
-	public void calculateData(Chunk c){
+	public void calculateData(Chunk c, MapData m){
 		compileState = 1;
-		currentData[0] = new DataRenderer();
-		currentData[1] = new DataRenderer();
-		currentData[2] = new DataRenderer();
+		currentData[0] = new ChunkRenderer();
+		currentData[1] = new ChunkRenderer();
+		currentData[2] = new ChunkRenderer();
 		boolean allAir = true;
 		boolean noData = true;
 		int y, z, i;
@@ -149,7 +181,7 @@ public class BlockStore {
 					allAir = false;
 					data = getBlockData(x, y, z);
 					if(data != 0) noData = false;
-					Block.byId(i).getRenderer().renderBlock(c, x | xMod, y | yMod, z | zMod, Block.byId(i), data, currentData);
+					Block.byId(i).getRenderer().renderBlock(c, m, x | xMod, y | yMod, z | zMod, Block.byId(i), data, currentData);
 				}
 			}
 			
@@ -184,7 +216,7 @@ public class BlockStore {
 
 	public void removeGraphics() {
 		if(currentData != null){
-			for(DataRenderer r : currentData){
+			for(ChunkRenderer r : currentData){
 				if(r != null) r.destroy();
 			}
 		}

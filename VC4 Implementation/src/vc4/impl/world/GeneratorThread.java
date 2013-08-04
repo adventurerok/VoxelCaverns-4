@@ -118,7 +118,7 @@ public class GeneratorThread extends Thread {
 		return chunk;
 	}
 	
-	public ImplMapData getOrGenerate(Vector2l pos){
+	public MapData getOrGenerate(Vector2l pos){
 		Profiler.start("mapdata");
 		ImplMapData data = heights.get(pos);
 		if(data == null){

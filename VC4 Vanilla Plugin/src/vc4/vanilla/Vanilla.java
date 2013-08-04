@@ -100,6 +100,7 @@ public class Vanilla extends Plugin {
 	public static BiomeHeightModel hills = new BiomeHeightModel(75, 25, 80, 10);
 	public static BiomeHeightModel oceans = new BiomeHeightModel(-38, -80, 1, -100);
 	public static BiomeHeightModel trenchs = new BiomeHeightModel(-70, -125, -10, -140);
+	public static BiomeHeightModel mountains = new BiomeHeightModel(125, 55, 140, 20);
 	public static Biome biomeOcean;
 	public static BiomeHilly biomePlains;
 	public static BiomeHilly biomeDesert;
@@ -114,6 +115,7 @@ public class Vanilla extends Plugin {
 	public static BiomeHilly biomeSnowForest;
 	public static Biome biomeSnowForestHills;
 	public static Biome biomeTrench;
+	public static Biome biomeRockyHills;
 	
 	//Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
@@ -301,6 +303,7 @@ public class Vanilla extends Plugin {
 		biomeSnowForest = new BiomeHilly(world.getRegisteredBiome("vanilla.snowforest"), "snowforest", BiomeType.cold, Color.white);
 		biomeSnowForestHills = new Biome(world.getRegisteredBiome("vanilla.snowforest.hills"), "snowforest/hills", BiomeType.cold, Color.white).setHeights(hills);
 		biomeTrench = new Biome(world.getRegisteredBiome("vanilla.ocean.trench"), "ocean/trench", BiomeType.ocean, Color.blue).setHeights(trenchs);
+		biomeRockyHills = new Biome(world.getRegisteredBiome("vanilla.rocky.hills"), "rocky/hills", BiomeType.hot, Color.gray);
 		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 2));
 		biomeOcean.music = musicSky;
@@ -342,6 +345,8 @@ public class Vanilla extends Plugin {
 		biomeVolcano.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
 		biomeVolcano.music = musicHell;
 		biomeVolcanic.setHills(biomeVolcano.id);
+		biomeRockyHills.setBiomeBlocks(Block.stone.uid, Block.stone.uid, Block.stone.uid);
+		biomeRockyHills.setHeights(mountains);
 		biomes = new ArrayList<>();
 		ArrayList<Integer> ocean = new ArrayList<>();
 		ocean.add(Vanilla.biomeOcean.id);
@@ -358,6 +363,7 @@ public class Vanilla extends Plugin {
 		hot.add(Vanilla.biomeDesert.id);
 		hot.add(Vanilla.biomeDesert.id);
 		hot.add(Vanilla.biomeVolcanic.id);
+		hot.add(Vanilla.biomeRockyHills.id);
 		biomes.add(hot);
 	}
 	

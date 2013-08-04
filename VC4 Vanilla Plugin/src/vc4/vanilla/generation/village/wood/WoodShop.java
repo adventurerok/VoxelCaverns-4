@@ -1,4 +1,4 @@
-package vc4.vanilla.generation.village.stone;
+package vc4.vanilla.generation.village.wood;
 
 import java.util.ArrayList;
 
@@ -13,16 +13,37 @@ import vc4.vanilla.generation.village.Building;
 import vc4.vanilla.generation.village.Village;
 import vc4.vanilla.generation.village.furnature.*;
 
-public class StoneHouse implements Building {
+public class WoodShop implements Building {
 
 	private static ArrayList<Furnature> furniture = new ArrayList<>();
 	private static Village lastVille;
 	
 	public static void loadFurnature(Village ville){
 		furniture.clear();
-		furniture.add(new FurnatureWood(new Adjustment(6, 3, 0), Vanilla.table.uid));
-		furniture.add(new FurnatureChair(new Adjustment(5, 3, 0), Vanilla.chair.uid, 2));
-		furniture.add(new FurnatureBasic(new Adjustment(1, -2, 0), Vanilla.workbench.uid, 0));
+		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 0), Vanilla.ladder.uid, 0));
+		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 1), Vanilla.ladder.uid, 0));
+		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 2), Vanilla.ladder.uid, 0));
+		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 3), Vanilla.ladder.uid, 0));
+		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 4), Vanilla.ladder.uid, 0));
+		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 5), Vanilla.ladder.uid, 0));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -2, 0), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -1, 0), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 0, 0), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 1, 0), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 2, 0), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -2, 2), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -1, 2), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 0, 2), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 1, 2), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 2, 2), Vanilla.planks.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 2, 1), Vanilla.planks.uid));
+		furniture.add(new FurnatureChair(new Adjustment(5, 0, 0), Vanilla.chair.uid, 0));
+		furniture.add(new FurnatureChair(new Adjustment(5, 2, 4), Vanilla.chair.uid, 2));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(6, 1, 4), Vanilla.table.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(6, 2, 4), Vanilla.table.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(6, 3, 4), Vanilla.table.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(1, 0, 4), Vanilla.table.uid));
+		furniture.add(new FurnatureVillagePlanks(new Adjustment(1, 1, 4), Vanilla.table.uid));
 		lastVille = ville;
 	}
 	
@@ -44,20 +65,20 @@ public class StoneHouse implements Building {
 		if(!ville.addRoom(bb)) return;
 		for(long x = sx; x <= ex; ++x){
 			for(long z = sz; z <= ez; ++z){
-				for(long y = start.y - 1; y < start.y + 4; ++y){
+				for(long y = start.y - 1; y < start.y + 8; ++y){
 					boolean xWall = x == sx || x == ex;
 					boolean zWall = z == sz || z == ez;
-					if(y == start.y - 1 || y == start.y + 3){
-						if(xWall || zWall) ville.setBrickBlock(x, y, z);
-						else ville.setCobbleBlock(x, y, z);
+					if(y == start.y - 1 || y == start.y + 3 || y == start.y + 7){
+						if(xWall || zWall) ville.setLogBlock(x, y, z);
+						else ville.setPlankBlock(x, y, z);
 					} else if(xWall || zWall){
-						if(xWall && zWall) ville.setBrickBlock(x, y, z);
-						else if(y == start.y + 1){
+						if(xWall && zWall) ville.setLogBlock(x, y, z);
+						else if(y == start.y + 1 || y == start.y + 5){
 							boolean nxWall = x == sx + 1 || x == ex - 1;
 							boolean nzWall = z == sz + 1 || z == ez - 1;
-							if(nxWall || nzWall) ville.setCobbleBlock(x, y, z);
+							if(nxWall || nzWall) ville.setPlankBlock(x, y, z);
 							else ville.setGlassBlock(x, y, z);
-						} else ville.setCobbleBlock(x, y, z);
+						} else ville.setPlankBlock(x, y, z);
 					} else ville.setEmptyBlock(x, y, z);
 				}
 			}

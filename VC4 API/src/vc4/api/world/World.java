@@ -66,6 +66,9 @@ public interface World {
 	public long getSeed();
 	public abstract TileEntity getTileEntity(long x, long y, long z);
 	public long getTime();
+	public int getTimeOfDay();
+	public byte getDayOfYear();
+	public float getSeason();
 	public RayTraceResult rayTraceBlocks(Vector3d start, Vector3d end, int amount);
 	public void setBlockData(long x, long y, long z, int data);
 	public void setBlockDataNoNotify(long x, long y, long z, int data);
@@ -98,4 +101,9 @@ public interface World {
 	public abstract short getRegisteredArea(String name);
 	public abstract List<Entity> getEntitiesInBounds(AABB bounds, Class<? extends Entity> type);
 	public abstract List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude);
+	public abstract String getTimeText();
+	public abstract int getDayOfMonth();
+	public abstract int getMonth();
+	public abstract void addTime(long add);
+	public abstract int getHeight(long x, long z);
 }

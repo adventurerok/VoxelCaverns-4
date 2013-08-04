@@ -331,4 +331,9 @@ public class ImplChunk implements Chunk {
 		this.unloading = unloading;
 	}
 
+	@Override
+	public byte getBlockLight(int x, int y, int z) {
+		return stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].getBlockLight(x & 0xF, y & 0xF, z & 0xF);
+	}
+
 }

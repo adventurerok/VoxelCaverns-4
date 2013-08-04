@@ -2,6 +2,7 @@ package vc4.vanilla.generation.populate;
 
 import java.util.Random;
 
+import vc4.api.biome.Biome;
 import vc4.api.generator.WorldPopulator;
 import vc4.api.logging.Logger;
 import vc4.api.world.World;
@@ -11,16 +12,21 @@ public class WorldGenPyramids implements  WorldPopulator{
 
 	@Override
 	public void populate(World world, long x, long y, long z){
-		Random rand = world.createRandom(x, y, z, 523705872809723L);
-		if(rand.nextInt(20) != 0) return;
+		Random rand = world.createRandom(x, z, 523705872809723L);
+		if(rand.nextInt(150) != 0) return;
+		if(world.getMapData(x, z).getGenHeight(16, 16) >> 5 != y) return;
+		y = 1000;
+		long qw;
+		for(int ax = 1; ax < 32; ax += 6){
+			for(int az = 1; az < 32; az += 6){
+				qw = world.getMapData(x, z).getGenHeight(ax, az);
+				if(qw < y) y = qw;
+			}
+		}
 		x <<= 5;
-		y <<= 5;
 		z <<= 5;
-		if(world.getBlockId(x, y + 1, z) != Vanilla.sand.uid) return;
-		if(world.getBlockId(x + 32, y + 1, z) != Vanilla.sand.uid) return;
-		if(world.getBlockId(x, y + 1, z + 32) != Vanilla.sand.uid) return;
-		if(world.getBlockId(x + 32, y + 1, z + 32) != Vanilla.sand.uid) return;
-		if(world.getBiome(x, z) != Vanilla.biomeDesert) return;
+		Biome b = world.getBiome(x, z);
+		if(b != Vanilla.biomeDesert && b != Vanilla.biomeDesertHills) return;
 		Logger.getLogger("VC4").info("Generating Pyramid at: " + x + ", " + y + ", " + z);
 		for(int h = -1; h < 16; ++h){
 			for(int w = 0; w < 32; ++w){

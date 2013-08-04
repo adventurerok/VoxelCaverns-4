@@ -3,26 +3,24 @@ package vc4.api.util;
 import java.awt.Color;
 
 import vc4.api.math.MathUtils;
+import vc4.api.vector.Vector3f;
 
 
 public class ColorUtils {
 
-	public static Color[] lightColors = new Color[256];
+	public static Vector3f[] lightColors = new Vector3f[256];
 	
-//	static{
-//		for(int d = 0; d < 16; ++d){
-//			int dshift = d << 4;
-//			Color c = ChatColor.getColor(15 - d);
-//			if(d == 15) c = ChatColor.getColor(16);
-//			for(int i = 15; i > -1; --i){
-//				lightColors[dshift + i] = c;
-//				c.r *= 0.83F;
-//				c.g *= 0.83F;
-//				c.b *= 0.83F;
-//			}
-//		}
-//		
-//	}
+	static{
+		Vector3f c = new Vector3f(1, 1, 1);
+			for(int i = 15; i > -1; --i){
+				lightColors[i] = c;
+				c.x *= 0.83F;
+				c.y *= 0.83F;
+				c.z *= 0.83F;
+			}
+		
+		
+	}
 	
 	
 	public static Color differColors(Color c1, Color c2, float dec)
@@ -43,6 +41,28 @@ public class ColorUtils {
         
         try{
         return new Color(_R, _G, _B, lowA);
+        } catch(Exception e){
+        	return c1;
+        }
+    }
+	
+	public static Vector3f differColors(Vector3f c1, Vector3f c2, float dec)
+    {
+		if(dec > 1.0F) dec = 1.0F;
+		else if(dec < 0.0F) dec = 0.0F;
+		
+        //Port from VoxelCaverns 1 (Indev2D)
+        float RDif = c2.x - c1.x;
+        float GDif = c2.y - c1.y;
+        float BDif = c2.z - c1.z;
+
+        float _R = c1.x + (RDif * dec);
+        float _G = c1.y + (GDif * dec);
+        float _B = c1.z + (BDif * dec);
+
+        
+        try{
+        return new Vector3f(_R, _G, _B);
         } catch(Exception e){
         	return c1;
         }
@@ -98,8 +118,8 @@ public class ColorUtils {
 		
 		return new Color(_r, _g, _b, c2.getAlpha());
 	}
-	public static Color getLightColor(byte light) {
-		return lightColors[light & 0xFF];
+	public static Vector3f getLightColor(byte light) {
+		return lightColors[light & 0xF];
 	}
 	
 	public static Color brighterLinear(int amount, Color color){

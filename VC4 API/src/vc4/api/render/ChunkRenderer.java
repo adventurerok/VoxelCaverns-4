@@ -24,6 +24,7 @@ public class ChunkRenderer implements Renderer {
 	
 	Vector4f color = new Vector4f(1, 1, 1, 1);
 	Vector4f tex = new Vector4f(0, 0, 0, 0);
+	Vector4f light = new Vector4f(1, 1, 1, 0);
 	
 	Vector3d trans = new Vector3d(0, 0, 0);
 	
@@ -110,6 +111,10 @@ public class ChunkRenderer implements Renderer {
 		data.add(normal.x);
 		data.add(normal.y);
 		data.add(normal.z);
+		data.add(light.x);
+		data.add(light.y);
+		data.add(light.z);
+		data.add(light.w);
 		++amountOfVertexes;
 	}
 	
@@ -119,6 +124,11 @@ public class ChunkRenderer implements Renderer {
 	@Override
 	public void color(float r, float g, float b, float a){
 		color = new Vector4f(r, g, b, a);
+	}
+	
+	@Override
+	public void light(float r, float g, float b, boolean sky){
+		light = new Vector4f(r, g, b, sky ? 1 : 0);
 	}
 	
 	@Override
@@ -178,13 +188,15 @@ public class ChunkRenderer implements Renderer {
 			gl.newList(listId, GLCompileFunc.COMPILE);
 			boolean normal = true;
 			buffer.position(0);
-			gl.vertexAttribPointer(0, 3, normal, 56, buffer);
+			gl.vertexAttribPointer(0, 3, normal, 72, buffer);
 			buffer.position(3);
-			gl.vertexAttribPointer(3, 4, normal, 56, buffer);
+			gl.vertexAttribPointer(3, 4, normal, 72, buffer);
 			buffer.position(7);
-			gl.vertexAttribPointer(8, 4, normal, 56, buffer);
+			gl.vertexAttribPointer(8, 4, normal, 72, buffer);
 			buffer.position(11);
-			gl.vertexAttribPointer(2, 3, normal, 56, buffer);
+			gl.vertexAttribPointer(2, 3, normal, 72, buffer);
+			buffer.position(14);
+			gl.vertexAttribPointer(6, 4, normal, 72, buffer);
 			gl.drawArrays(GLPrimative.TRIANGLES, 0, amountOfVertexes);
 			gl.endList();
 			buffer = null;

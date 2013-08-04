@@ -22,7 +22,7 @@ public class StoneWall implements Wall {
 			for(long pz = sz - 2; pz <= ez + 2; ++pz){
 				long y = 0;
 				for(long px = sx; px <= ex; ++px){
-					y += world.getMapData(px >> 5, pz >> 5).getHeight((int) (px & 31), (int)(pz & 31));
+					y += world.getMapData(px >> 5, pz >> 5).getGenHeight((int) (px & 31), (int)(pz & 31));
 				}
 				y = MathUtils.ceil(y /4f);
 				heights[(int) (pz - sz + 2)] = y;
@@ -57,7 +57,7 @@ public class StoneWall implements Wall {
 			for(long px = sx - 2; px <= ex + 2; ++px){
 				long y = 0;
 				for(long pz = sz; pz <= ez; ++pz){
-					y += world.getMapData(px >> 5, pz >> 5).getHeight((int) (px & 31), (int)(pz & 31));
+					y += world.getMapData(px >> 5, pz >> 5).getGenHeight((int) (px & 31), (int)(pz & 31));
 				}
 				y = MathUtils.ceil(y /4f);
 				heights[(int) (px - sx + 2)] = y;
@@ -101,7 +101,7 @@ public class StoneWall implements Wall {
 				sz = z + 42;
 				ez = z + 45;
 			}
-			long y = world.getMapData((sx + 2) >> 5, (sz + 2) >> 5).getHeight((int) ((sx + 2) & 31), (int) ((sz + 2) & 31));
+			long y = world.getMapData((sx + 2) >> 5, (sz + 2) >> 5).getGenHeight((int) ((sx + 2) & 31), (int) ((sz + 2) & 31));
 			for (long px = sx; px <= ex; ++px) {
 				boolean xSide = px == sx || px == ex;
 				for (long pz = sz; pz <= ez; ++pz) {

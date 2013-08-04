@@ -36,5 +36,6 @@ public interface Renderer {
 	public abstract void color(Vector4f color);
 	public abstract void addVertex(Vector3d vertex);
 	public abstract void tex(Vector3f tex);
+	public abstract void light(float r, float g, float b, boolean sky);
 
 }

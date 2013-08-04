@@ -7,7 +7,8 @@ public class VillageStyleWood extends VillageStyle {
 
 	
 	public VillageStyleWood() {
-		addBuilding(new WeightedBuilding(new WoodHouse(), 100));
+		addBuilding(new WeightedBuilding(new WoodHouse(), 50));
+		addBuilding(new WeightedBuilding(new WoodShop(), 50));
 		addBuilding(new WeightedBuilding(new WoodMine(), 10));
 		addBuilding(new WeightedBuilding(new WoodTower(), 10));
 		wall = new WoodWall();

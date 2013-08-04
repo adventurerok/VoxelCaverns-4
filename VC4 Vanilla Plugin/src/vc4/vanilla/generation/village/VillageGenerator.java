@@ -23,7 +23,7 @@ public class VillageGenerator {
 		int pz = check.nextInt(16);
 		if(pz != (z & 0xf)) return;
 		if(y > 4) return;
-		int h = world.getMapData(x, z).getHeight(16, 16);
+		int h = world.getMapData(x, z).getGenHeight(16, 16);
 		Random rand = world.createRandom(x, h >> 5, z, 1263763L);
 		long ay = (h & ~31) + 16; 
 		x <<= 5;
@@ -49,7 +49,7 @@ public class VillageGenerator {
 		int pz = check.nextInt(16);
 		if(pz != (z & 0xf)) return;
 		if(y < 0 || y > 4) return;
-		int h = world.getMapData(x, z).getHeight(16, 16);
+		int h = world.getMapData(x, z).getGenHeight(16, 16);
 		if(h >> 5 != y) return;
 		Random rand = world.createRandom(x, y, z, 1263763L);
 		x <<= 5;
@@ -102,12 +102,12 @@ public class VillageGenerator {
 		for(int a = 0; a < rooms; ++a){
 			long bx = x - 35 + rand.nextInt(70);
 			long bz = z - 35 + rand.nextInt(70);
-			long ay = world.getMapData(bx >> 5, bz >> 5).getHeight((int)(bx & 31), (int)(bz & 31));
+			long ay = world.getMapData(bx >> 5, bz >> 5).getGenHeight((int)(bx & 31), (int)(bz & 31));
 			long ly = ay;
 			long hy = ay;
 			for(long tx = bx - 4; tx <= bx + 4; tx += 8){
 				for(long tz = bz - 4; tz <= bz + 4; tz += 8){
-					long ty = world.getMapData(tx >> 5, tz >> 5).getHeight((int)(tx & 31), (int)(tz & 31));
+					long ty = world.getMapData(tx >> 5, tz >> 5).getGenHeight((int)(tx & 31), (int)(tz & 31));
 					if(ty < ly) ly = ty;
 					if(ty > hy) hy = ty;
 				}

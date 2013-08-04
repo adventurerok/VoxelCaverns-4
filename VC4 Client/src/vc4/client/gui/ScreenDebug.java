@@ -75,6 +75,7 @@ public class ScreenDebug extends Component {
 		renderDebugLine("SF: " + player.getSimpleFacing() + ", AF: " + player.getAdvancedFacing());
 		Biome biome = world.getBiome(blockPos.x, blockPos.z);
 		renderDebugLine("Biome: " + biome.getName());
+		renderDebugLine("Time: " + world.getTimeText());
 	}
 	
 	

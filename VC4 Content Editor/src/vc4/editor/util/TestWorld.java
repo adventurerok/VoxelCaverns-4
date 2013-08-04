@@ -18,11 +18,11 @@ import vc4.api.world.*;
 public class TestWorld implements World {
 
 	long seed = new Random().nextLong();
-	
+
 	public TestWorld() {
 		// TASK Auto-generated constructor stub
 	}
-	
+
 	public TestWorld(long seed) {
 		super();
 		this.seed = seed;
@@ -207,7 +207,6 @@ public class TestWorld implements World {
 		return null;
 	}
 
-
 	@Override
 	public double getFallAcceleration() {
 		// TASK Auto-generated method stub
@@ -276,7 +275,6 @@ public class TestWorld implements World {
 	public String[] getDebugInfo() {
 		return null;
 	}
-
 
 	@Override
 	public short getRegisteredCrafting(String name) {
@@ -388,7 +386,7 @@ public class TestWorld implements World {
 	@Override
 	public void broadcast(String message, Vector3d pos, double radius) {
 		// TASK Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -439,5 +437,53 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	@Override
+	public byte getBlockLight(long x, long y, long z) {
+		return 0;
+	}
+
+	@Override
+	public byte getNearbyBlockLight(long x, long y, long z, Direction dir) {
+		return 0;
+	}
+
+	@Override
+	public String getTimeText() {
+		return null;
+	}
+
+	@Override
+	public int getDayOfMonth() {
+		return 0;
+	}
+
+	@Override
+	public int getMonth() {
+		return 0;
+	}
+
+	@Override
+	public int getTimeOfDay() {
+		return 0;
+	}
+
+	@Override
+	public byte getDayOfYear() {
+		return 0;
+	}
+
+	@Override
+	public float getSeason() {
+		return 0;
+	}
+
+	@Override
+	public void addTime(long add) {
+	}
+
+	@Override
+	public int getHeight(long x, long z) {
+		return 0;
+	}
 
 }

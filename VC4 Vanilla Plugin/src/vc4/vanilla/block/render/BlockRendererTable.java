@@ -6,18 +6,21 @@ import vc4.api.block.render.BlockRendererDefault;
 import vc4.api.graphics.Renderer;
 import vc4.api.item.ItemStack;
 import vc4.api.util.AABB;
-import vc4.api.world.Chunk;
-import vc4.api.world.World;
+import vc4.api.util.ColorUtils;
+import vc4.api.vector.Vector3f;
+import vc4.api.world.*;
 
 public class BlockRendererTable extends BlockRendererDefault {
 
 	AABB top = AABB.getBoundingBox(0, 1, 15/16d, 1, 0, 1);
 	AABB[] legs = new AABB[]{AABB.getBoundingBox(0, 1/16d, 0, 15/16d, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 15/16d, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 15/16d, 15/16d, 1d), AABB.getBoundingBox(0, 1/16d, 0, 15/16d, 15/16d, 1d)};
 	@Override
-	public void renderBlock(Chunk c, int cx, int cy, int cz, Block block, byte data, Renderer[] renderers) {
+	public void renderBlock(Chunk c, MapData m, int cx, int cy, int cz, Block block, byte data, Renderer[] renderers) {
 		long x = c.getChunkPos().worldX(cx);
 		long y = c.getChunkPos().worldY(cy);
 		long z = c.getChunkPos().worldZ(cz);
+		Vector3f light = ColorUtils.getLightColor(c.getBlockLight(cx, cy, cz));
+		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
 		for (int d = 0; d < 6; ++d) {
 			renderBlockFace(c.getWorld(), x, y, z, block, renderers[block.getRendererToUse(data, d)], top, d);
 		}

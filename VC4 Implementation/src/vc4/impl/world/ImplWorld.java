@@ -16,18 +16,18 @@ import vc4.api.crafting.CraftingManager;
 import vc4.api.entity.*;
 import vc4.api.generator.*;
 import vc4.api.graphics.*;
-import vc4.api.io.SaveFormat;
-import vc4.api.io.SaveFormats;
+import vc4.api.io.*;
+import vc4.api.io.Dictionary;
 import vc4.api.item.Item;
 import vc4.api.logging.Logger;
 import vc4.api.math.MathUtils;
 import vc4.api.profile.Profiler;
 import vc4.api.sound.Music;
+import vc4.api.text.Localization;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
 import vc4.api.vector.*;
 import vc4.api.world.*;
-import vc4.api.io.Dictionary;
 import vc4.impl.plugin.PluginLoader;
 
 /**
@@ -36,6 +36,9 @@ import vc4.impl.plugin.PluginLoader;
  */
 public class ImplWorld implements World {
 
+	static public Vector3f dayLight = new Vector3f(1, 1, 1);
+	static public Vector3f nightLight = new Vector3f(0.12878312F, 0.12878312F, 0.25756624F);
+	
 	Biome fakeBiome = Biome.createFake();
 
 	private static class BlockStoreDist implements Comparable<BlockStoreDist> {
@@ -87,6 +90,8 @@ public class ImplWorld implements World {
 	private int visibleChunks = 0;
 	private String saveFormatName = "VCH4";
 	private SaveFormat saveFormat = SaveFormats.getSaveFormat(saveFormatName);
+	
+	private float skyLight = 1;
 
 	private double tickTime;
 	private List<EntityPlayer> players = new ArrayList<>();
@@ -100,6 +105,11 @@ public class ImplWorld implements World {
 	 */
 	public ImplWorld(String saveName) {
 		this.saveName = saveName;
+	}
+	
+	@Override
+	public void addTime(long add){
+		time += add;
 	}
 	
 	public void loadWorld(){
@@ -141,6 +151,24 @@ public class ImplWorld implements World {
 		return saveFormat;
 	}
 	
+	
+	public float calculateSkyLight(){
+		int time = getTimeOfDay();
+		if(time >= 8500 && time <= 15500) return 1;
+		if(time <= 3500 || time >= 20500) return 0;
+		float season = getSeason();
+		if(time < 12000){
+			int start = (int) (3500 + (1 - season) * 4000);
+			if(time <= start) return 0;
+			if(time > start + 999) return 1;
+			return (time - start) / 1000f;
+		} else {
+			int start = (int) (15500 + season * 4000);
+			if(time <= start) return 1;
+			if(time > start + 999) return 0;
+			return 1f - ((time - start) / 1000f);
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	private void startGenThreads(int num) {
@@ -217,8 +245,10 @@ public class ImplWorld implements World {
 	}
 
 	public void draw(Vector3d pos) {
-		Graphics.getClientShaderManager().bindShader("world");
+		Vector3f skylightColor = ColorUtils.differColors(nightLight, dayLight, skyLight);
 		OpenGL gl = Graphics.getOpenGL();
+		gl.bindShader("world");
+		gl.shaderUniform3f("skyLight", skylightColor.x, skylightColor.y, skylightColor.z);
 		gl.enable(GLFlag.CULL_FACE);
 		gl.cullFace(GLFace.BACK);
 		gl.enable(GLFlag.DEPTH_TEST);
@@ -229,6 +259,7 @@ public class ImplWorld implements World {
 		gl.enableVertexArrribArray(0);
 		gl.enableVertexArrribArray(2);
 		gl.enableVertexArrribArray(3);
+		gl.enableVertexArrribArray(6);
 		gl.enableVertexArrribArray(8);
 		ArrayList<BlockStoreDist> toBuild = new ArrayList<>();
 		ArrayList<BlockStoreDist> toCompile = new ArrayList<>();
@@ -249,7 +280,7 @@ public class ImplWorld implements World {
 		for (int d = 0; d < 5; ++d) {
 			if (toBuild.size() <= d) continue;
 			BlockStoreDist ds = toBuild.get(d);
-			ds.s.calculateData(ds.c);
+			ds.s.calculateData(ds.c, getMapData(ds.c));
 			toCompile.add(ds);
 		}
 		Collections.sort(toCompile);
@@ -281,7 +312,8 @@ public class ImplWorld implements World {
 		for (ImplChunk c : chunks.values()) {
 			c.drawEntitys();
 		}
-		Graphics.getClientShaderManager().bindShader("world");
+		gl.bindShader("world");
+		gl.shaderUniform3f("skyLight", skylightColor.x, skylightColor.y, skylightColor.z);
 		gl.enable(GLFlag.CULL_FACE);
 		gl.cullFace(GLFace.BACK);
 		gl.enable(GLFlag.DEPTH_TEST);
@@ -292,6 +324,7 @@ public class ImplWorld implements World {
 		for (BlockStoreDist d : render) {
 			d.s.currentData[2].render();
 		}
+		gl.disableVertexArrribArray(6);
 		gl.disable(GLFlag.CULL_FACE);
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 	}
@@ -299,6 +332,19 @@ public class ImplWorld implements World {
 	public void drawBackground(EntityPlayer player) {
 		getGenerator().renderSkyBox(this, player);
 		Graphics.getOpenGL().color(1, 1, 1, 1);
+	}
+	
+	public Vector3f getSkyColor(EntityPlayer player){
+		float sky = getSkyLight();
+		Biome b = getBiome(MathUtils.floor(player.position.x), MathUtils.floor(player.position.z));
+		if(sky < 0.0001f) return new Vector3f(b.nightColor);
+		if(sky > 0.9999f) return new Vector3f(b.dayColor);
+		if(sky == 0.5f) return new Vector3f(b.dawnColor);
+		if(sky < 0.5f){
+			return new Vector3f(ColorUtils.differColors(b.nightColor, b.dawnColor, sky * 2));
+		} else {
+			return new Vector3f(ColorUtils.differColors(b.dawnColor, b.dayColor, (sky * 2) - 1));
+		}
 	}
 
 	@Override
@@ -309,13 +355,13 @@ public class ImplWorld implements World {
 		return chunk;
 	}
 
-	public ImplMapData getOrGenerate(Vector2l pos) {
-		ImplMapData data = heights.get(pos);
+	public MapData getOrGenerate(Vector2l pos) {
+		MapData data = heights.get(pos);
 		if (data == null) data = loadMapData(pos);
 		return data;
 	}
 
-	public ImplMapData loadMapData(Vector2l pos) {
+	public MapData loadMapData(Vector2l pos) {
 		ImplMapData data = null;
 		try {
 			data = (ImplMapData) getSaveFormat().readMap(this, pos.x, pos.y);
@@ -1017,6 +1063,10 @@ public class ImplWorld implements World {
 		z += dir.getZ();
 		setBlockDataNoNotify(x, y, z, data);
 	}
+	
+	public float getSkyLight() {
+		return skyLight;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1086,6 +1136,7 @@ public class ImplWorld implements World {
 
 	@SuppressWarnings("unchecked")
 	public void updateTick(Vector3d loc) {
+		skyLight = calculateSkyLight();
 		for(EntityPlayer plr : players){
 			plr.addTickSinceUpdate();
 			if(plr.getTicksSinceUpdate() > 5){
@@ -1181,7 +1232,7 @@ public class ImplWorld implements World {
 	private EntityPlayer spawnPlayer(String name){
 		EntityPlayer plr = new EntityPlayer(this);
 		MapData dat = getOrGenerate(new Vector2l(0, 0));
-		plr.setSpawn(new Vector3d(16, dat.getHeight(16, 16) + 2, 16));
+		plr.setSpawn(new Vector3d(16, dat.getGenHeight(16, 16) + 2, 16));
 		plr.respawn();
 		plr.addToWorld();
 		addPlayer(plr);
@@ -1350,6 +1401,10 @@ public class ImplWorld implements World {
 	public MapData getMapData(long x, long z) {
 		return heights.get(new Vector2l(x, z));
 	}
+	
+	public MapData getMapData(Chunk c){
+		return heights.get(new Vector2l(c.getChunkPos().x, c.getChunkPos().z));
+	}
 
 	@Override
 	public String[] getDebugInfo() {
@@ -1365,6 +1420,15 @@ public class ImplWorld implements World {
 			return getMapData(x >> 5, z >> 5).getBiome((int) (x & 31), (int) (z & 31));
 		} catch (Exception e) {
 			return fakeBiome;
+		}
+	}
+	
+	@Override
+	public int getHeight(long x, long z) {
+		try {
+			return getMapData(x >> 5, z >> 5).getHeight((int) (x & 31), (int) (z & 31));
+		} catch (Exception e) {
+			return 512;
 		}
 	}
 
@@ -1464,6 +1528,59 @@ public class ImplWorld implements World {
 		}
 
 		return list;
+	}
+
+	@Override
+	public byte getBlockLight(long x, long y, long z) {
+		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) return c.getBlockLight((int) (x & 31), (int) (y & 31), (int) (z & 31));
+		else return 15;
+	}
+
+	@Override
+	public byte getNearbyBlockLight(long x, long y, long z, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		return getBlockLight(x, y, z);
+	}
+
+	@Override
+	public int getTimeOfDay() {
+		return (int) (time % 24000);
+	}
+
+	@Override
+	public byte getDayOfYear() {
+		return (byte) ((time / 24000) % 96);
+	}
+
+	@Override
+	public float getSeason() {
+		int doy = getDayOfYear();
+		if(doy <= 24) return 0.5f + (doy / 48f);
+		if(doy <= 72) return 1f - ((doy - 24) / 48f);
+		return 0f + ((doy - 72) / 48f);
+	}
+	
+	@Override
+	public int getMonth(){
+		return ((((getDayOfYear() + 5) % 96) / 8) + 2) % 12;
+	}
+	
+	@Override
+	public int getDayOfMonth(){
+		return (int) (((time / 24000) + 5) % 8);
+	}
+	
+	@Override
+	public String getTimeText(){
+		int hour = getTimeOfDay() / 1000;
+		int min = (int) ((time % 1000) * 0.06);
+		String month = Localization.getLocalization("time.month." + getMonth());
+		int dom = getDayOfMonth();
+		long year = time / 2304000;
+		return Localization.getLocalization("time.format", hour, min, month, dom, year);
 	}
 
 }

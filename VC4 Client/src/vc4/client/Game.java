@@ -24,6 +24,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import vc4.api.GameState;
 import vc4.api.Resources;
+import vc4.api.biome.Biome;
 import vc4.api.client.*;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.entity.MovementStyle;
@@ -33,13 +34,14 @@ import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.*;
 import vc4.api.logging.Level;
 import vc4.api.logging.Logger;
+import vc4.api.math.MathUtils;
 import vc4.api.packet.Packet;
 import vc4.api.sound.Audio;
 import vc4.api.sound.Music;
 import vc4.api.text.Localization;
 import vc4.api.util.*;
-import vc4.api.vector.Vector2f;
-import vc4.api.vector.Vector3d;
+import vc4.api.vector.*;
+import vc4.api.world.World;
 import vc4.api.yaml.ThreadYaml;
 import vc4.client.camera.PlayerController;
 import vc4.client.gui.*;
@@ -129,7 +131,7 @@ public class Game extends Component implements ClientGame {
 	}
 
 	@Override
-	public ImplWorld getWorld() {
+	public World getWorld() {
 		return world;
 	}
 	
@@ -209,6 +211,21 @@ public class Game extends Component implements ClientGame {
 			gl.end();
 			Graphics.getClientShaderManager().unbindShader();
 		}
+	}
+	
+	public Vector3f getClearColor(){
+		if(gameState == GameState.SINGLEPLAYER){
+			float sky = world.getSkyLight();
+			Biome b = world.getBiome(MathUtils.floor(player.position.x), MathUtils.floor(player.position.z));
+			if(sky < 0.0001f) return new Vector3f(b.nightColor);
+			if(sky > 0.9999f) return new Vector3f(b.dayColor);
+			if(sky == 0.5f) return new Vector3f(b.dawnColor);
+			if(sky < 0.5f){
+				return new Vector3f(ColorUtils.differColors(b.nightColor, b.dawnColor, sky * 2));
+			} else {
+				return new Vector3f(ColorUtils.differColors(b.dawnColor, b.dayColor, (sky * 2) - 1));
+			}
+		} else return new Vector3f(0.4f, 0.8f, 1f);
 	}
 	
 
@@ -295,6 +312,12 @@ public class Game extends Component implements ClientGame {
 		}
 		if (Input.getClientKeyboard().keyReleased(Key.F2)) {
 			takeScreenshot();
+		}
+		if(gameState == GameState.SINGLEPLAYER && Input.getClientKeyboard().isKeyDown(Key.F7)){
+			long amt = 20;
+			if(Input.getClientKeyboard().isKeyDown(Key.CONTROL)) amt *= -1;
+			if(Input.getClientKeyboard().isKeyDown(Key.BACKSLASH)) amt *= 5;
+			world.addTime(amt);
 		}
 		if(Input.getClientKeyboard().keyPressed(Key.F1)) showGui ^= true;
 		long time = System.nanoTime() - _lastFrame;

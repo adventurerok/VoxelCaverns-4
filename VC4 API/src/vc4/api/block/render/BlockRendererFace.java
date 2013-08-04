@@ -11,8 +11,9 @@ import vc4.api.block.render.BlockRenderer;
 import vc4.api.graphics.Renderer;
 import vc4.api.item.ItemStack;
 import vc4.api.util.AABB;
-import vc4.api.world.Chunk;
-import vc4.api.world.World;
+import vc4.api.util.ColorUtils;
+import vc4.api.vector.Vector3f;
+import vc4.api.world.*;
 
 /**
  * @author paul
@@ -30,11 +31,13 @@ public class BlockRendererFace implements BlockRenderer {
 	 * @see vc4.api.block.render.BlockRenderer#renderBlock(vc4.api.world.Chunk, int, int, int, vc4.api.block.Block, byte)
 	 */
 	@Override
-	public void renderBlock(Chunk c, int cx, int cy, int cz, Block block, byte data, Renderer[] renderers) {
+	public void renderBlock(Chunk c, MapData m, int cx, int cy, int cz, Block block, byte data, Renderer[] renderers) {
 		long x = c.getChunkPos().worldX(cx);
 		long y = c.getChunkPos().worldY(cy);
 		long z = c.getChunkPos().worldZ(cz);
 		if (block.isAir()) return;
+		Vector3f light = ColorUtils.getLightColor(c.getBlockLight(cx, cy, cz));
+		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
 		AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);
 		for (int d = 0; d < 6; ++d) {
 			if (!block.renderSide(c.getWorld(), x, y, z, d)) continue;

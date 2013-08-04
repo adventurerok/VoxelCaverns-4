@@ -33,6 +33,10 @@ public class Biome {
 	public Color waterColor = new Color(0, 156, 254, 128);
 	public Color plantColor = new Color(0x269100);
 	
+	public Color dayColor = new Color(0xADD8E6);
+    public Color dawnColor = new Color(255, 74, 0);
+    public Color nightColor = new Color(0, 0, 75);
+	
 	public ArrayList<PlantGrowth> plants = new ArrayList<>();
 	
 	public BiomeType getType() {

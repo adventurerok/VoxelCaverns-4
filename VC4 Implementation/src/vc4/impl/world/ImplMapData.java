@@ -10,8 +10,8 @@ public class ImplMapData implements MapData{
 	Vector2l pos;
 	
 	volatile byte[] biomes;
+	volatile int[] genMap;
 	volatile int[] heightMap;
-	
 	
 	
 	public ImplMapData(Vector2l pos) {
@@ -23,18 +23,40 @@ public class ImplMapData implements MapData{
 		return biomes == null ? null : Biome.byId(biomes[cz * 32 + cx]);
 	}
 	@Override
+	public int getGenHeight(int cx, int cz) {
+		return genMap == null ? 0 : genMap[cz * 32 + cx];
+	}
+	
+	@Override
 	public int getHeight(int cx, int cz) {
 		return heightMap == null ? 0 : heightMap[cz * 32 + cx];
+	}
+	
+	@Override
+	public void setHeight(int cx, int cz, int h) {
+		if(heightMap != null) heightMap[cz * 32 + cx] = h;
+	}
+	
+	@Override
+	public int[] getGenHeightMap() {
+		return genMap;
+	}
+	@Override
+	public void setGenHeightMap(int[] hm) {
+		genMap = hm;
+		
 	}
 	@Override
 	public int[] getHeightMap() {
 		return heightMap;
 	}
+	
 	@Override
-	public void setHeightMap(int[] hm) {
-		heightMap = hm;
-		
+	public void setHeightMap(int[] heightMap) {
+		this.heightMap = heightMap;
+		return;
 	}
+	
 	@Override
 	public byte[] getBiomeMap() {
 		return biomes;

@@ -3,6 +3,8 @@
  */
 package vc4.api.vector;
 
+import java.awt.Color;
+
 import vc4.api.math.MathUtils;
 
 /**
@@ -31,6 +33,10 @@ public class Vector3f implements Vector3<Vector3f> {
 
 	public Vector3f(double x, double y, double z) {
 		this((float)x, (float)y, (float)z);
+	}
+	
+	public Vector3f(Color c){
+		this(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
 	}
 
 	@Override

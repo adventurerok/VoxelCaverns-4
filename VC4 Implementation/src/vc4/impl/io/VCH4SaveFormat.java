@@ -207,7 +207,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		String path = DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/map/" + z + "/" + x + ".vmd4";
 		File file = new File(path);
 		if(!file.exists()) return null;
-		ImplMapData data = new ImplMapData(new Vector2l(x, z));
+		MapData data = new ImplMapData(new Vector2l(x, z));
 		try(DataInputStream in = new DataInputStream(new GZIPInputStream(new FileInputStream(file)))){
 			BitInputStream bis = new BitInputStream(in);
 			CompoundTag tag = (CompoundTag) new NBTInputStream(bis).readTag();
@@ -216,7 +216,7 @@ public class VCH4SaveFormat implements SaveFormat {
 				for(int d = 0; d < heights.length; ++d){
 					heights[d] = in.readInt();
 				}
-				data.setHeightMap(heights);
+				data.setGenHeightMap(heights);
 			}
 			if(tag.getBoolean("biomes")){
 				byte[] biomes = new byte[32*32];
@@ -244,7 +244,7 @@ public class VCH4SaveFormat implements SaveFormat {
 			BitOutputStream bos = new BitOutputStream(out);
 			new NBTOutputStream(bos).writeTag(root);
 			bos.flush();
-			int[] genHeights = map.getHeightMap();
+			int[] genHeights = map.getGenHeightMap();
 			for(int d = 0; d < genHeights.length; ++d){
 				out.writeInt(genHeights[d]);
 			}

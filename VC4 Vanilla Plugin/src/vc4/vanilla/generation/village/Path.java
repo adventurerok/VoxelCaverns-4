@@ -53,7 +53,7 @@ public class Path {
 			for(long z = start.y - 1; z <= end.y + 1; ++z){
 				long x = start.x;
 				try{
-					long y = world.getMapData(x >> 5, z >> 5).getHeight((int)(x & 31), (int)(z & 31));
+					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int)(x & 31), (int)(z & 31));
 					world.setBlockId(x, y, z, Vanilla.gravel.uid);
 					if(z != start.y - 1 && z != end.y + 1){
 						world.setBlockId(x + 1, y, z, Vanilla.gravel.uid);
@@ -65,7 +65,7 @@ public class Path {
 			for(long x = start.x - 1; x <= end.x + 1; ++x){
 				long z = MathUtils.round(m * x + c);
 				try{
-					long y = world.getMapData(x >> 5, z >> 5).getHeight((int)(x & 31), (int)(z & 31));
+					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int)(x & 31), (int)(z & 31));
 					world.setBlockId(x, y, z, Vanilla.gravel.uid);
 					if(x != start.x - 1 && x != end.x + 1){
 						world.setBlockId(x, y, z + 1, Vanilla.gravel.uid);
@@ -78,7 +78,7 @@ public class Path {
 			for(long z = start.y - 1; z <= end.y + 1; ++z){
 				long x = MathUtils.round(n * z + d);
 				try{
-					long y = world.getMapData(x >> 5, z >> 5).getHeight((int)(x & 31), (int)(z & 31));
+					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int)(x & 31), (int)(z & 31));
 					world.setBlockId(x, y, z, Vanilla.gravel.uid);
 					if(z != start.y - 1 && z != end.y + 1){
 						world.setBlockId(x + 1, y, z, Vanilla.gravel.uid);

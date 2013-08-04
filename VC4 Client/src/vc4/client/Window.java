@@ -9,6 +9,7 @@ import vc4.api.client.ClientGame;
 import vc4.api.client.ClientWindow;
 import vc4.api.graphics.*;
 import vc4.api.graphics.texture.AnimatedTexture;
+import vc4.api.vector.Vector3f;
 
 public class Window extends ClientWindow {
 
@@ -52,12 +53,15 @@ public class Window extends ClientWindow {
 			load();
 			resized();
 
-			gl.clearColor(0.4F, 0.8F, 1F, 1F);
+			Vector3f clr = game.getClearColor();
+			gl.clearColor(clr.x, clr.y, clr.z, 1F);
 			while (!_closeRequested) {
 				gl.clear(EnumSet.of(GLBufferBit.COLOR, GLBufferBit.DEPTH));
 				gl.loadIdentity();
 
 				update();
+				clr = game.getClearColor();
+				gl.clearColor(clr.x, clr.y, clr.z, 1F);
 				draw();
 
 				if (Display.wasResized()) resized();

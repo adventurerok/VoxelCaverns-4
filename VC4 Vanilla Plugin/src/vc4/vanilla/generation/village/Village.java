@@ -23,7 +23,19 @@ public class Village {
 	
 	byte woodType;
 	byte logType;
-	byte brickType;
+	byte brickType = 2;
+	
+	public byte getLogType() {
+		return logType;
+	}
+	
+	public byte getWoodType() {
+		return woodType;
+	}
+	
+	public byte getBrickType() {
+		return brickType;
+	}
 	
 	VillageStyle style;
 	
@@ -74,7 +86,7 @@ public class Village {
 		this.world = world;
 		woodType = (byte) rand.nextInt(7);
 		logType = (byte) rand.nextInt(7);
-		brickType = 0;
+		brickType = 4;
 		style = getVillageStyle(world, minX + maxX  / 2, maxY, minZ + maxZ / 2, rand);
 	}
 	

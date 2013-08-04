@@ -18,7 +18,7 @@ public class PlantGenCactus implements PlantGenerator {
 		if(y < 0) return;
 		int cx = rand.nextInt(32);
 		int cz = rand.nextInt(32);
-		long height = data.getHeight(cx, cz);
+		long height = data.getGenHeight(cx, cz);
 		if(height >> 5 != y) return;
 		this.world = world;
 		this.rand = rand;
