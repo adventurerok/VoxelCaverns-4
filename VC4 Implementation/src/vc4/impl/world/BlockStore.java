@@ -23,7 +23,7 @@ public class BlockStore {
 	
 //	public DataRenderer oldData[];
 	public ChunkRenderer currentData[] = new ChunkRenderer[3];
-	int compileState = 0;
+	public int compileState = 0;
 	
 	public int xMod, yMod, zMod;
 	int oldCompile;

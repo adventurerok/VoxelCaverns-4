@@ -87,6 +87,7 @@ public class ImplWorld implements World {
 	private CompoundTag generatorTag = new CompoundTag("gen");
 	protected boolean loaded = false;
 	private LinkedList<Vector4l> blockUpdates = new LinkedList<>();
+	private LinkedList<Vector3l> lightUpdates = new LinkedList<>();
 	private int visibleChunks = 0;
 	private String saveFormatName = "VCH4";
 	private SaveFormat saveFormat = SaveFormats.getSaveFormat(saveFormatName);
@@ -120,6 +121,10 @@ public class ImplWorld implements World {
 		}
 		onLoad();
 		startGenThreads(4);
+	}
+	
+	public void addLightUpdate(Vector3l pos){
+		lightUpdates.add(pos);
 	}
 
 	public void loadInfo() throws IOException {
@@ -265,7 +270,7 @@ public class ImplWorld implements World {
 		ArrayList<BlockStoreDist> toCompile = new ArrayList<>();
 		ArrayList<BlockStoreDist> render = new ArrayList<>();
 		for (ImplChunk c : chunks.values()) {
-			if (!c.isPopulated()) continue;
+			if (!c.isPopulated() || !c.isLit()) continue;
 			for (BlockStore b : c.stores) {
 				if (b.compileState < 1) {
 					toBuild.add(new BlockStoreDist(b, c, b.distance(pos, c)));
@@ -710,6 +715,7 @@ public class ImplWorld implements World {
 		Profiler.start("remove");
 		ArrayList<ImplChunk> toRemove = new ArrayList<>();
 		ArrayList<ImplChunk> toPopulate = new ArrayList<>();
+		ArrayList<ImplChunk> toLight = new ArrayList<>();
 		for (ImplChunk c : chunks.values()) {
 			if (c.distanceSquared(loc) > 65565) {
 				c.setUnloading(true);
@@ -759,6 +765,18 @@ public class ImplWorld implements World {
 			boolean plt = populate(pop.x, pop.y, pop.z);
 			if(plt) saveChunk(toPopulate.get(d));
 			toPopulate.get(d).setPopulated(plt);
+		}
+		Profiler.stopStart("light");
+		for (ImplChunk c : chunks.values()) {
+			if (!c.isLit() && c.isPopulated()) {
+				toLight.add(c);
+			}
+		}
+		Collections.sort(toLight, new ComparatorClosestChunk(loc));
+		for (int d = 0; d < 8; ++d) {
+			if (toLight.size() <= d) break;
+			toLight.get(d).initialLight();
+			//if(plt) saveChunk(toLight.get(d));
 		}
 		Profiler.stop();
 		Profiler.stop();
@@ -1156,17 +1174,26 @@ public class ImplWorld implements World {
 		for (ImplChunk c : cnk.values()) {
 			c.update(rand);
 		}
-		Profiler.start("blocks");
-		LinkedList<Vector4l> current = (LinkedList<Vector4l>) blockUpdates.clone();
-		blockUpdates.clear();
-		int i;
-		for (Vector4l b : current) {
-			if (b.w == 0) {
-				i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z);
-				if (i > 0) blockUpdates.add(new Vector4l(b.x, b.y, b.z, i));
-			} else {
-				b.w--;
-				blockUpdates.add(b);
+		Profiler.start("blocks");{
+			LinkedList<Vector4l> current = (LinkedList<Vector4l>) blockUpdates.clone();
+			blockUpdates.clear();
+			int i;
+			for (Vector4l b : current) {
+				if (b.w == 0) {
+					i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z);
+					if (i > 0) blockUpdates.add(new Vector4l(b.x, b.y, b.z, i));
+				} else {
+					b.w--;
+					blockUpdates.add(b);
+				}
+			}
+		}
+		Profiler.stopStart("light");{
+			LinkedList<Vector3l> current = (LinkedList<Vector3l>) lightUpdates.clone();
+			lightUpdates.clear();
+			for (Vector3l b : current) {
+				ImplChunk ch = getChunk(b.x >> 5, b.y >> 5, b.z >> 5);
+				ch.updateLight((int)(b.x & 31), (int)(b.y & 31), (int)(b.z & 31), 0);
 			}
 		}
 		Profiler.stop();

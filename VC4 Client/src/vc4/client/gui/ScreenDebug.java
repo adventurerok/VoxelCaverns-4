@@ -8,7 +8,7 @@ import vc4.api.entity.EntityPlayer;
 import vc4.api.font.FontRenderer;
 import vc4.api.gui.Component;
 import vc4.api.vector.Vector3l;
-import vc4.api.world.World;
+import vc4.impl.world.*;
 
 public class ScreenDebug extends Component {
 
@@ -56,7 +56,12 @@ public class ScreenDebug extends Component {
 	public void draw() {
 		debugLine = 0;
 		EntityPlayer player = Client.getGame().getPlayer();
-		World world = player.getWorld();
+		ImplWorld world = (ImplWorld) player.getWorld();
+		Vector3l ppos = player.position.toVector3l();
+		ImplChunk chunk = world.getChunk(ppos.x >> 5, ppos.y >> 5, ppos.z >> 5);
+		int bsn = (int) ((((ppos.x & 31) >> 4) * 2 + ((ppos.y & 31) >> 4)) * 2 + ((ppos.z & 31) >> 4));
+		BlockStore blockstore = null;
+		if(chunk != null) blockstore = chunk.getBlockStore(bsn);
 		Vector3l blockPos = player.position.toVector3l();
 		String[] dInfo = world.getDebugInfo();
 		for(int d = 0; d < dInfo.length; ++d){
@@ -76,6 +81,8 @@ public class ScreenDebug extends Component {
 		Biome biome = world.getBiome(blockPos.x, blockPos.z);
 		renderDebugLine("Biome: " + biome.getName());
 		renderDebugLine("Time: " + world.getTimeText());
+		if(chunk != null) renderDebugLine("Chunk: p=" + chunk.isPopulated() + ", l=" + chunk.isLit());
+		if(blockstore  != null) renderDebugLine("Store: cs=" + blockstore.compileState);
 	}
 	
 	

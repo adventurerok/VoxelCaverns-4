@@ -11,8 +11,7 @@ import vc4.api.block.render.BlockRenderer;
 import vc4.api.graphics.Renderer;
 import vc4.api.graphics.TextureCoords;
 import vc4.api.item.ItemStack;
-import vc4.api.util.AABB;
-import vc4.api.util.ColorUtils;
+import vc4.api.util.*;
 import vc4.api.vector.Vector3f;
 import vc4.api.world.*;
 
@@ -36,18 +35,25 @@ public class BlockRendererDefault implements BlockRenderer {
 		long z = c.getChunkPos().worldZ(cz);
 		if (block.isAir()) return;
 		if(c.getBlockLight(cx, cy, cz) > 4) System.out.println("Size");
-		Vector3f light = ColorUtils.getLightColor(c.getBlockLight(cx, cy, cz));
-		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
+		Vector3f light;
 		AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);
 		for (int d = 0; d < 6; ++d) {
 			if (!block.renderSide(c.getWorld(), x, y, z, d)) continue;
-			renderBlockFace(c.getWorld(), x, y, z, block, renderers[block.getRendererToUse(data, d)], bounds, d);
+			Direction dir = Direction.getDirection(d);
+			int rend = block.getRendererToUse(data, d);
+			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
+			renderers[rend].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
+			renderBlockFace(c.getWorld(), x, y, z, block, renderers[rend], bounds, d);
 		}
 		if (!(block instanceof IBlockMultitexture)) return;
 		IBlockMultitexture mt = (IBlockMultitexture) block;
 		for (int d = 0; d < 6; ++d) {
 			if (!mt.renderSideMultitexture(c.getWorld(), x, y, z, d)) continue;
-			renderBlockFace(c.getWorld(), x, y, z, mt, renderers[block.getRendererToUse(data, d)], bounds, d);
+			Direction dir = Direction.getDirection(d);
+			int rend = block.getRendererToUse(data, d);
+			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
+			renderers[rend].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
+			renderBlockFace(c.getWorld(), x, y, z, mt, renderers[rend], bounds, d);
 		}
 
 	}

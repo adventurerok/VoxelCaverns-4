@@ -93,6 +93,14 @@ public class ChunkPos {
 		return new ChunkPos(this.x + x, this.y + y, this.z + z);
 	}
 	
+	public ChunkPos add(ChunkPos other){
+		return new ChunkPos(other.x + x, other.y + y, other.z + z);
+	}
+	
+	public ChunkPos subtract(ChunkPos other){
+		return new ChunkPos(x - other.x, y - other.y, z - other.z);
+	}
+	
 	public double distanceSquared(Vector3d loc){
 		Vector3d me = new Vector3d(worldX(16), worldY(16), worldZ(16));
 		return me.distanceSquared(loc);

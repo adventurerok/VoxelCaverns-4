@@ -29,4 +29,7 @@ public interface Chunk {
 	public abstract void setDirty(int x, int y, int z);
 	public abstract void addArea(Area ar);
 	public abstract ArrayList<Area> getAreas();
+	public abstract byte getBlockLightWithBBCheck(int x, int y, int z);
+	public abstract boolean isLit();
+	public abstract void initialLight();
 }
