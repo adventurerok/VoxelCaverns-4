@@ -138,8 +138,8 @@ public class OverworldGenerator implements WorldGenerator {
 			}
 		}
 		if (world.getGeneratorTag().getBoolean("chasms", true)) chasmGen.generate(world, data, x, y, z, out);
-		if(world.getGeneratorTag().getBoolean("volcanos", true)) volcanoGen.generate(world, x, y, z, out);
-		if (world.getGeneratorTag().getBoolean("caves", true)) caveGen.generate(world, x, y, z, out);
+		if(world.getGeneratorTag().getBoolean("volcanos", true)) volcanoGen.generate(world, data, x, y, z, out);
+		if (world.getGeneratorTag().getBoolean("caves", true)) caveGen.generate(world, data, x, y, z, out);
 		return out;
 	}
 
@@ -299,7 +299,13 @@ public class OverworldGenerator implements WorldGenerator {
 		byte[] biomes = new byte[32 * 32];
 		for(int d = 0; d < 1024; ++d) biomes[d] = (byte) intBiomes[d];
 		data.setBiomeMap(biomes);
-		data.setGenHeightMap(hgen.generate(wx, wz, 32));
+		int[] gh = hgen.generate(wx, wz, 32);
+		int[] th = new int[1024];
+		for(int d = 0; d < 1024; ++d){
+			th[d] = gh[d];
+		}
+		data.setGenHeightMap(gh);
+		data.setHeightMap(th);
 		
 	}
 	

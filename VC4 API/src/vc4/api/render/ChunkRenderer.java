@@ -20,7 +20,7 @@ public class ChunkRenderer implements Renderer {
 	private static OpenGL gl;
 	
 	FloatBuffer buffer;
-	FloatList data = new FloatList();
+	FloatList data = new FloatList(); //Using normal list is extremely slow
 	
 	Vector4f color = new Vector4f(1, 1, 1, 1);
 	Vector4f tex = new Vector4f(0, 0, 0, 0);
@@ -166,8 +166,8 @@ public class ChunkRenderer implements Renderer {
 	@Override
 	public void compile(){
 		if(amountOfVertexes < 1) return;
-		buffer = BufferUtils.createFloatBuffer(data.size());
-		buffer.put(data.toArray());
+		buffer = BufferUtils.createFloatBuffer(data.size()); //List.size()
+		buffer.put(data.toArray()); //Same as List.toArray()
 		buffer.flip();
 		data = null;
 		tri = null;
@@ -216,6 +216,7 @@ public class ChunkRenderer implements Renderer {
 	/**
 	 * 
 	 */
+	@Override
 	public void destroy() {
 		gl.deleteLists(listId, 1);
 		buffer = null;

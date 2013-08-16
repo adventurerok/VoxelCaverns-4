@@ -42,7 +42,7 @@ public class BlockRendererDefault implements BlockRenderer {
 			Direction dir = Direction.getDirection(d);
 			int rend = block.getRendererToUse(data, d);
 			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
-			renderers[rend].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
+			renderers[rend].light(light.x, light.y, light.z, c.getWorld().hasNearbySkylight(x, y, z, d));
 			renderBlockFace(c.getWorld(), x, y, z, block, renderers[rend], bounds, d);
 		}
 		if (!(block instanceof IBlockMultitexture)) return;
@@ -52,7 +52,7 @@ public class BlockRendererDefault implements BlockRenderer {
 			Direction dir = Direction.getDirection(d);
 			int rend = block.getRendererToUse(data, d);
 			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
-			renderers[rend].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
+			renderers[rend].light(light.x, light.y, light.z, c.getWorld().hasNearbySkylight(x, y, z, d));
 			renderBlockFace(c.getWorld(), x, y, z, mt, renderers[rend], bounds, d);
 		}
 

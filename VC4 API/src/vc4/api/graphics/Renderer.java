@@ -30,6 +30,7 @@ public interface Renderer {
 	public abstract void compile();
 
 	public abstract void render();
+	public abstract void destroy();
 	public abstract void tex(double s, double t, double r, double q);
 	public abstract void color(double r, double g, double b, double a);
 	public abstract void tex(Vector4f tex);

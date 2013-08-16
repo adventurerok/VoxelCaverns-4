@@ -532,7 +532,7 @@ public class ClientGL implements OpenGL {
 	 * @see vc4.api.graphics.OpenGL#enableVertexArrribArray(int)
 	 */
 	@Override
-	public void enableVertexArrribArray(int index) {
+	public void enableVertexAttribArray(int index) {
 		GL20.glEnableVertexAttribArray(index);
 	}
 
@@ -540,8 +540,8 @@ public class ClientGL implements OpenGL {
 	 * @see vc4.api.graphics.OpenGL#disableVertexArrribArray(int)
 	 */
 	@Override
-	public void disableVertexArrribArray(int index) {
-		GL20.glEnableVertexAttribArray(index);
+	public void disableVertexAttribArray(int index) {
+		GL20.glDisableVertexAttribArray(index);
 	}
 
 	/* (non-Javadoc)

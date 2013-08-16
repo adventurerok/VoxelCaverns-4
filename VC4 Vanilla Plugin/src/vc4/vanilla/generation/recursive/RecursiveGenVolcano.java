@@ -7,6 +7,7 @@ import vc4.api.block.Block;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.generator.RecursiveGenerator;
 import vc4.api.util.noise.SimplexOctaveGenerator;
+import vc4.api.world.MapData;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 
@@ -16,7 +17,7 @@ public class RecursiveGenVolcano extends RecursiveGenerator {
 	ZoomGenerator volcanicCheck;
 
 	@Override
-	protected void generateRecursive(World world, Random rand, long x, long y, long z, long cx, long cy, long cz, GeneratorOutput data) {
+	protected void generateRecursive(World world, MapData map, Random rand, long x, long y, long z, long cx, long cy, long cz, GeneratorOutput data) {
 		if(cy != 2) return;
 		if(rand.nextInt(55) != 0) return;
 		if(world != lastWorld) createZoom(world);
@@ -56,6 +57,7 @@ public class RecursiveGenVolcano extends RecursiveGenerator {
 						else data.setBlockId(ax, ay, az, 0);
 					}
 					else{
+						if(qy > map.getHeight(ax, az)) map.setHeight(ax, az, (int)qy);
 						if(rand.nextInt(11) == 0) data.setBlockId(ax, ay, az, Block.stone.uid);
 						else data.setBlockId(ax, ay, az, Vanilla.obsidian.uid);
 					}

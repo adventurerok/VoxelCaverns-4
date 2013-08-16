@@ -88,6 +88,7 @@ public class ImplWorld implements World {
 	protected boolean loaded = false;
 	private LinkedList<Vector4l> blockUpdates = new LinkedList<>();
 	private LinkedList<Vector3l> lightUpdates = new LinkedList<>();
+	private LinkedList<Vector2l> downScans = new LinkedList<>();
 	private int visibleChunks = 0;
 	private String saveFormatName = "VCH4";
 	private SaveFormat saveFormat = SaveFormats.getSaveFormat(saveFormatName);
@@ -261,11 +262,11 @@ public class ImplWorld implements World {
 		gl.alphaFunc(GLCompareFunc.GREATER, .3f);
 		gl.depthFunc(GLCompareFunc.LEQUAL);
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Resources.getAnimatedTexture("blocks").getTexture());
-		gl.enableVertexArrribArray(0);
-		gl.enableVertexArrribArray(2);
-		gl.enableVertexArrribArray(3);
-		gl.enableVertexArrribArray(6);
-		gl.enableVertexArrribArray(8);
+		gl.enableVertexAttribArray(0);
+		gl.enableVertexAttribArray(2);
+		gl.enableVertexAttribArray(3);
+		gl.enableVertexAttribArray(6);
+		gl.enableVertexAttribArray(8);
 		ArrayList<BlockStoreDist> toBuild = new ArrayList<>();
 		ArrayList<BlockStoreDist> toCompile = new ArrayList<>();
 		ArrayList<BlockStoreDist> render = new ArrayList<>();
@@ -314,11 +315,11 @@ public class ImplWorld implements World {
 		for (BlockStoreDist d : render) {
 			d.s.currentData[1].render();
 		}
-		gl.disableVertexArrribArray(6);
+		gl.disableVertexAttribArray(6);
 		for (ImplChunk c : chunks.values()) {
 			c.drawEntitys();
 		}
-		gl.enableVertexArrribArray(6);
+		gl.enableVertexAttribArray(6);
 		gl.bindShader("world");
 		gl.shaderUniform3f("skyLight", skylightColor.x, skylightColor.y, skylightColor.z);
 		gl.enable(GLFlag.CULL_FACE);
@@ -331,7 +332,7 @@ public class ImplWorld implements World {
 		for (BlockStoreDist d : render) {
 			d.s.currentData[2].render();
 		}
-		gl.disableVertexArrribArray(6);
+		gl.disableVertexAttribArray(6);
 		gl.disable(GLFlag.CULL_FACE);
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 	}
@@ -339,6 +340,48 @@ public class ImplWorld implements World {
 	public void drawBackground(EntityPlayer player) {
 		getGenerator().renderSkyBox(this, player);
 		Graphics.getOpenGL().color(1, 1, 1, 1);
+	}
+	
+	@Override
+	public boolean blockTransparencyChange(long x, long y, long z, boolean trans){
+		if(y > 768 || y < -768) return false;
+		MapData dat = getMapData(x >> 5, z >> 5);
+		if(dat == null) return false;
+		if(trans){
+			if(y == dat.getHeight((int)(x & 31), (int)(z & 31))){
+				downScan(x, y - 1, z, 0);
+				return true;
+			}
+		} else {
+			if(y > dat.getHeight((int)(x & 31), (int)(z & 31))){
+				dat.setHeight((int)(x & 31), (int)(z & 31), (int)y);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void downScan(long x, long y, long z, int amt){
+		setDirty(x, y, z);
+		if(amt > 5){
+			getMapData(x >> 5, z >> 5).setHeight((int)(x & 31), (int)(z & 31), (int) (y - 1));
+			downScans.add(new Vector2l(x, z));
+			return;
+		}
+		if(y <= -768){
+			getMapData(x >> 5, z >> 5).setHeight((int)(x & 31), (int)(z & 31), -768);
+			return;
+		}
+		int id = getBlockId(x, y, z);
+		if(id == -1){
+			getMapData(x >> 5, z >> 5).setHeight((int)(x & 31), (int)(z & 31), (int) (y - 1));
+			return;
+		}
+		if(Block.blockOpacity[id] >= 6){
+			getMapData(x >> 5, z >> 5).setHeight((int)(x & 31), (int)(z & 31), (int)y);
+			return;
+		}
+		downScan(x, y - 1, z, amt + 1);
 	}
 	
 	public Vector3f getSkyColor(EntityPlayer player){
@@ -1193,7 +1236,15 @@ public class ImplWorld implements World {
 			lightUpdates.clear();
 			for (Vector3l b : current) {
 				ImplChunk ch = getChunk(b.x >> 5, b.y >> 5, b.z >> 5);
+				if(ch == null) continue;
 				ch.updateLight((int)(b.x & 31), (int)(b.y & 31), (int)(b.z & 31), 0);
+			}
+		}
+		Profiler.stopStart("downScan");{
+			LinkedList<Vector2l> current = (LinkedList<Vector2l>) downScans.clone();
+			downScans.clear();
+			for (Vector2l b : current) {
+				downScan(b.x, getHeight(b.x, b.y), b.y, 0);
 			}
 		}
 		Profiler.stop();
@@ -1610,6 +1661,32 @@ public class ImplWorld implements World {
 		int dom = getDayOfMonth();
 		long year = time / 2304000;
 		return Localization.getLocalization("time.format", hour, min, month, dom, year);
+	}
+
+	@Override
+	public int getNearbyHeight(long x, long z, Direction dir) {
+		x += dir.getX();
+		z += dir.getZ();
+		MapData m = getMapData(x >> 5, z >> 5);
+		if(m == null) return 0;
+		return m.getHeight((int)(x & 31), (int)(z & 31));
+	}
+
+	@Override
+	public int getNearbyHeight(long x, long z, int dir) {
+		return getNearbyHeight(x, z, Direction.getDirection(dir));
+	}
+
+	@Override
+	public boolean hasNearbySkylight(long x, long y, long z, Direction dir) {
+		int h = getNearbyHeight(x, z, dir);
+		y += dir.getY();
+		return y > h;
+	}
+
+	@Override
+	public boolean hasNearbySkylight(long x, long y, long z, int dir) {
+		return hasNearbySkylight(x, y, z, Direction.getDirection(dir));
 	}
 
 }

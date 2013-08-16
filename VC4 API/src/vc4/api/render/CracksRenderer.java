@@ -25,14 +25,15 @@ public class CracksRenderer {
 		AnimatedTexture tex = Resources.getAnimatedTexture("cracks");
 		tex.bind();
 		if(!moddedTex){
-			tex.setSmooth(true);
-			tex.setMipmap(true);
+			tex.setSmooth(false);
+			tex.setMipmap(false);
 			moddedTex = true;
 		}
 		Renderer render = new DataRenderer();
 		block.getRenderer().renderBlockCracks(world, x, y, z, render, mined);
 		render.compile();
 		render.render();
+		render.destroy();
 		gl.unbindShader();
 	}
 }

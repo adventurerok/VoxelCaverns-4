@@ -148,6 +148,9 @@ public class ImplChunk implements Chunk {
 		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockId(x & 0xF, y & 0xF, z & 0xF, id)){
 			isModified = true;
 			checkLight(x, y, z, old);
+			int n = getBlockId(x, y, z);
+			if(Block.blockOpacity[old] >= 6 && Block.blockOpacity[n] < 6) getWorld().blockTransparencyChange(pos.worldX(x), pos.worldY(y), pos.worldZ(z), true);
+			else if(Block.blockOpacity[n] >= 6 && Block.blockOpacity[old] < 6) getWorld().blockTransparencyChange(pos.worldX(x), pos.worldY(y), pos.worldZ(z), false);
 			notifyNear(x, y, z);
 		}
 	}
@@ -155,6 +158,7 @@ public class ImplChunk implements Chunk {
 	public void setBlockLight(int x, int y, int z, byte light) {
 		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockLight(x & 0xF, y & 0xF, z & 0xF, light)) isModified = true;
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -178,6 +182,9 @@ public class ImplChunk implements Chunk {
 		if(stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockIdData(x & 0xF, y & 0xF, z & 0xF, id, data)){
 			isModified = true;
 			checkLight(x, y, z, old);
+			int n = getBlockId(x, y, z);
+			if(Block.blockOpacity[old] >= 6 && Block.blockOpacity[n] < 6) getWorld().blockTransparencyChange(pos.worldX(x), pos.worldY(y), pos.worldZ(z), true);
+			else if(Block.blockOpacity[n] >= 6 && Block.blockOpacity[old] < 6) getWorld().blockTransparencyChange(pos.worldX(x), pos.worldY(y), pos.worldZ(z), false);
 			notifyNear(x, y, z);
 		}
 	}
@@ -474,7 +481,7 @@ public class ImplChunk implements Chunk {
 		int d;
 		int upto = 0;
 		Vector3i pos;
-		while((pos = ilightPositions.poll()) != null && upto < 80){
+		while((pos = ilightPositions.poll()) != null && upto < 1000){
 			if(initialUpdateLight(pos.x, pos.y, pos.z, 0)) ++upto;
 			else {
 				for(d = 0; d < 6; ++d){
@@ -490,7 +497,7 @@ public class ImplChunk implements Chunk {
 	}
 	
 	public boolean initialUpdateLight(int x, int y, int z, int num){
-		if(num > 767){
+		if(num > 3){
 			ChunkPos temp = pos.subtract(stat_ilightingChunk);
 			stat_ilightPositions.add(new Vector3i((int)temp.worldX(x), (int)temp.worldY(y), (int)temp.worldZ(z)));
 			return true;

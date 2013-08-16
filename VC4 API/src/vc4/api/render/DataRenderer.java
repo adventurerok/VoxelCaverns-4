@@ -174,6 +174,7 @@ public class DataRenderer implements Renderer {
 	public void render(){
 		if(amountOfVertexes < 1) return;
 		if(!createdList){
+			if((amountOfVertexes * 14) != buffer.capacity()) System.out.println((amountOfVertexes * 14) + " -=- " + buffer.capacity());
 			listId = gl.genLists(1);
 			gl.newList(listId, GLCompileFunc.COMPILE);
 			boolean normal = true;
@@ -204,6 +205,7 @@ public class DataRenderer implements Renderer {
 	/**
 	 * 
 	 */
+	@Override
 	public void destroy() {
 		gl.deleteLists(listId, 1);
 		buffer = null;

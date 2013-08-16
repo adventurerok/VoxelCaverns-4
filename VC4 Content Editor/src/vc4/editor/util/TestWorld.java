@@ -486,4 +486,28 @@ public class TestWorld implements World {
 		return 0;
 	}
 
+	@Override
+	public int getNearbyHeight(long x, long z, Direction dir) {
+		return 0;
+	}
+
+	@Override
+	public int getNearbyHeight(long x, long z, int dir) {
+		return 0;
+	}
+
+	@Override
+	public boolean hasNearbySkylight(long x, long y, long z, Direction dir) {
+		return false;
+	}
+
+	@Override
+	public boolean hasNearbySkylight(long x, long y, long z, int dir) {
+		return false;
+	}
+
+	public boolean blockTransparencyChange(long x, long y, long z, boolean trans) {
+		return false;
+	}
+
 }

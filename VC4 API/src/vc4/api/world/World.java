@@ -47,6 +47,10 @@ public interface World {
 	public MapData getMapData(long x, long z);
 	public Music getMusic(EntityPlayer player);
 	public abstract String getName();
+	public int getNearbyHeight(long x, long z, Direction dir);
+	public int getNearbyHeight(long x, long z, int dir);
+	public boolean hasNearbySkylight(long x, long y, long z, Direction dir);
+	public boolean hasNearbySkylight(long x, long y, long z, int dir);
 	public byte getNearbyBlockLight(long x, long y, long z, Direction dir);
 	public byte getNearbyBlockData(long x, long y, long z, Direction dir);
 	public abstract byte getNearbyBlockData(long x, long y, long z, int d);
@@ -106,4 +110,5 @@ public interface World {
 	public abstract int getMonth();
 	public abstract void addTime(long add);
 	public abstract int getHeight(long x, long z);
+	public abstract boolean blockTransparencyChange(long x, long y, long z, boolean trans);
 }

@@ -12,6 +12,7 @@ public class ImplMapData implements MapData{
 	volatile byte[] biomes;
 	volatile int[] genMap;
 	volatile int[] heightMap;
+	volatile boolean[] heightUpdates;
 	
 	
 	public ImplMapData(Vector2l pos) {

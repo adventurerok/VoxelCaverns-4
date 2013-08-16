@@ -78,8 +78,8 @@ public interface OpenGL {
 	public void newList(int list, GLCompileFunc mode);
 	public void drawArrays(GLPrimative type, int first, int count);
 	public void vertexAttribPointer(int index, int size, boolean normalized, int stride, FloatBuffer buffer);
-	public void enableVertexArrribArray(int index);
-	public void disableVertexArrribArray(int index);
+	public void enableVertexAttribArray(int index);
+	public void disableVertexAttribArray(int index);
 	public void deleteLists(int list, int range);
 	public void generateMipmap(GLTexture target);
 	public void lineWidth(float width);
