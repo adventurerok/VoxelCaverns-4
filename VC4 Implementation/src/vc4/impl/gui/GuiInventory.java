@@ -17,7 +17,7 @@ public class GuiInventory extends Component{
 	public ContainerInventory inventory;
 
 	public GuiInventory() {
-		setResizer(new BorderResizer(Border.SOUTHCENTRE));
+		setResizer(new ResizerBorder(Border.SOUTHCENTRE));
 	}
 	
 	private static ColorScheme getColorScheme(){

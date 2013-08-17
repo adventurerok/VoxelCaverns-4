@@ -236,6 +236,7 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void update() {
+		boolean textFocus = getFocusComponent() instanceof TextBox;
 		getCursor("pointer").bind();
 		Input.getClientKeyboard().update();
 		Input.getClientMouse().update();
@@ -288,38 +289,45 @@ public class Game extends Component implements ClientGame {
 			String oldArea = player.getArea();
 			player.setArea("{l:area.wilderness}");
 			SoundManager.setListener(player);
-			if (Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
-			camera.handleInput(delta);
+			if(!textFocus){
+				if (Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
+				camera.handleInput(delta);
+			}
 			player.decreaseCooldown(delta);
 			player.rayTrace(camera.getLook(), 10);
-			if (!isPaused()) {
+			if (!isPaused() && !textFocus) {
 				if (mouseSet.getCurrent().leftButtonPressed()) player.leftMouseDown(delta);
 				if (mouseSet.getCurrent().rightButtomPressed()) player.rightMouseDown(delta);
 			}
-			player.updateInput();
+			if(!textFocus) player.updateInput();
 			world.update(camera.getPosition(), delta);
 			Audio.playMusic(world.getMusic(player));
-			Keyboard keys = Input.getClientKeyboard();
-			if(keys.keyPressed(Key.C)) ingameGui.toggleVisibility("crafting");
-			if(keys.keyPressed(Key.X)) ingameGui.toggleVisibility("armour");
-			if(keys.keyPressed(Key.Z)) ingameGui.toggleVisibility("game");
+			if(!textFocus){
+				Keyboard keys = Input.getClientKeyboard();
+				if(keys.keyPressed(Key.C)) ingameGui.toggleVisibility("crafting");
+				if(keys.keyPressed(Key.X)) ingameGui.toggleVisibility("armour");
+				if(keys.keyPressed(Key.Z)) ingameGui.toggleVisibility("game");
+			}
 			if(oldTime != world.getTime() && oldArea != player.getArea()){
 				printChatLine("{l:area.enter} " + player.getArea());
 			}
 		}
-		if(Input.getClientKeyboard().keyPressed(Key.F6)){
-			JOptionPane.showMessageDialog(null, "Hovering: " + _currentc.toString());
+		if(!textFocus){
+			if(Input.getClientKeyboard().keyPressed(Key.F6)){
+				JOptionPane.showMessageDialog(null, "Hovering: " + _currentc.toString());
+			}
+			if (Input.getClientKeyboard().keyReleased(Key.F2)) {
+				takeScreenshot();
+			}
+			if(gameState == GameState.SINGLEPLAYER && Input.getClientKeyboard().isKeyDown(Key.F7)){
+				long amt = 20;
+				if(Input.getClientKeyboard().isKeyDown(Key.CONTROL)) amt *= -1;
+				if(Input.getClientKeyboard().isKeyDown(Key.BACKSLASH)) amt *= 5;
+				world.addTime(amt);
+			}
+			if(Input.getClientKeyboard().keyPressed(Key.F1)) showGui ^= true;
+			if(Input.getClientKeyboard().keyPressed(Key.RETURN)) ingameGui.setChatFocus();
 		}
-		if (Input.getClientKeyboard().keyReleased(Key.F2)) {
-			takeScreenshot();
-		}
-		if(gameState == GameState.SINGLEPLAYER && Input.getClientKeyboard().isKeyDown(Key.F7)){
-			long amt = 20;
-			if(Input.getClientKeyboard().isKeyDown(Key.CONTROL)) amt *= -1;
-			if(Input.getClientKeyboard().isKeyDown(Key.BACKSLASH)) amt *= 5;
-			world.addTime(amt);
-		}
-		if(Input.getClientKeyboard().keyPressed(Key.F1)) showGui ^= true;
 		long time = System.nanoTime() - _lastFrame;
 		_lastFrame = System.nanoTime();
 		if (time > 0) delta = time / 1000000D;

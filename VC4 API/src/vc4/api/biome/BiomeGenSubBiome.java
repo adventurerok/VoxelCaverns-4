@@ -18,9 +18,9 @@ public class BiomeGenSubBiome extends ZoomGenerator {
 		int pz;
 		for(int px = 0; px < size; ++px){
 			for(pz = 0; pz < size; ++pz){
-				createRandom(x + px, z + pz);
+				initSeed(x + px, z + pz);
 				bio = Biome.byId(result[pz * size + px]);
-				result[pz * size + px] = bio.generateSubBiome(rand, op);
+				result[pz * size + px] = bio.generateSubBiome(this, op);
 			}
 		}
 		return result;

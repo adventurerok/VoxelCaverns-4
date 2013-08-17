@@ -55,7 +55,7 @@ public class Biome {
 		return name;
 	}
 	
-	public int generateSubBiome(Random rand, int op){
+	public int generateSubBiome(FastRandom rand, int op){
 		return id;
 	}
 	

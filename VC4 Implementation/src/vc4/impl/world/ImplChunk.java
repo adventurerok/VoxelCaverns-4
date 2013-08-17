@@ -443,6 +443,7 @@ public class ImplChunk implements Chunk {
 		
 		if(getBlockLight(x, y, z) != blockLight){
 			setBlockLight(x, y, z, blockLight);
+			notifyNear(x, y, z);
 			updateLight(x + 1, y, z, num + 1);
 			updateLight(x, y, z + 1, num + 1);
 			updateLight(x - 1, y, z, num + 1);
@@ -557,6 +558,7 @@ public class ImplChunk implements Chunk {
 		
 		if(getBlockLight(x, y, z) != blockLight){
 			setBlockLight(x, y, z, blockLight);
+			notifyNear(x, y, z);
 			initialUpdateLight(x + 1, y, z, num + 1);
 			initialUpdateLight(x, y, z + 1, num + 1);
 			initialUpdateLight(x - 1, y, z, num + 1);

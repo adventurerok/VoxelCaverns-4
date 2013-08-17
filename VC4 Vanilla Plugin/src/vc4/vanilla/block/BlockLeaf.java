@@ -8,6 +8,7 @@ import java.util.Collection;
 import vc4.api.block.Block;
 import vc4.api.block.Material;
 import vc4.api.item.ItemStack;
+import vc4.api.util.Direction;
 import vc4.api.world.World;
 import vc4.vanilla.BlockTexture;
 import vc4.vanilla.util.WoodBlocks;
@@ -31,6 +32,17 @@ public class BlockLeaf extends Block {
 	@Override
 	protected String getModifiedName(ItemStack item) {
 		return "leaf." + WoodBlocks.getName(item.getData() & 15);
+	}
+	
+	@Override
+	public boolean renderSide(World world, long x, long y, long z, int side) {
+		Direction d = Direction.getDirection(side);
+		long ox = x + d.getX();
+		long oy = y + d.getY();
+		long oz = z + d.getZ();
+		Block near = world.getBlockType(ox, oy, oz);
+		if ((near instanceof BlockLeaf && (side < 4 ? side / 2 == 0 : side % 2 == 0)) || near.isSolid(world, ox, oy, oz, d.opposite().id())) return false;
+		return true;
 	}
 	
 	/* (non-Javadoc)

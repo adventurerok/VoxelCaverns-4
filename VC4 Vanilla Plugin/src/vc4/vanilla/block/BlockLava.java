@@ -6,6 +6,8 @@ package vc4.vanilla.block;
 import java.awt.Color;
 
 import vc4.api.block.BlockFluid;
+import vc4.api.entity.DamageSource;
+import vc4.api.entity.Entity;
 import vc4.api.item.ItemStack;
 import vc4.api.world.World;
 import vc4.vanilla.BlockTexture;
@@ -42,6 +44,13 @@ public class BlockLava extends BlockFluid {
 	@Override
 	public Color getColor(ItemStack current, int side) {
 		return Color.red;
+	}
+	
+	@Override
+	public void onEntityTickInside(World world, long x, long y, long z, Entity entity) {
+		entity.damage(2, DamageSource.liquid("lava"));
+		entity.addFireTicks(150);
+		super.onEntityTickInside(world, x, y, z, entity);
 	}
 	
 	/* (non-Javadoc)

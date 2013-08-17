@@ -158,6 +158,7 @@ public class ClientKeyboard implements Keyboard{
 			this._char = c;
 			this._ctrl = ctrl;
 			this._shift = shift;
+			this._pressed = pressed;
 		}
 		
 		public Key getKey(){

@@ -52,7 +52,7 @@ public class BlockSnow extends Block {
 	
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
-		return false;
+		return side == 5;
 	}
 	
 	/* (non-Javadoc)

@@ -93,7 +93,7 @@ public class ScreenTypeMenu implements ScreenType {
 					else if(f.getKey().equals("gapy")) bgapy = val;
 				}
 			} else if(e.getKey().equals("fontsize")) fontSize = Float.parseFloat(e.getValue().toString());
-			else if(e.getKey().equals("border")) c.setResizer(new BorderResizer(Border.valueOf(e.getValue().toString().toUpperCase())));
+			else if(e.getKey().equals("border")) c.setResizer(new ResizerBorder(Border.valueOf(e.getValue().toString().toUpperCase())));
 		}
 	}
 	

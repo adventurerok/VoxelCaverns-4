@@ -42,11 +42,12 @@ public class OverworldGenerator implements WorldGenerator {
 	private WorldGenDungeons dungeonsGen = new WorldGenDungeons();
 	private WorldGenFloatingIslands floatingGen = new WorldGenFloatingIslands();
 	private WorldGenPyramids pyramidsGen = new WorldGenPyramids();
+	private WorldGenLightBerries lightBerryGen = new WorldGenLightBerries();
+	private WorldGenUndergroundClearing undergroundGrass = new WorldGenUndergroundClearing();
 	private RecursiveGenVolcano volcanoGen = new RecursiveGenVolcano();
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
 	ArrayList<ArrayList<Integer>> biomes;
-	
-	
+
 	public ArrayList<ArrayList<Integer>> getBiomes() {
 		return biomes;
 	}
@@ -119,18 +120,17 @@ public class OverworldGenerator implements WorldGenerator {
 						b = hellNoise.noise((x << 5) + cx, (y << 5) + cy, (z << 5) + cz, 0.1f, 1f, true) >= big;
 					}
 					if (diff > -1 && b) {
-						if (diff < bio.soilDepth){
+						if (diff < bio.soilDepth) {
 							bio.placeBiomeBlock(out, rand, cx, cy, cz, diff, y);
-						}
-						else if (diff < 5000) out.setBlockId(cx, cy, cz, 1);
+						} else if (diff < 5000) out.setBlockId(cx, cy, cz, 1);
 						else out.setBlockId(cx, cy, cz, Vanilla.hellrock.uid);
 					} else if (!b) {
 						if ((y << 5) + cy < -5975) {
 							out.setBlockId(cx, cy, cz, Vanilla.lava.uid);
 						}
-					} else if(diff < 0 && (y << 5) + cy < 0){
+					} else if (diff < 0 && (y << 5) + cy < 0) {
 						out.setBlockId(cx, cy, cz, Vanilla.water.uid);
-					} else if(diff == -1){
+					} else if (diff == -1) {
 						bio.placeBiomeBlock(out, rand, cx, cy, cz, diff, y);
 					}
 					++diff;
@@ -138,7 +138,7 @@ public class OverworldGenerator implements WorldGenerator {
 			}
 		}
 		if (world.getGeneratorTag().getBoolean("chasms", true)) chasmGen.generate(world, data, x, y, z, out);
-		if(world.getGeneratorTag().getBoolean("volcanos", true)) volcanoGen.generate(world, data, x, y, z, out);
+		if (world.getGeneratorTag().getBoolean("volcanos", true)) volcanoGen.generate(world, data, x, y, z, out);
 		if (world.getGeneratorTag().getBoolean("caves", true)) caveGen.generate(world, data, x, y, z, out);
 		return out;
 	}
@@ -175,9 +175,11 @@ public class OverworldGenerator implements WorldGenerator {
 	 */
 	@Override
 	public void populate(World world, long x, long y, long z) {
-		if(y < -3 || !world.getBiome((x << 5) + 16, (z << 5) + 16).getType().equals(BiomeType.ocean)){
+		if (y < -3 || !world.getBiome((x << 5) + 16, (z << 5) + 16).getType().equals(BiomeType.ocean)) {
 			waterLakeGen.populate(world, x, y, z);
 			lavaLakeGen.populate(world, x, y, z);
+			undergroundGrass.populate(world, x, y, z);
+			lightBerryGen.populate(world, x, y, z);
 		}
 		if (world.getGeneratorTag().getBoolean("dungeons", true)) {
 			dungeonGen.generate(world, x, y, z);
@@ -185,7 +187,7 @@ public class OverworldGenerator implements WorldGenerator {
 			pyramidsGen.populate(world, x, y, z);
 			dungeonsGen.populate(world, x, y, z);
 		}
-		if(world.getGeneratorTag().getBoolean("villages", true)){
+		if (world.getGeneratorTag().getBoolean("villages", true)) {
 			villageGen.generate(world, x, y, z);
 			villageGen.generateExtra(world, x, y, z);
 		}
@@ -261,58 +263,104 @@ public class OverworldGenerator implements WorldGenerator {
 		bgen = new BiomeGenSubBiome(world, bgen, op++);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		ZoomGenerator hgen = new HeightGenSeed(world);
-		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //0
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 0
 		bgen = new BiomeGenSubBiome(world, bgen, op++);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new HeightGenZoom(world, hgen);
 		float rVal = 1f;
 		float rMod = 0.5f;
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //1
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 1
 		bgen = new BiomeGenSubBiome(world, bgen, op++);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new BiomeGenZoom(world, hgen);
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //2
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 2
+		bgen = new BiomeGenSubBiome(world, bgen, op++);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new HeightGenZoom(world, hgen);
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //3
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 3
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new HeightGenZoom(world, hgen);
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //4
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 4
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new HeightGenZoom(world, hgen);
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //5
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 5
 		bgen = new BiomeGenZoom(world, bgen, true);
 		hgen = new HeightGenZoom(world, hgen);
 		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom)bgen).setSeeding((HeightGenBiomeInput) hgen); //6
-		hgen = new HeightGenZoom(world, hgen);;
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 6
+		hgen = new HeightGenZoom(world, hgen);
 		hgen = new BiomeGenZoom(world, hgen);
-		bgen = new BiomeGenZoom(world, bgen, true); //7
-		bgen = new BiomeGenZoom(world, bgen, true); //8
-		
+		bgen = new BiomeGenZoom(world, bgen, true); // 7
+		bgen = new BiomeGenZoom(world, bgen, true); // 8
+
 		int[] intBiomes = bgen.generate(wx, wz, 32);
 		byte[] biomes = new byte[32 * 32];
-		for(int d = 0; d < 1024; ++d) biomes[d] = (byte) intBiomes[d];
+		for (int d = 0; d < 1024; ++d)
+			biomes[d] = (byte) intBiomes[d];
 		data.setBiomeMap(biomes);
 		int[] gh = hgen.generate(wx, wz, 32);
 		int[] th = new int[1024];
-		for(int d = 0; d < 1024; ++d){
+		for (int d = 0; d < 1024; ++d) {
 			th[d] = gh[d];
 		}
 		data.setGenHeightMap(gh);
 		data.setHeightMap(th);
-		
+
 	}
-	
+
+	@Override
+	public ZoomGenerator getBiomeMapGenerator(World world, int zoom) {
+		int op = 0;
+		ZoomGenerator bgen = new BiomeGenIslands(world);
+		bgen = new BiomeGenZoom(world, bgen, false);
+		bgen = new BiomeGenIslands(world, bgen);
+		bgen = new BiomeGenZoom(world, bgen, true);
+		bgen = new BiomeGenSuperBiome(world, bgen);
+		bgen = new BiomeGenZoom(world, bgen, false);
+		bgen = new BiomeGenBiome(world, bgen, biomes);
+		if (zoom < 10) {
+			bgen = new BiomeGenZoom(world, bgen, true);
+			bgen = new BiomeGenSubBiome(world, bgen, op++);
+			if (zoom < 9) {
+				bgen = new BiomeGenZoom(world, bgen, true);
+				bgen = new BiomeGenSubBiome(world, bgen, op++);
+				if (zoom < 8) {
+					bgen = new BiomeGenZoom(world, bgen, true);
+					bgen = new BiomeGenSubBiome(world, bgen, op++);
+					if (zoom < 7) {
+						bgen = new BiomeGenZoom(world, bgen, true);
+						bgen = new BiomeGenSubBiome(world, bgen, op++);
+						if (zoom < 6) {
+							bgen = new BiomeGenZoom(world, bgen, true);
+							if (zoom < 5) {
+								bgen = new BiomeGenZoom(world, bgen, true);
+								if (zoom < 4) {
+									bgen = new BiomeGenZoom(world, bgen, true);
+									if (zoom < 3) {
+										bgen = new BiomeGenZoom(world, bgen, true);
+										if (zoom < 2) {
+											bgen = new BiomeGenZoom(world, bgen, true);
+											if (zoom == 0) bgen = new BiomeGenZoom(world, bgen, true);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return bgen;
+	}
+
 	@Override
 	public boolean generatePlants(World world, long x, long y, long z) {
 		return true;
 	}
-	
 
 }

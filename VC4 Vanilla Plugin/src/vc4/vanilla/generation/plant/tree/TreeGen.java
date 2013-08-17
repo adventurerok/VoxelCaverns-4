@@ -57,6 +57,11 @@ public abstract class TreeGen implements PlantGenerator{
 		return Vanilla.vines.uid;
 	}
 
+	
+	public TreeGen setWorld(World world) {
+		this.world = world;
+		return this;
+	}
 
 	public abstract boolean generate(long x, long y, long z, Plant plant);
 	

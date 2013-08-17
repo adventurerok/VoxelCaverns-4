@@ -1,7 +1,6 @@
 package vc4.vanilla.biome;
 
 import java.awt.Color;
-import java.util.Random;
 
 import vc4.api.biome.*;
 
@@ -32,8 +31,8 @@ public class BiomeHilly extends Biome {
 	}
 	
 	@Override
-	public int generateSubBiome(Random rand, int op) {
-		if(rand.nextInt(3) == 0 && op == 0) return hills;
+	public int generateSubBiome(FastRandom rand, int op) {
+		if(op == 0 && rand.nextInt(3) == 0) return hills;
 		return id;
 	}
 

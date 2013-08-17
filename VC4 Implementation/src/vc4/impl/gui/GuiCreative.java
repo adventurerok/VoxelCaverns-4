@@ -97,6 +97,7 @@ public class GuiCreative extends Component {
 
 	@Override
 	public void draw() {
+		if(!Client.getGame().isPaused()) return;
 		//if (!SingleplayerUtils.getPlayer().getGameMode().isCreativeGui()) return;
 		gl = Graphics.getOpenGL();
 		ColorScheme scheme = Client.getGame().getColorScheme(Client.getGame().getColorSchemeSetting().getString());
@@ -268,6 +269,7 @@ public class GuiCreative extends Component {
 
 	@Override
 	public void update() {
+		if(!Client.getGame().isPaused()) return;
 //		if (inventory.search(TextInputCreative.getInputText())) {
 //			recalculateDisplayLists();
 //		}

@@ -69,7 +69,7 @@ public class BiomeGenZoom extends ZoomGenerator {
 
 	protected int choose(int par1, int par2)
     {
-        return randInt(2) == 0 ? par1 : par2;
+        return nextInt(2) == 0 ? par1 : par2;
     }
 	
 	protected int modeOrRandom(int par1, int par2, int par3, int par4)
@@ -140,7 +140,7 @@ public class BiomeGenZoom extends ZoomGenerator {
         }
         else
         {
-            int var5 = randInt(4);
+            int var5 = nextInt(4);
             return var5 == 0 ? par1 : (var5 == 1 ? par2 : (var5 == 2 ? par3 : par4));
         }
     }

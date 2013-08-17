@@ -22,6 +22,7 @@ import vc4.api.gui.themed.ColorScheme;
 import vc4.api.vector.Vector2f;
 import vc4.client.Window;
 import vc4.impl.gui.*;
+import static vc4.api.gui.ResizerComplex.*;
 
 /**
  * @author paul
@@ -40,6 +41,8 @@ public class IngameGui extends Component {
 	ScreenDebug debug;
 	GuiCrafting craftingGui;
 	OverlayRenderer overlay;
+	TextBox chatInput;
+	ScreenMap map;
 	
 	FontRenderer font;
 	
@@ -47,7 +50,7 @@ public class IngameGui extends Component {
 	 * 
 	 */
 	public IngameGui() {
-		setResizer(new BorderResizer(Border.FILL));
+		setResizer(new ResizerBorder(Border.FILL));
 		setBounds(new Rectangle(0, 0, ClientWindow.getClientWindow().getWidth(), ClientWindow.getClientWindow().getHeight()));
 		invGui = new GuiInventory();
 		add(invGui);
@@ -67,6 +70,12 @@ public class IngameGui extends Component {
 		gameGui.setVisible(false);
 		gameGui.setBounds(gameGui.getDefaultBounds());
 		add(gameGui);
+		chatInput = new TextBox();
+		chatInput.setResizer(new ResizerComplex(new PartConstant(5), new PartSubY(13), new PartSubX(0), new PartSubY(2)));
+		map = new ScreenMap();
+		map.setResizer(new ResizerFill());
+		add(map);
+		add(chatInput);
 		overlay = new OverlayRenderer();
 		font = FontRenderer.createFontRenderer("unispaced_14", 14);
 	}
@@ -75,6 +84,10 @@ public class IngameGui extends Component {
 		if(guiName.equals("crafting")) craftingGui.setVisible(!craftingGui.isVisible());
 		else if(guiName.equals("armour")) armourGui.setVisible(!armourGui.isVisible());
 		else if(guiName.equals("game")) gameGui.setVisible(!gameGui.isVisible());
+	}
+	
+	public void setChatFocus(){
+		chatInput.setFocus(true);
 	}
 	
 	/* (non-Javadoc)

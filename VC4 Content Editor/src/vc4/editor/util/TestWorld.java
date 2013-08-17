@@ -510,4 +510,14 @@ public class TestWorld implements World {
 		return false;
 	}
 
+	@Override
+	public boolean hasSkyLight(long x, long y, long z) {
+		return false;
+	}
+
+	@Override
+	public boolean hasDayLight(long x, long y, long z) {
+		return false;
+	}
+
 }

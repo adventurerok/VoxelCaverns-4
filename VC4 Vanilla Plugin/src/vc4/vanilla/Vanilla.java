@@ -13,8 +13,8 @@ import vc4.api.block.*;
 import vc4.api.container.Container;
 import vc4.api.crafting.CraftingManager;
 import vc4.api.entity.Entity;
-import vc4.api.generator.GeneratorList;
-import vc4.api.generator.PlantGrowth;
+import vc4.api.entity.spawn.*;
+import vc4.api.generator.*;
 import vc4.api.gui.GuiOpenContainer;
 import vc4.api.io.Dictionary;
 import vc4.api.item.Item;
@@ -59,7 +59,7 @@ public class Vanilla extends Plugin {
 	public static Block planksStairs8, planksStairs12, brickStairs0, brickStairs4;
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
-	public static Block workbench, chest, table, chair, gravel, ladder;
+	public static Block workbench, chest, table, chair, gravel, ladder, lightberries;
 	
 	//Items
 	public static Item food, spawnStick;
@@ -116,6 +116,7 @@ public class Vanilla extends Plugin {
 	public static Biome biomeSnowForestHills;
 	public static Biome biomeTrench;
 	public static Biome biomeRockyHills;
+	public static Biome biomeDesertOasis;
 	
 	//Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
@@ -165,7 +166,7 @@ public class Vanilla extends Plugin {
 		plantTreeRedwood = new Plant(0, 5, "tree.redwood");
 		plantCactus = new Plant(1, 0, "cactus");
 		plantTallGrass = new Plant(2, 0, "weed");
-		OverworldGenerator gen = new OverworldGenerator();
+		WorldGenerator gen = new OverworldGenerator();
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
 		GeneratorList.registerGenerator("sky", new SkylandGenerator());
@@ -263,6 +264,7 @@ public class Vanilla extends Plugin {
 		chair = new BlockChair(world.getRegisteredBlock("vanilla.chair")).setLightOpacity(1).setName("chair");
 		gravel = new BlockGravel(world.getRegisteredBlock("vanilla.gravel")).setName("gravel");
 		ladder = new BlockLadder(world.getRegisteredBlock("vanilla.ladder")).setLightOpacity(1).setName("ladder");
+		lightberries = new BlockLightBerry(world.getRegisteredBlock("vanilla.lightberry")).setName("lightberry");
 	}
 	
 	@Override
@@ -291,19 +293,20 @@ public class Vanilla extends Plugin {
 	public void loadBiomes(World world) {
 		biomeOcean = new BiomeOcean(world.getRegisteredBiome("vanilla.ocean")).setHeights(oceans);
 		biomePlains = new BiomePlains(world.getRegisteredBiome("vanilla.plains"), "plains", BiomeType.normal, Color.green);
-		biomeDesert = new BiomeHilly(world.getRegisteredBiome("vanilla.desert"), "desert", BiomeType.hot, Color.yellow);
+		biomeDesert = new BiomeDesert(world.getRegisteredBiome("vanilla.desert"), "desert", BiomeType.hot, Color.yellow);
 		biomeSnowPlains = new BiomeHilly(world.getRegisteredBiome("vanilla.snowplains"), "snowplains", BiomeType.cold, Color.white);
-		biomeForest = new BiomeHilly(world.getRegisteredBiome("vanilla.forest"), "forest", BiomeType.normal, Color.green);
+		biomeForest = new BiomeHilly(world.getRegisteredBiome("vanilla.forest"), "forest", BiomeType.normal, new Color(0, 176, 0));
 		biomePlainsHills = new BiomePlains(world.getRegisteredBiome("vanilla.plains.hills"), "plains/hills", BiomeType.normal, Color.green).setHeights(hills);
 		biomeDesertHills = new Biome(world.getRegisteredBiome("vanilla.desert.hills"), "desert/hills", BiomeType.hot, Color.yellow).setHeights(hills);
 		biomeSnowPlainsHills = new Biome(world.getRegisteredBiome("vanilla.snowplains.hills"), "snowplains/hills", BiomeType.cold, Color.white).setHeights(hills);
 		biomeForestHills = new Biome(world.getRegisteredBiome("vanilla.forest.hills"), "forest/hills", BiomeType.normal, Color.green).setHeights(hills);
 		biomeVolcanic = new BiomeVolcanic(world.getRegisteredBiome("vanilla.volcanic"), "volcanic", BiomeType.hot, Color.black, 3).setHeights(new BiomeHeightModel(56, 20, 65, 3));
 		biomeVolcano = new BiomeVolcanic(world.getRegisteredBiome("vanilla.volcanic.hills"), "volcanic/hills", BiomeType.hot, Color.black, 8).setHeights(new BiomeHeightModel(135, 50, 145, 12));
-		biomeSnowForest = new BiomeHilly(world.getRegisteredBiome("vanilla.snowforest"), "snowforest", BiomeType.cold, Color.white);
+		biomeSnowForest = new BiomeHilly(world.getRegisteredBiome("vanilla.snowforest"), "snowforest", BiomeType.cold, new Color(200, 240, 200));
 		biomeSnowForestHills = new Biome(world.getRegisteredBiome("vanilla.snowforest.hills"), "snowforest/hills", BiomeType.cold, Color.white).setHeights(hills);
 		biomeTrench = new Biome(world.getRegisteredBiome("vanilla.ocean.trench"), "ocean/trench", BiomeType.ocean, Color.blue).setHeights(trenchs);
 		biomeRockyHills = new Biome(world.getRegisteredBiome("vanilla.rocky.hills"), "rocky/hills", BiomeType.hot, Color.gray);
+		biomeDesertOasis = new Biome(world.getRegisteredBiome("vanilla.desert.oasis"), "desert/oasis", BiomeType.hot, new Color(152, 127, 70)).setHeights(new BiomeHeightModel(14, -7, 24, -12));
 		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 2));
 		biomeOcean.music = musicSky;
@@ -313,8 +316,11 @@ public class Vanilla extends Plugin {
 		biomeDesertHills.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesert.music = musicDesert;
 		biomeDesertHills.music = musicDesert;
+		biomeDesertOasis.music = musicDesert;
 		biomeDesert.addPlant(new PlantGrowth(plantCactus, 3));
 		biomeDesertHills.addPlant(new PlantGrowth(plantCactus, 3));
+		biomeDesertOasis.setBiomeBlocks(grass.uid, dirt.uid, sand.uid);
+		biomeDesertOasis.addPlant(new PlantGrowth(plantTreeOak, 3));
 		biomeDesert.setHills(biomeDesertHills.id);
 		biomePlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlains.setIcingBlock(weeds.uid);
@@ -392,6 +398,7 @@ public class Vanilla extends Plugin {
 		} catch (FileNotFoundException e) {
 		}
 		loadTrades(world);
+		SpawnControl.addSpawnEntry(new SpawnEntry(100, new BasicSpawner(EntityZombie.class), new AndFilter(new LightFilter(7, 0), new SkylightFilter(false), new HumanoidFilter())));
 	}
 	
 	@Override

@@ -18,10 +18,10 @@ public class HeightGenDisplace extends ZoomGenerator implements HeightGenBiomeIn
 			for(pz = 0; pz < size; ++pz){
 				initSeed(x + px, z + pz);
 				bio = Biome.byId(biomes[pz * size + px]);
-				result[pz * size + px] += MathUtils.floor((randInt(bio.diffHeight) + bio.minHeight - bio.midHeight) * rough);
+				result[pz * size + px] += MathUtils.floor((nextInt(bio.diffHeight) + bio.minHeight - bio.midHeight) * rough);
 				if(bio.enfHeight){
-					if(result[pz * size + px] > bio.maxEnf) result[pz * size + px] = bio.maxEnf - 1 + randInt(3);
-					else if(result[pz * size + px] < bio.minEnf) result[pz * size + px] = bio.minEnf - 1 + randInt(3);
+					if(result[pz * size + px] > bio.maxEnf) result[pz * size + px] = bio.maxEnf - 1 + nextInt(3);
+					else if(result[pz * size + px] < bio.minEnf) result[pz * size + px] = bio.minEnf - 1 + nextInt(3);
 				}
 			}
 		}

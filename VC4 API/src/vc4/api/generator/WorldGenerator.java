@@ -24,5 +24,5 @@ public interface WorldGenerator {
 	public void renderSkyBox(World world, EntityPlayer player);
 	public void generateMapData(World world, MapData data);
 	public boolean generatePlants(World world, long x, long y, long z);
-	public abstract ZoomGenerator getBiomeMapGenerator(World world);
+	public abstract ZoomGenerator getBiomeMapGenerator(World world, int zoom);
 }

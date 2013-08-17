@@ -16,6 +16,7 @@ public class EntityZombie extends EntityLiving{
 		ais.put("wander", new AIWander(this, 0.5, 15));
 	}
 	
+	
 	@Override
 	public int getMaxHealth() {
 		return 50;

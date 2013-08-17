@@ -2,6 +2,7 @@ package vc4.vanilla.generation.world;
 
 import java.util.Random;
 
+import vc4.api.biome.ZoomGenerator;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.generator.WorldGenerator;
@@ -77,6 +78,11 @@ public class SkylandGenerator implements WorldGenerator {
 	@Override
 	public boolean generatePlants(World world, long x, long y, long z) {
 		return true;
+	}
+
+	@Override
+	public ZoomGenerator getBiomeMapGenerator(World world, int zoom) {
+		return null;
 	}
 
 }

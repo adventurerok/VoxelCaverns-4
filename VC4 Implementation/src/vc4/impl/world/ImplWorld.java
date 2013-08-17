@@ -14,6 +14,7 @@ import vc4.api.block.Block;
 import vc4.api.client.Client;
 import vc4.api.crafting.CraftingManager;
 import vc4.api.entity.*;
+import vc4.api.entity.spawn.SpawnControl;
 import vc4.api.generator.*;
 import vc4.api.graphics.*;
 import vc4.api.io.*;
@@ -1200,6 +1201,7 @@ public class ImplWorld implements World {
 	@SuppressWarnings("unchecked")
 	public void updateTick(Vector3d loc) {
 		skyLight = calculateSkyLight();
+		SpawnControl.updateTick(this);
 		for(EntityPlayer plr : players){
 			plr.addTickSinceUpdate();
 			if(plr.getTicksSinceUpdate() > 5){
@@ -1679,14 +1681,24 @@ public class ImplWorld implements World {
 
 	@Override
 	public boolean hasNearbySkylight(long x, long y, long z, Direction dir) {
-		int h = getNearbyHeight(x, z, dir);
 		y += dir.getY();
-		return y > h;
+		return y > getNearbyHeight(x, z, dir);
 	}
 
 	@Override
 	public boolean hasNearbySkylight(long x, long y, long z, int dir) {
 		return hasNearbySkylight(x, y, z, Direction.getDirection(dir));
+	}
+
+	@Override
+	public boolean hasSkyLight(long x, long y, long z) {
+		return y > getHeight(x, z);
+	}
+
+	@Override
+	public boolean hasDayLight(long x, long y, long z) {
+		if(!hasSkyLight(x, y, z)) return false;
+		return skyLight > 0.4;
 	}
 
 }

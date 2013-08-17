@@ -4,7 +4,7 @@ import java.util.Random;
 
 import vc4.api.world.World;
 
-public abstract class ZoomGenerator {
+public abstract class ZoomGenerator implements FastRandom{
 
 	public World world;
 	public Random rand;
@@ -19,12 +19,18 @@ public abstract class ZoomGenerator {
 		rand = world.createRandom(x, z, 35628132776231L);
 	}
 	
+	@Override
+	public void initSeed(long seed){
+		this.seed = seed * 341873128712L + world.getSeed() + 872169178519L;
+	}
+	
 	public void initSeed(long x, long z){
 		seed = x * 341873128712L + z * 132897987541L + world.getSeed() + 872169178519L;
 		if(seed == 0) seed = 2010817090135L;
 	}
 	
-	public long randLong(long max) {
+	@Override
+	public long nextLong(long max) {
 		seed ^= (seed << 21);
 		seed ^= (seed >>> 35);
 		seed ^= (seed << 4);
@@ -33,7 +39,8 @@ public abstract class ZoomGenerator {
 		return res;
 	}
 	
-	public int randInt(int max) {
+	@Override
+	public int nextInt(int max) {
 		seed ^= (seed << 21);
 		seed ^= (seed >>> 35);
 		seed ^= (seed << 4);

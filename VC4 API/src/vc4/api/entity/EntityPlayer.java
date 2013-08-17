@@ -504,8 +504,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 			}
 		}
 		if(keys.keyPressed(Key.NUM_0)) inventory.setSelectedIndex(9);
-		if(keys.keyPressed(Key.MINUS)) inventory.setSelectedIndex(10);
-		if(keys.keyPressed(Key.EQUALS)) inventory.sort();
+		if(!keys.isKeyDown(Key.M)){
+			if(keys.keyPressed(Key.MINUS)) inventory.setSelectedIndex(10);
+			if(keys.keyPressed(Key.EQUALS)) inventory.sort();
+		}
 		if(keys.keyPressed(Key.LEFT)){
 			int i = inventory.getSelectedIndex() - 1;
 			if (i < 0) i = 10;
