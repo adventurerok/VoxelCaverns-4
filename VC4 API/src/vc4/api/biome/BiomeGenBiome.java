@@ -20,9 +20,9 @@ public class BiomeGenBiome extends ZoomGenerator {
 		int pz;
 		for(int px = 0; px < size; ++px){
 			for(pz = 0; pz < size; ++pz){
-				createRandom(x + px, z + pz);
+				initSeed(x + px, z + pz);
 				curr = types.get(result[pz * size + px]);
-				result[pz * size + px] = curr.get(rand.nextInt(curr.size()));
+				result[pz * size + px] = curr.get(randInt(curr.size()));
 			}
 		}
 		return result;

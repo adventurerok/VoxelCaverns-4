@@ -364,6 +364,7 @@ public abstract class EntityLiving extends Entity {
 		updateAge();
 		preMove();
 		updateSurroundings();
+		updateEffects();
 		updateTraits();
 		updateAIs();
 		move();

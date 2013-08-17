@@ -111,4 +111,6 @@ public interface World {
 	public abstract void addTime(long add);
 	public abstract int getHeight(long x, long z);
 	public abstract boolean blockTransparencyChange(long x, long y, long z, boolean trans);
+	public boolean hasSkyLight(long x, long y, long z);
+	public boolean hasDayLight(long x, long y, long z);
 }

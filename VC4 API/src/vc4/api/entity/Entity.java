@@ -99,6 +99,8 @@ public abstract class Entity implements Agent{
 	public Vector3d size = new Vector3d(0.3, 1.6, 0.3);
 	
 	public int health = 100;
+	
+	public int fireTicks = 0;
 
 	private boolean noClip;
 	
@@ -361,6 +363,7 @@ public abstract class Entity implements Agent{
 	public void update() {
 		updateAge();
 		updateSurroundings();
+		updateEffects();
 		updateTraits();
 		move(motionX, motionY, motionZ);
 		
@@ -412,6 +415,21 @@ public abstract class Entity implements Agent{
 			long z = MathUtils.floor(position.z);
 			world.getBlockType(x, y, z).onEntityStandOn(world, x, y, z, this);
 		}
+	}
+	
+	public void updateEffects(){
+		if(fireTicks > 0){
+			damage(1, DamageSource.fireDamage, 2);
+			fireTicks--;
+		}
+	}
+	
+	public void addFireTicks(int ticks){
+		if(fireTicks < ticks) fireTicks = ticks;
+	}
+	
+	public void setFireTicks(int ticks){
+		fireTicks = ticks;
 	}
 
 	public boolean needsRemoving() {

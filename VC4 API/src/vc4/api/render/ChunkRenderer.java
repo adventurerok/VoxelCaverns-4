@@ -255,6 +255,26 @@ public class ChunkRenderer implements Renderer {
 		tex(tex.x, tex.y, tex.z, 0);
 		
 	}
+
+	@Override
+	public void light(float r, float g, float b, float sky) {
+		light = new Vector4f(r, g, b, sky);
+	}
+
+	@Override
+	public void light(Vector3f light, boolean sky) {
+		this.light = new Vector4f(light.x, light.y, light.z, sky ? 1 : 0);
+	}
+
+	@Override
+	public void light(Vector3f light, float sky) {
+		this.light = new Vector4f(light.x, light.y, light.z, sky);
+	}
+
+	@Override
+	public void tex(double s, double t, double r) {
+		tex = new Vector4f((float)s, (float)t, (float) r, 0);
+	}
 	
 
 }

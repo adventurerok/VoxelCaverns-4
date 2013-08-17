@@ -249,6 +249,23 @@ public class DataRenderer implements Renderer {
 	public void light(float r, float g, float b, boolean sky) {
 		//Not Needed
 	}
+
+	@Override
+	public void light(float r, float g, float b, float sky) {
+	}
+
+	@Override
+	public void light(Vector3f light, boolean sky) {
+	}
+
+	@Override
+	public void light(Vector3f light, float sky) {
+	}
+
+	@Override
+	public void tex(double s, double t, double r) {
+		tex = new Vector4f((float)s, (float)t, (float) r, 0);
+	}
 	
 
 }

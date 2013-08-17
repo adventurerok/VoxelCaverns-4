@@ -1,11 +1,11 @@
 package vc4.api.gui;
 
-public class BorderResizer implements Resizer {
+public class ResizerBorder implements Resizer {
 
 	Border border;
 	
 	
-	public BorderResizer(Border border) {
+	public ResizerBorder(Border border) {
 		super();
 		this.border = border;
 	}

@@ -2,7 +2,7 @@ package vc4.api.gui;
 
 import java.awt.Rectangle;
 
-public class PercentResizor implements Resizer {
+public class ResizorPercent implements Resizer {
 
 	float x, y;
 	float width, height;
@@ -10,7 +10,7 @@ public class PercentResizor implements Resizer {
 	
 	
 	
-	public PercentResizor(float x, float y, float width, float height) {
+	public ResizorPercent(float x, float y, float width, float height) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -19,7 +19,7 @@ public class PercentResizor implements Resizer {
 	}
 
 
-	public PercentResizor(float x, float y, int width, int height) {
+	public ResizorPercent(float x, float y, int width, int height) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -30,7 +30,7 @@ public class PercentResizor implements Resizer {
 	
 
 
-	public PercentResizor(float x, float y, float width, int height) {
+	public ResizorPercent(float x, float y, float width, int height) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -41,7 +41,7 @@ public class PercentResizor implements Resizer {
 	
 
 
-	public PercentResizor(float x, float y, int width, float height) {
+	public ResizorPercent(float x, float y, int width, float height) {
 		super();
 		this.x = x;
 		this.y = y;

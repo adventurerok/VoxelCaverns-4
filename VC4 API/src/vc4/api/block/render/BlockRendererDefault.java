@@ -36,10 +36,11 @@ public class BlockRendererDefault implements BlockRenderer {
 		if (block.isAir()) return;
 		if(c.getBlockLight(cx, cy, cz) > 4) System.out.println("Size");
 		Vector3f light;
+		Direction dir;
 		AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);
 		for (int d = 0; d < 6; ++d) {
 			if (!block.renderSide(c.getWorld(), x, y, z, d)) continue;
-			Direction dir = Direction.getDirection(d);
+			dir = Direction.getDirection(d);
 			int rend = block.getRendererToUse(data, d);
 			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
 			renderers[rend].light(light.x, light.y, light.z, c.getWorld().hasNearbySkylight(x, y, z, d));
@@ -49,7 +50,7 @@ public class BlockRendererDefault implements BlockRenderer {
 		IBlockMultitexture mt = (IBlockMultitexture) block;
 		for (int d = 0; d < 6; ++d) {
 			if (!mt.renderSideMultitexture(c.getWorld(), x, y, z, d)) continue;
-			Direction dir = Direction.getDirection(d);
+			dir = Direction.getDirection(d);
 			int rend = block.getRendererToUse(data, d);
 			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
 			renderers[rend].light(light.x, light.y, light.z, c.getWorld().hasNearbySkylight(x, y, z, d));

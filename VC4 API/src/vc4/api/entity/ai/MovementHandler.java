@@ -72,6 +72,7 @@ public class MovementHandler implements Navigator{
 				if(executing.getTarget().position.y > entity.position.y + 0.1 && executing.getTarget().position.horizontalDistanceSquared(entity.position) < 3){
 					entity.jump();
 				}
+				if(entity.collisionHorizontal) entity.jump();
 			}
 		} else {
 			updateVector();
@@ -97,6 +98,7 @@ public class MovementHandler implements Navigator{
 		if(executing.getPosition().y > entity.position.y + 0.25 && dx * dx + dz * dz < 3){
 			entity.jump();
 		}
+		if(entity.collisionHorizontal) entity.jump();
 	}
 
 	public MovementHandler(EntityLiving entity) {

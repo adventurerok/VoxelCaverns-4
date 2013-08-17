@@ -40,7 +40,7 @@ public class BiomeGenZoom extends ZoomGenerator {
 
             for (int az = 0; az < psize - 1; ++az)
             {
-                createRandom((long)(az + px << 1), (long)(ax + pz << 1));
+                initSeed((long)(az + px << 1), (long)(ax + pz << 1));
                 int zp0 = pints[az + 1 + (ax + 0) * psize];
                 int zp1 = pints[az + 1 + (ax + 1) * psize];
                 ints[sWidx] = xp0;
@@ -69,7 +69,7 @@ public class BiomeGenZoom extends ZoomGenerator {
 
 	protected int choose(int par1, int par2)
     {
-        return rand.nextInt(2) == 0 ? par1 : par2;
+        return randInt(2) == 0 ? par1 : par2;
     }
 	
 	protected int modeOrRandom(int par1, int par2, int par3, int par4)
@@ -140,7 +140,7 @@ public class BiomeGenZoom extends ZoomGenerator {
         }
         else
         {
-            int var5 = rand.nextInt(4);
+            int var5 = randInt(4);
             return var5 == 0 ? par1 : (var5 == 1 ? par2 : (var5 == 2 ? par3 : par4));
         }
     }

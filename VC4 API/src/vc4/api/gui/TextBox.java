@@ -5,6 +5,7 @@ package vc4.api.gui;
 
 import java.util.ArrayList;
 
+import vc4.api.font.FontRenderer;
 import vc4.api.gui.listeners.TextListener;
 import vc4.api.input.*;
 import vc4.api.util.Clipboard;
@@ -14,6 +15,8 @@ import vc4.api.util.Clipboard;
  * 
  */
 public class TextBox extends Component {
+	
+	private static FontRenderer font = FontRenderer.createFontRenderer("unispaced_14", 14);
 
 	/** The key repeat interval */
 	private static final int INITIAL_KEY_REPEAT_INTERVAL = 400;
@@ -36,9 +39,13 @@ public class TextBox extends Component {
 
 	/** The time since last key repeat */
 	protected long repeatTimer;
+	
+	protected boolean password = false;
 
 	/** The text before the paste in */
 	private String oldText;
+	
+	protected String notext = "";
 
 	/** The cursor position before the paste */
 	private int oldCursorPos;
@@ -48,6 +55,16 @@ public class TextBox extends Component {
 	private Keyboard keyboard;
 	
 	private ArrayList<TextListener> listeners = new ArrayList<>();
+	
+	protected static String hidden;
+
+	static {
+		StringBuilder h = new StringBuilder("*");
+		for (int dofor = 0; dofor < 250; ++dofor) {
+			h.append("*");
+		}
+		hidden = h.toString();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -72,6 +89,12 @@ public class TextBox extends Component {
 		}
 		wasInFocus = hasFocus();
 	}
+	
+	@Override
+	public void setFocus(boolean focus) {
+		if(!focus) setText("");
+		super.setFocus(focus);
+	}
 
 	/**
 	 * @param key
@@ -79,6 +102,9 @@ public class TextBox extends Component {
 	 */
 	private void keyPressed(Key key, char c) {
 		if (!hasFocus()) return;
+		if(key == Key.ESCAPE){
+			setFocus(false);
+		}
 		boolean ctrl = keyboard.isKeyDown(Key.CONTROL);
 		if (ctrl && key != null) {
 			if (key == Key.Z) {
@@ -128,9 +154,8 @@ public class TextBox extends Component {
 		} else if(key == Key.RETURN){
 			for(TextListener l : listeners){
 				l.textRecieved(this, value);
-				setText("");
-				setFocus(false);
 			}
+			setFocus(false);
 		}
 	}
 
@@ -201,5 +226,56 @@ public class TextBox extends Component {
 		if (cursorPos > value.length()) {
 			cursorPos = value.length();
 		}
+	}
+	
+	@Override
+	public void draw() {
+//		if(drawBackground){
+//			Renderer.drawRectangle(Color.brown, getBounds());
+//			Renderer.drawOutline(BasicButtonUI.getBackColor(state), getBounds());
+//		}
+		if (lastKey != null) {
+			if (Input.getClientKeyboard().isKeyDown(lastKey)) {
+				if (repeatTimer < System.currentTimeMillis()) {
+					repeatTimer = System.currentTimeMillis() + KEY_REPEAT_INTERVAL;
+					keyPressed(lastKey, lastChar);
+				}
+			} else {
+				lastKey = null;
+			}
+		}
+
+		try{
+			if((value != null && !value.isEmpty()) || hasFocus()){
+				int cpos = (int) font.measureString(value.substring(0, cursorPos), 14).x;
+				int tx = 0;
+				if (cpos > getWidth()) {
+					tx = (int) (getWidth() - cpos - font.measureString("_", 14).x);
+				}
+				String rendering = value;
+				if(value == null) rendering = "";
+				else if(password){
+					int length = value.length();
+					rendering = hidden.substring(0, length);
+				}
+				if(cursorPos < rendering.length()){
+					String start = rendering.substring(0, cursorPos);
+					String end = rendering.substring(cursorPos, rendering.length());
+					int at = 0;
+					font.renderString(at + tx + 2 + getX(), getY(), start);
+					at += font.measureString(start, 14).x;
+					font.renderString(at + tx + 2 + getX(), getY(), "|");
+					at += font.measureString("|", 14).x;
+					font.renderString(at + tx + 2 + getX(), getY(), end);
+				} else {
+					font.renderString(tx + 2 + getX(), getY(), rendering + (hasFocus() && visibleCursor ? "_" : "") );
+				}
+			} else {
+				font.renderString(2 + getX(), getY(), "{f:i}" + notext.toString());
+			}
+			font.resetStyles();
+		} catch(Exception e){
+		}
+
 	}
 }

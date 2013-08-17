@@ -57,6 +57,14 @@ public class Component {
 		return resizer;
 	}
 	
+	public Component getFocusComponent(){
+		if(!hasFocus()) return null;
+		for(Component c : subComponents){
+			if(c.hasFocus()) return c.getFocusComponent();
+		}
+		return this;
+	}
+	
 	
 	private String _name;
 	
@@ -236,6 +244,10 @@ public class Component {
 			_parent.setFocus(true);
 			for(int dofor = 0; dofor < _parent.subComponents.size(); ++dofor){
 				_parent.subComponents.get(dofor).setFocus(false);
+			}
+		} else if(!focus){
+			for(int dofor = 0; dofor < subComponents.size(); ++dofor){
+				subComponents.get(dofor).setFocus(false);
 			}
 		}
 		_focus = focus;

@@ -3,6 +3,7 @@
  */
 package vc4.api.generator;
 
+import vc4.api.biome.ZoomGenerator;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.sound.Music;
 import vc4.api.vector.Vector3d;
@@ -23,4 +24,5 @@ public interface WorldGenerator {
 	public void renderSkyBox(World world, EntityPlayer player);
 	public void generateMapData(World world, MapData data);
 	public boolean generatePlants(World world, long x, long y, long z);
+	public abstract ZoomGenerator getBiomeMapGenerator(World world);
 }

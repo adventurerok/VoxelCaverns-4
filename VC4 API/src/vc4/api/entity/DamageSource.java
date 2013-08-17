@@ -14,11 +14,17 @@ public class DamageSource {
 	private EntityLiving attacker;
 	private ItemStack weapon;
 	private Entity projectile;
+	private String itemName;
 	
 	public static final DamageSource fallDamage = new DamageSource("falling", 0);
+	public static final DamageSource fireDamage = new DamageSource("fire", 2);
 	
 	public static final DamageSource melee(EntityLiving attacker, ItemStack weapon){
 		return new DamageSource("melee", 1).setAttacker(attacker).setWeapon(weapon);
+	}
+	
+	public static final DamageSource liquid(String name){
+		return new DamageSource("liquid", 3).setItemName(name);
 	}
 
 	public DamageSource(String name, int id) {
@@ -29,6 +35,10 @@ public class DamageSource {
 
 	public EntityLiving getAttacker() {
 		return attacker;
+	}
+	
+	public String getItemName() {
+		return itemName;
 	}
 
 	public Vector3l getBlockPos() {
@@ -73,6 +83,11 @@ public class DamageSource {
 
 	public DamageSource setProjectile(Entity projectile) {
 		this.projectile = projectile;
+		return this;
+	}
+	
+	public DamageSource setItemName(String name){
+		this.itemName = name;
 		return this;
 	}
 	

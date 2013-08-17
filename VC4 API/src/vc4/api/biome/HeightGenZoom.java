@@ -35,7 +35,7 @@ public class HeightGenZoom extends ZoomGenerator {
 
             for (int az = 0; az < psize - 1; ++az)
             {
-                createRandom((long)(az + px << 1), (long)(ax + pz << 1));
+                //initSeed((long)(az + px << 1), (long)(ax + pz << 1));
                 int zp0 = pints[az + 1 + (ax + 0) * psize];
                 int zp1 = pints[az + 1 + (ax + 1) * psize];
                 ints[sWidx] = xp0;

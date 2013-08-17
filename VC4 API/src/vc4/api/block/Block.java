@@ -206,7 +206,7 @@ public class Block {
 	public void onBlockMined(World world, long x, long y, long z, ItemStack mined) {
 		MiningData data = getMiningData(world, x, y, z);
 		if (data == null) {
-			mined.damage();
+			if(mined != null) mined.damage();
 		} else if (data.onMine(mined)) {
 			ItemStack[] drops = getItemDrops(world, x, y, z, mined);
 			for (ItemStack d : drops) {
