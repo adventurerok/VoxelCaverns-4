@@ -732,4 +732,9 @@ public class ClientGL implements OpenGL {
 		Graphics.getClientShaderManager().shaderUniform4f(var, x, y, z, w);
 	}
 
+	@Override
+	public void scissor(int x, int y, int width, int height) {
+		GL11.glScissor(x, y, width, height);
+	}
+
 }

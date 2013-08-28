@@ -7,13 +7,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.reflect.Field;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import vc4.api.cmd.Command;
+import vc4.api.cmd.ExecutableCommand;
 import vc4.api.logging.Logger;
 import vc4.api.plugin.*;
+import vc4.api.server.User;
 import vc4.api.util.DirectoryLocator;
 import vc4.api.world.World;
 
@@ -21,27 +23,74 @@ import vc4.api.world.World;
  * @author paul
  * 
  */
-public class PluginLoader {
+public class PluginManager {
 
 	private static HashMap<String, Plugin> loadedPlugins = new HashMap<>();
 	private static ArrayList<URL> resourceURLs = new ArrayList<>();
+	private static HashMap<String, Plugin> pluginCommands = new HashMap<>();
+	
+	public static void handleCommand(Command command){
+		String s = command.getCommand();
+		Plugin p = pluginCommands.get(s);
+		if(p == null){
+			command.getSender().message("{l:cmd.noplugin," + s + "}");
+			return;
+		}
+		if(command.getArgsLength() == 0){
+			printPluginHelp(p, command.getSender(), 1);
+			return;
+		}
+		if(command.getArgAsInt(0, -11204) != -11204){
+			printPluginHelp(p, command.getSender(), command.getArgAsInt(0, -1));
+			return;
+		}
+		String plugin = s;
+		String cmd = command.getArg(0);
+		String args[] = Arrays.copyOfRange(command.getArgs(), 1, command.getArgs().length);
+		Command plugCmd = new Command(plugin, cmd, args, command.getSender());
+		if(p.getExecutableCommands().get(plugCmd.getCommand()) == null){
+			command.getSender().message("{l:cmd.nocommand," + plugCmd.getCommand() + "}");
+			return;
+		}
+		if(!p.getExecutableCommands().get(plugCmd.getCommand()).getInfo().getCommandUsage().check(plugCmd)) return;
+		p.getExecutableCommands().get(plugCmd.getCommand()).getHandler().handleCommand(plugCmd);
+	}
+	
+	public static void printPluginHelp(Plugin plugin, User user, int page){
+		if(plugin.getSortedCommands().size() < 1){
+			user.message("{l:cmd.nocommands," + plugin.getPluginInfoFile().getName() + "}");
+			return;
+		}
+		page -= 1;
+		if(page * 8 > plugin.getSortedCommands().size() || page < 0){
+			user.message("{l:cmd.nohelppage," + (page + 1) + "}");
+			return;
+		}
+		user.message("{l:cmd.pluginhelp," + plugin.getPluginInfoFile().getName() + "," + (page + 1) + "," + ((plugin.getSortedCommands().size() + 7) / 8) + "}");
+		int start = page * 8;
+		for(int d = start; d < start + 8 && d < plugin.getSortedCommands().size(); ++d){
+			ExecutableCommand exc = plugin.getSortedCommands().get(d);
+			user.message("- " + exc.getInfo().getName() + " " + exc.getInfo().getUsage() + " : " + exc.getInfo().getDesc());
+		}
+		if((page + 1) * 8 <= plugin.getSortedCommands().size()) user.message("{l:cmd.nextpage,/" + plugin.getAliases()[0] + " " + (page + 2) + "}");
+	}
 
 	static {
 		try {
 			// resourceURLs.add(new URL("jar:file:" + DirectoryLocator.getPath() + "/bin/VC4-Resources.zip!/"));
 			try {
-				String s = PluginLoader.class.getClassLoader().getResource("vc4/resources/resources.yml").toString();
+				String s = PluginManager.class.getClassLoader().getResource("vc4/resources/resources.yml").toString();
 				s = s.substring(0, s.lastIndexOf("/"));
 				resourceURLs.add(new URL(s));
 			} catch (Exception e) {
 			}
-			String s = PluginLoader.class.getClassLoader().getResource("vc4/resources/lang/en_GB.lang").toString();
+			String s = PluginManager.class.getClassLoader().getResource("vc4/resources/lang/en_GB.lang").toString();
 			for (int d = 0; d < 2; ++d)
 				s = s.substring(0, s.lastIndexOf("/"));
 			resourceURLs.add(new URL(s));
 			resourceURLs.add(new File(DirectoryLocator.getPath() + "/resources/").toURI().toURL());
 		} catch (Exception e) {
-			Logger.getLogger(PluginLoader.class).warning("Exception occured", e);
+			Logger.getLogger(PluginManager.class).warning("Exception occured", e);
 		}
 	}
 
@@ -87,7 +136,7 @@ public class PluginLoader {
 			try {
 				resourceURLs.add(new File(DirectoryLocator.getPath() + "/plugins/" + pName + "/").toURI().toURL());
 			} catch (MalformedURLException e1) {
-				Logger.getLogger(PluginLoader.class).warning("Exception occured", e1);
+				Logger.getLogger(PluginManager.class).warning("Exception occured", e1);
 			}
 			try {
 				JarFile jar = new JarFile(jars[d]);
@@ -111,7 +160,7 @@ public class PluginLoader {
 				logger.warning("Failed to identify plugin: " + pName, e);
 			}
 		}
-		URLClassLoader pluginLoader = new URLClassLoader(pluginLoaderUrls.toArray(new URL[pluginLoaderUrls.size()]), PluginLoader.class.getClassLoader());
+		URLClassLoader pluginLoader = new URLClassLoader(pluginLoaderUrls.toArray(new URL[pluginLoaderUrls.size()]), PluginManager.class.getClassLoader());
 		for (int d = 0; d < loading.size(); ++d) {
 			LoadingPlugin plug = loading.get(d);
 			try {
@@ -123,7 +172,7 @@ public class PluginLoader {
 				infoField.set(pluginInstance, plug.infoFile);
 				loadedPlugins.put(plug.infoFile.getName(), pluginInstance);
 			} catch (Exception e) {
-				Logger.getLogger(PluginLoader.class).warning("Failed to load plugin: " + plug.infoFile.getName(), e);
+				Logger.getLogger(PluginManager.class).warning("Failed to load plugin: " + plug.infoFile.getName(), e);
 			}
 		}
 	}
@@ -132,6 +181,7 @@ public class PluginLoader {
 		Logger logger = Logger.getLogger("PluginManager");
 		for (Plugin p : loadedPlugins.values()) {
 			logger.info("Enabling plugin " + p.getPluginInfoFile().getName() + " version " + p.getPluginInfoFile().getVersion());
+			for(String s : p.getAliases()) pluginCommands.put(s, p);
 			p.onEnable();
 		}
 	}
@@ -139,7 +189,9 @@ public class PluginLoader {
 	public static void disablePlugins() {
 		for (Plugin p : loadedPlugins.values()) {
 			p.onDisable();
+			pluginCommands.values().remove(p);
 		}
+		
 	}
 
 	public static void unloadPlugins() {

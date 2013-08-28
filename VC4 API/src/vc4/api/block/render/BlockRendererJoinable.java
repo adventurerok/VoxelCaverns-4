@@ -6,7 +6,7 @@ import vc4.api.block.*;
 import vc4.api.graphics.Renderer;
 import vc4.api.graphics.TextureCoords;
 import vc4.api.item.ItemStack;
-import vc4.api.util.ColorUtils;
+import vc4.api.vector.Vector3f;
 import vc4.api.world.*;
 
 public class BlockRendererJoinable implements BlockRenderer {
@@ -50,7 +50,8 @@ public class BlockRendererJoinable implements BlockRenderer {
 		if (block instanceof IBlockMultitexture) mt = (IBlockMultitexture) block;
 		TextureCoords coords;
 		renderer.useQuadInputMode(true);
-		renderer.light(ColorUtils.getLightColor(chunk.getBlockLight(cx, cy, cz)), world.hasSkyLight(x, y, z));
+		Vector3f light = world.getGenerator().getLightColor(world, m, x, y, z, cx, cz, chunk.getBlockLight(cx, cy, cz));
+		renderer.light(light, world.hasSkyLight(x, y, z));
 		/* Side 5 */{
 			int tex = block.getTextureIndex(world, x, y, z, 5) + addToTex;
 			if (isPipe && (sides[5] || onlySide == 4)) tex -= 1;

@@ -141,6 +141,7 @@ public class PlayerController extends FPCamera {
 		if (keys.isKeyDown(Key.D)) sideways += delta / divisor;
 		if (keys.isKeyDown(Key.SPACE)){
 			player.jump();
+			if(spe) for(int d = 0; d < 4; ++d) player.jump();
 		}
 		if (keys.isKeyDown(Key.LSHIFT)){
 			player.sneak();

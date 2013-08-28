@@ -10,11 +10,12 @@ import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.generator.WorldGenerator;
 import vc4.api.graphics.*;
+import vc4.api.gui.MapIcon;
 import vc4.api.sound.Music;
+import vc4.api.util.XORShiftRandom;
 import vc4.api.util.noise.SimplexNoiseGenerator;
 import vc4.api.util.noise.SimplexOctaveGenerator;
-import vc4.api.vector.Vector3d;
-import vc4.api.vector.Vector3l;
+import vc4.api.vector.*;
 import vc4.api.world.MapData;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
@@ -48,8 +49,31 @@ public class OverworldGenerator implements WorldGenerator {
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
 	ArrayList<ArrayList<Integer>> biomes;
 
+	public static Vector3f[] lightColors = new Vector3f[256];
+
+	static {
+		for(int d = 0; d < 16; ++d){
+			Vector3f c = new Vector3f(1, 1, 1);
+			float multi = 0.83f + (d * 0.007777f);
+			for (int i = 15; i > -1; --i) {
+				lightColors[d * 16 + i] = c.clone();
+				c.x *= multi;
+				c.y *= multi;
+				c.z *= multi;
+			}
+		}
+
+	}
+
 	public ArrayList<ArrayList<Integer>> getBiomes() {
 		return biomes;
+	}
+
+	@Override
+	public Vector3f getLightColor(World world, MapData m, long x, long y, long z, int cx, int cz, int level) {
+		if(y >= -5050) return lightColors[level];
+		if(y <= -5144) return lightColors[240 + level];
+		return lightColors[(int) (((14 - ((y + 5150) / 7)) << 4) + level)];
 	}
 
 	@Override
@@ -148,7 +172,7 @@ public class OverworldGenerator implements WorldGenerator {
 	 */
 	private SimplexOctaveGenerator initHellNoise(World world) {
 		SimplexNoiseGenerator[] octaves = new SimplexNoiseGenerator[2];
-		Random rand = new Random(world.getSeed());
+		Random rand = new XORShiftRandom(world.getSeed());
 		for (int d = 0; d < 2; ++d) {
 			octaves[d] = new SimplexNoiseGenerator(rand);
 			octaves[d].setScale(1 / (48d * (d * 2 + 1)));
@@ -356,6 +380,30 @@ public class OverworldGenerator implements WorldGenerator {
 			}
 		}
 		return bgen;
+	}
+
+	@Override
+	public ArrayList<MapIcon> getMapIcons(World world, long x, long z, int size) {
+		ArrayList<MapIcon> res = new ArrayList<>();
+		if (size < 4097) {
+			long ax = x >> 9;
+			long az = z >> 9;
+			int asize = size >> 9;
+			long dx, dz;
+			Random check;
+			float px, pz;
+			for (dx = 0; dx < asize; ++dx) {
+				for (dz = 0; dz < asize; ++dz) {
+					check = world.createRandom(ax + dx, az + dz, 119821868L);
+					long lx = (((check.nextInt(16) << 5) + 16) + (dx << 9) + (ax << 9)) - x;
+					long lz = (((check.nextInt(16) << 5) + 16) + (dz << 9) + (az << 9)) - z;
+					px = lx / (float) size;
+					pz = lz / (float) size;
+					res.add(new MapIcon("village", new Vector2f(px, pz)));
+				}
+			}
+		}
+		return res;
 	}
 
 	@Override

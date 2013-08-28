@@ -44,3 +44,25 @@ time.season.0=Spring
 time.season.1=Summer
 time.season.2=Autumn
 time.season.3=Winter
+
+cmd.nouser=This command can only be executed by players
+cmd.consoleonly=This command is console only
+cmd.nopermission=You do not have the required permission: "{0}"
+cmd.doubleneeded=Argument {0} must be a floating-point number
+cmd.integerneeded=Argument {0} must be an integer within the range of -2147483648 to 2147483647
+cmd.booleanneeded=Argument {0} must be a boolean
+cmd.minargs=This command requires at least {0} arguments
+cmd.maxargs=This command requires at most {1} arguments
+cmd.numargs=This command requires between {0} and {1} arguments
+cmd.help=Help (page {0} of {1})
+cmd.pluginhelp=Help for plugin {0} (page {1} of {2})
+cmd.nextpage={0} for next page
+cmd.nohelppage=Help page {0} does not exist
+cmd.nocommands=Plugin {0} has no commands
+cmd.noplugin=Plugin {0} does not exist
+cmd.nocommand=That command does not exist. To see avaliable commands, type {0}
+
+cmd.tp.done=Teleported to {0}, {1}, {2}
+cmd.tp.desc=Teleports you to the given coordinates
+
+cmd.fail=Failed to execute command

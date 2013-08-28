@@ -1,14 +1,17 @@
 package vc4.vanilla.generation.world;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import vc4.api.biome.ZoomGenerator;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.generator.GeneratorOutput;
 import vc4.api.generator.WorldGenerator;
+import vc4.api.gui.MapIcon;
 import vc4.api.sound.Music;
 import vc4.api.util.noise.SimplexOctaveGenerator;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3f;
 import vc4.api.world.MapData;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
@@ -83,6 +86,16 @@ public class SkylandGenerator implements WorldGenerator {
 	@Override
 	public ZoomGenerator getBiomeMapGenerator(World world, int zoom) {
 		return null;
+	}
+
+	@Override
+	public ArrayList<MapIcon> getMapIcons(World world, long x, long z, int size) {
+		return null;
+	}
+
+	@Override
+	public Vector3f getLightColor(World world, MapData m, long x, long y, long z, int cx, int cz, int level) {
+		return new Vector3f(1, 1, 1);
 	}
 
 }

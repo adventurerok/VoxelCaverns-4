@@ -7,11 +7,9 @@ import java.awt.Color;
 
 import vc4.api.block.Block;
 import vc4.api.block.IBlockMultitexture;
-import vc4.api.block.render.BlockRenderer;
 import vc4.api.graphics.Renderer;
 import vc4.api.item.ItemStack;
 import vc4.api.util.AABB;
-import vc4.api.util.ColorUtils;
 import vc4.api.vector.Vector3f;
 import vc4.api.world.*;
 
@@ -37,7 +35,7 @@ public class BlockRendererFace implements BlockRenderer {
 		long z = c.getChunkPos().worldZ(cz);
 		if (block.isAir()) return;
 		if(c.getBlockLight(cx, cy, cz) > 4) System.out.println("Size");
-		Vector3f light = ColorUtils.getLightColor(c.getBlockLight(cx, cy, cz));
+		Vector3f light = c.getWorld().getGenerator().getLightColor(c.getWorld(), m, x, y, z, cx, cz, c.getBlockLight(cx, cy, cz));
 		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
 		AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);
 		for (int d = 0; d < 6; ++d) {

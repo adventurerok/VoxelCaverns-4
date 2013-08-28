@@ -2,6 +2,8 @@ package vc4.api.util.noise;
 
 import java.util.Random;
 
+import vc4.api.util.XORShiftRandom;
+
 public class PerlinNoiseGenerator extends NoiseGenerator {
 	protected static final int[][] grad3 = { { 1, 1, 0 }, { -1, 1, 0 },
 			{ 1, -1, 0 }, { -1, -1, 0 }, { 1, 0, 1 }, { -1, 0, 1 },
@@ -37,7 +39,7 @@ public class PerlinNoiseGenerator extends NoiseGenerator {
 	}
 
 	public PerlinNoiseGenerator(final long seed) {
-		this(new Random(seed));
+		this(new XORShiftRandom(seed));
 	}
 
 	public PerlinNoiseGenerator(final Random rand) {

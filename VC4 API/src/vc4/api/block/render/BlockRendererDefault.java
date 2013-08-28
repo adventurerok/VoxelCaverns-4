@@ -42,7 +42,8 @@ public class BlockRendererDefault implements BlockRenderer {
 			if (!block.renderSide(c.getWorld(), x, y, z, d)) continue;
 			dir = Direction.getDirection(d);
 			int rend = block.getRendererToUse(data, d);
-			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
+			int llvl = c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ());
+			light = c.getWorld().getGenerator().getLightColor(c.getWorld(), m, x, y, z, cx, cz, llvl);
 			renderers[rend].light(light.x, light.y, light.z, c.getWorld().hasNearbySkylight(x, y, z, d));
 			renderBlockFace(c.getWorld(), x, y, z, block, renderers[rend], bounds, d);
 		}
@@ -52,7 +53,8 @@ public class BlockRendererDefault implements BlockRenderer {
 			if (!mt.renderSideMultitexture(c.getWorld(), x, y, z, d)) continue;
 			dir = Direction.getDirection(d);
 			int rend = block.getRendererToUse(data, d);
-			light = ColorUtils.getLightColor(c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ()));
+			int llvl = c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ());
+			light = c.getWorld().getGenerator().getLightColor(c.getWorld(), m, x, y, z, cx, cz, llvl);
 			renderers[rend].light(light.x, light.y, light.z, c.getWorld().hasNearbySkylight(x, y, z, d));
 			renderBlockFace(c.getWorld(), x, y, z, mt, renderers[rend], bounds, d);
 		}

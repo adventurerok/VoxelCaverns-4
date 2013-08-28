@@ -19,7 +19,7 @@ import org.lwjgl.BufferUtils;
 import vc4.api.graphics.*;
 import vc4.api.graphics.texture.*;
 import vc4.api.logging.Logger;
-import vc4.impl.plugin.PluginLoader;
+import vc4.impl.plugin.PluginManager;
 
 
 /**
@@ -78,7 +78,7 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 	
 	private static ArrayList<URL> getImageURLs(){
 		ArrayList<URL> result = new ArrayList<>();
-		for(URL url : PluginLoader.getResourceURLs()){
+		for(URL url : PluginManager.getResourceURLs()){
 			try {
 				URL mod = new URL(url.toString() + "/sheettexture/");
 				result.addAll(getImageUrlsElsewhere(mod));

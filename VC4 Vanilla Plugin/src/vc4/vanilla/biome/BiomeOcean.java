@@ -14,7 +14,7 @@ public class BiomeOcean extends Biome {
 	
 	@Override
 	public int generateSubBiome(FastRandom rand, int op) {
-		if(rand.nextInt(5) == 0 && op == 0) return Vanilla.biomeTrench.id;
+		if(op == 0 && rand.nextInt(15) == 0) return Vanilla.biomeTrench.id;
 		else return id;
 	}
 }

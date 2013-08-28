@@ -16,7 +16,7 @@ import vc4.api.vector.*;
  */
 public interface OpenGL {
 
-	
+	public void scissor(int x, int y, int width, int height);
 	public void clearColor(float r, float g, float b, float a);
 	public void clear(EnumSet<GLBufferBit> bufferBits);
 	public void matrixMode(GLMatrixMode mode);

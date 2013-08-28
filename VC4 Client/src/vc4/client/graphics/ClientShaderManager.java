@@ -3,9 +3,7 @@
  */
 package vc4.client.graphics;
 
-import static org.lwjgl.opengl.ARBFragmentShader.*;
-import static org.lwjgl.opengl.ARBShaderObjects.*;
-import static org.lwjgl.opengl.ARBVertexShader.*;
+import static org.lwjgl.opengl.GL20.*;
 
 import java.io.*;
 import java.net.URL;
@@ -39,7 +37,7 @@ public class ClientShaderManager implements ShaderManager {
 	@Override
 	public void bindShader(int shader) {
 		current = shader;
-		glUseProgramObjectARB(current);
+		glUseProgram(current);
 	}
 	
 	/**
@@ -55,7 +53,7 @@ public class ClientShaderManager implements ShaderManager {
 	@Override
 	public void bindShader(String name) {
 		current = namedShaders.get(name);
-		glUseProgramObjectARB(current);
+		glUseProgram(current);
 	}
 
 	/* (non-Javadoc)
@@ -63,7 +61,7 @@ public class ClientShaderManager implements ShaderManager {
 	 */
 	@Override
 	public void unbindShader() {
-		glUseProgramObjectARB(0);
+		glUseProgram(0);
 		current = 0;
 	}
 
@@ -72,22 +70,22 @@ public class ClientShaderManager implements ShaderManager {
 	 */
 	@Override
 	public int createShader(URL file, String name) throws IOException{
-		current = glCreateProgramObjectARB();
+		current = glCreateProgram();
 		if (current == 0) return current;
 		vertex = createVertShader(file);
 		fragment = createFragShader(file);
 
 		if (vertex == 0 || fragment == 0) return 0;
-		glAttachObjectARB(current, vertex);
-		glAttachObjectARB(current, fragment);
+		glAttachShader(current, vertex);
+		glAttachShader(current, fragment);
 		bindAllAttributes();
-		glLinkProgramARB(current);
-		if (glGetObjectParameteriARB(current, GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
+		glLinkProgram(current);
+		if (glGetProgram(current, GL_LINK_STATUS) == GL_FALSE) {
 			printLogInfo(current);
 			return 0;
 		}
-		glValidateProgramARB(current);
-		if (glGetObjectParameteriARB(current, GL_OBJECT_VALIDATE_STATUS_ARB) == GL_FALSE) {
+		glValidateProgram(current);
+		if (glGetProgram(current, GL_VALIDATE_STATUS) == GL_FALSE) {
 			printLogInfo(current);
 			return 0;
 		}
@@ -102,7 +100,7 @@ public class ClientShaderManager implements ShaderManager {
 	@Override
 	public void shaderUniform1i(String var, int x) {
 		int u = uniformLocation(var);
-		glUniform1iARB(u, x);
+		glUniform1i(u, x);
 	}
 
 	/* (non-Javadoc)
@@ -111,7 +109,7 @@ public class ClientShaderManager implements ShaderManager {
 	@Override
 	public void shaderUniform1f(String var, float x) {
 		int u = uniformLocation(var);
-		glUniform1fARB(u, x);
+		glUniform1f(u, x);
 	}
 
 	/* (non-Javadoc)
@@ -120,25 +118,25 @@ public class ClientShaderManager implements ShaderManager {
 	@Override
 	public void shaderUniform3f(String var, float x, float y, float z) {
 		int u = uniformLocation(var);
-		glUniform3fARB(u, x, y, z);
+		glUniform3f(u, x, y, z);
 	}
 	
 	@Override
 	public void shaderUniform4f(String var, float x, float y, float z, float w) {
 		int u = uniformLocation(var);
-		glUniform4fARB(u, x, y, z, w);
+		glUniform4f(u, x, y, z, w);
 	}
 
 	protected static boolean printLogInfo(int obj) {
 		IntBuffer iVal = BufferUtils.createIntBuffer(1);
-		glGetObjectParameterARB(obj, GL_OBJECT_INFO_LOG_LENGTH_ARB, iVal);
+		glGetProgram(obj, GL_INFO_LOG_LENGTH, iVal);
 
 		int length = iVal.get();
 		if (length > 1) {
 			// We have some info we need to output.
 			ByteBuffer infoLog = BufferUtils.createByteBuffer(length);
 			iVal.flip();
-			glGetInfoLogARB(obj, iVal, infoLog);
+			glGetShaderInfoLog(obj, iVal, infoLog);
 			byte[] infoBytes = new byte[length];
 			infoLog.get(infoBytes);
 			String out = new String(infoBytes);
@@ -148,29 +146,29 @@ public class ClientShaderManager implements ShaderManager {
 	}
 	
 	private void bindAllAttributes() {
-		glBindAttribLocationARB(current, 0, "inVertex");
-		glBindAttribLocationARB(current, 1, "inData1");
-		glBindAttribLocationARB(current, 2, "inNormal");
-		glBindAttribLocationARB(current, 3, "inColor");
-		glBindAttribLocationARB(current, 4, "inSecColor");
-		glBindAttribLocationARB(current, 5, "inFog");
-		glBindAttribLocationARB(current, 6, "inData6");
-		glBindAttribLocationARB(current, 7, "inData7");
-		glBindAttribLocationARB(current, 8, "inTex");
-		glBindAttribLocationARB(current, 9, "inTex1");
-		glBindAttribLocationARB(current, 10, "inTex2");
-		glBindAttribLocationARB(current, 11, "inTex3");
-		glBindAttribLocationARB(current, 12, "inTex4");
-		glBindAttribLocationARB(current, 13, "inTex5");
-		glBindAttribLocationARB(current, 14, "inTex6");
-		glBindAttribLocationARB(current, 15, "inTex7");
+		glBindAttribLocation(current, 0, "inVertex");
+		glBindAttribLocation(current, 1, "inData1");
+		glBindAttribLocation(current, 2, "inNormal");
+		glBindAttribLocation(current, 3, "inColor");
+		glBindAttribLocation(current, 4, "inSecColor");
+		glBindAttribLocation(current, 5, "inFog");
+		glBindAttribLocation(current, 6, "inData6");
+		glBindAttribLocation(current, 7, "inData7");
+		glBindAttribLocation(current, 8, "inTex");
+		glBindAttribLocation(current, 9, "inTex1");
+		glBindAttribLocation(current, 10, "inTex2");
+		glBindAttribLocation(current, 11, "inTex3");
+		glBindAttribLocation(current, 12, "inTex4");
+		glBindAttribLocation(current, 13, "inTex5");
+		glBindAttribLocation(current, 14, "inTex6");
+		glBindAttribLocation(current, 15, "inTex7");
 	}
 	
 	protected int createVertShader(URL url) throws IOException {
 		url = new URL(url.toString() + ".vert");
 		InputStream input = url.openStream();
 
-		vertex = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+		vertex = glCreateShader(GL_VERTEX_SHADER);
 		// if created, convert the vertex shader code to a String
 		if (vertex == 0) { return 0; }
 		String vertexCode = "";
@@ -187,10 +185,10 @@ public class ClientShaderManager implements ShaderManager {
 		/*
 		 * associate the vertex code String with the created vertex shader and compile
 		 */
-		glShaderSourceARB(vertex, vertexCode);
-		glCompileShaderARB(vertex);
+		glShaderSource(vertex, vertexCode);
+		glCompileShader(vertex);
 		// if there was a problem compiling, reset vertShader to zero
-		if (glGetObjectParameteriARB(vertex, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
+		if (glGetProgram(vertex, GL_COMPILE_STATUS) == GL_FALSE) {
 			printLogInfo(vertex);
 			vertex = 0;
 		}
@@ -201,7 +199,7 @@ public class ClientShaderManager implements ShaderManager {
 	protected int createFragShader(URL url) throws IOException {
 		url = new URL(url.toString() + ".frag");
 		InputStream input = url.openStream();
-		fragment = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+		fragment = glCreateShader(GL_FRAGMENT_SHADER);
 		if (fragment == 0) { return 0; }
 		String fragCode = "";
 		String line;
@@ -214,9 +212,9 @@ public class ClientShaderManager implements ShaderManager {
 			System.out.println("Fail reading fragment shading code");
 			return 0;
 		}
-		glShaderSourceARB(fragment, fragCode);
-		glCompileShaderARB(fragment);
-		if (glGetObjectParameteriARB(fragment, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
+		glShaderSource(fragment, fragCode);
+		glCompileShader(fragment);
+		if (glGetProgram(fragment, GL_COMPILE_STATUS) == GL_FALSE) {
 			printLogInfo(fragment);
 			fragment = 0;
 		}
@@ -235,7 +233,7 @@ public class ClientShaderManager implements ShaderManager {
 		public int getUniformLocation(String name) {
 			if (uniforms.containsKey(name)) return uniforms.get(name);
 			else {
-				int a = glGetUniformLocationARB(id, name);
+				int a = glGetUniformLocation(id, name);
 				uniforms.put(name, a);
 				return a;
 			}

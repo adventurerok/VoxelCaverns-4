@@ -436,4 +436,9 @@ public class Vanilla extends Plugin {
 		return trades.getName(id);
 	}
 
+	@Override
+	public String[] getAliases() {
+		return new String[]{"vn", "vanilla", "v"};
+	}
+
 }

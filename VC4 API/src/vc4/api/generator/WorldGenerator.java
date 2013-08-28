@@ -3,10 +3,14 @@
  */
 package vc4.api.generator;
 
+import java.util.ArrayList;
+
 import vc4.api.biome.ZoomGenerator;
 import vc4.api.entity.EntityPlayer;
+import vc4.api.gui.MapIcon;
 import vc4.api.sound.Music;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3f;
 import vc4.api.world.MapData;
 import vc4.api.world.World;
 
@@ -25,4 +29,6 @@ public interface WorldGenerator {
 	public void generateMapData(World world, MapData data);
 	public boolean generatePlants(World world, long x, long y, long z);
 	public abstract ZoomGenerator getBiomeMapGenerator(World world, int zoom);
+	public abstract ArrayList<MapIcon> getMapIcons(World world, long x, long z, int size);
+	public abstract Vector3f getLightColor(World world, MapData m, long x, long y, long z, int cx, int cz, int level);
 }

@@ -16,7 +16,7 @@ import vc4.api.logging.Logger;
 import vc4.api.model.Model;
 import vc4.api.sound.Audio;
 import vc4.api.yaml.ThreadYaml;
-import vc4.impl.plugin.PluginLoader;
+import vc4.impl.plugin.PluginManager;
 
 public class ImplResources extends Resources {
 	
@@ -67,7 +67,7 @@ public class ImplResources extends Resources {
 		ArrayList<String> lModels = new ArrayList<String>();
 		ArrayList<Entry<String, ArrayList<String>>> lGuis = new ArrayList<Entry<String, ArrayList<String>>>();
 		Yaml yaml = ThreadYaml.getYamlForThread();
-		for(URL url : PluginLoader.getResourceURLs()){
+		for(URL url : PluginManager.getResourceURLs()){
 			try{
 				String refConstruct = url.toString();
 				if(!refConstruct.endsWith("/")) refConstruct = refConstruct + "/";
@@ -152,7 +152,7 @@ public class ImplResources extends Resources {
 
 	@Override
 	public List<URL> agetResourceURLs() {
-		return PluginLoader.getResourceURLs();
+		return PluginManager.getResourceURLs();
 	}
 
 	@Override

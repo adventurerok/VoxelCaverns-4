@@ -5,24 +5,30 @@ package vc4.client.gui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 import vc4.api.GameState;
 import vc4.api.Resources;
 import vc4.api.block.OpenContainer;
 import vc4.api.client.Client;
 import vc4.api.client.ClientWindow;
+import vc4.api.cmd.Command;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.entity.trait.TraitOpenContainers;
 import vc4.api.font.FontRenderer;
 import vc4.api.graphics.*;
 import vc4.api.gui.*;
+import vc4.api.gui.ResizerComplex.PartConstant;
+import vc4.api.gui.ResizerComplex.PartSubX;
+import vc4.api.gui.ResizerComplex.PartSubY;
+import vc4.api.gui.listeners.TextListener;
 import vc4.api.gui.themed.ColorScheme;
+import vc4.api.util.StringSplitter;
 import vc4.api.vector.Vector2f;
 import vc4.client.Window;
+import vc4.client.server.ClientUser;
+import vc4.impl.cmd.CommandExecutor;
 import vc4.impl.gui.*;
-import static vc4.api.gui.ResizerComplex.*;
 
 /**
  * @author paul
@@ -72,6 +78,18 @@ public class IngameGui extends Component {
 		add(gameGui);
 		chatInput = new TextBox();
 		chatInput.setResizer(new ResizerComplex(new PartConstant(5), new PartSubY(13), new PartSubX(0), new PartSubY(2)));
+		chatInput.addListener(new TextListener() {
+			
+			@Override
+			public void textRecieved(TextBox box, String input) {
+				if(input == null || input.isEmpty()) return;
+				String[] parts = StringSplitter.splitString(input, false);
+				String cmd = parts[0];
+				String[] args = Arrays.copyOfRange(parts, 1, parts.length);
+				Command command = new Command(cmd, args, ClientUser.CLIENT_USER);
+				CommandExecutor.executeCommand(command);
+			}
+		});
 		map = new ScreenMap();
 		map.setResizer(new ResizerFill());
 		add(map);

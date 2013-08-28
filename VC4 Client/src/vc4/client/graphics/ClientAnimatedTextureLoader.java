@@ -16,7 +16,7 @@ import vc4.api.graphics.Graphics;
 import vc4.api.graphics.texture.AnimatedTexture;
 import vc4.api.graphics.texture.AnimatedTextureLoader;
 import vc4.api.logging.Logger;
-import vc4.impl.plugin.PluginLoader;
+import vc4.impl.plugin.PluginManager;
 
 
 /**
@@ -73,7 +73,7 @@ public class ClientAnimatedTextureLoader implements AnimatedTextureLoader{
 	
 	private static ArrayList<URL> getImageURLs(String tex){
 		ArrayList<URL> result = new ArrayList<>();
-		for(URL url : PluginLoader.getResourceURLs()){
+		for(URL url : PluginManager.getResourceURLs()){
 			try {
 				URL mod = new URL(url.toString() + "/animatedtexture/" + tex + "/");
 				result.addAll(getImageUrlsElsewhere(mod));

@@ -18,7 +18,7 @@ public class BlockRendererStairs extends BlockRendererDefault {
 		long y = c.getChunkPos().worldY(cy);
 		long z = c.getChunkPos().worldZ(cz);
 		if (block.isAir()) return;
-		Vector3f light = ColorUtils.getLightColor(c.getBlockLight(cx, cy, cz));
+		Vector3f light = c.getWorld().getGenerator().getLightColor(c.getWorld(), m, x, y, z, cx, cz, c.getBlockLight(cx, cy, cz));
 		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
 		int facing = data & 3;
 		boolean upside = (data & 16) != 0;

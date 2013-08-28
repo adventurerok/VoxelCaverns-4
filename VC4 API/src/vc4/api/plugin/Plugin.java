@@ -3,6 +3,9 @@
  */
 package vc4.api.plugin;
 
+import java.util.*;
+
+import vc4.api.cmd.*;
 import vc4.api.logging.Logger;
 import vc4.api.world.World;
 
@@ -13,6 +16,23 @@ import vc4.api.world.World;
 public abstract class Plugin {
 
 	private PluginInfoFile infoFile;
+	HashMap<String, ExecutableCommand> commands = new HashMap<>();
+	ArrayList<ExecutableCommand> cmdList = new ArrayList<>();
+	
+	public ArrayList<ExecutableCommand> getSortedCommands(){
+		return cmdList;
+	}
+	
+	public HashMap<String, ExecutableCommand> getExecutableCommands(){
+		return commands;
+	}
+	
+	public void registerCommand(CommandInfo info, CommandHandler handler){
+		commands.put(info.getName(), new ExecutableCommand(info, handler));
+		cmdList.add(new ExecutableCommand(info, handler));
+		for(String s : info.getAliases()) commands.put(s, new ExecutableCommand(info, handler));
+		Collections.sort(cmdList);
+	}
 
 	public Logger getLogger() {
 		return Logger.getLogger(getPluginInfoFile().getName());
@@ -21,6 +41,15 @@ public abstract class Plugin {
 	public PluginInfoFile getPluginInfoFile() {
 		return infoFile;
 	}
+	
+	
+	/**
+	 * Gets the aliases that can be used to execute commands relating to this plugin.
+	 * The more aliases there are, the more likely there will be one unused by other plugins
+	 * 
+	 * @return The plugin aliases, in the form of a String array
+	 */
+	public abstract String[] getAliases();
 
 	/**
 	 * 

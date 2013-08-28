@@ -12,6 +12,7 @@ animatedtexture:
     - "cursor"
     - "crafting"
     - "human"
+    - "mapicons"
     
 shader:
     - "world"

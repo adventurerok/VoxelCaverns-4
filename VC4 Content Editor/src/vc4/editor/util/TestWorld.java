@@ -506,6 +506,7 @@ public class TestWorld implements World {
 		return false;
 	}
 
+	@Override
 	public boolean blockTransparencyChange(long x, long y, long z, boolean trans) {
 		return false;
 	}

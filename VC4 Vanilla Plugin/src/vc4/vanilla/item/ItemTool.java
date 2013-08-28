@@ -14,6 +14,7 @@ public class ItemTool extends ItemMultitexture {
 	Color handle;
 	Color metal;
 
+
 	public ItemTool(int id, ToolType type, ToolMaterial material) {
 		super(id);
 		maxStack = 1;

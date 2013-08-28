@@ -46,7 +46,7 @@ import vc4.api.yaml.ThreadYaml;
 import vc4.client.camera.PlayerController;
 import vc4.client.gui.*;
 import vc4.client.sound.SoundManager;
-import vc4.impl.plugin.PluginLoader;
+import vc4.impl.plugin.PluginManager;
 import vc4.impl.world.ImplWorld;
 
 /**
@@ -402,7 +402,7 @@ public class Game extends Component implements ClientGame {
 		}
 		setBounds(getBounds());
 		SoundManager.init();
-		PluginLoader.loadAndEnablePlugins();
+		PluginManager.loadAndEnablePlugins();
 		loadResources();
 		loadSettings();
 		addCursor(new ClientCursor("pointer"));

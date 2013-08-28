@@ -18,22 +18,16 @@ import vc4.vanilla.BlockTexture;
  */
 public class BlockOre extends BlockMultitexture {
 
-	Color[] oreColors = new Color[32];
-	String[] oreNames = new String[32];
+	public static Color[] oreColors = new Color[32];
+	public static String[] oreNames = new String[32];
 	
 	
-	public void registerOre(int id, String name, Color color){
+	public static void registerOre(int id, String name, Color color){
 		oreColors[id] = color;
 		oreNames[id] = name;
 	}
 	
-	/**
-	 * @param uid
-	 * @param texture
-	 * @param material
-	 */
-	public BlockOre(int uid, int tex) {
-		super(uid, tex, "ore");
+	static{
 		registerOre(0, "coal", new Color(32, 32, 32)); //Tier 1 fuel (cook's 10, 5 torches)
 		registerOre(1, "copper", new Color(127, 51, 0)); //T1
 		registerOre(2, "tin", new Color(90, 70, 70)); //T1
@@ -47,11 +41,24 @@ public class BlockOre extends BlockMultitexture {
 		registerOre(10, "platinum", new Color(168, 167, 165)); //T9
 		registerOre(11, "adamantite", new Color(60, 93, 60)); //T10
 		
+		registerOre(16, "nickel", new Color(187, 185, 170));
+		registerOre(17, "zinc", new Color(120, 120, 150));
+		
 		registerOre(20, "sulphur", new Color(154, 127, 46)); //Tier 1 explosive
 		registerOre(21, "francium", new Color(178, 205, 132)); //Tier 2 explosive
 		
 		registerOre(25, "ash", new Color(217, 217, 225)); //Tier 2 fuel (cooks 25 , 12 torches)
 		registerOre(26, "ember", new Color(255, 126, 16)); //Tier 3 fuel (cooks 75 , 33 torches)
+	}
+	
+	/**
+	 * @param uid
+	 * @param texture
+	 * @param material
+	 */
+	public BlockOre(int uid, int tex) {
+		super(uid, tex, "ore");
+		
 		mtIndex = BlockTexture.ore;
 		
 	}

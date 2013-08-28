@@ -10,6 +10,7 @@ import org.jnbt.*;
 
 import vc4.api.Resources;
 import vc4.api.biome.Biome;
+import vc4.api.biome.ZoomGenerator;
 import vc4.api.block.Block;
 import vc4.api.client.Client;
 import vc4.api.crafting.CraftingManager;
@@ -29,7 +30,7 @@ import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
 import vc4.api.vector.*;
 import vc4.api.world.*;
-import vc4.impl.plugin.PluginLoader;
+import vc4.impl.plugin.PluginManager;
 
 /**
  * @author paul
@@ -102,6 +103,8 @@ public class ImplWorld implements World {
 	private GeneratorThread[] genThreads;
 
 	private static double WORLD_SECOND = 50;
+	
+	private ZoomGenerator biomeLookup;
 
 	/**
 	 * 
@@ -238,7 +241,7 @@ public class ImplWorld implements World {
 		Block.clearBlocks();
 		Biome.clear();
 		CraftingManager.emptyRecipes();
-		PluginLoader.onWorldLoad(this);
+		PluginManager.onWorldLoad(this);
 		GeneratorList.onWorldLoad(this);
 		loaded = true;
 	}
@@ -554,8 +557,8 @@ public class ImplWorld implements World {
 					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
-					for (int dofor = 0; dofor < c.entitys.size(); ++dofor) {
-						Entity e = c.entitys.get(dofor);
+					for (Entity e : c.entitys) {
+						//Entity e = c.entitys.get(dofor);
 						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
 					}
 					// long time = System.nanoTime() - start;
@@ -584,8 +587,8 @@ public class ImplWorld implements World {
 					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
-					for (int dofor = 0; dofor < c.entitys.size(); ++dofor) {
-						Entity e = c.entitys.get(dofor);
+					for (Entity e : c.entitys) {
+						//Entity e = c.entitys.get(dofor);
 						if(!type.isAssignableFrom(e.getClass())) continue;
 						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
 					}
@@ -1339,7 +1342,7 @@ public class ImplWorld implements World {
 		NBTOutputStream out = new NBTOutputStream(new FileOutputStream(wld), true);
 		out.writeTag(getSaveCompound());
 		out.close();
-		PluginLoader.onWorldSave(this);
+		PluginManager.onWorldSave(this);
 	}
 
 	public void unloadChunks() {
@@ -1498,9 +1501,12 @@ public class ImplWorld implements World {
 
 	@Override
 	public Biome getBiome(long x, long z) {
-		try {
-			return getMapData(x >> 5, z >> 5).getBiome((int) (x & 31), (int) (z & 31));
-		} catch (Exception e) {
+		MapData m = getMapData(x >> 5, z >> 5);
+		if(m != null){
+			return m.getBiome((int) (x & 31), (int) (z & 31));
+		} else {
+			if(biomeLookup == null) biomeLookup = getGenerator().getBiomeMapGenerator(this, 0);
+			if(biomeLookup != null) return Biome.byId(biomeLookup.generate(x, z, 1)[0]);
 			return fakeBiome;
 		}
 	}

@@ -10,7 +10,6 @@ import vc4.api.block.Block;
 import vc4.api.block.BlockFluid;
 import vc4.api.graphics.Renderer;
 import vc4.api.item.ItemStack;
-import vc4.api.util.ColorUtils;
 import vc4.api.vector.Vector3f;
 import vc4.api.world.*;
 
@@ -28,7 +27,7 @@ public class BlockRendererFluid implements BlockRenderer {
 		long x = c.getChunkPos().worldX(cx);
 		long y = c.getChunkPos().worldY(cy);
 		long z = c.getChunkPos().worldZ(cz);
-		Vector3f light = ColorUtils.getLightColor(c.getBlockLight(cx, cy, cz));
+		Vector3f light = c.getWorld().getGenerator().getLightColor(c.getWorld(), m, x, y, z, cx, cz, c.getBlockLight(cx, cy, cz));
 		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
 		double heights[] = null;
 		for(int d = 0; d < 6; ++d){

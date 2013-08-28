@@ -17,12 +17,7 @@ public class ChunkPos {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (x ^ (x >>> 32));
-		result = prime * result + (int) (y ^ (y >>> 32));
-		result = prime * result + (int) (z ^ (z >>> 32));
-		return result;
+		return (int) (((y & 1023) << 22) + ((x & 2047) << 11) + (z & 2047));
 	}
 
 	/* (non-Javadoc)

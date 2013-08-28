@@ -2,6 +2,7 @@ package vc4.api.util.noise;
 
 import java.util.Random;
 
+import vc4.api.util.XORShiftRandom;
 import vc4.api.world.World;
 
 /**
@@ -69,7 +70,7 @@ public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
      * @param world World to construct this generator for
      */
     public SimplexNoiseGenerator(World world) {
-        this(new Random(world.getSeed()));
+        this(new XORShiftRandom(world.getSeed()));
     }
 
     /**
@@ -78,7 +79,7 @@ public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
      * @param seed Seed to construct this generator for
      */
     public SimplexNoiseGenerator(long seed) {
-        this(new Random(seed));
+        this(new XORShiftRandom(seed));
     }
 
     /**
