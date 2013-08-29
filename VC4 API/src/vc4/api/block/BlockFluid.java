@@ -3,7 +3,12 @@
  */
 package vc4.api.block;
 
+import java.util.Random;
+
 import vc4.api.block.render.BlockRendererFluid;
+import vc4.api.entity.EntityPlayer;
+import vc4.api.item.ItemStack;
+import vc4.api.list.IntList;
 import vc4.api.util.AABB;
 import vc4.api.util.Direction;
 import vc4.api.world.World;
@@ -13,7 +18,12 @@ import vc4.api.world.World;
  *
  */
 public class BlockFluid extends Block {
+	
+	IntList fluidFall = new IntList();
+	IntList fluidMove = new IntList();
 
+	int updateWait = 5;
+	
 	/**
 	 * @param uid
 	 * @param texture
@@ -42,6 +52,11 @@ public class BlockFluid extends Block {
 		return null;
 	}
 	
+	@Override
+	public boolean replacableBy(World world, long x, long y, long z, int bid, byte data) {
+		return true;
+	}
+	
 	/* (non-Javadoc)
 	 * @see vc4.api.block.Block#renderSide(vc4.api.world.World, long, long, long, int)
 	 */
@@ -59,7 +74,7 @@ public class BlockFluid extends Block {
 	}
 	
 	protected float getBaseFluidSideHeight(byte data) {
-		return ((7 - (data % 8))) / 8F;
+		return ((16 - (data % 16))) / 17F;
 	}
 	
 	protected double getSideHeight(World world, long x, long y, long z, int side){
@@ -93,6 +108,68 @@ public class BlockFluid extends Block {
 		}
 		base = total / amount;
 		return base;
+	}
+	
+	@Override
+	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
+		world.setBlockIdData(x, y, z, uid, item.getData());
+		item.decrementAmount();
+		world.scheduleBlockUpdate(x, y, z, updateWait);
+	}
+	
+	@Override
+	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {
+//		world.scheduleBlockUpdate(x, y, z, updateWait);
+	}
+	
+	@Override
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte dat) {
+		return 0;
+//		if(dat > 15) return 0;
+//		int lvl = (16 - (dat & 15));
+//		Block below = world.getBlockType(x, y - 1, z);
+//		if(below.isAir){
+//			world.setBlockIdData(x, y - 1, z, uid, 16 - lvl);
+//			world.setBlockId(x, y, z, 0);
+//			return updateWait;
+//		}
+//		if(below.uid == uid){
+//			
+//		}
+//		fluidMove.clear();
+//		fluidFall.clear();
+//		for(int d = 0; d < 4; ++d){
+//			if(!world.getNearbyBlockType(x, y, z, d).isAir) continue;
+//			fluidMove.add(d);
+//			if(world.getNearbyBlockType(x, y - 1, z, d).isAir) fluidFall.add(d);
+//		}
+//		if(!fluidFall.isEmpty()){
+//			double div = lvl / (double) (fluidFall.size());
+//			int split = (div -((int)div)) > 0.1 ? ((int)(div) + 1) : (int)div;
+//			if(split < 2){
+//				world.setBlockId(x, y, z, 0);
+//				return 0;
+//			}
+//			for(int d = 0; d < fluidFall.size(); ++d){
+//				world.setNearbyBlockIdData(x, y, z, uid, 16 - split, Direction.getDirection(fluidFall.get(d)));
+//			}
+//			world.setBlockId(x, y, z, 0);
+//			return 0;
+//		}
+//		if(!fluidMove.isEmpty()){
+//			double div = lvl / (double) (fluidMove.size() + 1);
+//			int split = (div -((int)div)) > 0.1 ? ((int)(div) + 1) : (int)div;
+//			if(split < 2){
+//				world.setBlockId(x, y, z, 0);
+//				return 0;
+//			}
+//			for(int d = 0; d < fluidMove.size(); ++d){
+//				world.setNearbyBlockIdData(x, y, z, uid, 16 - split, Direction.getDirection(fluidMove.get(d)));
+//			}
+//			world.setBlockData(x, y, z, 16 - split);
+//			return 0;
+//		}
+//		return 0;
 	}
 
 }

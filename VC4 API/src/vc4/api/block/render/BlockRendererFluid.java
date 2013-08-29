@@ -18,6 +18,7 @@ import vc4.api.world.*;
  *
  */
 public class BlockRendererFluid implements BlockRenderer {
+	
 
 	/* (non-Javadoc)
 	 * @see vc4.api.block.render.BlockRenderer#renderBlock(vc4.api.world.Chunk, int, int, int, vc4.api.block.Block, byte, vc4.api.graphics.Renderer[])
@@ -182,6 +183,8 @@ public class BlockRendererFluid implements BlockRenderer {
 		render.addVertex(x + 1, y, z + 1);
 
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see vc4.api.block.render.BlockRenderer#renderBlock(vc4.api.item.ItemStack, float, float, float, vc4.api.graphics.Renderer)

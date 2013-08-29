@@ -113,4 +113,6 @@ public interface World {
 	public abstract boolean blockTransparencyChange(long x, long y, long z, boolean trans);
 	public boolean hasSkyLight(long x, long y, long z);
 	public boolean hasDayLight(long x, long y, long z);
+	public abstract void scheduleBlockUpdate(long x, long y, long z, int time);
+	public float getNearbySkylight(long x, long y, long z, int d);
 }

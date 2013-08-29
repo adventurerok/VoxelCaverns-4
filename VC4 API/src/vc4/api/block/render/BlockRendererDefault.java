@@ -44,7 +44,7 @@ public class BlockRendererDefault implements BlockRenderer {
 			int rend = block.getRendererToUse(data, d);
 			int llvl = c.getBlockLightWithBBCheck(cx + dir.getX(), cy + dir.getY(), cz + dir.getZ());
 			light = c.getWorld().getGenerator().getLightColor(c.getWorld(), m, x, y, z, cx, cz, llvl);
-			renderers[rend].light(light.x, light.y, light.z, c.getWorld().hasNearbySkylight(x, y, z, d));
+			renderers[rend].light(light.x, light.y, light.z, c.getWorld().getNearbySkylight(x, y, z, d));
 			renderBlockFace(c.getWorld(), x, y, z, block, renderers[rend], bounds, d);
 		}
 		if (!(block instanceof IBlockMultitexture)) return;

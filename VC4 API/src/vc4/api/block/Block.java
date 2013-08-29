@@ -207,13 +207,18 @@ public class Block {
 		MiningData data = getMiningData(world, x, y, z);
 		if (data == null) {
 			if(mined != null) mined.damage();
-		} else if (data.onMine(mined)) {
-			ItemStack[] drops = getItemDrops(world, x, y, z, mined);
-			for (ItemStack d : drops) {
-				new EntityItem(world).setItem(d.clone()).setPosition(x + 0.5, y + 0.5, z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
-			}
 		}
+		dropItems(world, x, y, z, mined);
 		world.setBlockId(x, y, z, 0);
+	}
+	
+	public void dropItems(World world, long x, long y, long z, ItemStack mined){
+		if(!getMiningData(world, x, y, z).onMine(mined)) return;
+		ItemStack[] drops = getItemDrops(world, x, y, z, mined);
+		for (ItemStack d : drops) {
+			new EntityItem(world).setItem(d.clone()).setPosition(x + 0.5, y + 0.5, z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
+		}
+		
 	}
 
 	public void onLeftClick(World world, long x, long y, long z, int side, EntityPlayer player, ItemStack item) {
@@ -410,7 +415,7 @@ public class Block {
 		return size;
 	}
 
-	public int blockUpdate(World world, Random rand, long x, long y, long z) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
 		return 0;
 	}
 

@@ -34,7 +34,7 @@ public abstract class ZoomGenerator implements FastRandom{
 		seed ^= (seed << 21);
 		seed ^= (seed >>> 35);
 		seed ^= (seed << 4);
-		long res = seed % max;
+		long res = (seed >> 24) % max;
 		if(res < 0) res += max;
 		return res;
 	}
@@ -44,7 +44,7 @@ public abstract class ZoomGenerator implements FastRandom{
 		seed ^= (seed << 21);
 		seed ^= (seed >>> 35);
 		seed ^= (seed << 4);
-		int res = (int) (seed % max);
+		int res = (int) ((seed >> 24) % max);
 		if(res < 0) res += max;
 		return res;
 	}

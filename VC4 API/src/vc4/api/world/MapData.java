@@ -9,8 +9,8 @@ public interface MapData {
 	public int getGenHeight(int cx, int cz);
 	public int[] getGenHeightMap();
 	public void setGenHeightMap(int[] hm);
-	public byte[] getBiomeMap();
-	public void setBiomeMap(byte[] bm);
+	public short[] getBiomeMap();
+	public void setBiomeMap(short[] bm);
 	public Vector2l getPosition();
 	public void setHeightMap(int[] heightMap);
 	public int[] getHeightMap();
