@@ -64,6 +64,8 @@ public class TreeGenWillow extends TreeGen {
 				for(ax = 0; ax <= range * 2; ++ax){
 					for(az = 0; az <= range * 2; ++az){
 						if(Math.abs(ax - range) == range && Math.abs(az - range) == range) continue;
+						if(ax == range && Math.abs(az - range) < 2) continue;
+						if(az == range && Math.abs(ax - range) < 2) continue;
 						setBlockVine(x - range + ax, y + ay, z - range + az);
 					}
 				}

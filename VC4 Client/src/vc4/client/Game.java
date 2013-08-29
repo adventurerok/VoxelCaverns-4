@@ -25,6 +25,7 @@ import org.yaml.snakeyaml.Yaml;
 import vc4.api.GameState;
 import vc4.api.Resources;
 import vc4.api.biome.Biome;
+import vc4.api.block.BlockFluid;
 import vc4.api.client.*;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.entity.MovementStyle;
@@ -170,6 +171,19 @@ public class Game extends Component implements ClientGame {
 		}
 		gl.disable(GLFlag.DEPTH_TEST);
 		getWindow().enterRenderMode(RenderType.GUI);
+		if(gameState == GameState.SINGLEPLAYER){
+			Vector3l pos = player.getEyePos().toVector3l();
+			if(world.getBlockType(pos.x, pos.y, pos.z) instanceof BlockFluid){
+				Color col = world.getBlockType(pos.x, pos.y, pos.z).getColor(world, pos.x, pos.y, pos.z, 4);
+				gl.begin(GLPrimative.QUADS);
+				gl.color(col.getRed() / 255f, col.getGreen() / 255f, col.getBlue() / 255f, col.getAlpha() / 255f);
+				gl.vertex(0, 0);
+				gl.vertex(getWidth(), 0);
+				gl.vertex(getWidth(), getHeight());
+				gl.vertex(0, getHeight());
+				gl.end();
+			}
+		}
 		if (showGui && gameState == GameState.SINGLEPLAYER && !isPaused()) {
 			Graphics.getClientShaderManager().bindShader("texture");
 			Resources.getSheetTexture("crosshair").bind();

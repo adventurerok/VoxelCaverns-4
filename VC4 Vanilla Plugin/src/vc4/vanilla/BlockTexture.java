@@ -14,10 +14,11 @@ public class BlockTexture {
 	public static int chestnutSapling, chestnutLeaves, chestnutWood, chestnutBase;
 	public static int redwoodSapling, redwoodLeaves, redwoodWood, redwoodBase;
 	public static int kapokSapling, kapokLeaves, kapokWood, kapokBase;
+	public static int cypressSapling, cypressLeaves, cypressWood, cypressBase;
 	public static int bookshelf, enchantedBookshelf, glass, fluid, obsidian, ore, stone;
 	public static int sand, cracks, woodFront, cactusBottom, cactusTop, cactusSide;
 	public static int vines, tallGrass, craftingTop, chestFront, chestTop, chestSide;
-	public static int gravel, ladder, lightberries;
+	public static int gravel, ladder, lightberries, algae, torch;
 	public static int[] crops = new int[9];
 	public static int[] craftingTables = new int[5];
 	
@@ -64,6 +65,10 @@ public class BlockTexture {
 		kapokLeaves = tex.getArrayIndex("kapokleaves");
 		kapokBase = tex.getArrayIndex("kapokbase");
 		kapokWood = tex.getArrayIndex("kapokwood");
+		cypressSapling = tex.getArrayIndex("cypresssapling");
+		cypressLeaves = tex.getArrayIndex("cypressleaves");
+		cypressBase = tex.getArrayIndex("cypressbase");
+		cypressWood = tex.getArrayIndex("cypresswood");
 		stone = tex.getArrayIndex("stone");
 		bookshelf = tex.getArrayIndex("bookshelves");
 		enchantedBookshelf = tex.getArrayIndex("bookshelvesenchanted");
@@ -92,5 +97,7 @@ public class BlockTexture {
 		gravel = tex.getArrayIndex("gravel");
 		ladder = tex.getArrayIndex("ladder");
 		lightberries = tex.getArrayIndex("lightberries");
+		algae = tex.getArrayIndex("algae");
+		torch = tex.getArrayIndex("torch");
 	}
 }

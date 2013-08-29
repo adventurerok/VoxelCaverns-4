@@ -72,9 +72,9 @@ public class GeneratorThread extends Thread {
 		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
 		ChunkPos me = ChunkPos.createFromWorldVector(loc);
 		int y, z;
-		for (int x = -7; x < 8; ++x) {
-			for (y = -7; y < 8; ++y) {
-				for (z = -7; z < 8; ++z) {
+		for (int x = -ImplWorld.CHUNK_RANGE; x <= ImplWorld.CHUNK_RANGE; ++x) {
+			for (y = -ImplWorld.CHUNK_RANGE; y <= ImplWorld.CHUNK_RANGE; ++y) {
+				for (z = -ImplWorld.CHUNK_RANGE; z <= ImplWorld.CHUNK_RANGE; ++z) {
 					checkLoad(loc, me, x, y, z, closestToLoad);
 				}
 			}
@@ -148,7 +148,7 @@ public class GeneratorThread extends Thread {
 		if((start.z & maxNum) != num) return;
 		if (toLoad.contains(start)) return;
 		if (chunks.get(start) != null) return;
-		if(start.distanceSquared(loc) > 60000) return;
+		if(start.distanceSquared(loc) > ImplWorld.LOAD_LIMIT_SQUARED) return;
 		toLoad.add(start);
 	}
 }

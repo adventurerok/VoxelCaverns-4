@@ -37,6 +37,13 @@ import vc4.impl.plugin.PluginManager;
  * 
  */
 public class ImplWorld implements World {
+	
+	public static final int RENDER_DISTANCE = 256;
+	public static final int CHUNK_RANGE = RENDER_DISTANCE / 32;
+	public static final int RENDER_DISTANCE_SQUARED = RENDER_DISTANCE * RENDER_DISTANCE;
+	public static final int RENDER_DISTANCE_CUBED = RENDER_DISTANCE_SQUARED * RENDER_DISTANCE;
+	public static final int RENDER_RANGE_SQUARED = (int) (RENDER_DISTANCE_SQUARED * 1.2208);
+	public static final int LOAD_LIMIT_SQUARED = (int) (RENDER_DISTANCE_SQUARED * 0.9156);
 
 	static public Vector3f dayLight = new Vector3f(1, 1, 1);
 	static public Vector3f nightLight = new Vector3f(0.12878312F, 0.12878312F, 0.25756624F);
@@ -117,6 +124,7 @@ public class ImplWorld implements World {
 	public void addTime(long add){
 		time += add;
 	}
+	
 	
 	public void loadWorld(){
 		try {
@@ -764,7 +772,7 @@ public class ImplWorld implements World {
 		ArrayList<ImplChunk> toPopulate = new ArrayList<>();
 		ArrayList<ImplChunk> toLight = new ArrayList<>();
 		for (ImplChunk c : chunks.values()) {
-			if (c.distanceSquared(loc) > 65565) {
+			if (c.distanceSquared(loc) > RENDER_DISTANCE_SQUARED) {
 				c.setUnloading(true);
 				c.removeGraphics();
 				toRemove.add(c);
@@ -794,7 +802,7 @@ public class ImplWorld implements World {
 		Profiler.stopStart("killmapdata");
 		ArrayList<MapData> deadData = new ArrayList<>();
 		for (ImplMapData d : heights.values()) {
-			if (d.distanceSquared(loc) > 80000) {
+			if (d.distanceSquared(loc) > RENDER_RANGE_SQUARED) {
 				deadData.add(d);
 			}
 		}
@@ -810,7 +818,9 @@ public class ImplWorld implements World {
 			if (toPopulate.size() <= d) break;
 			ChunkPos pop = toPopulate.get(d).pos;
 			boolean plt = populate(pop.x, pop.y, pop.z);
-			if(plt) saveChunk(toPopulate.get(d));
+			if(plt){
+				saveChunk(toPopulate.get(d));
+			}
 			toPopulate.get(d).setPopulated(plt);
 		}
 		Profiler.stopStart("light");
@@ -828,6 +838,7 @@ public class ImplWorld implements World {
 		Profiler.stop();
 		Profiler.stop();
 	}
+	
 
 	private boolean populate(long x, long y, long z) {
 		MapData data = getMapData(x, z);
@@ -1228,7 +1239,7 @@ public class ImplWorld implements World {
 			int i;
 			for (Vector4l b : current) {
 				if (b.w == 0) {
-					i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z);
+					i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z, getBlockData(b.x, b.y, b.z));
 					if (i > 0) blockUpdates.add(new Vector4l(b.x, b.y, b.z, i));
 				} else {
 					b.w--;
@@ -1256,6 +1267,7 @@ public class ImplWorld implements World {
 		Profiler.stop();
 	}
 
+	@Override
 	public void scheduleBlockUpdate(long x, long y, long z, int time) {
 		blockUpdates.add(new Vector4l(x, y, z, time));
 	}
@@ -1689,6 +1701,32 @@ public class ImplWorld implements World {
 	public boolean hasNearbySkylight(long x, long y, long z, Direction dir) {
 		y += dir.getY();
 		return y > getNearbyHeight(x, z, dir);
+	}
+	
+	@Override
+	public float getNearbySkylight(long x, long y, long z, int d) {
+		if(hasNearbySkylight(x, y, z, d)) return 1;
+		Direction dir = Direction.getDirection(d);
+		if(dir.getY() != 0){
+			y += dir.getY();
+			int nid = getBlockId(x, y, z);
+			if(nid == -1) return 0;
+			if(Block.blockOpacity[nid] > 5) return 0;
+			for(int da = 0; da < 4; ++da){
+				if(hasNearbySkylight(x, y, z, da)) return 0.5f;
+			}
+		} else {
+		x += dir.getX();
+			z += dir.getZ();
+			int nid = getBlockId(x, y, z);
+			if(nid == -1) return 0;
+			if(Block.blockOpacity[nid] > 5) return 0;
+			for(int da = 0; da < 4; ++da){
+				if(da == d) continue;
+				if(hasNearbySkylight(x, y, z, da)) return 0.5f;
+			}
+		}
+		return 0;
 	}
 
 	@Override

@@ -60,6 +60,7 @@ public class Vanilla extends Plugin {
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
 	public static Block workbench, chest, table, chair, gravel, ladder, lightberries;
+	public static Block algae, torch;
 	
 	//Items
 	public static Item food, spawnStick;
@@ -69,6 +70,10 @@ public class Vanilla extends Plugin {
 	public static Plant plantTreeBirch;
 	public static Plant plantTreeWillow;
 	public static Plant plantTreeRedwood;
+	public static Plant plantTreeChestnut;
+	public static Plant plantTreeKapok;
+	public static Plant plantTreeCypress;
+	public static Plant plantStumpCypress;
 	public static Plant plantCactus;
 	public static Plant plantTallGrass;
 	
@@ -101,6 +106,8 @@ public class Vanilla extends Plugin {
 	public static BiomeHeightModel oceans = new BiomeHeightModel(-38, -80, 1, -100);
 	public static BiomeHeightModel trenchs = new BiomeHeightModel(-70, -125, -10, -140);
 	public static BiomeHeightModel mountains = new BiomeHeightModel(125, 55, 140, 20);
+	public static BiomeHeightModel swampy = new BiomeHeightModel(2, -1, 4, -3);
+	
 	public static Biome biomeOcean;
 	public static BiomeHilly biomePlains;
 	public static BiomeHilly biomeDesert;
@@ -117,6 +124,7 @@ public class Vanilla extends Plugin {
 	public static Biome biomeTrench;
 	public static Biome biomeRockyHills;
 	public static Biome biomeDesertOasis;
+	public static Biome biomeSwamp;
 	
 	//Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
@@ -164,6 +172,9 @@ public class Vanilla extends Plugin {
 		plantTreeBirch = new Plant(0, 1, "tree.birch");
 		plantTreeWillow = new Plant(0, 2, "tree.willow");
 		plantTreeRedwood = new Plant(0, 5, "tree.redwood");
+		
+		plantTreeCypress = new Plant(0, 7, "tree.cypress");
+		plantStumpCypress = new Plant(0, 107, "tree.cypress.stump");
 		plantCactus = new Plant(1, 0, "cactus");
 		plantTallGrass = new Plant(2, 0, "weed");
 		WorldGenerator gen = new OverworldGenerator();
@@ -174,6 +185,8 @@ public class Vanilla extends Plugin {
 		GeneratorList.registerPlantGen(plantTreeBirch, new TreeGenBasic());
 		GeneratorList.registerPlantGen(plantTreeWillow, new TreeGenWillow());
 		GeneratorList.registerPlantGen(plantTreeRedwood, new TreeGenRedwood());
+		GeneratorList.registerPlantGen(plantTreeCypress, new TreeGenCypress());
+		GeneratorList.registerPlantGen(plantStumpCypress, new TreeGenCypress());
 		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
 		
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
@@ -224,7 +237,7 @@ public class Vanilla extends Plugin {
 	@Override
 	public void loadBlocks(World world) {
 		grass = new BlockGrass(world.getRegisteredBlock("vanilla.grass"), Material.getMaterial("grass")).setName("grass");
-		dirt = new Block(world.getRegisteredBlock("vanilla.dirt"), BlockTexture.dirt, Material.getMaterial("dirt")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 20).setTimes(0.45, 0.01, 0.22)).setName("dirt");
+		dirt = new BlockDirt(world.getRegisteredBlock("vanilla.dirt"), BlockTexture.dirt, Material.getMaterial("dirt")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 20).setTimes(0.45, 0.01, 0.22)).setName("dirt");
 		logV = new BlockLog(world.getRegisteredBlock("vanilla.log.V"), Material.getMaterial("wood"), 0).setMineData(new MiningData().setRequired(ToolType.axe).setPowers(0, 1, 25).setTimes(3, 0.1, 1.25)).setName("log");
 		logX = new BlockLog(world.getRegisteredBlock("vanilla.log.X"), Material.getMaterial("wood"), 1).setMineData(new MiningData().setRequired(ToolType.axe).setPowers(0, 1, 25).setTimes(3, 0.1, 1.25)).setName("log");
 		logZ = new BlockLog(world.getRegisteredBlock("vanilla.log.Z"), Material.getMaterial("wood"), 2).setMineData(new MiningData().setRequired(ToolType.axe).setPowers(0, 1, 25).setTimes(3, 0.1, 1.25)).setName("log");
@@ -265,6 +278,8 @@ public class Vanilla extends Plugin {
 		gravel = new BlockGravel(world.getRegisteredBlock("vanilla.gravel")).setName("gravel");
 		ladder = new BlockLadder(world.getRegisteredBlock("vanilla.ladder")).setLightOpacity(1).setName("ladder");
 		lightberries = new BlockLightBerry(world.getRegisteredBlock("vanilla.lightberry")).setName("lightberry");
+		algae = new BlockAlgae(world.getRegisteredBlock("vanilla.algae")).setMineData(new MiningData().setTimes(0.03, 0.02, 0.01)).setName("algae");
+		torch = new BlockTorch(world.getRegisteredBlock("vanilla.torch")).setName("torch");
 	}
 	
 	@Override
@@ -291,6 +306,7 @@ public class Vanilla extends Plugin {
 	
 	@Override
 	public void loadBiomes(World world) {
+		//Definitions
 		biomeOcean = new BiomeOcean(world.getRegisteredBiome("vanilla.ocean")).setHeights(oceans);
 		biomePlains = new BiomePlains(world.getRegisteredBiome("vanilla.plains"), "plains", BiomeType.normal, Color.green);
 		biomeDesert = new BiomeDesert(world.getRegisteredBiome("vanilla.desert"), "desert", BiomeType.hot, Color.yellow);
@@ -307,11 +323,15 @@ public class Vanilla extends Plugin {
 		biomeTrench = new Biome(world.getRegisteredBiome("vanilla.ocean.trench"), "ocean/trench", BiomeType.ocean, Color.blue).setHeights(trenchs);
 		biomeRockyHills = new Biome(world.getRegisteredBiome("vanilla.rocky.hills"), "rocky/hills", BiomeType.hot, Color.gray);
 		biomeDesertOasis = new Biome(world.getRegisteredBiome("vanilla.desert.oasis"), "desert/oasis", BiomeType.hot, new Color(152, 127, 70)).setHeights(new BiomeHeightModel(14, -7, 24, -12));
+		biomeSwamp = new Biome(world.getRegisteredBiome("vanilla.swamp"), "swamp", BiomeType.normal, new Color(0xA3AE7E)).setHeights(swampy);
+		
+		//Set-up
 		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 2));
 		biomeOcean.music = musicSky;
 		biomeTrench.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeTrench.music = musicSky;
+		
 		biomeDesert.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesertHills.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesert.music = musicDesert;
@@ -322,11 +342,13 @@ public class Vanilla extends Plugin {
 		biomeDesertOasis.setBiomeBlocks(grass.uid, dirt.uid, sand.uid);
 		biomeDesertOasis.addPlant(new PlantGrowth(plantTreeOak, 3));
 		biomeDesert.setHills(biomeDesertHills.id);
+		
 		biomePlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlains.setIcingBlock(weeds.uid);
 		biomePlainsHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlainsHills.setIcingBlock(weeds.uid);
 		biomePlains.setHills(biomePlainsHills.id);
+		
 		biomeForest.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeForest.addPlant(new PlantGrowth(plantTreeOak, 12));
 		biomeForest.addPlant(new PlantGrowth(plantTreeBirch, 10));
@@ -334,25 +356,36 @@ public class Vanilla extends Plugin {
 		biomeForestHills.addPlant(new PlantGrowth(plantTreeOak, 12));
 		biomeForestHills.addPlant(new PlantGrowth(plantTreeBirch, 10));
 		biomeForest.setHills(biomeForestHills.id);
+		
 		biomeSnowPlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeSnowPlains.setIcingBlock(snow.uid);
+		biomeSnowPlainsHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeSnowPlainsHills.setIcingBlock(snow.uid);
+		biomeSnowPlains.setHills(biomeSnowPlainsHills.id);
+		
 		biomeSnowForest.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeSnowForest.setIcingBlock(snow.uid);
 		biomeSnowForest.addPlant(new PlantGrowth(plantTreeRedwood, 10));
-		biomeSnowPlainsHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeSnowPlainsHills.setIcingBlock(snow.uid);
 		biomeSnowForestHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeSnowForestHills.setIcingBlock(snow.uid);
 		biomeSnowForestHills.addPlant(new PlantGrowth(plantTreeRedwood, 10));
-		biomeSnowPlains.setHills(biomeSnowPlainsHills.id);
 		biomeSnowForest.setHills(biomeSnowForestHills.id);
+		
 		biomeVolcanic.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
 		biomeVolcanic.music = musicHell;
 		biomeVolcano.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
 		biomeVolcano.music = musicHell;
 		biomeVolcanic.setHills(biomeVolcano.id);
+		
 		biomeRockyHills.setBiomeBlocks(Block.stone.uid, Block.stone.uid, Block.stone.uid);
 		biomeRockyHills.setHeights(mountains);
+		
+		biomeSwamp.setIcingBlock(weeds.uid);
+		biomeSwamp.addPlant(new PlantGrowth(plantTreeCypress, 9));
+		biomeSwamp.addPlant(new PlantGrowth(plantStumpCypress, 9));
+		biomeSwamp.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeSwamp.setColors(new Color(0x354C2D), new Color(75, 132, 99, 164), new Color(0x2E3D22));
+		
 		biomes = new ArrayList<>();
 		ArrayList<Integer> ocean = new ArrayList<>();
 		ocean.add(Vanilla.biomeOcean.id);
@@ -360,6 +393,7 @@ public class Vanilla extends Plugin {
 		ArrayList<Integer> normal = new ArrayList<>();
 		normal.add(Vanilla.biomePlains.id);
 		normal.add(Vanilla.biomeForest.id);
+		normal.add(Vanilla.biomeSwamp.id);
 		biomes.add(normal);
 		ArrayList<Integer> cold = new ArrayList<>();
 		cold.add(Vanilla.biomeSnowPlains.id);

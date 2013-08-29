@@ -6,8 +6,10 @@ package vc4.vanilla.generation.dungeon;
 import java.util.ArrayList;
 import java.util.Random;
 
+import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
+import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.style.*;
 import vc4.vanilla.npc.NpcNames;
 
@@ -80,6 +82,23 @@ public class Dungeon {
 	
 	public void setEmptyBlock(long x, long y, long z){
 		world.setBlockIdNoNotify(x, y, z, 0);
+	}
+	
+	public void setTorchBlock(long x, long y, long z){
+		int bid = world.getBlockId(x, y - 1, z);
+		if (bid == Vanilla.glass.uid || world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)) {
+			world.setBlockIdData(x, y, z, Vanilla.torch.uid, (byte) 0);
+			return;
+		}
+		for (int d = 0; d < 4; ++d) {
+			long ox = x + Direction.getDirection(d).getX();
+			long oz = z + Direction.getDirection(d).getZ();
+			if (world.getBlockType(ox, y, oz).isSolid(world, ox, y, oz, Direction.getOpposite(d).id())) {
+				byte data = (byte) (Direction.getOpposite(d).id() + 1);
+				world.setBlockIdData(x, y, z, Vanilla.torch.uid, data);
+				return;
+			}
+		}
 	}
 	
 	public boolean addRoom(RoomBB bb){

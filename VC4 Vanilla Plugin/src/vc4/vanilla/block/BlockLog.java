@@ -74,6 +74,8 @@ public class BlockLog extends Block {
 				return BlockTexture.redwoodBase;
 			case 6:
 				return BlockTexture.kapokBase;
+			case 7:
+				return BlockTexture.cypressBase;
 		}
 		return BlockTexture.oakBase;
 	}
@@ -94,6 +96,8 @@ public class BlockLog extends Block {
 				return BlockTexture.redwoodWood;
 			case 6:
 				return BlockTexture.kapokWood;
+			case 7:
+				return BlockTexture.cypressWood;
 		}
 		return BlockTexture.oakWood;
 	}

@@ -521,4 +521,13 @@ public class TestWorld implements World {
 		return false;
 	}
 
+	@Override
+	public void scheduleBlockUpdate(long x, long y, long z, int time) {
+	}
+
+	@Override
+	public float getNearbySkylight(long x, long y, long z, int d) {
+		return 0;
+	}
+
 }

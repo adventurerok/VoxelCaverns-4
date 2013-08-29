@@ -40,6 +40,8 @@ public class ImplChunk implements Chunk {
 	private boolean isModified = false;
 	private boolean unloading = false;
 	private boolean lit = false;
+	private boolean skyChecked = false;
+	private int skyCheckZ = 0;
 	
 	private LinkedList<Vector3i> ilightPositions;
 	
@@ -96,7 +98,7 @@ public class ImplChunk implements Chunk {
 	
 	@Override
 	public boolean isLit() {
-		return lit;
+		return lit && skyChecked;
 	}
 	
 	public void setData(GeneratorOutput data) {
@@ -305,7 +307,7 @@ public class ImplChunk implements Chunk {
 			x = rand.nextInt(32);
 			y = rand.nextInt(32);
 			z = rand.nextInt(32);
-			time = Block.byId(getBlockId(x, y, z)).blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z));
+			time = Block.byId(getBlockId(x, y, z)).blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z), getBlockData(x, y, z));
 			if(time > 0){
 				world.scheduleBlockUpdate(pos.worldX(x), pos.worldY(y), pos.worldZ(z), time);
 			}
@@ -457,7 +459,33 @@ public class ImplChunk implements Chunk {
 	
 	@Override
 	public void initialLight(){
-		if(lit) return;
+		if(lit && skyChecked) return;
+		if(!lit) initialBlockLight();
+		else initialSkyLight();
+	}
+	
+	public void initialSkyLight() {
+		MapData dat = world.getMapData(this);
+		int amt = 0;
+		int z;
+		while(amt < 5){
+			z = skyCheckZ;
+			for(int x = 0; x < 32; ++x){
+				if((dat.getHeight(x, z) >> 5) != pos.y) continue;
+				if(Block.blockOpacity[getBlockId(x, dat.getHeight(x, z) & 31, z)] < 5){
+					world.downScan(pos.worldX(x), dat.getHeight(x, z), pos.worldZ(z), 3);
+				}
+			}
+			++skyCheckZ;
+			if(skyCheckZ == 32){
+				skyChecked = true;
+				return;
+			}
+			++amt;
+		}
+	}
+
+	public void initialBlockLight(){
 		stat_ilightPositions = ilightPositions;
 		stat_ilightingChunk = pos;
 		if(ilightPositions == null){

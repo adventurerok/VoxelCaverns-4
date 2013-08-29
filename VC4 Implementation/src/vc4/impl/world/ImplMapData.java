@@ -9,7 +9,7 @@ public class ImplMapData implements MapData{
 
 	Vector2l pos;
 	
-	volatile byte[] biomes;
+	volatile short[] biomes;
 	volatile int[] genMap;
 	volatile int[] heightMap;
 	volatile boolean[] heightUpdates;
@@ -59,11 +59,11 @@ public class ImplMapData implements MapData{
 	}
 	
 	@Override
-	public byte[] getBiomeMap() {
+	public short[] getBiomeMap() {
 		return biomes;
 	}
 	@Override
-	public void setBiomeMap(byte[] bm) {
+	public void setBiomeMap(short[] bm) {
 		biomes = bm;
 	}
 	@Override

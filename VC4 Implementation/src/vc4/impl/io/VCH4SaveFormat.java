@@ -219,11 +219,18 @@ public class VCH4SaveFormat implements SaveFormat {
 				data.setGenHeightMap(heights);
 			}
 			if(tag.getBoolean("biomes")){
-				byte[] biomes = new byte[32*32];
+				short[] biomes = new short[32*32];
 				for(int d = 0; d < biomes.length; ++d){
-					biomes[d] = in.readByte();
+					biomes[d] = in.readShort();
 				}
 				data.setBiomeMap(biomes);
+			}
+			if(tag.getBoolean("skyheights")){
+				int[] heights = new int[32*32];
+				for(int d = 0; d < heights.length; ++d){
+					heights[d] = in.readInt();
+				}
+				data.setHeightMap(heights);
 			}
 		}
 		return data;
@@ -238,7 +245,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		file.getParentFile().mkdirs();
 		CompoundTag root = new CompoundTag("root");
 		root.setBoolean("genheights", true);
-		root.setBoolean("skyheights", false);
+		root.setBoolean("skyheights", true);
 		root.setBoolean("biomes", true);
 		try(DataOutputStream out = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(file)))){
 			BitOutputStream bos = new BitOutputStream(out);
@@ -248,9 +255,13 @@ public class VCH4SaveFormat implements SaveFormat {
 			for(int d = 0; d < genHeights.length; ++d){
 				out.writeInt(genHeights[d]);
 			}
-			byte[] biomes = map.getBiomeMap();
+			short[] biomes = map.getBiomeMap();
 			for(int d = 0; d < biomes.length; ++d){
-				out.writeByte(biomes[d]);
+				out.writeShort(biomes[d]);
+			}
+			int[] skyHeights = map.getHeightMap();
+			for(int d = 0; d < skyHeights.length; ++d){
+				out.writeInt(skyHeights[d]);
 			}
 		}
 	}

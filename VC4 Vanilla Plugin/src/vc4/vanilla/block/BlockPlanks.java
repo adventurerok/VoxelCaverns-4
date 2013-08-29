@@ -24,6 +24,7 @@ public class BlockPlanks extends BlockMultitexture {
 		new Color(0xC78145), //Chestnut
 		new Color(0xDA7A48), //Redwood
 		new Color(0xC3A078), //Kapok
+		new Color(0x2D2F22), //Cypress
 	};
 	public static Color[] frontColors = new Color[]{
 		new Color(0x934714), //Oak
@@ -33,6 +34,7 @@ public class BlockPlanks extends BlockMultitexture {
 		new Color(0x704029), //Chestnut
 		new Color(0x943215), //Redwood
 		new Color(0xAF8C64), //Kapok
+		new Color(0x424439), //Cypress
 	};
 	
 	@Override

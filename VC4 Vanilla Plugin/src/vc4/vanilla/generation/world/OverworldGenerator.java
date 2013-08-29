@@ -44,6 +44,7 @@ public class OverworldGenerator implements WorldGenerator {
 	private WorldGenFloatingIslands floatingGen = new WorldGenFloatingIslands();
 	private WorldGenPyramids pyramidsGen = new WorldGenPyramids();
 	private WorldGenLightBerries lightBerryGen = new WorldGenLightBerries();
+	private WorldGenAlgae algaeGen = new WorldGenAlgae();
 	private WorldGenUndergroundClearing undergroundGrass = new WorldGenUndergroundClearing();
 	private RecursiveGenVolcano volcanoGen = new RecursiveGenVolcano();
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
@@ -151,9 +152,11 @@ public class OverworldGenerator implements WorldGenerator {
 					} else if (!b) {
 						if ((y << 5) + cy < -5975) {
 							out.setBlockId(cx, cy, cz, Vanilla.lava.uid);
+							out.setBlockData(cx, cy, cz, 16);
 						}
 					} else if (diff < 0 && (y << 5) + cy < 0) {
 						out.setBlockId(cx, cy, cz, Vanilla.water.uid);
+						out.setBlockData(cx, cy, cz, 16);
 					} else if (diff == -1) {
 						bio.placeBiomeBlock(out, rand, cx, cy, cz, diff, y);
 					}
@@ -214,6 +217,9 @@ public class OverworldGenerator implements WorldGenerator {
 		if (world.getGeneratorTag().getBoolean("villages", true)) {
 			villageGen.generate(world, x, y, z);
 			villageGen.generateExtra(world, x, y, z);
+		}
+		if(y == 0 && world.getBiome((x << 5) + 16, (z << 5) + 16) == Vanilla.biomeSwamp){
+			algaeGen.populate(world, x, y, z);
 		}
 		if (world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);
 		if (y > 30) {
@@ -277,10 +283,12 @@ public class OverworldGenerator implements WorldGenerator {
 		long wz = data.getPosition().y << 5;
 		int op = 0;
 		ZoomGenerator bgen = new BiomeGenIslands(world);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenIslands(world, bgen);
+//		bgen = new BiomeGenZoom(world, bgen, false);
+//		bgen = new BiomeGenIslands(world, bgen);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		bgen = new BiomeGenSuperBiome(world, bgen);
+		bgen = new BiomeGenZoom(world, bgen, false);
+		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenBiome(world, bgen, biomes);
 		bgen = new BiomeGenZoom(world, bgen, true);
@@ -323,9 +331,9 @@ public class OverworldGenerator implements WorldGenerator {
 		bgen = new BiomeGenZoom(world, bgen, true); // 8
 
 		int[] intBiomes = bgen.generate(wx, wz, 32);
-		byte[] biomes = new byte[32 * 32];
+		short[] biomes = new short[32 * 32];
 		for (int d = 0; d < 1024; ++d)
-			biomes[d] = (byte) intBiomes[d];
+			biomes[d] = (short) intBiomes[d];
 		data.setBiomeMap(biomes);
 		int[] gh = hgen.generate(wx, wz, 32);
 		int[] th = new int[1024];
@@ -341,10 +349,12 @@ public class OverworldGenerator implements WorldGenerator {
 	public ZoomGenerator getBiomeMapGenerator(World world, int zoom) {
 		int op = 0;
 		ZoomGenerator bgen = new BiomeGenIslands(world);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenIslands(world, bgen);
+//		bgen = new BiomeGenZoom(world, bgen, false);
+//		bgen = new BiomeGenIslands(world, bgen);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		bgen = new BiomeGenSuperBiome(world, bgen);
+		bgen = new BiomeGenZoom(world, bgen, false);
+		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenZoom(world, bgen, false);
 		bgen = new BiomeGenBiome(world, bgen, biomes);
 		if (zoom < 10) {

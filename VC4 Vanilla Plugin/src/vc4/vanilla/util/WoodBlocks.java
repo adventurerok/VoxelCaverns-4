@@ -7,9 +7,9 @@ import vc4.api.item.ItemStack;
 
 public class WoodBlocks {
 
-	private static int maxData = 7;
+	private static int maxData = 8;
 	private static String[] names = new String[]{
-		"oak", "birch", "willow", "ash", "chestnut", "redwood", "kapok"
+		"oak", "birch", "willow", "ash", "chestnut", "redwood", "kapok", "cypress"
 	};
 	
 	public static Collection<ItemStack> genCreativeItems(int bid){

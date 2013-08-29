@@ -82,6 +82,8 @@ public class BlockLeaf extends Block {
 				return BlockTexture.redwoodLeaves;
 			case 6:
 				return BlockTexture.kapokLeaves;
+			case 7:
+				return BlockTexture.cypressLeaves;
 		}
 		return BlockTexture.oakLeaves;
 	}

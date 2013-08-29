@@ -3,8 +3,7 @@
  */
 package vc4.vanilla.block;
 
-import vc4.api.block.Block;
-import vc4.api.block.Material;
+import vc4.api.block.*;
 import vc4.api.util.Direction;
 import vc4.api.world.World;
 
@@ -38,6 +37,11 @@ public class BlockGlass extends Block {
 	@Override
 	public int getRendererToUse(byte data, int side) {
 		return 1;
+	}
+	
+	@Override
+	public boolean canGrowPlant(Plant plant) {
+		return true;
 	}
 	
 	/* (non-Javadoc)

@@ -21,11 +21,8 @@ void main(){
 
 vec4 getLightColor(){
 	vec3 inLight = flickerLight();
-	if(inData6.a < 0.5){
-		return vec4(inLight.rgb, 1.0);
-	} else {
-		return vec4(max(inLight.r, skyLight.r), max(inLight.g, skyLight.g), max(inLight.b, skyLight.b), 1.0);
-	}
+	return vec4(max(inLight.r, skyLight.r * inData6.a), max(inLight.g, skyLight.g * inData6.a), max(inLight.b, skyLight.b * inData6.a), 1.0);
+
 }
 
 vec3 flickerLight(){
