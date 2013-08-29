@@ -12,8 +12,15 @@ import vc4.vanilla.Vanilla;
 
 public abstract class TreeGen implements PlantGenerator{
 
+	public static int DEAD_VARIANT = Plant.getPlantData("tree").getVariantId("dead");
+	public static int STUMP_VARIANT = Plant.getPlantData("tree").getVariantId("stump");
+	public static int NORMAL_VARIANT = Plant.getPlantData("tree").getVariantId("normal");
+	public static int BIG_VARIANT = Plant.getPlantData("tree").getVariantId("big");
+	
 	protected World world;
 	public Random rand;
+	
+	
 	
 	public TreeGen() {
 		// TASK Auto-generated constructor stub

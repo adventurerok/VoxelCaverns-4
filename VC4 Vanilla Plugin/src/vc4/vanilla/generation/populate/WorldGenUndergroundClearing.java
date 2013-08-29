@@ -17,7 +17,7 @@ public class WorldGenUndergroundClearing implements WorldPopulator {
 		x <<= 5;
 		y <<= 5;
 		z <<= 5;
-		for(int d = 0; d < 10; ++d){
+		for(int d = 0; d < 2; ++d){
 			long dx = x + rand.nextInt(32);
 			long dy = y + rand.nextInt(32);
 			long dz = z + rand.nextInt(32);

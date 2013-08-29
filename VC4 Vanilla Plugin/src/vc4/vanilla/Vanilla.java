@@ -125,6 +125,8 @@ public class Vanilla extends Plugin {
 	public static Biome biomeRockyHills;
 	public static Biome biomeDesertOasis;
 	public static Biome biomeSwamp;
+	public static BiomeHilly biomeJungle;
+	public static Biome biomeJungleHills;
 	
 	//Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
@@ -168,15 +170,15 @@ public class Vanilla extends Plugin {
 	 */
 	@Override
 	public void onEnable() {
-		plantTreeOak = new Plant(0, 0, "tree.oak");
-		plantTreeBirch = new Plant(0, 1, "tree.birch");
-		plantTreeWillow = new Plant(0, 2, "tree.willow");
-		plantTreeRedwood = new Plant(0, 5, "tree.redwood");
-		
-		plantTreeCypress = new Plant(0, 7, "tree.cypress");
-		plantStumpCypress = new Plant(0, 107, "tree.cypress.stump");
-		plantCactus = new Plant(1, 0, "cactus");
-		plantTallGrass = new Plant(2, 0, "weed");
+		plantTreeOak = new Plant("tree", "oak", "normal").setData((byte) 0);
+		plantTreeBirch = new Plant("tree", "birch", "normal").setData((byte) 1);
+		plantTreeWillow = new Plant("tree", "willow", "normal").setData((byte) 2);
+		plantTreeRedwood = new Plant("tree", "redwood", "normal").setData((byte) 5);
+		plantTreeKapok = new Plant("tree", "kapok", "big").setData((byte) 6);
+		plantTreeCypress = new Plant("tree", "cypress", "normal").setData((byte) 7);
+		plantStumpCypress = new Plant("tree", "cypress", "stump").setData((byte) 7);
+		plantCactus = new Plant("cactus", "desert", "normal");
+		plantTallGrass = new Plant("grass", "weed", "normal");
 		WorldGenerator gen = new OverworldGenerator();
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
@@ -187,6 +189,7 @@ public class Vanilla extends Plugin {
 		GeneratorList.registerPlantGen(plantTreeRedwood, new TreeGenRedwood());
 		GeneratorList.registerPlantGen(plantTreeCypress, new TreeGenCypress());
 		GeneratorList.registerPlantGen(plantStumpCypress, new TreeGenCypress());
+		GeneratorList.registerPlantGen(plantTreeKapok, new TreeGenKapok());
 		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
 		
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
@@ -324,6 +327,8 @@ public class Vanilla extends Plugin {
 		biomeRockyHills = new Biome(world.getRegisteredBiome("vanilla.rocky.hills"), "rocky/hills", BiomeType.hot, Color.gray);
 		biomeDesertOasis = new Biome(world.getRegisteredBiome("vanilla.desert.oasis"), "desert/oasis", BiomeType.hot, new Color(152, 127, 70)).setHeights(new BiomeHeightModel(14, -7, 24, -12));
 		biomeSwamp = new Biome(world.getRegisteredBiome("vanilla.swamp"), "swamp", BiomeType.normal, new Color(0xA3AE7E)).setHeights(swampy);
+		biomeJungle = new BiomeJungle(world.getRegisteredBiome("vanilla.jungle"), "jungle", BiomeType.hot, new Color(255, 128, 0));
+		biomeJungleHills = new BiomeJungleHills(world.getRegisteredBiome("vanilla.jungle.hills"), "jungle/hills", BiomeType.hot, new Color(255, 132, 0));
 		
 		//Set-up
 		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
@@ -386,6 +391,14 @@ public class Vanilla extends Plugin {
 		biomeSwamp.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeSwamp.setColors(new Color(0x354C2D), new Color(75, 132, 99, 164), new Color(0x2E3D22));
 		
+		biomeJungle.addPlant(new PlantGrowth(plantTreeKapok, 4));
+		biomeJungleHills.addPlant(new PlantGrowth(plantTreeKapok, 4));
+		biomeJungle.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeJungleHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeJungle.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));
+		biomeJungleHills.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));
+		biomeJungle.setHills(biomeJungleHills.id);
+		
 		biomes = new ArrayList<>();
 		ArrayList<Integer> ocean = new ArrayList<>();
 		ocean.add(Vanilla.biomeOcean.id);
@@ -404,6 +417,7 @@ public class Vanilla extends Plugin {
 		hot.add(Vanilla.biomeDesert.id);
 		hot.add(Vanilla.biomeVolcanic.id);
 		hot.add(Vanilla.biomeRockyHills.id);
+		hot.add(Vanilla.biomeJungle.id);
 		biomes.add(hot);
 	}
 	

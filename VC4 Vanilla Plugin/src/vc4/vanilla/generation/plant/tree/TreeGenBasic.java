@@ -26,11 +26,11 @@ public class TreeGenBasic extends TreeGen {
 
 	@Override
 	public boolean generate(long x, long y, long z, Plant plant) {
-		byte data = (byte) (plant.getSubId() % 100);
+		byte data = plant.getData();
 		if(!world.getBlockType(x, y - 1, z).canGrowPlant(plant)) return false;
 		if(!world.getBlockType(x, y, z).replacableBy(world, x, y, z, Vanilla.logV.uid, data)) return false;
 		int height = 5 + rand.nextInt(9);
-		if(plant.getSubId() / 100 != 2){
+		if(plant.getSpeciesId() != DEAD_VARIANT){
 			int gy, gz;
 			for(int gx = 0; gx < 5; ++gx){
 				for(gy = 0; gy < 5; ++gy){

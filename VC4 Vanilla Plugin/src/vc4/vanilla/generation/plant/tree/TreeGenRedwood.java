@@ -18,7 +18,7 @@ public class TreeGenRedwood extends TreeGen {
 
 	@Override
 	public boolean generate(long x, long y, long z, Plant plant) {
-		byte data = (byte) (plant.getSubId() % 100);
+		byte data = (byte) plant.getData();
 		if(!world.getBlockType(x, y - 1, z).canGrowPlant(plant)){
 			return false;
 		}
@@ -27,7 +27,7 @@ public class TreeGenRedwood extends TreeGen {
 		for(int dofor = 0; dofor < height; ++dofor){
 			setBlockAsWood(x, y + dofor, z, data);
 		}
-		if(plant.getSubId() / 100 != 2){
+		if(plant.getVariantId() != DEAD_VARIANT){
 			int reach = 0;
 			long ax;
 			int xMod;

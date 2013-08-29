@@ -5,7 +5,6 @@ package vc4.vanilla.block;
 
 import vc4.api.block.*;
 import vc4.vanilla.BlockTexture;
-import vc4.vanilla.Vanilla;
 
 /**
  * @author paul
@@ -25,7 +24,7 @@ public class BlockSand extends Block {
 	
 	@Override
 	public boolean canGrowPlant(Plant plant) {
-		return plant.getUid() == Vanilla.plantCactus.getUid();
+		return plant.getTypeId() == BlockGrass.PLANT_CACTUS;
 	}
 
 }

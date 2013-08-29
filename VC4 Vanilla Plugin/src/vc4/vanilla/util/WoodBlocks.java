@@ -12,6 +12,13 @@ public class WoodBlocks {
 		"oak", "birch", "willow", "ash", "chestnut", "redwood", "kapok", "cypress"
 	};
 	
+	public static byte getNameId(String name){
+		for(int d = 0; d < names.length; ++d){
+			if(names[d].equals(name)) return (byte) d;
+		}
+		return -1;
+	}
+	
 	public static Collection<ItemStack> genCreativeItems(int bid){
 		ArrayList<ItemStack> result = new ArrayList<>();
 		for(int d = 0; d < maxData; ++d){

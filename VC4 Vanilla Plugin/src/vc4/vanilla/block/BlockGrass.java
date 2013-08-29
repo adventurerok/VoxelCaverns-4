@@ -26,6 +26,8 @@ public class BlockGrass extends BlockMultitexture {
 
 	public static Color grass = new Color(0x1C8F1C);
 	
+	public static int PLANT_CACTUS = Plant.getTypeId("cactus");
+	
 	/**
 	 * @param uid
 	 * @param texture
@@ -76,9 +78,19 @@ public class BlockGrass extends BlockMultitexture {
 	public Color getColor(World world, long x, long y, long z, int side) {
 		if(side == 4 && world.getBlockData(x, y, z) == 0){
 			if(world.getBlockId(x, y + 1, z) == Vanilla.snow.uid) return Color.white;
-			Biome bio = world.getBiome(x, z);
-			if(bio != null) return bio.grassColor;
-			else return grass;
+			int r = 0, g = 0, b = 0;
+			Color col;
+			for(int ox = -1; ox < 2; ++ox){
+				for(int oz = -1; oz < 2; ++oz){
+					Biome bio = world.getBiome(x + ox, z + oz);
+					if(bio != null) col = bio.grassColor;
+					else col = grass;
+					r += col.getRed();
+					g += col.getGreen();
+					b += col.getBlue();
+				}
+			}
+			return new Color(r / 9, g / 9, b / 9);
 		}
 		else return Color.white;
 	}
@@ -142,7 +154,7 @@ public class BlockGrass extends BlockMultitexture {
 	 */
 	@Override
 	public boolean canGrowPlant(Plant plant) {
-		return plant.getUid() == Vanilla.plantTreeOak.getUid() || plant.getUid() == Vanilla.plantTallGrass.getUid();
+		return plant.getTypeId() != PLANT_CACTUS;
 	}
 	
 	
