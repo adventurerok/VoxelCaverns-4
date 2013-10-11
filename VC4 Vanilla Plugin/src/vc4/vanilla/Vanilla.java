@@ -63,7 +63,7 @@ public class Vanilla extends Plugin {
 	public static Block algae, torch;
 	
 	//Items
-	public static Item food, spawnStick;
+	public static Item food, spawnStick, stick, metalBar, alloyBar;
 	
 	//Plants
 	public static Plant plantTreeOak;
@@ -71,9 +71,17 @@ public class Vanilla extends Plugin {
 	public static Plant plantTreeWillow;
 	public static Plant plantTreeRedwood;
 	public static Plant plantTreeChestnut;
+	public static Plant plantTreeKapokBig;
 	public static Plant plantTreeKapok;
 	public static Plant plantTreeCypress;
 	public static Plant plantStumpCypress;
+	public static Plant plantBushOak;
+	public static Plant plantBushBirch;
+	public static Plant plantBushWillow;
+	public static Plant plantBushRedwood;
+	public static Plant plantBushChestnut;
+	public static Plant plantBushKapok;
+	public static Plant plantBushCypress;
 	public static Plant plantCactus;
 	public static Plant plantTallGrass;
 	
@@ -170,26 +178,57 @@ public class Vanilla extends Plugin {
 	 */
 	@Override
 	public void onEnable() {
+		//normal
 		plantTreeOak = new Plant("tree", "oak", "normal").setData((byte) 0);
 		plantTreeBirch = new Plant("tree", "birch", "normal").setData((byte) 1);
 		plantTreeWillow = new Plant("tree", "willow", "normal").setData((byte) 2);
 		plantTreeRedwood = new Plant("tree", "redwood", "normal").setData((byte) 5);
-		plantTreeKapok = new Plant("tree", "kapok", "big").setData((byte) 6);
+		plantTreeKapok = new Plant("tree", "kapok", "normal").setData((byte) 6);
 		plantTreeCypress = new Plant("tree", "cypress", "normal").setData((byte) 7);
+		
+		//big
+		plantTreeKapokBig = new Plant("tree", "kapok", "big").setData((byte) 6);
+		
+		//stump
 		plantStumpCypress = new Plant("tree", "cypress", "stump").setData((byte) 7);
+		
+		//bush
+		plantBushOak = new Plant("tree", "oak", "bush").setData((byte) 0);
+		plantBushBirch = new Plant("tree", "birch", "bush").setData((byte) 1);
+		plantBushWillow = new Plant("tree", "willow", "bush").setData((byte) 2);
+		plantBushRedwood = new Plant("tree", "redwood", "bush").setData((byte) 5);
+		plantBushKapok = new Plant("tree", "kapok", "bush").setData((byte) 6);
+		plantBushCypress = new Plant("tree", "cypress", "bush").setData((byte) 7);
+		
 		plantCactus = new Plant("cactus", "desert", "normal");
+		
 		plantTallGrass = new Plant("grass", "weed", "normal");
 		WorldGenerator gen = new OverworldGenerator();
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
 		GeneratorList.registerGenerator("sky", new SkylandGenerator());
+		
+		//normal
 		GeneratorList.registerPlantGen(plantTreeOak, new TreeGenBasic());
 		GeneratorList.registerPlantGen(plantTreeBirch, new TreeGenBasic());
 		GeneratorList.registerPlantGen(plantTreeWillow, new TreeGenWillow());
 		GeneratorList.registerPlantGen(plantTreeRedwood, new TreeGenRedwood());
+		GeneratorList.registerPlantGen(plantTreeKapok, new TreeGenBasic());
 		GeneratorList.registerPlantGen(plantTreeCypress, new TreeGenCypress());
+		
+		//big
+		GeneratorList.registerPlantGen(plantTreeKapokBig, new TreeGenKapok());
+		
+		//stump
 		GeneratorList.registerPlantGen(plantStumpCypress, new TreeGenCypress());
-		GeneratorList.registerPlantGen(plantTreeKapok, new TreeGenKapok());
+		
+		//bush
+		GeneratorList.registerPlantGen(plantBushOak, new TreeGenBush());
+		GeneratorList.registerPlantGen(plantBushBirch, new TreeGenBush());
+		GeneratorList.registerPlantGen(plantBushWillow, new TreeGenBush());
+		GeneratorList.registerPlantGen(plantBushRedwood, new TreeGenBush());
+		GeneratorList.registerPlantGen(plantBushCypress, new TreeGenBush());
+		
 		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
 		
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
@@ -289,6 +328,9 @@ public class Vanilla extends Plugin {
 	public void loadItems(World world) {
 		generateToolItems(world);
 		food = new ItemVanillaFood(world.getRegisteredItem("vanilla.food"));
+		stick = new ItemStick(world.getRegisteredItem("vanilla.stick"), ItemTexture.stick).setName("stick");
+		metalBar = new ItemMetal(world.getRegisteredItem("vanilla.metalbar"), ItemTexture.metalBar, "bar");
+		alloyBar = new ItemAlloy(world.getRegisteredItem("vanilla.alloybar"), ItemTexture.metalBar, "bar");
 	}
 	
 	@Override
@@ -391,8 +433,16 @@ public class Vanilla extends Plugin {
 		biomeSwamp.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeSwamp.setColors(new Color(0x354C2D), new Color(75, 132, 99, 164), new Color(0x2E3D22));
 		
-		biomeJungle.addPlant(new PlantGrowth(plantTreeKapok, 4));
-		biomeJungleHills.addPlant(new PlantGrowth(plantTreeKapok, 4));
+		biomeJungle.setIcingBlock(weeds.uid);
+		biomeJungleHills.setIcingBlock(weeds.uid);
+		biomeJungle.addPlant(new PlantGrowth(plantTreeKapokBig, 4));
+		biomeJungleHills.addPlant(new PlantGrowth(plantTreeKapokBig, 4));
+		biomeJungle.addPlant(new PlantGrowth(plantBushOak, 130));
+		biomeJungleHills.addPlant(new PlantGrowth(plantBushOak, 130));
+		biomeJungle.addPlant(new PlantGrowth(plantTreeKapok, 20));
+		biomeJungleHills.addPlant(new PlantGrowth(plantTreeKapok, 20));
+		biomeJungle.addPlant(new PlantGrowth(plantTreeOak, 4));
+		biomeJungleHills.addPlant(new PlantGrowth(plantTreeOak, 4));
 		biomeJungle.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeJungleHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeJungle.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));

@@ -30,7 +30,7 @@ public class TreeGenBasic extends TreeGen {
 		if(!world.getBlockType(x, y - 1, z).canGrowPlant(plant)) return false;
 		if(!world.getBlockType(x, y, z).replacableBy(world, x, y, z, Vanilla.logV.uid, data)) return false;
 		int height = 5 + rand.nextInt(9);
-		if(plant.getSpeciesId() != DEAD_VARIANT){
+		if(plant.getVariantId() != DEAD_VARIANT){
 			int gy, gz;
 			for(int gx = 0; gx < 5; ++gx){
 				for(gy = 0; gy < 5; ++gy){

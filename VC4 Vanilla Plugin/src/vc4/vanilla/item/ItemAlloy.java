@@ -3,6 +3,7 @@ package vc4.vanilla.item;
 import java.awt.Color;
 
 import vc4.api.item.Item;
+import vc4.api.item.ItemStack;
 import vc4.vanilla.block.BlockOre;
 
 public class ItemAlloy extends Item{
@@ -19,6 +20,11 @@ public class ItemAlloy extends Item{
 		registerAlloy(5, "mithad", BlockOre.oreColors[7], BlockOre.oreColors[4]);
 		registerAlloy(6, "hellad", BlockOre.oreColors[9], BlockOre.oreColors[4]);
 		
+	}
+	
+	@Override
+	public String getModifiedItemName(ItemStack stack) {
+		return typeName + "." + alloyNames[stack.getDamage()];
 	}
 	
 	public static void registerAlloy(int id, String name, Color...mix){
@@ -38,14 +44,12 @@ public class ItemAlloy extends Item{
 		alloyNames[id] = name;
 	}
 
-	public ItemAlloy(int id, int textureIndex) {
+	String typeName;
+	
+	public ItemAlloy(int id, int textureIndex, String name) {
 		super(id, textureIndex);
-		// TASK Auto-generated constructor stub
+		typeName = name;
 	}
 
-	public ItemAlloy(int id) {
-		super(id);
-		// TASK Auto-generated constructor stub
-	}
 
 }

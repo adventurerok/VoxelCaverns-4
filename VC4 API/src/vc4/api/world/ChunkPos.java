@@ -17,8 +17,13 @@ public class ChunkPos {
 	 */
 	@Override
 	public int hashCode() {
-		return (int) (((y & 1023) << 22) + ((x & 2047) << 11) + (z & 2047));
+		return (int) (((y & 1023) << 22) | ((x & 2047) << 11) | (z & 2047));
 	}
+	
+//	@Override
+//	public int hashCode() {
+//		return  (int) (x ^ y ^ z);
+//	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
