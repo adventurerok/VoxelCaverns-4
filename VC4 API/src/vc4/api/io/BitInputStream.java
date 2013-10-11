@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Andreas Jakl
  */
-public class BitInputStream {
+public class BitInputStream implements Closeable{
 	/**
 	 * The Java InputStream this class is working on.
 	 */
@@ -56,7 +56,7 @@ public class BitInputStream {
 	 * @return integer value containing the bits read from the stream.
 	 * @throws IOException
 	 */
-	synchronized public int readBits(final short aNumberOfBits) 
+	synchronized public int readBits(final int aNumberOfBits) 
             throws IOException
 	{
 		int value = 0;
@@ -77,13 +77,13 @@ public class BitInputStream {
 	 * @return integer value containing the bits read from the stream.
 	 * @throws IOException
 	 */
-	synchronized public long readBitsAsLong(final short aNumberOfBits) 
+	synchronized public long readLongBits(final int aNumberOfBits) 
             throws IOException
 	{
 		long value = 0;
 		for (int i = aNumberOfBits - 1; i >= 0; i--)
 		{
-			value |= (readBitAsLong() << i);
+			value |= (readLongBit() << i);
 		}
 		return value;
 	}
@@ -144,7 +144,7 @@ public class BitInputStream {
 	 * @return 0 if the bit is 0, 1 if the bit is 1.
 	 * @throws IOException
 	 */
-	synchronized public long readBitAsLong() throws IOException
+	synchronized public long readLongBit() throws IOException
 	{
 		if (iIs == null)
 			throw new IOException("Already closed");
@@ -198,7 +198,7 @@ public class BitInputStream {
 	}
 	
 	public long readLong() throws IOException{
-		return readBitsAsLong((short) 64);
+		return readLongBits((short) 64);
 	}
 	public short readShort() throws IOException{
 		return (short) readBits((short) 16);
@@ -214,6 +214,7 @@ public class BitInputStream {
 	 * Close the underlying input stream.
 	 * @throws IOException
 	 */
+	@Override
 	public void close() throws IOException
 	{
 		iIs.close();

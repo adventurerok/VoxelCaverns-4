@@ -134,7 +134,7 @@ public class BitOutputStream implements AutoCloseable{
 	 * be written to the stream.
 	 * @throws IOException
 	 */
-	synchronized public void writeBits(final int aValue, final short aNumBits) 
+	synchronized public void writeBits(final int aValue, final int aNumBits) 
             throws IOException
 	{
 		for (int i = aNumBits - 1; i >= 0; i--)
@@ -154,7 +154,7 @@ public class BitOutputStream implements AutoCloseable{
 	 * be written to the stream.
 	 * @throws IOException
 	 */
-	synchronized public void writeBits(final long aValue, final short aNumBits) 
+	synchronized public void writeBits(final long aValue, final int aNumBits) 
             throws IOException
 	{
 		for (int i = aNumBits - 1; i >= 0; i--)
