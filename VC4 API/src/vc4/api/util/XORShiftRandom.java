@@ -29,17 +29,14 @@ public class XORShiftRandom extends Random implements FastRandom {
 		seed ^= (seed << 21);
 		seed ^= (seed >>> 35);
 		seed ^= (seed << 4);
-		long res = seed % max;
+		long res = (seed >> 24) % max;
 		if(res < 0) res += max;
 		return res;
 	}
 	
 	@Override
 	public long nextLong() {
-		seed ^= (seed << 21);
-		seed ^= (seed >>> 35);
-		seed ^= (seed << 4);
-		return seed;
+		return ((long)nextInt() << 32L) + nextInt();
 	}
 	
 	@Override
@@ -47,7 +44,7 @@ public class XORShiftRandom extends Random implements FastRandom {
 		seed ^= (seed << 21);
 		seed ^= (seed >>> 35);
 		seed ^= (seed << 4);
-		int res = (int) (seed % n);
+		int res = (int) ((seed >> 24) % n);
 		if(res < 0) res += n;
 		return res;
 	}
