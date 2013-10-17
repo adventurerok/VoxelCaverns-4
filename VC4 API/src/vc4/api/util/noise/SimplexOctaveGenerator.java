@@ -3,6 +3,7 @@ package vc4.api.util.noise;
 import java.util.Random;
 
 import vc4.api.world.World;
+import vc4.api.util.XORShiftRandom;
 
 /**
  * Creates simplex noise through unbiased octaves
@@ -17,7 +18,7 @@ public class SimplexOctaveGenerator extends OctaveGenerator {
      * @param octaves Amount of octaves to create
      */
     public SimplexOctaveGenerator(World world, int octaves) {
-        this(new Random(world.getSeed()), octaves);
+        this(new XORShiftRandom(world.getSeed()), octaves);
     }
     
     public SimplexOctaveGenerator(NoiseGenerator[] octaves){
@@ -31,7 +32,7 @@ public class SimplexOctaveGenerator extends OctaveGenerator {
      * @param octaves Amount of octaves to create
      */
     public SimplexOctaveGenerator(long seed, int octaves) {
-        this(new Random(seed), octaves);
+        this(new XORShiftRandom(seed), octaves);
     }
 
     /**
