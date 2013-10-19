@@ -11,7 +11,7 @@ import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.style.*;
-import vc4.vanilla.npc.NpcNames;
+import vc4.vanilla.npc.Names;
 
 /**
  * @author paul
@@ -116,13 +116,13 @@ public class Dungeon {
 	}
 	
 	public String randomFirstName(){
-		return NpcNames.getRandomFirst(getRand());
+		return Names.generateFirstName(rand);
 	}
 	
 	public String randomLastName(){
 		int num = rand.nextInt(lastNames.size() + 1);
 		if(num < lastNames.size()) return lastNames.get(num);
-		String name = NpcNames.getRandomLast(getRand());
+		String name = Names.generateLastName(rand);
 		lastNames.add(name);
 		return name;
 	}

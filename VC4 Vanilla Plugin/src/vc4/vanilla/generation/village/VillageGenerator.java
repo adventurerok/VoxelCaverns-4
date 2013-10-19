@@ -11,7 +11,7 @@ import vc4.api.world.World;
 import vc4.vanilla.area.AreaVillage;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.village.style.VillageStyle;
-import vc4.vanilla.npc.VillageNames;
+import vc4.vanilla.npc.Names;
 
 public class VillageGenerator {
 
@@ -63,7 +63,7 @@ public class VillageGenerator {
 		ArrayList<BuildingInfo> roomData = getBuildings(world, ville, rand, x, z);
 		AreaVillage area = new AreaVillage(world);
 		area.setBounds(AABB.getBoundingBox(x - 40, x + 40, y - 30, y + 30, z - 40, z + 40));
-		area.setVillageName((VillageNames.getRandomFirst(rand) + " " + VillageNames.getRandomLast(rand)).trim());
+		area.setVillageName(Names.generateVillageName(rand));
 		area.addToWorld();
 		ArrayList<Path> paths = getPaths(roomData);
 		for(Path p : paths){

@@ -9,7 +9,7 @@ import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.RoomBB;
 import vc4.vanilla.generation.village.style.*;
-import vc4.vanilla.npc.NpcNames;
+import vc4.vanilla.npc.Names;
 
 public class Village {
 
@@ -147,13 +147,13 @@ public class Village {
 	}
 	
 	public String randomFirstName(){
-		return NpcNames.getRandomFirst(getRand());
+		return Names.generateFirstName(rand);
 	}
 	
 	public String randomLastName(){
 		int num = rand.nextInt(lastNames.size() + 1);
 		if(num < lastNames.size()) return lastNames.get(num);
-		String name = NpcNames.getRandomLast(getRand());
+		String name = Names.generateLastName(rand);
 		lastNames.add(name);
 		return name;
 	}

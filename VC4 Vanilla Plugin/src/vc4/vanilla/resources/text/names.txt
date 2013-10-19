@@ -1,0 +1,16 @@
+@definitions
+c=\c
+y=\v,y
+f=b,c,d,f,g,h,j,k,l,m,n,p,r,s,t,v,w,x,y,z,str,st,sp,sh,ch,nt,ph,th,dt,gh,fr,pr,sw,tr,rl,ck,rb,cn,ng,sk
+g=\@f,ll,tt,bb,nn,rr,cc
+v=\v
+h=\v,oo,ee,eu,ai,au,ea,ae,eau,ao,io,ie,ia,iu,oa,ue,uea
+a=\c,\v
+i=ian,ion,ien
+z=th,sh,ch
+32= 
+'='
+@names
+first=chc,vcvc,cvcvc,vgvc,cvch,cvgv,fvcv,vcvcv,cvg,cvc,cvgh,cvgvg,fvgh,chcv,vchc,cvcv,cvcvgvc,fvcvgv
+last=cvgvcv,vgvg,cvcvg,cvgvc,cvcv,fvgvc,cvgc
+village=cvgvc,cvcvghc,cvcvchg,cvgvgv,cvcvc,fvgvg,cv'fv,fvc'vf

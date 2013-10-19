@@ -233,8 +233,7 @@ public class Vanilla extends Plugin {
 		
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
 		
-		NpcNames.load();
-		VillageNames.load();
+		Names.load();
 	}
 
 	/* (non-Javadoc)

@@ -1,23 +1,37 @@
 package vc4.vanilla.npc;
 
+import java.io.InputStream;
 import java.util.Random;
 
-public class Names{
-	String[] start, middle, end;
+import vc4.vanilla.npc.NameFile.NameFormula;
 
-	public Names(String[] start, String[] middle, String[] end) {
-		super();
-		this.start = start;
-		this.middle = middle;
-		this.end = end;
+
+public class Names{
+	
+	private static NameFile file;
+	private static NameFormula[] first;
+	private static NameFormula[] last;
+	private static NameFormula[] village;
+	
+	public static void load(){
+		InputStream in = Names.class.getClassLoader().getResourceAsStream("vc4/vanilla/resources/text/names.txt");
+		file = new NameFile();
+		file.load(in);
+		first = file.getForumlas("first");
+		last = file.getForumlas("last");
+		village = file.getForumlas("village");
 	}
 	
-	public String getRandomName(Random rand){
-		return start[rand.nextInt(start.length)] + middle[rand.nextInt(middle.length)] + end[rand.nextInt(end.length)];
+	public static String generateFirstName(Random rand){
+		return file.generateName(first, rand);
 	}
 	
-	public int maxNames(){
-		return start.length * middle.length * end.length;
+	public static String generateLastName(Random rand){
+		return file.generateName(last, rand);
+	}
+	
+	public static String generateVillageName(Random rand){
+		return file.generateName(village, rand);
 	}
 	
 	
