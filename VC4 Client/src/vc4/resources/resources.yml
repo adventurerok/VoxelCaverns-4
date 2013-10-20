@@ -32,4 +32,5 @@ gui:
     menu:
         - "main"
         - "settings"
+        - "worldselect"
         

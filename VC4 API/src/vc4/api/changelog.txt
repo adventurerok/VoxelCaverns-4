@@ -207,3 +207,9 @@ VC4-Development-0.0.1-242
 	* Fixed NPE with new plants
 VC4-Development-0.0.1-243
 	* Fixed skylight graphics bug
+VC4-Development-0.0.1-244
+	+ World select gui file
+VC4-Development-0.0.1-245
+	* Fixed main menu as world select menu
+VC4-Development-0.0.1-246
+	* Decreased item pickup range

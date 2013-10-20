@@ -3,6 +3,7 @@ package vc4.impl.cmd;
 import java.util.HashMap;
 
 import vc4.api.cmd.*;
+import vc4.api.sound.Audio;
 import vc4.impl.plugin.PluginManager;
 
 public class CommandExecutor implements CommandHandler{
@@ -12,6 +13,7 @@ public class CommandExecutor implements CommandHandler{
 	
 	static{
 		addCommand(new ExecutableCommand(new CommandInfo("tp").setUsage("<x> <y> <z>").setDescription("{l:cmd.tp.desc}").setCommandUsage(new CommandUsage().setRequiresUser(true).setMinimumArgs(3).setMaximumArgs(3).setArgumentChecks(CommandArgument.DOUBLE, CommandArgument.DOUBLE, CommandArgument.DOUBLE)), handle));
+		addCommand(new ExecutableCommand(new CommandInfo("sound").setUsage("<name> [volume] [pitch]").setDescription("{l:cmd.sound.desc}").setCommandUsage(new CommandUsage().setRequiresUser(true).setMinimumArgs(1).setMaximumArgs(3).setArgumentChecks(CommandArgument.STRING, CommandArgument.DOUBLE, CommandArgument.DOUBLE)), handle));
 	}
 	
 	static void addCommand(ExecutableCommand cmd){
@@ -43,6 +45,11 @@ public class CommandExecutor implements CommandHandler{
 			double z = command.getArgAsDouble(2, 0);
 			command.getSender().getPlayer().teleport(x, y, z);
 			command.getSender().message("{l:cmd.tp.done," + x + "," + y + "," + z + "}");
+		} else if(command.getCommand().equals("sound")){
+			String name = command.getArg(0);
+			double volume = command.getArgAsDouble(1, 1);
+			double pitch = command.getArgAsDouble(2, 1);
+			Audio.playSound(name, (float)volume, (float)pitch);
 		}
 	}
 }

@@ -17,7 +17,7 @@ import vc4.api.text.Strings;
  * @author paul
  *
  */
-public class ScreenTypeMenu implements ScreenType {
+public class ScreenTypeWorlds implements ScreenType {
 
 	int startx = 10, starty = 10;
 	int rows = 0, columns = 1;

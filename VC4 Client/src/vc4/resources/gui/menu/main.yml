@@ -15,7 +15,7 @@ gui:
 play:
     class: "button"
     text: "menu.play"
-    action: "gs:singleplayer"
+    action: "goto:worldselect"
 settings:
     class: "button"
     text: "menu.settings"

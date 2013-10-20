@@ -75,14 +75,14 @@ public class BlockTallGrass extends Block {
 	
 	@Override
 	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {
-		if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTallGrass)){
+		if(!world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantGrassTall)){
 			world.setBlockId(x, y, z, 0);
 		}
 	}
 	
 	@Override
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
-		if(world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantTallGrass)){
+		if(world.getBlockType(x, y - 1, z).canGrowPlant(Vanilla.plantGrassTall)){
 			super.place(world, x, y, z, player, item);
 		}
 	}

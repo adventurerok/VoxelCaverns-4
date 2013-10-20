@@ -41,7 +41,8 @@ import vc4.vanilla.generation.world.*;
 import vc4.vanilla.gui.GuiChest;
 import vc4.vanilla.item.*;
 import vc4.vanilla.itementity.ItemEntityChest;
-import vc4.vanilla.npc.*;
+import vc4.vanilla.npc.Names;
+import vc4.vanilla.npc.Trade;
 import vc4.vanilla.tileentity.TileEntityChest;
 
 /**
@@ -60,10 +61,10 @@ public class Vanilla extends Plugin {
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
 	public static Block workbench, chest, table, chair, gravel, ladder, lightberries;
-	public static Block algae, torch;
+	public static Block algae, torch, reeds, wheat, barley, stakes, farmland;
 	
 	//Items
-	public static Item food, spawnStick, stick, metalBar, alloyBar;
+	public static Item food, spawnStick, stick, metalBar, alloyBar, crop, seeds;
 	
 	//Plants
 	public static Plant plantTreeOak;
@@ -83,7 +84,9 @@ public class Vanilla extends Plugin {
 	public static Plant plantBushKapok;
 	public static Plant plantBushCypress;
 	public static Plant plantCactus;
-	public static Plant plantTallGrass;
+	public static Plant plantGrassTall;
+	public static Plant plantGrassWheat;
+	public static Plant plantGrassBarley;
 	
 	//Tools
 	public static ToolMaterial materialWood = new ToolMaterial("wood", 32, 1);
@@ -202,7 +205,11 @@ public class Vanilla extends Plugin {
 		
 		plantCactus = new Plant("cactus", "desert", "normal");
 		
-		plantTallGrass = new Plant("grass", "weed", "normal");
+		//grass
+		plantGrassTall = new Plant("grass", "weed", "normal");
+		plantGrassWheat = new Plant("grass", "wheat", "crop");
+		plantGrassBarley = new Plant("grass", "barley", "crop");
+		
 		WorldGenerator gen = new OverworldGenerator();
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
@@ -321,6 +328,10 @@ public class Vanilla extends Plugin {
 		lightberries = new BlockLightBerry(world.getRegisteredBlock("vanilla.lightberry")).setName("lightberry");
 		algae = new BlockAlgae(world.getRegisteredBlock("vanilla.algae")).setMineData(new MiningData().setTimes(0.03, 0.02, 0.01)).setName("algae");
 		torch = new BlockTorch(world.getRegisteredBlock("vanilla.torch")).setName("torch");
+		wheat = new BlockCrop(world.getRegisteredBlock("vanilla.wheat"), 0).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("wheat");
+		barley = new BlockCrop(world.getRegisteredBlock("vanilla.barley"), 1).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("barley");
+		stakes = new BlockStakes(world.getRegisteredBlock("vanilla.stakes")).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("stakes");
+		farmland = new BlockFarmland(world.getRegisteredBlock("vanilla.farmland")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 20).setTimes(0.45, 0.01, 0.22)).setName("farmland");
 	}
 	
 	@Override
@@ -330,6 +341,8 @@ public class Vanilla extends Plugin {
 		stick = new ItemStick(world.getRegisteredItem("vanilla.stick"), ItemTexture.stick).setName("stick");
 		metalBar = new ItemMetal(world.getRegisteredItem("vanilla.metalbar"), ItemTexture.metalBar, "bar");
 		alloyBar = new ItemAlloy(world.getRegisteredItem("vanilla.alloybar"), ItemTexture.metalBar, "bar");
+		crop = new ItemCrop(world.getRegisteredItem("vanilla.crop")).setName("crop");
+		seeds = new ItemSeeds(world.getRegisteredItem("vanilla.seeds")).setName("seeds");
 	}
 	
 	@Override

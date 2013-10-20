@@ -47,7 +47,7 @@ public class EntityItem extends Entity {
 			isDead = true;
 			return;
 		}
-		List<Entity> entities = world.getEntitiesInBoundsExcluding(bounds.expand(1, 1, 1), this);
+		List<Entity> entities = world.getEntitiesInBoundsExcluding(bounds.expand(0.5, 0.75, 0.5), this);
 		for(int d = 0; d < entities.size(); ++d){
 			Entity e = entities.get(d);
 			if(e == null) continue;
@@ -55,6 +55,7 @@ public class EntityItem extends Entity {
 				item = ((IEntityPickUpItems)e).pickUpItem(item);
 			} else if(e instanceof EntityItem){
 				EntityItem itm = (EntityItem) e;
+				if(itm.position.distanceSquared(position) > 0.1) continue;
 				if(itm.item != null && itm.item.equals(item)){
 					item = itm.item.combineItemStack(item);
 				}

@@ -37,6 +37,7 @@ public class Command {
 	}
 	
 	public int getArgAsInt(int index, int def){
+		if(index >= args.length) return def;
 		try{
 			return Integer.parseInt(args[index]);
 		} catch(Exception e){
@@ -45,6 +46,7 @@ public class Command {
 	}
 	
 	public int getArgAsBool(int index){
+		if(index >= args.length) return -1;
 		try{
 			return Boolean.parseBoolean(args[index]) ? 1 : 0;
 		} catch(Exception e){
@@ -53,6 +55,7 @@ public class Command {
 	}
 	
 	public double getArgAsDouble(int index, double def){
+		if(index >= args.length) return def;
 		try{
 			return Double.parseDouble(args[index]);
 		} catch(Exception e){

@@ -64,7 +64,7 @@ public class BlockTorch extends Block {
 			if(world.getBlockType(ox, y, oz).isSolid(world, ox, y, oz, dir.opposite().id())) return;
 		}
 		
-			dropItems(world, x, y, z, null);
+		dropItems(world, x, y, z, null);
 		world.setBlockId(x, y, z, 0);
 	}
 

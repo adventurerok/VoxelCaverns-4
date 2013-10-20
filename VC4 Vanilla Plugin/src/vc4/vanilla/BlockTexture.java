@@ -18,7 +18,8 @@ public class BlockTexture {
 	public static int bookshelf, enchantedBookshelf, glass, fluid, obsidian, ore, stone;
 	public static int sand, cracks, woodFront, cactusBottom, cactusTop, cactusSide;
 	public static int vines, tallGrass, craftingTop, chestFront, chestTop, chestSide;
-	public static int gravel, ladder, lightberries, algae, torch;
+	public static int gravel, ladder, lightberries, algae, torch, cropsGrown, stakes;
+	public static int farmland, wetFarmland;
 	public static int[] crops = new int[9];
 	public static int[] craftingTables = new int[5];
 	
@@ -99,5 +100,9 @@ public class BlockTexture {
 		lightberries = tex.getArrayIndex("lightberries");
 		algae = tex.getArrayIndex("algae");
 		torch = tex.getArrayIndex("torch");
+		cropsGrown = tex.getArrayIndex("weedsgrown");
+		stakes = tex.getArrayIndex("stakes");
+		farmland = tex.getArrayIndex("farmland");
+		wetFarmland = tex.getArrayIndex("wetfarmland");
 	}
 }

@@ -9,7 +9,7 @@ public class Profile {
 
     private final List<Long> timeList = new ArrayList<Long>();
 
-    public boolean enabled = true; //Can enable or disable for threads
+    public boolean enabled = false; //Can enable or disable for threads
 
     private String section = "";
 

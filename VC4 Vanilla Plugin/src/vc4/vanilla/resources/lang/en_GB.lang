@@ -1,3 +1,8 @@
+block.farmland.name=Farmland
+block.stakes.name=Stakes
+block.wheat.name=Wheat
+block.barley.name=Barley
+block.reed.name=Reeds
 block.brick.adamantite.name=Adamantite Brick
 block.brick.adamantite.desc=Protects your house from the biggest of explosions!
 block.brick.clay.name=Clay Brick
@@ -276,6 +281,12 @@ item.bar.titanium.name=Titanium Bar
 item.bar.nickel.name=Nickel Bar
 item.bar.zinc.name=Zinc Bar
 item.stick.name=Stick
+item.wheat.name=Wheat
+item.barley.name=Barley
+item.crop.name=Crop
+item.seeds.name=Seeds
+item.seeds.wheat.name=Wheat Seeds
+item.seeds.barley.name=Barley Seeds
 
 item.food.cheese.name=Cheese
 item.food.cheese.desc=Combine with bread for a suprise!

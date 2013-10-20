@@ -201,6 +201,7 @@ public class ItemRenderer {
 	}
 	
 	public static void renderItem3D(ItemStack stack, float x, float y, float z){
+		if(gl == null) gl =  Graphics.getOpenGL();
 		if(stack.isBlock() && Block.byId(stack.getId()).render3d(stack.getData())){
 			Resources.getSheetTexture("blocks").bind();
 			Renderer d = new DataRenderer();

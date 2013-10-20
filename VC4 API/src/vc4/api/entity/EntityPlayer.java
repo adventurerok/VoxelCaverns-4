@@ -209,6 +209,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		if(Client.getGame().guiVisible()){
 			OpenGL gl = Graphics.getOpenGL();
 			AABB bounds = world.getBlockType(rays.x, rays.y, rays.z).getRayTraceSize(world, rays.x, rays.y, rays.z);
+			if(bounds == null) return;
 			gl.unbindShader();
 			gl.disable(GLFlag.CULL_FACE);
 			float s = 0.003f;

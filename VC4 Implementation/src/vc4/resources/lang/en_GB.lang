@@ -18,6 +18,9 @@ menu.quit=Quit
 menu.settings=Settings
 menu.settings.colorscheme=Colourscheme={0}
 menu.settings.crosshair=Crosshair={0}
+menu.worlds.create=Create World
+menu.worlds.rename=Rename Selected
+menu.worlds.delete=Delete Selected
 
 gui.creative.pages=Page {0} of {1}
 
@@ -64,5 +67,6 @@ cmd.nocommand=That command does not exist. To see avaliable commands, type {0}
 
 cmd.tp.done=Teleported to {0}, {1}, {2}
 cmd.tp.desc=Teleports you to the given coordinates
+cmd.sound.desc=Plays a sound
 
 cmd.fail=Failed to execute command

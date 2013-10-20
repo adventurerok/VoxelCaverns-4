@@ -466,6 +466,7 @@ public class ImplChunk implements Chunk {
 	
 	public void initialSkyLight() {
 		MapData dat = world.getMapData(this);
+		if(dat == null) return;
 		int amt = 0;
 		int z;
 		while(amt < 5){

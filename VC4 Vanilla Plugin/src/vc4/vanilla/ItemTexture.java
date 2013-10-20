@@ -6,7 +6,7 @@ import vc4.api.graphics.texture.AnimatedTexture;
 public class ItemTexture {
 	
 	public static int toolHandle, pickaxeHead, axeHead, hoeHead, shovelHead;
-	public static int cheese, bread, harvestFront, harvestBack, stick, metalBar;
+	public static int cheese, bread, harvestFront, harvestBack, stick, metalBar, seeds;
 
 	public static void update(){
 		AnimatedTexture items = Resources.getAnimatedTexture("items");
@@ -21,5 +21,6 @@ public class ItemTexture {
 		harvestBack = items.getArrayIndex("harvestback");
 		stick = items.getArrayIndex("stick");
 		metalBar = items.getArrayIndex("metalbar");
+		seeds = items.getArrayIndex("seeds");
 	}
 }

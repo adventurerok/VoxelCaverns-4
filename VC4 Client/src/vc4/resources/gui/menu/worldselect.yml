@@ -1,0 +1,34 @@
+gui:
+    name: "worldselect"
+    type: "menu"
+    columns: 1
+    rows: 0
+    fontsize: 18
+    border: "fill"
+    button:
+        startx: 15
+        starty: 15
+        width: 246
+        height: 30
+        gapx: 15
+        gapy: 15
+play:
+    class: "button"
+    text: "menu.play"
+    action: "gs:singleplayer"#world:play
+create:
+    class: "button"
+    text: "menu.worlds.create"
+    action: "world:create"
+rename:
+    class: "button"
+    text: "menu.worlds.rename"
+    action: "world:rename"
+delete:
+    class: "button"
+    text: "menu.worlds.delete"
+    action: "world:delete"
+back:
+    class: "button"
+    text: "menu.back"
+    action: "back"

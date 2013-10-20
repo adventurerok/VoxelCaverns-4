@@ -1224,7 +1224,7 @@ public class ImplWorld implements World {
 		Profiler.clear();
 		infiniteWorld(loc);
 		Profiler.start("update");
-		Random rand = createRandom(time, (long) loc.x, (long) loc.z);
+		Random rand = new XORShiftRandom(System.nanoTime());
 		HashMap<ChunkPos, ImplChunk> cnk = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
 		for (ImplChunk c : cnk.values()) {
 			c.update(rand);

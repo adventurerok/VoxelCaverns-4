@@ -40,7 +40,7 @@ public class BlockLightBerry extends BlockMultitexture {
 	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {
 		if(dir != Direction.UP && dir != Direction.DOWN) return;
 		if(!world.getBlockType(x, y + 1, z).isSolid(world, x, y + 1, z, 5) && !world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)){
-			onBlockMined(world, x, y, z, null);
+			dropItems(world, x, y, z, null);
 			world.setBlockId(x, y, z, 0);
 			
 		}
