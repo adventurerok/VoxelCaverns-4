@@ -156,7 +156,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 			for(int dofor = 0; dofor < len; ++dofor){
 				s = "0" + s;
 			}
-			text.append(" ({c:").append(s).append("}").append(getDamage()).append("/").append(getItem().maxDamage).append("§f)");
+			text.append(" ({c:").append(s).append("}").append(getDamage()).append("/").append(getItem().maxDamage).append("ï¿½f)");
 		}
 		text.append(getDescription());
 		text.append(stats);
@@ -365,10 +365,6 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 	}
 	public ItemStack combineItemStack(ItemStack combine){
 		if(combine == null) return null;
-		if(getAmount() == -1 || combine.getAmount() == -1){
-			setAmount(-1);
-			return null;
-		}
 		combine = combine.clone();
 		if(!this.equals(combine)){
 			ItemStack ret = this.clone();
@@ -380,6 +376,10 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 				entities.add(combine.entities.get(dofor));
 			}
 			return ret;
+		}
+		if(getAmount() == -1 || combine.getAmount() == -1){
+			setAmount(-1);
+			return null;
 		}
 		long amount = getAmount();
 		long otherAmount = combine.getAmount();

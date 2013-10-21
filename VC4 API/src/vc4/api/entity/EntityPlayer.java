@@ -415,7 +415,10 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 			ItemStack held = inventory.getSelectedStack();
 			if(world.getBlockType(rays.x, rays.y, rays.z).overrideRightClick(world, rays.x, rays.y, rays.z)){
 				world.getBlockType(rays.x, rays.y, rays.z).onRightClick(world, rays.x, rays.y, rays.z, rays.side, this, held);
-			} else if(held != null) held.onRightClick(this);
+			} else if(held != null){
+				held.onRightClick(this);
+				if(!held.checkIsNotEmpty()) inventory.setSelectedStack(null);
+			}
 		}
 	}
 	
