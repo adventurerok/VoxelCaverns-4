@@ -1,7 +1,11 @@
 block.farmland.name=Farmland
+block.farmland.desc=Creative only!
 block.stakes.name=Stakes
+block.stakes.desc=Good for growing crops
 block.wheat.name=Wheat
+block.wheat.desc=HACKER LOL!!!!
 block.barley.name=Barley
+block.barley.desc=I'm CHEATING. Look at me!
 block.reed.name=Reeds
 block.brick.adamantite.name=Adamantite Brick
 block.brick.adamantite.desc=Protects your house from the biggest of explosions!
@@ -282,16 +286,23 @@ item.bar.nickel.name=Nickel Bar
 item.bar.zinc.name=Zinc Bar
 item.stick.name=Stick
 item.wheat.name=Wheat
+item.wheat.desc=Can be ground into flour
 item.barley.name=Barley
 item.crop.name=Crop
+item.crop.desc=Please identify this crop. Use your hacking skills
 item.seeds.name=Seeds
+item.seeds.desc=These seeds are the seeds of a hacking crop
 item.seeds.wheat.name=Wheat Seeds
+item.seeds.wheat.desc=Grows wheat crops
 item.seeds.barley.name=Barley Seeds
+item.seeds.barley.desc=Grows barley crops
 
 item.food.cheese.name=Cheese
 item.food.cheese.desc=Combine with bread for a suprise!
 item.food.bread.name=Bread
 item.food.bread.desc=Combine with cheese for a suprise!
+item.food.breadandcheese.name=Bread with cheese
+item.food.breadandcheese.desc=Bread with cheese placed in it
 
 villager.help1=Help me!
 villager.help2=Someone, please help!
