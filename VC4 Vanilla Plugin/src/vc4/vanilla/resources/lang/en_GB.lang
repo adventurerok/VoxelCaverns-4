@@ -2,6 +2,7 @@ block.farmland.name=Farmland
 block.stakes.name=Stakes
 block.wheat.name=Wheat
 block.barley.name=Barley
+block.deadcrop.name=Dead Crops
 block.reed.name=Reeds
 block.brick.adamantite.name=Adamantite Brick
 block.brick.adamantite.desc=Protects your house from the biggest of explosions!

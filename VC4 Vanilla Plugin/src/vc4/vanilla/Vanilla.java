@@ -61,7 +61,7 @@ public class Vanilla extends Plugin {
 	public static Block brickStairs8, brickStairs12, brickHalf, bookshelfEnchanted;
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
 	public static Block workbench, chest, table, chair, gravel, ladder, lightberries;
-	public static Block algae, torch, reeds, wheat, barley, stakes, farmland;
+	public static Block algae, torch, reeds, wheat, barley, stakes, farmland, deadCrop;
 	
 	//Items
 	public static Item food, spawnStick, stick, metalBar, alloyBar, crop, seeds;
@@ -332,6 +332,7 @@ public class Vanilla extends Plugin {
 		barley = new BlockCrop(world.getRegisteredBlock("vanilla.barley"), 1).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("barley");
 		stakes = new BlockStakes(world.getRegisteredBlock("vanilla.stakes")).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("stakes");
 		farmland = new BlockFarmland(world.getRegisteredBlock("vanilla.farmland")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 20).setTimes(0.45, 0.01, 0.22)).setName("farmland");
+		deadCrop = new BlockCrop(world.getRegisteredBlock("vanilla.deadcrop"), -1).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("deadcrop");
 	}
 	
 	@Override
@@ -533,7 +534,8 @@ public class Vanilla extends Plugin {
 		for(int d = 0; d < types.length; ++d){
 			for(int f = 0; f < materials.length; ++f){
 				String name = "vanilla." + types[d].getName() + "." + materials[f].getName();
-				new ItemTool(world.getRegisteredItem(name), types[d], materials[f]);
+				if(types[d] != ToolType.hoe) new ItemTool(world.getRegisteredItem(name), types[d], materials[f]);
+				else new ItemHoe(world.getRegisteredItem(name), materials[f]);
 			}
 		}
 	}

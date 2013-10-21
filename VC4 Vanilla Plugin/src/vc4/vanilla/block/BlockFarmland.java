@@ -1,5 +1,7 @@
 package vc4.vanilla.block;
 
+import java.util.Random;
+
 import vc4.api.block.Block;
 import vc4.api.block.Plant;
 import vc4.api.item.ItemStack;
@@ -16,9 +18,22 @@ public class BlockFarmland extends Block {
 
 	public BlockFarmland(int uid) {
 		super(uid, BlockTexture.farmland, "dirt");
+		blockOpacity[uid] = 1;
 	}
 	
 	AABB cBounds = AABB.getBoundingBox(0, 1, 0, 0.96875, 0, 1);
+	
+	public boolean hasWater(World world, long x, long y, long z){
+		for(int ax = -4; ax <= 4; ++ax){
+			for(int az = -4; az <= 4; ++az){
+				if(ax == 0 && az == 0) continue;
+				for(int ay = 0; ay <= 1; ++ay){
+					if(world.getBlockId(ax + x, ay + y, az + z) == Vanilla.water.uid) return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
@@ -47,12 +62,20 @@ public class BlockFarmland extends Block {
 	
 	@Override
 	public int getTextureIndex(ItemStack item, int side) {
-		return side == 4 ? BlockTexture.farmland : BlockTexture.dirt;
+		return side == 4 ? (item.getDamage() == 0 ? BlockTexture.farmland : BlockTexture.wetFarmland) : BlockTexture.dirt;
 	}
 	
 	@Override
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
-		return side == 4 ? BlockTexture.farmland : BlockTexture.dirt;
+		return side == 4 ? (world.getBlockData(x, y, z) == 0 ? BlockTexture.farmland : BlockTexture.wetFarmland) : BlockTexture.dirt;
+	}
+	
+	@Override
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+		boolean water = hasWater(world, x, y, z);
+		if(data == 0 && water) world.setBlockData(x, y, z, 1);
+		else if(data == 1 && !water) world.setBlockData(x, y, z, 0);
+		return 0;
 	}
 	
 	@Override

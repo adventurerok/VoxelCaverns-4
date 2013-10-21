@@ -53,9 +53,13 @@ public class BlockCrop extends BlockMultitexture{
 	@Override
 	public void onRightClick(World world, long x, long y, long z, int side, EntityPlayer player, ItemStack item) {
 		if(player.getCoolDown() > 0.1) return;
-		if(world.getBlockData(x, y, z) == 23){
-			new EntityItem(world).setItem(new ItemStack(Vanilla.crop.id, type, 1)).setPosition(x + 0.5, y + 0.5, z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
-			world.setBlockData(x, y, z, 16);
+		byte data = world.getBlockData(x, y, z);
+		if(data == 23 || (type == -1 && data > 15)){
+			if(type == -1) world.setBlockIdData(x, y, z, Vanilla.stakes.uid, 0);
+			else {
+				new EntityItem(world).setItem(new ItemStack(Vanilla.crop.id, type, 1)).setPosition(x + 0.5, y + 0.5, z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
+				world.setBlockData(x, y, z, 16);
+			}
 		}
 		player.setCoolDown(200);
 	}
@@ -66,8 +70,10 @@ public class BlockCrop extends BlockMultitexture{
 		Random rand = new XORShiftRandom();
 		ArrayList<ItemStack> res = new ArrayList<>();
 		if(data > 15) res.add(new ItemStack(Vanilla.stakes.uid, 0, 1));
-		if((data & 15) == 7) res.add(new ItemStack(Vanilla.crop.id, type, 1));
-		res.add(new ItemStack(Vanilla.seeds.id, type, 1 + rand.nextInt(Math.max(1, data / 3))));
+		if(type != -1){
+			if((data & 15) == 7) res.add(new ItemStack(Vanilla.crop.id, type, 1));
+			res.add(new ItemStack(Vanilla.seeds.id, type, 1 + rand.nextInt(Math.max(1, data / 3))));
+		}
 		return res.toArray(new ItemStack[res.size()]);
 	}
 	
@@ -117,29 +123,32 @@ public class BlockCrop extends BlockMultitexture{
 	public Color getColor(World world, long x, long y, long z, int side) {
 		byte dat = world.getBlockData(x, y, z);
 		if(dat > 15) return Color.white;
-		return crops[type][dat];
+		return type == -1 ? Color.black : crops[type][dat];
 	}
 	
 	@Override
 	public Color getColorMultitexture(World world, long x, long y, long z, int side) {
-		return crops[type][world.getBlockData(x, y, z) & 15];
+		return type == -1 ? Color.black : crops[type][world.getBlockData(x, y, z) & 15];
 	}
 	
 	@Override
 	public Color getColorMultitexture(ItemStack item, int side) {
-		return crops[type][item.getDamage() & 15];
+		return type == -1 ? Color.black : crops[type][item.getDamage() & 15];
 	}
 	
 	@Override
 	public Color getColor(ItemStack current, int side) {
 		if(current.getDamage() > 15) return Color.white;
-		return crops[type][current.getDamage()];
+		return type == -1 ? Color.black : crops[type][current.getDamage()];
 	}
 	
 	@Override
 	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+		if(type == -1) return 0;
 		if((data & 15) > 6) return 0;
-		if(world.getBlockId(x, y - 1, z) == Vanilla.farmland.uid || rand.nextBoolean()) world.setBlockData(x, y, z, ++data);
+		if(world.getBlockId(x, y - 1, z) == Vanilla.farmland.uid){
+			if(world.getBlockData(x, y - 1, z) == 1 || rand.nextInt(2) == 0) world.setBlockData(x, y, z, ++data);
+		} else if(rand.nextInt(3) == 0) world.setBlockData(x, y, z, ++data);
 		return 0;
 	}
 	

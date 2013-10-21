@@ -38,6 +38,7 @@ public class ItemSeeds extends Item {
 		return ItemCrop.colors[item.getDamage()];
 	}
 	
+	
 	@Override
 	public void onRightClick(EntityPlayer player, ItemStack item) {
 		if(player.getCoolDown() > 0.1) return;
