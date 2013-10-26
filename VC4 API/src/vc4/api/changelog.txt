@@ -213,3 +213,5 @@ VC4-Development-0.0.1-245
 	* Fixed main menu as world select menu
 VC4-Development-0.0.1-246
 	* Decreased item pickup range
+VC4-Development-0.0.1-247
+	* Fixed infinite stack bugs

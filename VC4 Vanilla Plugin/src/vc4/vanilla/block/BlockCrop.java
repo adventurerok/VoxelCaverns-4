@@ -27,13 +27,15 @@ public class BlockCrop extends BlockMultitexture{
 	}
 	
 	static{
-		crops[0] = new Color[8];
-		crops[1] = new Color[8];
+		crops[0] = new Color[16];
+		crops[1] = new Color[16];
 		plants[0] = new Plant("grass", "wheat", "crop");
 		plants[1] = new Plant("grass", "barley", "crop");
 		for(int d = 0; d < 8; ++d){
 			crops[0][d] = new Color(d * 30, 200, 0);
 			crops[1][d] = new Color(d * 30, 200 - (d * 20), 0);
+			crops[0][d + 8] = new Color(d * 30, 255, 50);
+			crops[1][d + 8] = new Color(d * 30, 255 - (d * 15), 50);
 		}
 	}
 	
@@ -54,8 +56,8 @@ public class BlockCrop extends BlockMultitexture{
 	public void onRightClick(World world, long x, long y, long z, int side, EntityPlayer player, ItemStack item) {
 		if(player.getCoolDown() > 0.1) return;
 		byte data = world.getBlockData(x, y, z);
-		if(data == 23 || (type == -1 && data > 15)){
-			if(type == -1) world.setBlockIdData(x, y, z, Vanilla.stakes.uid, 0);
+		if(data == 23 || ((type == -1 || (data & 8) != 0) && data > 15)){
+			if(type == -1 || (data & 8) != 0) world.setBlockIdData(x, y, z, Vanilla.stakes.uid, 0);
 			else {
 				new EntityItem(world).setItem(new ItemStack(Vanilla.crop.id, type, 1)).setPosition(x + 0.5, y + 0.5, z + 0.5).setVelocity((rand.nextDouble() - 0.5) / 2d, 0, (rand.nextDouble() - 0.5) / 2d).addToWorld();
 				world.setBlockData(x, y, z, 16);
@@ -72,7 +74,7 @@ public class BlockCrop extends BlockMultitexture{
 		if(data > 15) res.add(new ItemStack(Vanilla.stakes.uid, 0, 1));
 		if(type != -1){
 			if((data & 15) == 7) res.add(new ItemStack(Vanilla.crop.id, type, 1));
-			res.add(new ItemStack(Vanilla.seeds.id, type, 1 + rand.nextInt(Math.max(1, data / 3))));
+			if((data & 8) == 0)res.add(new ItemStack(Vanilla.seeds.id, type, 1 + rand.nextInt(Math.max(1, data / 3))));
 		}
 		return res.toArray(new ItemStack[res.size()]);
 	}
@@ -102,20 +104,20 @@ public class BlockCrop extends BlockMultitexture{
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
 		byte data = world.getBlockData(x, y, z);
 		if(data > 15) return BlockTexture.stakes;
-		if(data < 7) return BlockTexture.crops[data];
+		if(data < 7) return BlockTexture.crops[data & 7];
 		else return BlockTexture.cropsGrown;
 	}
 	
 	@Override
 	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
 		int data = world.getBlockData(x, y, z) & 15;
-		if(data < 7) return BlockTexture.crops[data];
+		if(data < 7) return BlockTexture.crops[data & 7];
 		else return BlockTexture.cropsGrown;
 	}
 	
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
-		if((item.getDamage() & 15) < 7) return BlockTexture.crops[item.getDamage() & 15];
+		if((item.getDamage() & 15) < 7) return BlockTexture.crops[item.getDamage() & 7];
 		else return BlockTexture.cropsGrown;
 	}
 	
@@ -145,16 +147,30 @@ public class BlockCrop extends BlockMultitexture{
 	@Override
 	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
 		if(type == -1) return 0;
-		if((data & 15) > 6) return 0;
+		if((data & 7) > 6) return 0;
+		if((data & 8) != 0){
+			if(rand.nextInt(6) == 0) world.setBlockIdData(x, y, z, Vanilla.deadCrop.uid, data & 23);
+			return 0;
+		}
 		if(world.getBlockId(x, y - 1, z) == Vanilla.farmland.uid){
+			if(rand.nextInt(150) == 0){
+				world.setBlockData(x, y, z, data | 8);
+				return 0;
+			}
 			if(world.getBlockData(x, y - 1, z) == 1 || rand.nextInt(2) == 0) world.setBlockData(x, y, z, ++data);
-		} else if(rand.nextInt(3) == 0) world.setBlockData(x, y, z, ++data);
+		} else{
+			if(rand.nextInt(75) == 0){
+				world.setBlockData(x, y, z, data | 8);
+				return 0;
+			}
+			if(rand.nextInt(3) == 0) world.setBlockData(x, y, z, ++data);
+		}
 		return 0;
 	}
 	
 	@Override
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
-		if(!world.getBlockType(x, y - 1, z).canGrowPlant(plants[type])) return;
+		if(!world.getBlockType(x, y - 1, z).canGrowPlant(type == -1 ? plants[0] : plants[type])) return;
 		world.setBlockIdData(x, y, z, uid, item.getData());
 		item.decrementAmount();
 	}
