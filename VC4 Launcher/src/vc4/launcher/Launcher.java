@@ -2,9 +2,7 @@ package vc4.launcher;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public class Launcher {
 		tasks.start();
 		Repo rec = new Repo();
 		try {
-			rec.loadInfo(new URL("https://raw.github.com/adventurerok/VoxelCaverns-4/master/VC4%20Downloads"));
+			rec.loadInfo(new URL("http://voxelcaverns.org.uk/repo"));
 			vc4 = rec;
 			vc4.setCanDisable(false);
 			repos.add(vc4);
@@ -77,29 +75,11 @@ public class Launcher {
 		return repos;
 	}
 
-	public Package getApiPackage() {
-		return vc4.getPackage("VC4-API");
-	}
-
-	public Package getImplPackage() {
-		return vc4.getPackage("VC4-Impl");
-	}
 
 	public Package getClientPackage() {
-		return vc4.getPackage("VC4-Client");
+		return vc4.getPackage("VoxelCaverns");
 	}
 
-	public Package getServerPackage() {
-		return vc4.getPackage("VC4-Server");
-	}
-
-	public Package getVanillaPackage() {
-		return vc4.getPackage("VC4-Vanilla");
-	}
-
-	public Package getEditorPackage() {
-		return vc4.getPackage("VC4-Editor");
-	}
 	
 	public YamlMap getRepoMap(){
 		YamlMap map = new YamlMap();
@@ -134,19 +114,34 @@ public class Launcher {
 		}
 		
 	}
-
-	public void launchPackage(Package pack) {
-		String run = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/" + pack.getInstall();
+	
+	public void launch(){
+		String run = DirectoryLocator.getPath() + "/bin/VC4-Client.jar";
 		String separator = System.getProperty("file.separator");
 	    String path = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
-	    String memory = "1024M";
-	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + memory, "-Xms" + memory, "-cp", run, pack.getLaunch(), "heapset" });
+	    String memory = "1920M";
+	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + memory, "-Xms" + memory, "-cp", run, "vc4.client.Launcher", "heapset" });
 	    processBuilder.redirectOutput(Redirect.INHERIT);
     	processBuilder.redirectError(Redirect.INHERIT);
 		try {
 			processBuilder.start();
 		} catch (IOException e) {
 		}
+	}
+
+	public void launchPackage(Package pack) {
+		launch();
+//		String run = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/" + pack.getInstall();
+//		String separator = System.getProperty("file.separator");
+//	    String path = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
+//	    String memory = "1024M";
+//	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + memory, "-Xms" + memory, "-cp", run, pack.getLaunch(), "heapset" });
+//	    processBuilder.redirectOutput(Redirect.INHERIT);
+//    	processBuilder.redirectError(Redirect.INHERIT);
+//		try {
+//			processBuilder.start();
+//		} catch (IOException e) {
+//		}
 	}
 	
 	public TaskSystem getTasks() {

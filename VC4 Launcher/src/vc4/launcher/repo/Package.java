@@ -1,39 +1,50 @@
 package vc4.launcher.repo;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
+import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
 import vc4.launcher.Launcher;
-import vc4.launcher.enumeration.UpdateStreamType;
 import vc4.launcher.gui.settings.PackageSettingsPanel;
 import vc4.launcher.task.InstallVersionTask;
 import vc4.launcher.task.UpdateGuiTask;
-import vc4.launcher.util.DirectoryLocator;
-import vc4.launcher.util.ThreadYaml;
-import vc4.launcher.util.YamlMap;
+import vc4.launcher.util.*;
 
 public class Package {
-
+	
 	private Version version;
+	private int stream = 1;
+	private String author;
+	private String desc;
+	private String name;
+	private String data;
+	
+	private Version[] versions;
+	private Install[] installs;
 
-	private UpdateStream recommended, beta, alpha, dev;
-	private UpdateStreamType type = UpdateStreamType.RECCOMENDED;
-	private boolean manual = false;
-	private boolean backup = false;
-	private boolean auto = true;
-	private String name, author, desc, folder, install, fileType = "file", data, launch;
+	private boolean manual;
+	private boolean auto;
+	private HashMap<String, Integer> updateStreams = new HashMap<>();
+	private HashMap<Integer, String> updateStreamsRev = new HashMap<>();
 	private PackageSettingsPanel panel;
 
 	private String packageRoot;
 	
+	
+	public HashMap<String, Integer> getUpdateStreams() {
+		return updateStreams;
+	}
+	
+	public String getUpdateStreamName(int id){
+		return updateStreamsRev.get(id);
+	}
+	
+	public int getUpdateStreamId(String name){
+		return updateStreams.get(name);
+	}
 	
 	public void autoUpdate() {
 		if(!auto) return;
@@ -47,6 +58,20 @@ public class Package {
 		
 	}
 	
+	public boolean isManual() {
+		return manual;
+	}
+	
+	public Package setManual(boolean manual) {
+		this.manual = manual;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after update");
+		}
+		return this;
+	}
+	
 	public PackageSettingsPanel getPanel() {
 		return panel;
 	}
@@ -55,102 +80,43 @@ public class Package {
 		this.panel = panel;
 	}
 
-	public boolean canLaunch(){
-		return launch != null;
-	}
 	
-	public UpdateStream getAlpha() {
-		return alpha;
-	}
-
 	public String getAuthor() {
 		return author;
 	}
 	
-	public UpdateStream getBeta() {
-		return beta;
+	
+	public int getStream() {
+		return stream;
 	}
 	
-	public UpdateStream getCurrentStream() {
-		switch (type) {
-			case RECCOMENDED:
-				return recommended;
-			case BETA:
-				return beta;
-			case ALPHA:
-				return alpha;
-			case DEV:
-				return dev;
-		}
-		return dev;
-	}
-	
-	public String getData() {
-		return data;
-	}
 	
 	public String getDesc() {
 		return desc;
 	}
-
-	public UpdateStream getDev() {
-		return dev;
-	}
-
-	public String getFileType() {
-		return fileType;
-	}
-
 	
-	public String getFolder() {
-		return folder;
-	}
 	public String getInfo() {
 		return name + ":\n" + desc + "\n" + "Created by " + author + "\n\n" + getInstalledText();
 	}
 	
-	public String getInstall() {
-		return install;
-	}
 
 	private String getInstalledText() {
 		if (isDownloaded()) {
 			return "Installed Version: " + version.toString();
 		} else return "This package is not installed";
 	}
+	
+	public Install[] getInstalls() {
+		return installs;
+	}
 
 	public Version getLatest() {
-		Version latestRec = recommended.getLatest();
-		if (type == UpdateStreamType.RECCOMENDED && latestRec != null) return latestRec;
-		Version latestBeta = beta.getLatest();
-		if (((type == UpdateStreamType.RECCOMENDED && latestRec == null)) && latestBeta != null) return latestBeta;
-		Version latestAlpha = alpha.getLatest();
-		if (((type == UpdateStreamType.RECCOMENDED && latestRec == null) || (type == UpdateStreamType.BETA && latestBeta == null)) && latestAlpha != null) return latestAlpha;
-		Version latestDev = dev.getLatest();
-		Version latest = null;
-		if (type == UpdateStreamType.DEV && latestDev != null) {
-			latest = latestDev;
+		for(int d = versions.length - 1; d > -1; --d){
+			if(versions[d].stream <= stream) return versions[d];
 		}
-		if ((type == UpdateStreamType.ALPHA || type == UpdateStreamType.DEV) && latestAlpha != null) {
-			if (latest == null || latestAlpha.intVersion > latest.intVersion) latest = latestAlpha;
-		}
-		if (type != UpdateStreamType.RECCOMENDED && latestBeta != null) {
-			if (latest == null || latestBeta.intVersion > latest.intVersion) latest = latestBeta;
-		}
-		if (latestRec != null) {
-			if (latest == null || latestRec.intVersion > latest.intVersion) latest = latestRec;
-		}
-		if(latest == null){
-			if(latestBeta != null) latest = latestBeta;
-			else if(latestAlpha != null) latest = latestAlpha;
-			else if(latestDev != null) latest = latestDev;
-		}
-		return latest;
+		return null;
 	}
 
-	public String getLaunch() {
-		return launch;
-	}
 	
 	public String getName() {
 		return name;
@@ -160,23 +126,16 @@ public class Package {
 		return packageRoot;
 	}
 	
-	public UpdateStream getRecommended() {
-		return recommended;
-	}
 
 	public YamlMap getSaveData(){
 		YamlMap data = new YamlMap();
 		data.setInt("version", version == null ? -1 : version.intVersion);
-		data.setBoolean("manual", manual);
 		data.setBoolean("auto", auto);
-		data.setBoolean("backup", backup);
-		data.setString("stream", type.toString());
+		data.setInt("stream", stream);
+		data.setBoolean("manual", manual);
 		return data;
 	}
 
-	public UpdateStreamType getType() {
-		return type;
-	}
 
 	/**
 	 * Null if not installed
@@ -190,30 +149,20 @@ public class Package {
 	
 
 	public Version getVersion(int ver){
-		Version v = recommended.getVersion(ver);
-		if(v != null) return v;
-		v = beta.getVersion(ver);
-		if(v != null) return v;
-		v = alpha.getVersion(ver);
-		if(v != null) return v;
-		v = dev.getVersion(ver);
-		if(v != null) return v;
-		return null;
+		return versions[ver - 1];
 	}
 
 	public Version[] getVisibleVersions() {
 		ArrayList<Version> result = new ArrayList<>();
-		if (type == UpdateStreamType.DEV) result.addAll(dev.getVersions());
-		if (type == UpdateStreamType.DEV || type == UpdateStreamType.ALPHA) result.addAll(alpha.getVersions());
-		if (type != UpdateStreamType.RECCOMENDED) result.addAll(beta.getVersions());
-		result.addAll(recommended.getVersions());
-		if(!result.contains(getLatest())) result.add(getLatest());
+		for(int d = versions.length - 1; d >= 0; --d){
+			if(versions[d].stream <= stream) result.add(versions[d]);
+		}
 		Collections.sort(result);
 		return result.toArray(new Version[result.size()]);
 	}
 
 	public void install(Version version) throws IOException {
-		Launcher.getSingleton().getTasks().addTask(new InstallVersionTask(this, version));
+		for(int d = 0; d < installs.length; ++d) Launcher.getSingleton().getTasks().addTask(new InstallVersionTask(this, version, d));
 		final Package pak = this;
 		Runnable run = new Runnable() {
 			
@@ -231,51 +180,50 @@ public class Package {
 		return auto;
 	}
 
-	public boolean isBackup() {
-		return backup;
-	}
 	
 	public boolean isDownloaded() {
 		return version != null;
 	}
 	
-	public boolean isManual() {
-		return manual;
-	}
-
-	public boolean isPlugin() {
-		return folder.equals("plugins");
-	}
 
 	public void load() throws FileNotFoundException{
-		String path = DirectoryLocator.getPath() + "/launcher/" + data;
+		String path = DirectoryLocator.getPath() + "/launcher/" + data + ".yml";
 		YamlMap map = new YamlMap(new FileInputStream(path));
 		loadSaveData(map);
 	}
+	
+	public Package setStream(int stream) {
+		this.stream = stream;
+		return this;
+	}
 
+	@SuppressWarnings("unchecked")
 	public void load(YamlMap map) {
-		YamlMap info = map.getSubMap("info");
+		YamlMap info = map.getSubMap("package");
 		name = info.getString("name");
 		author = info.getString("author");
 		desc = info.getString("desc");
-		folder = info.getString("folder");
-		install = info.getString("install");
 		data = info.getString("data");
-		if(info.hasKey("type")) fileType = info.getString("type");
-		if(info.hasKey("launch")) launch = info.getString("launch");
-		YamlMap latest = map.getSubMap("latest");
-		String latestRec = latest.getString("recommended");
-		String latestBeta = latest.getString("beta");
-		String latestAlpha = latest.getString("alpha");
-		String latestDev = latest.getString("dev");
-		recommended = new UpdateStream();
-		if(map.hasKey("recommended"))recommended.load(map.getSubMap("recommended"), latestRec, UpdateStreamType.RECCOMENDED);
-		beta = new UpdateStream();
-		if(map.hasKey("beta"))beta.load(map.getSubMap("beta"), latestBeta, UpdateStreamType.BETA);
-		alpha = new UpdateStream();
-		if(map.hasKey("alpha"))alpha.load(map.getSubMap("alpha"), latestAlpha, UpdateStreamType.ALPHA);
-		dev = new UpdateStream();
-		if(map.hasKey("dev"))dev.load(map.getSubMap("dev"), latestDev, UpdateStreamType.DEV);
+		YamlMap streamData = map.getSubMap("streams");
+		for(Entry<Object, Object> en : streamData.getBaseMap().entrySet()){
+			if(en.getValue() instanceof Number){
+				updateStreams.put(en.getKey().toString(), ((Number)en.getValue()).intValue());
+				updateStreamsRev.put(((Number)en.getValue()).intValue(), en.getKey().toString());
+			}
+		}
+		Object[] ins = map.getList("install");
+		installs = new Install[ins.length];
+		for(int d = 0; d < ins.length; ++d) installs[d] = new Install(ins[d].toString());
+		YamlMap versionData = map.getSubMap("versions");
+		ArrayList<Version> vsns = new ArrayList<>();
+		for(Entry<Object, Object>  obj: versionData.getBaseMap().entrySet()){
+			if(!(obj.getValue() instanceof Map<?, ?>)) continue;
+			YamlMap ver = new YamlMap((Map<Object, Object>) obj.getValue());
+			Version vsn = Version.load(ver, obj.getKey().toString());
+			vsns.add(vsn);
+		}
+		Collections.sort(vsns);
+		versions = vsns.toArray(new Version[vsns.size()]);
 		try {
 			load();
 		} catch (FileNotFoundException e) {
@@ -294,11 +242,10 @@ public class Package {
 	
 	public void loadSaveData(YamlMap data){
 		int ver = data.getInt("version");
-		version = getVersion(ver);
-		manual = data.getBoolean("manual");
+		if(ver != -1) version = getVersion(ver);
 		auto = data.getBoolean("auto");
-		backup = data.getBoolean("backup");
-		type = UpdateStreamType.valueOf(data.getString("stream"));
+		stream = data.getInt("stream");
+		manual = data.getBoolean("manual");
 	}
 	
 	public void refresh() throws IOException{
@@ -308,7 +255,7 @@ public class Package {
 	}
 	
 	public void save() throws IOException{
-		String path = DirectoryLocator.getPath() + "/launcher/" + data;
+		String path = DirectoryLocator.getPath() + "/launcher/" + data + ".yml";
 		Yaml yaml = ThreadYaml.getYamlForThread();
 		YamlMap map = getSaveData();
 		Writer r = new FileWriter(path);
@@ -324,39 +271,14 @@ public class Package {
 			System.out.println("Failed to save package after update");
 		}
 	}
-
-	public void setBackup(boolean backup) {
-		this.backup = backup;
-		try {
-			save();
-		} catch (IOException e) {
-			System.out.println("Failed to save package after update");
-		}
-	}
 	
-	public void setManual(boolean manual) {
-		this.manual = manual;
-		try {
-			save();
-		} catch (IOException e) {
-			System.out.println("Failed to save package after update");
-		}
-	}
-
-	public void setPlugin(boolean plugin) {
-		folder = plugin ? "plugins" : "bin";
-	}
-
-	public void setType(UpdateStreamType type) {
-		this.type = type;
-		try {
-			save();
-		} catch (IOException e) {
-			System.out.println("Failed to save package after update");
-		}
-	}
 
 	public void setVersion(Version version) {
 		this.version = version;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after update");
+		}
 	}
 }

@@ -34,7 +34,7 @@ public class TaskSystem extends Thread {
 			return;
 		}
 		if (current == null || !current.canRun() || current.delete()) {
-			if (current != null) tasks.add(current);
+			if (current != null && !current.delete()) tasks.add(current);
 			current = getNext();
 			if (current == null) return;
 		}

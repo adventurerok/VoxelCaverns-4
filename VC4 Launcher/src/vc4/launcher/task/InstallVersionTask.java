@@ -1,51 +1,54 @@
 package vc4.launcher.task;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import vc4.launcher.repo.*;
+import vc4.launcher.repo.Install.InstallType;
 import vc4.launcher.repo.Package;
-import vc4.launcher.repo.Version;
 import vc4.launcher.util.DirectoryLocator;
 
 public class InstallVersionTask implements Task {
-	
+
 	Package pack;
 	Version version;
-	
-	
+	int install;
 
-	public InstallVersionTask(Package pack, Version version) {
+	public InstallVersionTask(Package pack, Version version, int install) {
 		super();
 		this.pack = pack;
 		this.version = version;
+		this.install = install;
 	}
 
 	@Override
 	public void run(Progress progress) {
 		try {
-			if(pack.getVersion() != null && version.getIntVersion() == pack.getVersion().getIntVersion()) return;
-			String installPath = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/" + pack.getInstall();
-			if(pack.isBackup() && pack.getVersion() != null && !pack.getFileType().equals("zip")){
-				progress.setText("Backing up version: " + pack.getVersion().getVersion());
-				progress.setPercent(0);
-				String bakPath = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/" + pack.getVersion().getPath();
-				if(bakPath.contains("/")) bakPath = bakPath.substring(bakPath.lastIndexOf("/"), bakPath.length());
-				Files.move(new File(installPath).toPath(), new File(bakPath).toPath());
+			if (pack.getVersion() != null && version.getIntVersion() == pack.getVersion().getIntVersion()) {
+				progress.setPercent(100);
+				progress.setDelete(true);
+				if(install == pack.getInstalls().length - 1) pack.setVersion(version);
+				return;
 			}
+			Install instal = pack.getInstalls()[install];
+			if (!instal.canInstall(version)) {
+				progress.setPercent(100);
+				progress.setDelete(true);
+				if(install == pack.getInstalls().length - 1) pack.setVersion(version);
+				return;
+			}
+			String installPath = DirectoryLocator.getPath() + instal.getEnd();
 			progress.setPercent(33);
-			String downloadPath = pack.getPackageRoot() + version.getPath();
-			if (pack.getFileType().equals("zip")) {
-				progress.setText("Downloading version");
-				installPath = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/";
-				String tempPath = DirectoryLocator.getPath() + "/temp/" + pack.getInstall();
+			String downloadPath = pack.getPackageRoot() + version.getPath() + instal.getStart();
+			if (instal.getType() == InstallType.UNZIP) {
+				new File(DirectoryLocator.getPath() + "/temp/").mkdirs();
+				progress.setText("Downloading: " + instal.getEnd());
+				installPath = installPath + "/";
+				String tempPath = DirectoryLocator.getPath() + "/temp/" + instal.getStart();
 				URL download = new URL(downloadPath);
 				ReadableByteChannel rbc = Channels.newChannel(download.openStream());
 				FileOutputStream out = new FileOutputStream(tempPath);
@@ -66,6 +69,7 @@ public class InstallVersionTask implements Task {
 					if (newFile.isDirectory()) {
 						newFile.mkdirs();
 					} else {
+						newFile.getParentFile().mkdirs();
 						FileOutputStream fos = new FileOutputStream(newFile);
 
 						int len;
@@ -79,26 +83,22 @@ public class InstallVersionTask implements Task {
 				}
 				zis.closeEntry();
 				zis.close();
+				progress.setPercent(90);
+				new File(tempPath).delete();
 				progress.setPercent(100);
-			} else {
-				String checkPath = version.getPath();
-				if(checkPath.contains("/")) checkPath = checkPath.substring(checkPath.lastIndexOf("/"), checkPath.length());
-				if(new File(checkPath).exists()){
-					progress.setText("Installing backup version");
-					progress.setPercent(66);
-					Files.copy(new File(checkPath).toPath(), new File(installPath).toPath());
-				} else {
-					progress.setText("Downloading version");
-					progress.setPercent(50);
-					URL download = new URL(downloadPath);
-					ReadableByteChannel rbc = Channels.newChannel(download.openStream());
-					FileOutputStream out = new FileOutputStream(installPath);
-					out.getChannel().transferFrom(rbc, 0, 1 << 28);
-					out.close();
-				}
+			} else if(instal.getType() == InstallType.COPY){
+				progress.setText("Downloading: " + instal.getEnd());
+				progress.setPercent(50);
+				URL download = new URL(downloadPath);
+				ReadableByteChannel rbc = Channels.newChannel(download.openStream());
+				new File(installPath).getParentFile().mkdirs();
+				FileOutputStream out = new FileOutputStream(installPath);
+				out.getChannel().transferFrom(rbc, 0, 1 << 28);
+				out.close();
+
 				progress.setPercent(100);
 			}
-			pack.setVersion(version);
+			if(install == pack.getInstalls().length - 1) pack.setVersion(version);
 			progress.setDelete(true);
 			try {
 				pack.save();
@@ -106,6 +106,7 @@ public class InstallVersionTask implements Task {
 				System.out.println("Failed to save package after update");
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			progress.setDelete(true);
 		}
 	}

@@ -3,13 +3,7 @@ package vc4.launcher.gui.settings;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import vc4.launcher.enumeration.UpdateStreamType;
+import javax.swing.*;
 
 public class LauncherSettingsPanel extends JPanel {
 	public LauncherSettingsPanel() {
@@ -25,9 +19,9 @@ public class LauncherSettingsPanel extends JPanel {
 		JLabel lblNewLabel = new JLabel("Default Update Stream");
 		add(lblNewLabel);
 		
-		JComboBox<UpdateStreamType> comboBox = new JComboBox<>();
-		comboBox.setModel(new DefaultComboBoxModel<UpdateStreamType>(UpdateStreamType.values()));
-		add(comboBox);
+//		JComboBox<UpdateStreamType> comboBox = new JComboBox<>();
+//		comboBox.setModel(new DefaultComboBoxModel<UpdateStreamType>(UpdateStreamType.values()));
+//		add(comboBox);
 	}
 
 	/**

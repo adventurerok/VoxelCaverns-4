@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import vc4.launcher.enumeration.UpdateStreamType;
 import vc4.launcher.util.YamlMap;
 
 public class Version implements Comparable<Version>{
@@ -16,7 +15,7 @@ public class Version implements Comparable<Version>{
 	String path;
 	Date date;
 	boolean bugged = false;
-	UpdateStreamType updateStream;
+	int stream;
 	
 	public String getVersion() {
 		return version;
@@ -41,9 +40,9 @@ public class Version implements Comparable<Version>{
 
 
 	public static Version load(YamlMap map, String name) {
-		String version = name;
-		int i = map.getInt("int");
-		String path = map.getString("file");
+		String version = map.getString("name");
+		int i = Integer.parseInt(name);
+		String path = map.getString("dir");
 		Date d;
 		try {
 			d = dateFormat.parse(map.getString("release"));
@@ -57,15 +56,15 @@ public class Version implements Comparable<Version>{
 	
 	@Override
 	public String toString() {
-		return (updateStream == UpdateStreamType.RECCOMENDED ? "REC" : updateStream) + " " + version + " (" + dateFormat.format(date) + ")";
+		return version + " (" + dateFormat.format(date) + ")";
 	}
 
 
 
 	@Override
 	public int compareTo(Version o) {
-		if(o.intVersion > intVersion) return 1;
-		if(intVersion > o.intVersion) return -1;
+		if(o.intVersion > intVersion) return -1;
+		if(intVersion > o.intVersion) return 1;
 		return 0;
 	}
 	

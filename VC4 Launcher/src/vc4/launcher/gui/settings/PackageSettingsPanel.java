@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import vc4.launcher.Launcher;
-import vc4.launcher.enumeration.UpdateStreamType;
 import vc4.launcher.repo.Package;
 import vc4.launcher.repo.Version;
 
@@ -37,7 +36,7 @@ public class PackageSettingsPanel extends JPanel {
 	private JButton _disableButton;
 	private JButton _removeButton;
 	private JComboBox<Version> _versionComboBox;
-	private JComboBox<UpdateStreamType> _updateStream;
+	private JComboBox<String> _updateStream;
 	private JCheckBox _manualVersion;
 	private JCheckBox _autoUpdate;
 	private JCheckBox _previousVersions;
@@ -94,32 +93,18 @@ public class PackageSettingsPanel extends JPanel {
 		});
 		panel.add(_manualVersion);
 		
-		JLabel lb2 = new JLabel("Keep previous versions");
-		panel.add(lb2);
-		
-		_previousVersions = new JCheckBox("Check if you want to backup old versions");
-		_previousVersions.setSelected(pack.isBackup());
-		_previousVersions.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				pack.setBackup(_previousVersions.isSelected());
-				
-			}
-		});
-		panel.add(_previousVersions);
 		
 		JLabel lblNewLabel_2 = new JLabel("Update Stream");
 		panel.add(lblNewLabel_2);
 		
 		_updateStream = new JComboBox<>();
-		_updateStream.setModel(new DefaultComboBoxModel<UpdateStreamType>(UpdateStreamType.values()));
-		_updateStream.setSelectedItem(pack.getType());
+		_updateStream.setModel(new DefaultComboBoxModel<String>(pack.getUpdateStreams().keySet().toArray(new String[pack.getUpdateStreams().keySet().size()])));
+		_updateStream.setSelectedItem(pack.getUpdateStreamName(pack.getStream()));
 		_updateStream.addItemListener(new ItemListener() {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				pack.setType((UpdateStreamType) _updateStream.getSelectedItem());
+				pack.setStream(pack.getUpdateStreamId(_updateStream.getSelectedItem().toString()));
 				Version sel = (Version) _versionComboBox.getSelectedItem();
 				_versionComboBox.setModel(new DefaultComboBoxModel<Version>(pack.getVisibleVersions()));
 				if(pack.isManual()) _versionComboBox.setSelectedItem(sel);
@@ -172,17 +157,17 @@ public class PackageSettingsPanel extends JPanel {
 		});
 		panel.add(_updateButton);
 		
-		_launchButton = new JButton("Launch");
-		_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
-		_launchButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Launcher.getSingleton().launchPackage(pack);
-				
-			}
-		});
-		panel.add(_launchButton);
+//		_launchButton = new JButton("Launch");
+//		_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
+//		_launchButton.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				Launcher.getSingleton().launchPackage(pack);
+//				
+//			}
+//		});
+//		panel.add(_launchButton);
 		
 		_disableButton = new JButton("Disable");
 		_disableButton.setEnabled(pack.isDownloaded());
@@ -198,7 +183,7 @@ public class PackageSettingsPanel extends JPanel {
 		_autoUpdate.setSelected(pack.isAuto());
 		_removeButton.setEnabled(pack.isDownloaded());
 		_disableButton.setEnabled(pack.isDownloaded());
-		_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
+		//_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
 	}
 
 }
