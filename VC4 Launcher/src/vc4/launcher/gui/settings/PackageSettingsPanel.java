@@ -4,21 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.io.IOException;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 import vc4.launcher.Launcher;
+import vc4.launcher.gui.popup.RunnablePopupMenu;
 import vc4.launcher.repo.Package;
 import vc4.launcher.repo.Version;
 
@@ -39,7 +31,6 @@ public class PackageSettingsPanel extends JPanel {
 	private JComboBox<String> _updateStream;
 	private JCheckBox _manualVersion;
 	private JCheckBox _autoUpdate;
-	private JCheckBox _previousVersions;
 	private Version _chosen;
 
 	private JTextArea _packageInfo;
@@ -157,17 +148,35 @@ public class PackageSettingsPanel extends JPanel {
 		});
 		panel.add(_updateButton);
 		
-//		_launchButton = new JButton("Launch");
-//		_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
-//		_launchButton.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				Launcher.getSingleton().launchPackage(pack);
-//				
-//			}
-//		});
-//		panel.add(_launchButton);
+		_launchButton = new JButton("Launch");
+		_launchButton.setEnabled(pack.isDownloaded() && pack.getRuns().length > 0);
+		_launchButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Launcher.getSingleton().launchRunnable(pack.getRuns()[0]);
+				
+			}
+		});
+		_launchButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				doPop(e);
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				doPop(e);
+			}
+			
+			public void doPop(MouseEvent e){
+				if(!e.isPopupTrigger()) return;
+				if(!_launchButton.isEnabled()) return;
+				JPopupMenu p = new RunnablePopupMenu(pack);
+				p.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+		panel.add(_launchButton);
 		
 		_disableButton = new JButton("Disable");
 		_disableButton.setEnabled(pack.isDownloaded());
@@ -183,7 +192,7 @@ public class PackageSettingsPanel extends JPanel {
 		_autoUpdate.setSelected(pack.isAuto());
 		_removeButton.setEnabled(pack.isDownloaded());
 		_disableButton.setEnabled(pack.isDownloaded());
-		//_launchButton.setEnabled(pack.isDownloaded() && pack.canLaunch());
+		_launchButton.setEnabled(pack.isDownloaded() && pack.getRuns().length > 0);
 	}
 
 }

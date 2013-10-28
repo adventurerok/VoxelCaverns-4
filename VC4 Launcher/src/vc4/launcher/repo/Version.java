@@ -23,12 +23,13 @@ public class Version implements Comparable<Version>{
 
 	
 	
-	public Version(int intVersion, String version, String path, Date date) {
+	public Version(int intVersion, String version, String path, Date date, int stream) {
 		super();
 		this.intVersion = intVersion;
 		this.version = version;
 		this.path = path;
 		this.date = date;
+		this.stream = stream;
 	}
 
 
@@ -49,7 +50,7 @@ public class Version implements Comparable<Version>{
 		} catch (ParseException e) {
 			throw new RuntimeException("Could not parse date");
 		}
-		Version v = new Version(i, version, path, d);
+		Version v = new Version(i, version, path, d, map.getInt("stream"));
 		if(map.hasKey("bugged")) v.bugged = map.getBoolean("bugged");
 		return v;
 	}

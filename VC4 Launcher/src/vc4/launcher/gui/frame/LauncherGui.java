@@ -42,7 +42,7 @@ public class LauncherGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Launcher.getSingleton().launchPackage(Launcher.getSingleton().getClientPackage());
+				Launcher.getSingleton().launch();
 				
 			}
 		});

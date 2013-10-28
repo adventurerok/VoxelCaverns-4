@@ -13,6 +13,7 @@ import vc4.launcher.repo.Repo;
 import vc4.launcher.task.TaskSystem;
 import vc4.launcher.util.DirectoryLocator;
 import vc4.launcher.util.YamlMap;
+import vc4.launcher.repo.Runnable;
 
 public class Launcher {
 
@@ -116,32 +117,20 @@ public class Launcher {
 	}
 	
 	public void launch(){
-		String run = DirectoryLocator.getPath() + "/bin/VC4-Client.jar";
+		launchRunnable(getClientPackage().getRuns()[0]);
+	}
+
+	public void launchRunnable(Runnable r) {
+		String run = DirectoryLocator.getPath() + r.getPath();
 		String separator = System.getProperty("file.separator");
 	    String path = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
-	    String memory = "1920M";
-	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + memory, "-Xms" + memory, "-cp", run, "vc4.client.Launcher", "heapset" });
+	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + r.getXmx(), "-Xms" + r.getXms(), "-cp", run, r.getLaunch(), "heapset" });
 	    processBuilder.redirectOutput(Redirect.INHERIT);
     	processBuilder.redirectError(Redirect.INHERIT);
 		try {
 			processBuilder.start();
 		} catch (IOException e) {
 		}
-	}
-
-	public void launchPackage(Package pack) {
-		launch();
-//		String run = DirectoryLocator.getPath() + "/" + pack.getFolder() + "/" + pack.getInstall();
-//		String separator = System.getProperty("file.separator");
-//	    String path = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
-//	    String memory = "1024M";
-//	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + memory, "-Xms" + memory, "-cp", run, pack.getLaunch(), "heapset" });
-//	    processBuilder.redirectOutput(Redirect.INHERIT);
-//    	processBuilder.redirectError(Redirect.INHERIT);
-//		try {
-//			processBuilder.start();
-//		} catch (IOException e) {
-//		}
 	}
 	
 	public TaskSystem getTasks() {
