@@ -9,8 +9,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import vc4.launcher.Launcher;
 import vc4.launcher.gui.settings.PackageSettingsPanel;
-import vc4.launcher.task.InstallVersionTask;
-import vc4.launcher.task.UpdateGuiTask;
+import vc4.launcher.task.*;
 import vc4.launcher.util.*;
 
 public class Package {
@@ -28,6 +27,7 @@ public class Package {
 
 	private boolean manual;
 	private boolean auto;
+	private boolean disabled;
 	private HashMap<String, Integer> updateStreams = new HashMap<>();
 	private HashMap<Integer, String> updateStreamsRev = new HashMap<>();
 	private PackageSettingsPanel panel;
@@ -40,6 +40,54 @@ public class Package {
 
 	public String getUpdateStreamName(int id) {
 		return updateStreamsRev.get(id);
+	}
+	
+	public boolean isDisabled() {
+		return disabled;
+	}
+	
+	public Package setDisabled(boolean disabled) {
+		this.disabled = disabled;
+		try {
+			save();
+		} catch (IOException e) {
+			System.out.println("Failed to save package after disable/enable");
+		}
+		return this;
+	}
+	
+	public void disable(){
+		if(version == null) return;
+		for (int d = 0; d < installs.length; ++d)
+			Launcher.getSingleton().getTasks().addTask(new DisablePackageTask(this, d));
+		final Package pak = this;
+		java.lang.Runnable run = new java.lang.Runnable() {
+
+			@Override
+			public void run() {
+				if (pak.panel != null) {
+					pak.panel.packageUpdate();
+				}
+			}
+		};
+		Launcher.getSingleton().getTasks().addTask(new UpdateGuiTask(run));
+	}
+	
+	public void enable(){
+		if(version == null) return;
+		for (int d = 0; d < installs.length; ++d)
+			Launcher.getSingleton().getTasks().addTask(new EnablePackageTask(this, d));
+		final Package pak = this;
+		java.lang.Runnable run = new java.lang.Runnable() {
+
+			@Override
+			public void run() {
+				if (pak.panel != null) {
+					pak.panel.packageUpdate();
+				}
+			}
+		};
+		Launcher.getSingleton().getTasks().addTask(new UpdateGuiTask(run));
 	}
 
 	public int getUpdateStreamId(String name) {
@@ -102,7 +150,9 @@ public class Package {
 
 	private String getInstalledText() {
 		if (isDownloaded()) {
-			return "Installed Version: " + version.toString();
+			String text = "Installed Version: " + version.toString();
+			if(isDisabled()) text = text + " (disabled)";
+			return text;
 		} else return "This package is not installed";
 	}
 
@@ -159,6 +209,23 @@ public class Package {
 	public void install(Version version) throws IOException {
 		for (int d = 0; d < installs.length; ++d)
 			Launcher.getSingleton().getTasks().addTask(new InstallVersionTask(this, version, d));
+		final Package pak = this;
+		java.lang.Runnable run = new java.lang.Runnable() {
+
+			@Override
+			public void run() {
+				if (pak.panel != null) {
+					pak.panel.packageUpdate();
+				}
+			}
+		};
+		Launcher.getSingleton().getTasks().addTask(new UpdateGuiTask(run));
+	}
+	
+	public void remove(){
+		if(version == null) return;
+		for (int d = 0; d < installs.length; ++d)
+			Launcher.getSingleton().getTasks().addTask(new RemovePackageTask(this, d));
 		final Package pak = this;
 		java.lang.Runnable run = new java.lang.Runnable() {
 
@@ -280,6 +347,7 @@ public class Package {
 
 	public void setVersion(Version version) {
 		this.version = version;
+		if(version == null) disabled = false;
 		try {
 			save();
 		} catch (IOException e) {

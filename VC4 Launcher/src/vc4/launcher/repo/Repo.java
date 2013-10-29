@@ -48,14 +48,41 @@ public class Repo {
 		}
 	}
 	
-	public void loadInfo(URL url) throws IOException{
-		String s = url.toString();
-		if (!s.endsWith("/")) s = s + "/";
-		repoRoot = s;
-		s = s + "repo.yml";
-		url = new URL(s);
-		YamlMap map = new YamlMap(url.openStream());
-		load(map);
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((repoRoot == null) ? 0 : repoRoot.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Repo other = (Repo) obj;
+		if (repoRoot == null) {
+			if (other.repoRoot != null) return false;
+		} else if (!repoRoot.equals(other.repoRoot)) return false;
+		return true;
+	}
+
+	public boolean loadInfo(URL url){
+		try{
+			String s = url.toString();
+			if (!s.endsWith("/")) s = s + "/";
+			repoRoot = s;
+			s = s + "repo.yml";
+			url = new URL(s);
+			YamlMap map = new YamlMap(url.openStream());
+			load(map);
+			return true;
+		} catch(Exception e){
+			return false;
+		}
 	}
 	
 	public void autoUpdate(){

@@ -42,6 +42,7 @@ public class InstallVersionTask implements Task {
 				return;
 			}
 			String installPath = DirectoryLocator.getPath() + instal.getEnd();
+			if(pack.isDisabled()) installPath = installPath + ".disabled";
 			progress.setPercent(33);
 			String downloadPath = pack.getPackageRoot() + version.getPath() + instal.getStart();
 			if (instal.getType() == InstallType.UNZIP) {
@@ -66,8 +67,9 @@ public class InstallVersionTask implements Task {
 				while (ze != null) {
 					String fileName = ze.getName();
 					File newFile = new File(installPath + fileName);
-					if (newFile.isDirectory()) {
+					if (fileName.endsWith("/")) {
 						newFile.mkdirs();
+						ze = zis.getNextEntry();
 					} else {
 						newFile.getParentFile().mkdirs();
 						FileOutputStream fos = new FileOutputStream(newFile);

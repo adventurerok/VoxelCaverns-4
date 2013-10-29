@@ -149,7 +149,7 @@ public class PackageSettingsPanel extends JPanel {
 		panel.add(_updateButton);
 		
 		_launchButton = new JButton("Launch");
-		_launchButton.setEnabled(pack.isDownloaded() && pack.getRuns().length > 0);
+		_launchButton.setEnabled(pack.isDownloaded() && !pack.isDisabled() && pack.getRuns().length > 0);
 		_launchButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -178,12 +178,27 @@ public class PackageSettingsPanel extends JPanel {
 		});
 		panel.add(_launchButton);
 		
-		_disableButton = new JButton("Disable");
+		_disableButton = new JButton(pack.isDisabled() ? "Enable" : "Disable");
 		_disableButton.setEnabled(pack.isDownloaded());
+		_disableButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(pack.isDisabled()) pack.enable();
+				else pack.disable();
+			}
+		});
 		panel.add(_disableButton);
 		
 		_removeButton = new JButton("Remove");
 		_removeButton.setEnabled(pack.isDownloaded());
+		_removeButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pack.remove();
+			}
+		});
 		panel.add(_removeButton);
 	}
 	
@@ -192,7 +207,8 @@ public class PackageSettingsPanel extends JPanel {
 		_autoUpdate.setSelected(pack.isAuto());
 		_removeButton.setEnabled(pack.isDownloaded());
 		_disableButton.setEnabled(pack.isDownloaded());
-		_launchButton.setEnabled(pack.isDownloaded() && pack.getRuns().length > 0);
+		_disableButton.setText(pack.isDisabled() ? "Enable" : "Disable");
+		_launchButton.setEnabled(pack.isDownloaded() && !pack.isDisabled() && pack.getRuns().length > 0);
 	}
 
 }
