@@ -27,7 +27,7 @@ public class LootChest {
 		for(LootItem l : loot){
 			for(int d = 0; d < l.getNumber(); ++d){
 				ItemStack itm = l.getRandomLoot(rand);
-				if(itm == null || !itm.checkIsNotEmpty()) continue;
+				if(itm == null || !itm.exists()) continue;
 				int slot = min + ((max - min) > 0 ? rand.nextInt(max - min) : 0);
 				container.setItem(slot, itm);
 			}

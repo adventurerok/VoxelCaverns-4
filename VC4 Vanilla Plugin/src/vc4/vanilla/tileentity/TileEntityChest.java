@@ -106,7 +106,7 @@ public class TileEntityChest extends TileEntityContainer{
 	public void dropContainer() {
 		Random rand = new Random();
 		for(int dofor = 0; dofor < chest.getSize(); ++dofor){
-			if(chest.getItem(dofor) == null || !chest.getItem(dofor).checkIsNotEmpty()) continue;
+			if(chest.getItem(dofor) == null || !chest.getItem(dofor).exists()) continue;
 			EntityItem e = new EntityItem(world);
 			e.setPosition(position.x + 0.5F, position.y + 0.5F, position.z + 0.5F);
 			e.setItem(chest.getItem(dofor));

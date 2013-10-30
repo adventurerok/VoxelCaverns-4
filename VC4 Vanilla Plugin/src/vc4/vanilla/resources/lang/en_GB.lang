@@ -1,3 +1,9 @@
+block.reeds.name=Reeds
+block.reeds.desc=Found by water
+block.sugarcane.name=Sugar Cane
+block.sugarcane.desc=Your only source of sugar
+block.bamboo.name=Bamboo
+block.bamboo.desc=The fastest growing grass!
 block.farmland.name=Farmland
 block.farmland.desc=Creative only!
 block.stakes.name=Stakes
@@ -297,6 +303,10 @@ item.seeds.wheat.name=Wheat Seeds
 item.seeds.wheat.desc=Grows wheat crops
 item.seeds.barley.name=Barley Seeds
 item.seeds.barley.desc=Grows barley crops
+item.fertilizer.name=Fertilizer
+item.fertilizer.desc=Accelerates plant growth
+item.plantcure.name=Plant Cure
+item.plantcure.desc=Cures plants of diseases
 
 item.food.cheese.name=Cheese
 item.food.cheese.desc=Combine with bread for a suprise!

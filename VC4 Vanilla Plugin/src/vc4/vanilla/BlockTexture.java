@@ -19,7 +19,7 @@ public class BlockTexture {
 	public static int sand, cracks, woodFront, cactusBottom, cactusTop, cactusSide;
 	public static int vines, tallGrass, craftingTop, chestFront, chestTop, chestSide;
 	public static int gravel, ladder, lightberries, algae, torch, cropsGrown, stakes;
-	public static int farmland, wetFarmland;
+	public static int farmland, wetFarmland, reeds;
 	public static int[] crops = new int[9];
 	public static int[] craftingTables = new int[5];
 	
@@ -104,5 +104,6 @@ public class BlockTexture {
 		stakes = tex.getArrayIndex("stakes");
 		farmland = tex.getArrayIndex("farmland");
 		wetFarmland = tex.getArrayIndex("wetfarmland");
+		reeds = tex.getArrayIndex("reeds");
 	}
 }

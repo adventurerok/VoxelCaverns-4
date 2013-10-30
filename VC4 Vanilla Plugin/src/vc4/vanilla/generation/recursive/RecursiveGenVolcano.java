@@ -21,7 +21,7 @@ public class RecursiveGenVolcano extends RecursiveGenerator {
 		if(cy != 2) return;
 		if(rand.nextInt(55) != 0) return;
 		if(world != lastWorld) createZoom(world);
-		if(volcanicCheck.generate(cx >> 2, cz >> 2, 1)[0] != Vanilla.biomeVolcano.id) return;
+		if(volcanicCheck.generate(cx >> 2, cz >> 2, 1)[0] != Vanilla.biomeVolcanicH.id) return;
 		SimplexOctaveGenerator noise = new SimplexOctaveGenerator(rand.nextLong(), 1);
 		noise.setScale(1/15f);
 		double topRadius = 6 + rand.nextInt(12);

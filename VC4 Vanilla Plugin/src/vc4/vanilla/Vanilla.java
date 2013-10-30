@@ -34,7 +34,7 @@ import vc4.vanilla.crafting.RecipesBlocks;
 import vc4.vanilla.entity.EntityNpc;
 import vc4.vanilla.entity.EntityZombie;
 import vc4.vanilla.generation.dungeon.Dungeon;
-import vc4.vanilla.generation.plant.PlantGenCactus;
+import vc4.vanilla.generation.plant.*;
 import vc4.vanilla.generation.plant.tree.*;
 import vc4.vanilla.generation.populate.WorldGenOres;
 import vc4.vanilla.generation.world.*;
@@ -65,6 +65,7 @@ public class Vanilla extends Plugin {
 	
 	//Items
 	public static Item food, spawnStick, stick, metalBar, alloyBar, crop, seeds;
+	public static Item fertilizer, cure;
 	
 	//Plants
 	public static Plant plantTreeOak;
@@ -87,6 +88,9 @@ public class Vanilla extends Plugin {
 	public static Plant plantGrassTall;
 	public static Plant plantGrassWheat;
 	public static Plant plantGrassBarley;
+	public static Plant plantReedWater;
+	public static Plant plantSugarcane;
+	public static Plant plantBamboo;
 	
 	//Tools
 	public static ToolMaterial materialWood = new ToolMaterial("wood", 32, 1);
@@ -120,24 +124,32 @@ public class Vanilla extends Plugin {
 	public static BiomeHeightModel swampy = new BiomeHeightModel(2, -1, 4, -3);
 	
 	public static Biome biomeOcean;
+	public static Biome biomeOceanTrench;
 	public static BiomeHilly biomePlains;
+	public static BiomeHilly biomePlainsS;
+	public static Biome biomePlainsH;
+	public static Biome biomePlainsSH;
+	public static BiomeHilly biomePlainsWheat;
+	public static Biome biomePlainsWheatH;
+	public static BiomeHilly biomePlainsBarley;
+	public static Biome biomePlainsBarleyH;
 	public static BiomeHilly biomeDesert;
-	public static BiomeHilly biomeSnowPlains;
-	public static BiomeHilly biomeForest;
-	public static Biome biomePlainsHills;
-	public static Biome biomeDesertHills;
-	public static Biome biomeSnowPlainsHills;
-	public static Biome biomeForestHills;
-	public static BiomeHilly biomeVolcanic;
-	public static Biome biomeVolcano;
-	public static BiomeHilly biomeSnowForest;
-	public static Biome biomeSnowForestHills;
-	public static Biome biomeTrench;
-	public static Biome biomeRockyHills;
+	public static Biome biomeDesertH;
 	public static Biome biomeDesertOasis;
+	public static BiomeHilly biomeForest;
+	public static Biome biomeForestH;
+	public static BiomeHilly biomeVolcanic;
+	public static Biome biomeVolcanicH;
+	public static BiomeHilly biomeForestRedwoodS;
+	public static Biome biomeForestRedwoodSH;
+	public static Biome biomeRockyH;
 	public static Biome biomeSwamp;
 	public static BiomeHilly biomeJungle;
-	public static Biome biomeJungleHills;
+	public static Biome biomeJungleH;
+	public static BiomeHilly biomeForestBirch;
+	public static Biome biomeForestBirchH;
+	public static BiomeHilly biomeForestBamboo;
+	public static Biome biomeForestBambooH;
 	
 	//Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
@@ -210,6 +222,11 @@ public class Vanilla extends Plugin {
 		plantGrassWheat = new Plant("grass", "wheat", "crop");
 		plantGrassBarley = new Plant("grass", "barley", "crop");
 		
+		//?canes?
+		plantReedWater = new Plant("reed", "water", "normal");
+		plantSugarcane = new Plant("cane", "sugar", "crop");
+		plantBamboo = new Plant("bamboo", "bamboo", "crop");
+		
 		WorldGenerator gen = new OverworldGenerator();
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
@@ -237,6 +254,9 @@ public class Vanilla extends Plugin {
 		GeneratorList.registerPlantGen(plantBushCypress, new TreeGenBush());
 		
 		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
+		GeneratorList.registerPlantGen(plantReedWater, new PlantGenReeds());
+		GeneratorList.registerPlantGen(plantSugarcane, new PlantGenCane((byte) 1));
+		GeneratorList.registerPlantGen(plantBamboo, new PlantGenCane((byte) 2));
 		
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
 		
@@ -280,6 +300,8 @@ public class Vanilla extends Plugin {
 	public void preWorldLoad(World world) {
 		BlockTexture.update();
 		ItemTexture.update();
+		biomes = new ArrayList<>();
+		for(int d = 0; d < BiomeType.getNumberOfTypes(); ++d) biomes.add(new ArrayList<Integer>());
 	}
 	
 	@Override
@@ -328,6 +350,7 @@ public class Vanilla extends Plugin {
 		lightberries = new BlockLightBerry(world.getRegisteredBlock("vanilla.lightberry")).setName("lightberry");
 		algae = new BlockAlgae(world.getRegisteredBlock("vanilla.algae")).setMineData(new MiningData().setTimes(0.03, 0.02, 0.01)).setName("algae");
 		torch = new BlockTorch(world.getRegisteredBlock("vanilla.torch")).setName("torch");
+		reeds = new BlockReeds(world.getRegisteredBlock("vanilla.reeds")).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("reeds");
 		wheat = new BlockCrop(world.getRegisteredBlock("vanilla.wheat"), 0).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("wheat");
 		barley = new BlockCrop(world.getRegisteredBlock("vanilla.barley"), 1).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("barley");
 		stakes = new BlockStakes(world.getRegisteredBlock("vanilla.stakes")).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("stakes");
@@ -344,6 +367,8 @@ public class Vanilla extends Plugin {
 		alloyBar = new ItemAlloy(world.getRegisteredItem("vanilla.alloybar"), ItemTexture.metalBar, "bar");
 		crop = new ItemCrop(world.getRegisteredItem("vanilla.crop")).setName("crop");
 		seeds = new ItemSeeds(world.getRegisteredItem("vanilla.seeds")).setName("seeds");
+		fertilizer = new ItemPlantHelp(world.getRegisteredItem("vanilla.fertilizer"), 0).setName("fertilizer");
+		cure = new ItemPlantHelp(world.getRegisteredItem("vanilla.cure"), 1).setName("plantcure");
 	}
 	
 	@Override
@@ -366,79 +391,106 @@ public class Vanilla extends Plugin {
 	public void loadBiomes(World world) {
 		//Definitions
 		biomeOcean = new BiomeOcean(world.getRegisteredBiome("vanilla.ocean")).setHeights(oceans);
-		biomePlains = new BiomePlains(world.getRegisteredBiome("vanilla.plains"), "plains", BiomeType.normal, Color.green);
+		biomePlains = new BiomePlains(world.getRegisteredBiome("vanilla.plains"), "plains", BiomeType.normal, Color.green, 256, wheat.uid, 2, barley.uid);
 		biomeDesert = new BiomeDesert(world.getRegisteredBiome("vanilla.desert"), "desert", BiomeType.hot, Color.yellow);
-		biomeSnowPlains = new BiomeHilly(world.getRegisteredBiome("vanilla.snowplains"), "snowplains", BiomeType.cold, Color.white);
+		biomePlainsS = new BiomeHilly(world.getRegisteredBiome("vanilla.snowplains"), "snowplains", BiomeType.cold, Color.white);
 		biomeForest = new BiomeHilly(world.getRegisteredBiome("vanilla.forest"), "forest", BiomeType.normal, new Color(0, 176, 0));
-		biomePlainsHills = new BiomePlains(world.getRegisteredBiome("vanilla.plains.hills"), "plains/hills", BiomeType.normal, Color.green).setHeights(hills);
-		biomeDesertHills = new Biome(world.getRegisteredBiome("vanilla.desert.hills"), "desert/hills", BiomeType.hot, Color.yellow).setHeights(hills);
-		biomeSnowPlainsHills = new Biome(world.getRegisteredBiome("vanilla.snowplains.hills"), "snowplains/hills", BiomeType.cold, Color.white).setHeights(hills);
-		biomeForestHills = new Biome(world.getRegisteredBiome("vanilla.forest.hills"), "forest/hills", BiomeType.normal, Color.green).setHeights(hills);
+		biomePlainsH = new BiomePlains(world.getRegisteredBiome("vanilla.plains.hills"), "plains/hills", BiomeType.normal, Color.green, 256, wheat.uid, 2, barley.uid).setHeights(hills);
+		biomeDesertH = new Biome(world.getRegisteredBiome("vanilla.desert.hills"), "desert/hills", BiomeType.hot, Color.yellow).setHeights(hills);
+		biomePlainsSH = new Biome(world.getRegisteredBiome("vanilla.snowplains.hills"), "snowplains/hills", BiomeType.cold, Color.white).setHeights(hills);
+		biomeForestH = new Biome(world.getRegisteredBiome("vanilla.forest.hills"), "forest/hills", BiomeType.normal, Color.green).setHeights(hills);
 		biomeVolcanic = new BiomeVolcanic(world.getRegisteredBiome("vanilla.volcanic"), "volcanic", BiomeType.hot, Color.black, 3).setHeights(new BiomeHeightModel(56, 20, 65, 3));
-		biomeVolcano = new BiomeVolcanic(world.getRegisteredBiome("vanilla.volcanic.hills"), "volcanic/hills", BiomeType.hot, Color.black, 8).setHeights(new BiomeHeightModel(135, 50, 145, 12));
-		biomeSnowForest = new BiomeHilly(world.getRegisteredBiome("vanilla.snowforest"), "snowforest", BiomeType.cold, new Color(200, 240, 200));
-		biomeSnowForestHills = new Biome(world.getRegisteredBiome("vanilla.snowforest.hills"), "snowforest/hills", BiomeType.cold, Color.white).setHeights(hills);
-		biomeTrench = new Biome(world.getRegisteredBiome("vanilla.ocean.trench"), "ocean/trench", BiomeType.ocean, Color.blue).setHeights(trenchs);
-		biomeRockyHills = new Biome(world.getRegisteredBiome("vanilla.rocky.hills"), "rocky/hills", BiomeType.hot, Color.gray);
+		biomeVolcanicH = new BiomeVolcanic(world.getRegisteredBiome("vanilla.volcanic.hills"), "volcanic/hills", BiomeType.hot, Color.black, 8).setHeights(new BiomeHeightModel(135, 50, 145, 12));
+		biomeForestRedwoodS = new BiomeHilly(world.getRegisteredBiome("vanilla.snowforest"), "snowforest", BiomeType.cold, new Color(200, 240, 200));
+		biomeForestRedwoodSH = new Biome(world.getRegisteredBiome("vanilla.snowforest.hills"), "snowforest/hills", BiomeType.cold, Color.white).setHeights(hills);
+		biomeOceanTrench = new Biome(world.getRegisteredBiome("vanilla.ocean.trench"), "ocean/trench", BiomeType.ocean, Color.blue).setHeights(trenchs);
+		biomeRockyH = new Biome(world.getRegisteredBiome("vanilla.rocky.hills"), "rocky/hills", BiomeType.hot, Color.gray);
 		biomeDesertOasis = new Biome(world.getRegisteredBiome("vanilla.desert.oasis"), "desert/oasis", BiomeType.hot, new Color(152, 127, 70)).setHeights(new BiomeHeightModel(14, -7, 24, -12));
 		biomeSwamp = new Biome(world.getRegisteredBiome("vanilla.swamp"), "swamp", BiomeType.normal, new Color(0xA3AE7E)).setHeights(swampy);
 		biomeJungle = new BiomeJungle(world.getRegisteredBiome("vanilla.jungle"), "jungle", BiomeType.hot, new Color(255, 128, 0));
-		biomeJungleHills = new BiomeJungleHills(world.getRegisteredBiome("vanilla.jungle.hills"), "jungle/hills", BiomeType.hot, new Color(255, 132, 0));
+		biomeJungleH = new BiomeJungleHills(world.getRegisteredBiome("vanilla.jungle.hills"), "jungle/hills", BiomeType.hot, new Color(255, 132, 0));
+		biomeForestBirch = new BiomeHilly(world.getRegisteredBiome("vanilla.forestbirch"), "birchforest", BiomeType.normal, new Color(0, 230, 0));
+		biomeForestBirchH = new Biome(world.getRegisteredBiome("vanilla.forestbirch.hills"), "birchforest/hills", BiomeType.normal, new Color(0, 230, 0));
+		biomeForestBamboo = new BiomeForestBamboo(world.getRegisteredBiome("vanilla.forestbamboo"), "bambooforest", BiomeType.normal, new Color(0xC1A156));
+		biomeForestBambooH = new BiomeForestBamboo(world.getRegisteredBiome("vanilla.forestbamboo.hills"), "bambooforest/hills", BiomeType.normal, new Color(0xC1A156)).setHeights(hills);
+		biomePlainsWheat = new BiomePlains(world.getRegisteredBiome("vanilla.plains.wheat"), "plains/wheat", BiomeType.normal, Color.green, 16, wheat.uid, 5, barley.uid);
+		biomePlainsBarley = new BiomePlains(world.getRegisteredBiome("vanilla.plains.barley"), "plains/barley", BiomeType.normal, Color.green, 16, barley.uid, 5, wheat.uid);
+		biomePlainsWheatH = new BiomePlains(world.getRegisteredBiome("vanilla.plains.wheat.hills"), "plains/wheat/hills", BiomeType.normal, Color.green, 16, wheat.uid, 5, barley.uid).setHeights(hills);
+		biomePlainsBarleyH = new BiomePlains(world.getRegisteredBiome("vanilla.plains.barley.hills"), "plains/barley/hills", BiomeType.normal, Color.green, 16, barley.uid, 5, wheat.uid).setHeights(hills);
+		
 		
 		//Set-up
 		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
-		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 2));
+		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 5));
+		biomeOcean.addPlant(new PlantGrowth(plantReedWater, 30));
 		biomeOcean.music = musicSky;
-		biomeTrench.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
-		biomeTrench.music = musicSky;
+		biomeOceanTrench.addPlant(new PlantGrowth(plantReedWater, 30));
+		biomeOceanTrench.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		biomeOceanTrench.music = musicSky;
 		
 		biomeDesert.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
-		biomeDesertHills.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
+		biomeDesertH.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesert.music = musicDesert;
-		biomeDesertHills.music = musicDesert;
+		biomeDesertH.music = musicDesert;
 		biomeDesertOasis.music = musicDesert;
 		biomeDesert.addPlant(new PlantGrowth(plantCactus, 3));
-		biomeDesertHills.addPlant(new PlantGrowth(plantCactus, 3));
+		biomeDesertH.addPlant(new PlantGrowth(plantCactus, 3));
 		biomeDesertOasis.setBiomeBlocks(grass.uid, dirt.uid, sand.uid);
 		biomeDesertOasis.addPlant(new PlantGrowth(plantTreeOak, 3));
-		biomeDesert.setHills(biomeDesertHills.id);
+		biomeDesert.setHills(biomeDesertH.id);
 		
 		biomePlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlains.setIcingBlock(weeds.uid);
-		biomePlainsHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomePlainsHills.setIcingBlock(weeds.uid);
-		biomePlains.setHills(biomePlainsHills.id);
+		biomePlainsH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsH.setIcingBlock(weeds.uid);
+		biomePlains.setHills(biomePlainsH.id);
+		biomePlainsWheat.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsWheat.setIcingBlock(weeds.uid);
+		biomePlainsWheatH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsWheatH.setIcingBlock(weeds.uid);
+		biomePlainsWheat.setHills(biomePlainsWheatH.id);
+		biomePlainsBarley.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsBarley.setIcingBlock(weeds.uid);
+		biomePlainsBarleyH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsBarleyH.setIcingBlock(weeds.uid);
+		biomePlainsBarley.setHills(biomePlainsBarleyH.id);
 		
 		biomeForest.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeForest.addPlant(new PlantGrowth(plantTreeOak, 12));
-		biomeForest.addPlant(new PlantGrowth(plantTreeBirch, 10));
-		biomeForestHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeForestHills.addPlant(new PlantGrowth(plantTreeOak, 12));
-		biomeForestHills.addPlant(new PlantGrowth(plantTreeBirch, 10));
-		biomeForest.setHills(biomeForestHills.id);
+		biomeForest.addPlant(new PlantGrowth(plantTreeOak, 18));
+		biomeForest.addPlant(new PlantGrowth(plantTreeBirch, 12));
+		biomeForestH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestH.addPlant(new PlantGrowth(plantTreeOak, 18));
+		biomeForestH.addPlant(new PlantGrowth(plantTreeBirch, 12));
+		biomeForest.setHills(biomeForestH.id);
 		
-		biomeSnowPlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeSnowPlains.setIcingBlock(snow.uid);
-		biomeSnowPlainsHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeSnowPlainsHills.setIcingBlock(snow.uid);
-		biomeSnowPlains.setHills(biomeSnowPlainsHills.id);
+		biomeForestBirch.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestBirch.addPlant(new PlantGrowth(plantTreeBirch, 30));
+		biomeForestBirchH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestBirchH.addPlant(new PlantGrowth(plantTreeBirch, 30));
+		biomeForestBirch.setHills(biomeForestBirchH.id);
 		
-		biomeSnowForest.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeSnowForest.setIcingBlock(snow.uid);
-		biomeSnowForest.addPlant(new PlantGrowth(plantTreeRedwood, 10));
-		biomeSnowForestHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeSnowForestHills.setIcingBlock(snow.uid);
-		biomeSnowForestHills.addPlant(new PlantGrowth(plantTreeRedwood, 10));
-		biomeSnowForest.setHills(biomeSnowForestHills.id);
+		biomePlainsS.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsS.setIcingBlock(snow.uid);
+		biomePlainsSH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomePlainsSH.setIcingBlock(snow.uid);
+		biomePlainsS.setHills(biomePlainsSH.id);
+		
+		biomeForestRedwoodS.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestRedwoodS.setIcingBlock(snow.uid);
+		biomeForestRedwoodS.addPlant(new PlantGrowth(plantTreeRedwood, 10));
+		biomeForestRedwoodSH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestRedwoodSH.setIcingBlock(snow.uid);
+		biomeForestRedwoodSH.addPlant(new PlantGrowth(plantTreeRedwood, 10));
+		biomeForestRedwoodS.setHills(biomeForestRedwoodSH.id);
 		
 		biomeVolcanic.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
 		biomeVolcanic.music = musicHell;
-		biomeVolcano.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
-		biomeVolcano.music = musicHell;
-		biomeVolcanic.setHills(biomeVolcano.id);
+		biomeVolcanicH.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
+		biomeVolcanicH.music = musicHell;
+		biomeVolcanic.setHills(biomeVolcanicH.id);
 		
-		biomeRockyHills.setBiomeBlocks(Block.stone.uid, Block.stone.uid, Block.stone.uid);
-		biomeRockyHills.setHeights(mountains);
+		biomeRockyH.setBiomeBlocks(Block.stone.uid, Block.stone.uid, Block.stone.uid);
+		biomeRockyH.setHeights(mountains);
 		
 		biomeSwamp.setIcingBlock(weeds.uid);
 		biomeSwamp.addPlant(new PlantGrowth(plantTreeCypress, 9));
@@ -447,41 +499,55 @@ public class Vanilla extends Plugin {
 		biomeSwamp.setColors(new Color(0x354C2D), new Color(75, 132, 99, 164), new Color(0x2E3D22));
 		
 		biomeJungle.setIcingBlock(weeds.uid);
-		biomeJungleHills.setIcingBlock(weeds.uid);
+		biomeJungleH.setIcingBlock(weeds.uid);
+		biomeJungle.addPlant(new PlantGrowth(plantSugarcane, 8));
+		biomeJungleH.addPlant(new PlantGrowth(plantSugarcane, 8));
 		biomeJungle.addPlant(new PlantGrowth(plantTreeKapokBig, 4));
-		biomeJungleHills.addPlant(new PlantGrowth(plantTreeKapokBig, 4));
+		biomeJungleH.addPlant(new PlantGrowth(plantTreeKapokBig, 4));
 		biomeJungle.addPlant(new PlantGrowth(plantBushOak, 130));
-		biomeJungleHills.addPlant(new PlantGrowth(plantBushOak, 130));
+		biomeJungleH.addPlant(new PlantGrowth(plantBushOak, 130));
 		biomeJungle.addPlant(new PlantGrowth(plantTreeKapok, 20));
-		biomeJungleHills.addPlant(new PlantGrowth(plantTreeKapok, 20));
+		biomeJungleH.addPlant(new PlantGrowth(plantTreeKapok, 20));
 		biomeJungle.addPlant(new PlantGrowth(plantTreeOak, 4));
-		biomeJungleHills.addPlant(new PlantGrowth(plantTreeOak, 4));
+		biomeJungleH.addPlant(new PlantGrowth(plantTreeOak, 4));
 		biomeJungle.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
-		biomeJungleHills.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeJungleH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeJungle.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));
-		biomeJungleHills.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));
-		biomeJungle.setHills(biomeJungleHills.id);
+		biomeJungleH.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));
+		biomeJungle.setHills(biomeJungleH.id);
 		
-		biomes = new ArrayList<>();
-		ArrayList<Integer> ocean = new ArrayList<>();
-		ocean.add(Vanilla.biomeOcean.id);
-		biomes.add(ocean);
-		ArrayList<Integer> normal = new ArrayList<>();
-		normal.add(Vanilla.biomePlains.id);
-		normal.add(Vanilla.biomeForest.id);
-		normal.add(Vanilla.biomeSwamp.id);
-		biomes.add(normal);
-		ArrayList<Integer> cold = new ArrayList<>();
-		cold.add(Vanilla.biomeSnowPlains.id);
-		cold.add(Vanilla.biomeSnowForest.id);
-		biomes.add(cold);
-		ArrayList<Integer> hot = new ArrayList<>();
-		hot.add(Vanilla.biomeDesert.id);
-		hot.add(Vanilla.biomeDesert.id);
-		hot.add(Vanilla.biomeVolcanic.id);
-		hot.add(Vanilla.biomeRockyHills.id);
-		hot.add(Vanilla.biomeJungle.id);
-		biomes.add(hot);
+		biomeForestBamboo.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestBambooH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
+		biomeForestBamboo.addPlant(new PlantGrowth(plantBamboo, 150));
+		biomeForestBambooH.addPlant(new PlantGrowth(plantBamboo, 150));
+		biomeForestBamboo.setHills(biomeForestBambooH.id);
+		
+		
+	}
+	
+	public void loadBiomesList(){
+		addBiomeToGenerator(BiomeType.ocean, biomeOcean.id, 10);
+		
+		addBiomeToGenerator(BiomeType.normal, biomePlains.id, 8);
+		addBiomeToGenerator(BiomeType.normal, biomePlainsWheat.id, 1);
+		addBiomeToGenerator(BiomeType.normal, biomePlainsBarley.id, 1);
+		addBiomeToGenerator(BiomeType.normal, biomeForest.id, 8);
+		addBiomeToGenerator(BiomeType.normal, biomeForestBirch.id, 5);
+		addBiomeToGenerator(BiomeType.normal, biomeSwamp.id, 10);
+		addBiomeToGenerator(BiomeType.normal, biomeForestBamboo.id, 5);
+		
+		addBiomeToGenerator(BiomeType.cold, biomePlainsS.id, 10);
+		addBiomeToGenerator(BiomeType.cold, biomeForestRedwoodS.id, 10);
+		
+		addBiomeToGenerator(BiomeType.hot, biomeDesert.id, 10);
+		addBiomeToGenerator(BiomeType.hot, biomeVolcanic.id, 5);
+		addBiomeToGenerator(BiomeType.hot, biomeRockyH.id, 5);
+		addBiomeToGenerator(BiomeType.hot, biomeJungle.id, 10);
+	}
+	
+	public void addBiomeToGenerator(BiomeType type, int biomeid, int amount){
+		ArrayList<Integer> bios = biomes.get(type.getId());
+		for(int d = 0; d < amount; ++d) bios.add(biomeid);
 	}
 	
 	@Override
@@ -510,6 +576,7 @@ public class Vanilla extends Plugin {
 		}
 		loadTrades(world);
 		SpawnControl.addSpawnEntry(new SpawnEntry(100, new BasicSpawner(EntityZombie.class), new AndFilter(new LightFilter(7, 0), new SkylightFilter(false), new HumanoidFilter())));
+		loadBiomesList();
 	}
 	
 	@Override

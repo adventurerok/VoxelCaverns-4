@@ -26,7 +26,7 @@ public class WorldGenPyramids implements  WorldPopulator{
 		x <<= 5;
 		z <<= 5;
 		Biome b = world.getBiome(x, z);
-		if(b != Vanilla.biomeDesert && b != Vanilla.biomeDesertHills) return;
+		if(b != Vanilla.biomeDesert && b != Vanilla.biomeDesertH) return;
 		Logger.getLogger("VC4").info("Generating Pyramid at: " + x + ", " + y + ", " + z);
 		for(int h = -1; h < 16; ++h){
 			for(int w = 0; w < 32; ++w){

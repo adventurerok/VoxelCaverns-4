@@ -45,13 +45,13 @@ public class ContainerChest extends Container{
 		for(int i = 0; i < getSize(); ++i){
 			ItemStack s = getItem(i);
 			if(s != null){
-				if(!s.checkIsNotEmpty()){
+				if(!s.exists()){
 					setItem(i, null);
 					continue;
 				}
 				ItemStack small = s.clone().setAmount(count);
 				s.setAmount(Math.max(0, s.getAmount() - count));
-				if(!s.checkIsNotEmpty()){
+				if(!s.exists()){
 					setItem(i, null);
 				}
 				return small;

@@ -13,6 +13,7 @@ import vc4.api.util.*;
 import vc4.api.world.World;
 import vc4.vanilla.BlockTexture;
 import vc4.vanilla.Vanilla;
+import vc4.vanilla.item.ItemPlantHelp;
 
 public class BlockCrop extends BlockMultitexture{
 
@@ -55,6 +56,10 @@ public class BlockCrop extends BlockMultitexture{
 	@Override
 	public void onRightClick(World world, long x, long y, long z, int side, EntityPlayer player, ItemStack item) {
 		if(player.getCoolDown() > 0.1) return;
+		if(item != null && item.getItem() instanceof ItemPlantHelp){
+			item.getItem().onRightClick(player, item);
+			return;
+		}
 		byte data = world.getBlockData(x, y, z);
 		if(data == 23 || ((type == -1 || (data & 8) != 0) && data > 15)){
 			if(type == -1 || (data & 8) != 0) world.setBlockIdData(x, y, z, Vanilla.stakes.uid, 0);
