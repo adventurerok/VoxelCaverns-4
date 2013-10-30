@@ -71,13 +71,13 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 
 	@Override
 	public ItemStack addItemStack(ItemStack stack) {
-		if (stack == null || !stack.checkIsNotEmpty())
+		if (stack == null || !stack.exists())
 			return null;
 		stack = stack.clone();
 		for (int dofor = 0; dofor < slots.length; dofor++) {
 			if (stack.equals(slots[dofor])) {
 				stack = slots[dofor].combineItemStack(stack);
-				if (stack == null || !stack.checkIsNotEmpty()) {
+				if (stack == null || !stack.exists()) {
 					stack = null;
 					setModified(true);
 					return stack;
@@ -85,7 +85,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			}
 		}
 		for (int dofor = 0; dofor < slots.length; dofor++) {
-			if (slots[dofor] == null || !slots[dofor].checkIsNotEmpty()) {
+			if (slots[dofor] == null || !slots[dofor].exists()) {
 				slots[dofor] = stack;
 				stack = null;
 				setModified(true);
@@ -97,13 +97,13 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	}
 	
 	public ItemStack addItemStack(ItemStack stack, int min, int max) {
-		if (stack == null || !stack.checkIsNotEmpty())
+		if (stack == null || !stack.exists())
 			return null;
 		stack = stack.clone();
 		for (int dofor = min; dofor < max; dofor++) {
 			if (stack.equals(slots[dofor])) {
 				stack = slots[dofor].combineItemStack(stack);
-				if (stack == null || !stack.checkIsNotEmpty()) {
+				if (stack == null || !stack.exists()) {
 					stack = null;
 					setModified(true);
 					return stack;
@@ -111,7 +111,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			}
 		}
 		for (int dofor = min; dofor < max; dofor++) {
-			if (slots[dofor] == null || !slots[dofor].checkIsNotEmpty()) {
+			if (slots[dofor] == null || !slots[dofor].exists()) {
 				slots[dofor] = stack;
 				stack = null;
 				setModified(true);
@@ -249,7 +249,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		tag.setInt("size", getSize());
 		ListTag lis = new ListTag("items", CompoundTag.class);
 		for(int d = 0; d < getSize(); ++d){
-			if(getItem(d) == null || !getItem(d).checkIsNotEmpty()) continue;
+			if(getItem(d) == null || !getItem(d).exists()) continue;
 			CompoundTag i = new CompoundTag("item");
 			ItemStack.write(world, getItem(d), i);
 			i.setInt("slot", d);

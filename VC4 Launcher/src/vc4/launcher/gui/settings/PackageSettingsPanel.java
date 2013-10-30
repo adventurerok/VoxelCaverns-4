@@ -108,6 +108,7 @@ public class PackageSettingsPanel extends JPanel {
 		JLabel lblNewLabel_3 = new JLabel("Version");
 		panel.add(lblNewLabel_3);
 		
+		_updateButton = new JButton("Update");
 		_versionComboBox = new JComboBox<Version>();
 		_versionComboBox.setEnabled(pack.isManual());
 		_versionComboBox.setModel(new DefaultComboBoxModel<Version>(pack.getVisibleVersions()));
@@ -129,9 +130,12 @@ public class PackageSettingsPanel extends JPanel {
 				
 			}
 		});
+		if(pack.getVersion() != null){
+			_versionComboBox.setSelectedItem(pack.getVersion());
+			_chosen = pack.getVersion();
+		} else _chosen = (Version) _versionComboBox.getSelectedItem();
 		panel.add(_versionComboBox);
 		
-		_updateButton = new JButton("Update");
 		_updateButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -146,6 +150,14 @@ public class PackageSettingsPanel extends JPanel {
 				
 			}
 		});
+		Version current = pack.getVersion();
+		_updateButton.setEnabled(true);
+		if(current == null) _updateButton.setText("Install");
+		else if(current.getIntVersion() < _chosen.getIntVersion()) _updateButton.setText("Update");
+		else if(current.getIntVersion() > _chosen.getIntVersion()) _updateButton.setText("Downgrade");
+		else  {
+			_updateButton.setEnabled(false);
+		}
 		panel.add(_updateButton);
 		
 		_launchButton = new JButton("Launch");
@@ -209,6 +221,14 @@ public class PackageSettingsPanel extends JPanel {
 		_disableButton.setEnabled(pack.isDownloaded());
 		_disableButton.setText(pack.isDisabled() ? "Enable" : "Disable");
 		_launchButton.setEnabled(pack.isDownloaded() && !pack.isDisabled() && pack.getRuns().length > 0);
+		_updateButton.setEnabled(true);
+		_chosen = (Version) _versionComboBox.getSelectedItem();
+		if(pack.getVersion() == null) _updateButton.setText("Install");
+		else if(pack.getVersion().getIntVersion() < _chosen.getIntVersion()) _updateButton.setText("Update");
+		else if(pack.getVersion().getIntVersion() > _chosen.getIntVersion()) _updateButton.setText("Downgrade");
+		else  {
+			_updateButton.setEnabled(false);
+		}
 	}
 
 }

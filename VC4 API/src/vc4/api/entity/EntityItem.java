@@ -43,7 +43,7 @@ public class EntityItem extends Entity {
 	
 	@Override
 	public void update() {
-		if(item == null || !item.checkIsNotEmpty()){
+		if(item == null || !item.exists()){
 			isDead = true;
 			return;
 		}
@@ -60,7 +60,7 @@ public class EntityItem extends Entity {
 					item = itm.item.combineItemStack(item);
 				}
 			}
-			if(item == null || !item.checkIsNotEmpty()){
+			if(item == null || !item.exists()){
 				isDead = true;
 				return;
 			}
@@ -75,7 +75,7 @@ public class EntityItem extends Entity {
 	
 	@Override
 	public void draw() {
-		if(item == null || !item.checkIsNotEmpty()) return;
+		if(item == null || !item.exists()) return;
 		if(item.isBlock() && Block.byId(item.getId()).render3d(item.getData())){
 			if(!compiled){
 				render = new DataRenderer();

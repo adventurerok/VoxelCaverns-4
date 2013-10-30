@@ -102,7 +102,7 @@ public class GuiInventory extends Component{
 		inventory = Client.getGame().getPlayer().getInventory();
 		if (inventory == null) return;
 		if (inventory.getHeldItemStack() != null) {
-			if (!inventory.getHeldItemStack().checkIsNotEmpty()) inventory.setHeldItemStack(null);
+			if (!inventory.getHeldItemStack().exists()) inventory.setHeldItemStack(null);
 		}
 		MouseSet mice = Client.getGame().getMouseSet();
 		boolean left = mice.buttonPressed(0);
@@ -130,7 +130,7 @@ public class GuiInventory extends Component{
 				int at = ((3 - sy) * 11) + sx;
 				// int at = sy * 11 + sx;
 				if (inventory.getItem(at) != null) {
-					if (!inventory.getItem(at).checkIsNotEmpty()) {
+					if (!inventory.getItem(at).exists()) {
 						inventory.setItem(at, null);
 					}
 				}

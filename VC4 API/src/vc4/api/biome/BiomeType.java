@@ -20,8 +20,19 @@ public class BiomeType {
 		if (id != other.id) return false;
 		return true;
 	}
+	
+	public int getId() {
+		return id;
+	}
+	public String getName() {
+		return name;
+	}
 
 	static int lastId;
+	
+	public static int getNumberOfTypes(){
+		return lastId;
+	}
 
 	public BiomeType(String name) {
 		super();

@@ -23,7 +23,7 @@ public class ItemBlockRenderer {
 		gl = Graphics.getOpenGL();
 		current = stack;
 		position = new Vector2f(x, y);
-		if(stack == null || !stack.checkIsNotEmpty() || !stack.isBlock()) return;
+		if(stack == null || !stack.exists() || !stack.isBlock()) return;
 		
 		if(Block.byId(stack.getId()).render3d(stack.getData())){
 			renderBlock3d();

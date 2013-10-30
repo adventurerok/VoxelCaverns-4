@@ -215,3 +215,9 @@ VC4-Development-0.0.1-246
 	* Decreased item pickup range
 VC4-Development-0.0.1-247
 	* Fixed infinite stack bugs
+VC4-Development-0.0.1-249
+	* Changed ItemStack.checkIsNotEmpty to ItemStack.exists
+VC4-Development-0.0.1-250
+	* Changed ImplWorld to use XORShiftRandom
+VC4-Development-0.0.1-251
+	* Changed depreciated glGetProgram to glGetProgrami

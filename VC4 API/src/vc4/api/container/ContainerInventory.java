@@ -135,7 +135,7 @@ public class ContainerInventory extends Container {
 		ArrayList<ItemStack> items = new ArrayList<>();
 		for(int d = 0; d < getSize(); ++d){
 			ItemStack item = getItem(d);
-			if(item == null || !item.checkIsNotEmpty()) continue;
+			if(item == null || !item.exists()) continue;
 			int ind = items.indexOf(item);
 			if(ind == -1){
 				items.add(item);
@@ -143,7 +143,7 @@ public class ContainerInventory extends Container {
 			} else {
 				ItemStack c = items.get(ind);
 				item = c.combineItemStack(item);
-				if(item != null && item.checkIsNotEmpty()){
+				if(item != null && item.exists()){
 					items.set(ind, item);
 				} else {
 					setItem(d, null);

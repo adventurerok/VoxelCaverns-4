@@ -45,7 +45,7 @@ public abstract class EntityLiving extends Entity {
 	}
 	
 	public void dropItem(ItemStack drop){
-		if(drop == null || !drop.checkIsNotEmpty()) return;
+		if(drop == null || !drop.exists()) return;
 		Vector3d epos = new Vector3d(bounds.averageX(), getEyeHeight(), bounds.averageZ());
 		EntityItem i = new EntityItem(world);
 		i.setPosition(epos);
@@ -76,7 +76,7 @@ public abstract class EntityLiving extends Entity {
 	}
 	
 	public void throwItem(ItemStack item){
-		if (item == null || !item.checkIsNotEmpty()) return;
+		if (item == null || !item.exists()) return;
 		double pitch = lookPitch();
 		double yaw = lookYaw();
 

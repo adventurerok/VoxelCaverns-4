@@ -83,7 +83,7 @@ public class ItemPanel extends Panel {
 
 		int max = Math.min(this.max, container.getSize());
 		for (int d = min; d < max; ++d) {
-			if (container.getItem(d) != null && !container.getItem(d).checkIsNotEmpty()) {
+			if (container.getItem(d) != null && !container.getItem(d).exists()) {
 				container.setItem(d, null);
 			}
 		}

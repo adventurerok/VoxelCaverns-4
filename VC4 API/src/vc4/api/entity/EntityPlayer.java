@@ -417,7 +417,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 				world.getBlockType(rays.x, rays.y, rays.z).onRightClick(world, rays.x, rays.y, rays.z, rays.side, this, held);
 			} else if(held != null){
 				held.onRightClick(this);
-				if(!held.checkIsNotEmpty()) inventory.setSelectedStack(null);
+				if(!held.exists()) inventory.setSelectedStack(null);
 			}
 		}
 	}
@@ -497,7 +497,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		}
 		if(keys.keyPressed(Key.Q)){
 			ItemStack itm = inventory.getSelectedStack();
-			if(itm != null && itm.checkIsNotEmpty()){
+			if(itm != null && itm.exists()){
 				if(keys.keyPressed(Key.CONTROL)){
 					throwItem(itm);
 					inventory.setSelectedStack(null);

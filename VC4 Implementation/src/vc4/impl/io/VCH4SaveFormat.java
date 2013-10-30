@@ -27,7 +27,7 @@ import vc4.impl.world.*;
  */
 public class VCH4SaveFormat implements SaveFormat {
 	
-	private static final boolean ENABLED = true;
+	private static final boolean ENABLED = false;
 
 	public static VCH4SaveFormat VCH4_SAVE_FORMAT = new VCH4SaveFormat();
 

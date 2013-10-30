@@ -90,7 +90,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 	}
 
 	public boolean idEquals(ItemStack s){
-		if(s == null || !s.checkIsNotEmpty()) return false;
+		if(s == null || !s.exists()) return false;
 		return getId() == s.getId();
 	}
 
@@ -328,7 +328,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 		return this;
 	}
 	public void damage(int amount){
-		if(!checkIsNotEmpty()) return;
+		if(!exists()) return;
 		if(getItem().isDamagedOnUse()) setDamage(getDamage() + amount);
 		if(getDamage() > getItem().getMaxDamage() && getItem().isDamagedOnUse()) {
 			setAmount(getAmount() - 1);
@@ -405,7 +405,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 //		if(!checkIsNotEmpty()) return 0;
 //		return Item.itemList[getId()].onLeftClick(world, player, this);
 //	}
-	public boolean checkIsNotEmpty(){
+	public boolean exists(){
 		return (amount > -2) && getId() != 0 && amount != 0;
 	}
 	public boolean overrideLeftClick(){
@@ -447,7 +447,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 	}
 	public static void write(World world, ItemStack s, CompoundTag tag){
 		tag.setShort("id", s == null ? 0 : s.itemId);
-		if(s == null || !s.checkIsNotEmpty()) return;
+		if(s == null || !s.exists()) return;
 		tag.setShort("damage", s.damage);
 		tag.setInt("amount", s.amount);
 		if(s.entities.size() > 0){

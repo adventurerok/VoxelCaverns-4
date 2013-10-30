@@ -231,6 +231,7 @@ public class Game extends Component implements ClientGame {
 		if(gameState == GameState.SINGLEPLAYER){
 			float sky = world.getSkyLight();
 			Biome b = world.getBiome(MathUtils.floor(player.position.x), MathUtils.floor(player.position.z));
+			if(b == null) return new Vector3f(0, 0, 0);
 			if(sky < 0.0001f) return new Vector3f(b.nightColor);
 			if(sky > 0.9999f) return new Vector3f(b.dayColor);
 			if(sky == 0.5f) return new Vector3f(b.dawnColor);

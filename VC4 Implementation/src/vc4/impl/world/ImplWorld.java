@@ -228,7 +228,7 @@ public class ImplWorld implements World {
 	@Override
 	public Random createRandom(long in1, long in2, long in3) {
 		long seed = in1 * 341873128712L + in2 * 132897987541L + getSeed() + in3;
-		return new Random(seed);
+		return new XORShiftRandom(seed);
 	}
 
 	/*
@@ -239,7 +239,7 @@ public class ImplWorld implements World {
 	@Override
 	public Random createRandom(long in1, long in2, long in3, long in4) {
 		long seed = in1 * 725659903004L + in2 * 341873128712L + in3 * 132897987541L + getSeed() + in4;
-		return new Random(seed);
+		return new XORShiftRandom(seed);
 	}
 
 	public void onLoad() {

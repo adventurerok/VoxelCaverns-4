@@ -203,7 +203,12 @@ public class Package {
 			if (versions[d].stream <= stream) result.add(versions[d]);
 		}
 		Collections.sort(result);
-		return result.toArray(new Version[result.size()]);
+		Version backs[] = result.toArray(new Version[result.size()]);
+		Version fronts[] = new Version[backs.length];
+		for(int d = 0; d < backs.length; ++d){
+			fronts[d] = backs[backs.length - 1 - d];
+		}
+		return fronts;
 	}
 
 	public void install(Version version) throws IOException {

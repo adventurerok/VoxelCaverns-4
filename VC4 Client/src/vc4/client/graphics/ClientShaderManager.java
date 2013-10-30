@@ -80,12 +80,12 @@ public class ClientShaderManager implements ShaderManager {
 		glAttachShader(current, fragment);
 		bindAllAttributes();
 		glLinkProgram(current);
-		if (glGetProgram(current, GL_LINK_STATUS) == GL_FALSE) {
+		if (glGetProgrami(current, GL_LINK_STATUS) == GL_FALSE) {
 			printLogInfo(current);
 			return 0;
 		}
 		glValidateProgram(current);
-		if (glGetProgram(current, GL_VALIDATE_STATUS) == GL_FALSE) {
+		if (glGetProgrami(current, GL_VALIDATE_STATUS) == GL_FALSE) {
 			printLogInfo(current);
 			return 0;
 		}
@@ -188,7 +188,7 @@ public class ClientShaderManager implements ShaderManager {
 		glShaderSource(vertex, vertexCode);
 		glCompileShader(vertex);
 		// if there was a problem compiling, reset vertShader to zero
-		if (glGetProgram(vertex, GL_COMPILE_STATUS) == GL_FALSE) {
+		if (glGetProgrami(vertex, GL_COMPILE_STATUS) == GL_FALSE) {
 			printLogInfo(vertex);
 			vertex = 0;
 		}
@@ -214,7 +214,7 @@ public class ClientShaderManager implements ShaderManager {
 		}
 		glShaderSource(fragment, fragCode);
 		glCompileShader(fragment);
-		if (glGetProgram(fragment, GL_COMPILE_STATUS) == GL_FALSE) {
+		if (glGetProgrami(fragment, GL_COMPILE_STATUS) == GL_FALSE) {
 			printLogInfo(fragment);
 			fragment = 0;
 		}

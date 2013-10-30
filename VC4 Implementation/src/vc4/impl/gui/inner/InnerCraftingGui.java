@@ -59,7 +59,7 @@ public class InnerCraftingGui extends Panel {
 			Rectangle mouse = Client.getGame().getMouseSet().getMouseRectangle();
 			int start1 = (px + 352 - 24 - ((output.length / 4) * 24));
 			for (int dofor = 0; dofor < output.length; dofor++) {
-				if (output[dofor] == null || !output[dofor].checkIsNotEmpty()) continue;
+				if (output[dofor] == null || !output[dofor].exists()) continue;
 				int ax = dofor / 4;
 				int ay = dofor % 4;
 				ItemRenderer.renderItemStack(output[dofor], start1 + (ax * 24), py + 8 + (24 * ay));
@@ -96,7 +96,7 @@ public class InnerCraftingGui extends Panel {
 		inventory = Client.getPlayer().getInventory();
 		if (inventory == null) return false;
 		if (inventory.getHeldItemStack() != null) {
-			if (!inventory.getHeldItemStack().checkIsNotEmpty()) inventory.setHeldItemStack(null);
+			if (!inventory.getHeldItemStack().exists()) inventory.setHeldItemStack(null);
 		}
 
 		MouseSet mice = Client.getGame().getMouseSet();
@@ -111,7 +111,7 @@ public class InnerCraftingGui extends Panel {
 
 			// int at = sy * 11 + sx;
 			if (input[sx] != null) {
-				if (!input[sx].checkIsNotEmpty()) {
+				if (!input[sx].exists()) {
 					input[sx] = null;
 				}
 			}
@@ -134,7 +134,7 @@ public class InnerCraftingGui extends Panel {
 			}
 
 		}
-		if (inventory.getHeldItemStack() != null) if (!inventory.getHeldItemStack().checkIsNotEmpty()) inventory.setHeldItemStack(null);
+		if (inventory.getHeldItemStack() != null) if (!inventory.getHeldItemStack().exists()) inventory.setHeldItemStack(null);
 		if (output != null && output.length > 0) {
 			int start1 = (x + 352 - 24 - ((output.length / 4) * 24));
 			for (int dofor = 0; dofor < output.length; dofor++) {
@@ -252,7 +252,7 @@ public class InnerCraftingGui extends Panel {
 				ItemStack inHand = inventory.getHeldItemStack().clone();
 				ItemStack newOut = inHand.combineItemStack(itemOut);
 				if (newOut != null) {
-					if (newOut.checkIsNotEmpty()) return false;
+					if (newOut.exists()) return false;
 				}
 				inventory.setHeldItemStack(inHand);
 
@@ -262,7 +262,7 @@ public class InnerCraftingGui extends Panel {
 			if (input[dofor] == null) continue;
 			input[dofor].setAmount(input[dofor].getAmount() - inputAmounts[dofor]);
 			if (inputAmounts[dofor] > input[dofor].getAmount()) inputAmounts[dofor] = input[dofor].getAmount();
-			if (!input[dofor].checkIsNotEmpty()) input[dofor] = null;
+			if (!input[dofor].exists()) input[dofor] = null;
 		}
 		return true;
 
@@ -301,7 +301,7 @@ public class InnerCraftingGui extends Panel {
 
 	public ItemStack[] switchForInput() {
 		for (int dofor = 0; dofor < amountOfSlots; ++dofor) {
-			if (input[dofor] != null && input[dofor].checkIsNotEmpty()) {
+			if (input[dofor] != null && input[dofor].exists()) {
 				if (input[dofor].getAmount() < inputAmounts[dofor]) inputAmounts[dofor] = input[dofor].getAmount();
 			} else inputAmounts[dofor] = 1;
 		}

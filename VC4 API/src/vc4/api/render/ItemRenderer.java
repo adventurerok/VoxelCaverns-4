@@ -40,7 +40,7 @@ public class ItemRenderer {
 	public static void renderItemStack(ItemStack stack, int x, int y){
 		if(stack == null) return;
 		if(stack.getId() == 0) return;
-		if(!stack.checkIsNotEmpty()) return;
+		if(!stack.exists()) return;
 		if(stack.getItem() == null){
 			stack.setId(0);
 			stack.setAmount(0);
