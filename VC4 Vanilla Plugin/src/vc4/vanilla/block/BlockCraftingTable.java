@@ -58,5 +58,7 @@ public class BlockCraftingTable extends Block implements IBlockCraftingTable {
 		if(world.getBlockData(x, y, z) > 0) result.add(Vanilla.craftingHammer);
 		return result;
 	}
+	
+
 
 }

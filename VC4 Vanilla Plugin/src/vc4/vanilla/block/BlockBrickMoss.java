@@ -83,7 +83,7 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 	}
 	
 	@Override
-	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
 		if(rand.nextInt(5) != 0) return 0;
 		Direction dir = Direction.getDirection(rand.nextInt(10));
 		if(world.getNearbyBlockId(x, y, z, dir) == Vanilla.brick.uid){

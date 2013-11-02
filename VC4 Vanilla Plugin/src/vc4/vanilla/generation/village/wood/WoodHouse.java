@@ -23,6 +23,10 @@ public class WoodHouse implements Building {
 		furniture.add(new FurnatureWood(new Adjustment(6, 3, 0), Vanilla.table.uid));
 		furniture.add(new FurnatureChair(new Adjustment(5, 3, 0), Vanilla.chair.uid, 2));
 		furniture.add(new FurnatureBasic(new Adjustment(1, -2, 0), Vanilla.workbench.uid, 0));
+		furniture.add(new FurnatureTorch(new Adjustment(2, -2, 2), Vanilla.torch.uid, 2));
+		furniture.add(new FurnatureTorch(new Adjustment(5, -2, 2), Vanilla.torch.uid, 2));
+		furniture.add(new FurnatureTorch(new Adjustment(2, 3, 2), Vanilla.torch.uid, 4));
+		furniture.add(new FurnatureTorch(new Adjustment(5, 3, 2), Vanilla.torch.uid, 4));
 		lastVille = ville;
 	}
 	

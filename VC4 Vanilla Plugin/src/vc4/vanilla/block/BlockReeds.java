@@ -104,7 +104,7 @@ public class BlockReeds extends Block {
 	}
 	
 	@Override
-	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
 		for(int d = 1; d < 7; ++d){
 			if(world.getBlockId(x, y - d, z) != uid){
 				if(data == 0 && world.getBlockId(x + 1, y - d, z) != Vanilla.water.uid && world.getBlockId(x - 1, y - d, z) != Vanilla.water.uid && world.getBlockId(x, y - d, z + 1) != Vanilla.water.uid && world.getBlockId(x, y - d, z - 1) != Vanilla.water.uid){

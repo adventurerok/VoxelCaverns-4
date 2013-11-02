@@ -150,7 +150,7 @@ public class BlockCrop extends BlockMultitexture{
 	}
 	
 	@Override
-	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
 		if(type == -1) return 0;
 		if((data & 7) > 6) return 0;
 		if((data & 8) != 0){

@@ -44,6 +44,8 @@ public class WoodShop implements Building {
 		furniture.add(new FurnatureVillagePlanks(new Adjustment(6, 3, 4), Vanilla.table.uid));
 		furniture.add(new FurnatureVillagePlanks(new Adjustment(1, 0, 4), Vanilla.table.uid));
 		furniture.add(new FurnatureVillagePlanks(new Adjustment(1, 1, 4), Vanilla.table.uid));
+		furniture.add(new FurnatureTorch(new Adjustment(2, -2, 2), Vanilla.torch.uid, 2));
+		furniture.add(new FurnatureTorch(new Adjustment(2, 3, 2), Vanilla.torch.uid, 4));
 		lastVille = ville;
 	}
 	

@@ -1,5 +1,8 @@
 package vc4.vanilla.generation.village.wood;
 
+import java.util.ArrayList;
+
+import vc4.api.util.Adjustment;
 import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
@@ -8,11 +11,26 @@ import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
 import vc4.vanilla.generation.village.Building;
 import vc4.vanilla.generation.village.Village;
+import vc4.vanilla.generation.village.furnature.Furnature;
+import vc4.vanilla.generation.village.furnature.FurnatureTorch;
 
 public class WoodMine implements Building {
 
+	private static ArrayList<Furnature> furniture = new ArrayList<>();
+	private static Village lastVille;
+	
+	public static void loadFurnature(Village ville){
+		furniture.clear();
+		furniture.add(new FurnatureTorch(new Adjustment(2, -2, 2), Vanilla.torch.uid, 2));
+		furniture.add(new FurnatureTorch(new Adjustment(5, -2, 2), Vanilla.torch.uid, 2));
+		furniture.add(new FurnatureTorch(new Adjustment(2, 3, 2), Vanilla.torch.uid, 4));
+		furniture.add(new FurnatureTorch(new Adjustment(5, 3, 2), Vanilla.torch.uid, 4));
+		lastVille = ville;
+	}
+	
 	@Override
 	public void generate(World world, Door door, Village ville) {
+		if(ville != lastVille) loadFurnature(ville);
 		Vector3l start = door.left;
 		start = start.move(3, door.dir.counterClockwise());
 		if (!ville.inBounds(start)) return;
@@ -76,6 +94,9 @@ public class WoodMine implements Building {
 					else ville.setEmptyBlock(x, y, z);
 				}
 			}
+		}
+		for(Furnature f : furniture){
+			f.place(ville, door.left, door.dir);
 		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
 		ville.setEmptyBlock(door.left.x, door.left.y + 1, door.left.z);

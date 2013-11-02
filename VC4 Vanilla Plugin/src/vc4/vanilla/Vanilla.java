@@ -62,10 +62,13 @@ public class Vanilla extends Plugin {
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
 	public static Block workbench, chest, table, chair, gravel, ladder, lightberries;
 	public static Block algae, torch, reeds, wheat, barley, stakes, farmland, deadCrop;
+	public static Block wire, notGate, repeaterGate, andGate, orGate, norGate, nandGate;
+	public static Block flipFlop, gapRepeaterGate, button;
+	public static Block redWire, blueWire, greenWire, yellowWire;
 	
 	//Items
 	public static Item food, spawnStick, stick, metalBar, alloyBar, crop, seeds;
-	public static Item fertilizer, cure;
+	public static Item fertilizer, cure, wrench;
 	
 	//Plants
 	public static Plant plantTreeOak;
@@ -356,6 +359,20 @@ public class Vanilla extends Plugin {
 		stakes = new BlockStakes(world.getRegisteredBlock("vanilla.stakes")).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("stakes");
 		farmland = new BlockFarmland(world.getRegisteredBlock("vanilla.farmland")).setMineData(new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 20).setTimes(0.45, 0.01, 0.22)).setName("farmland");
 		deadCrop = new BlockCrop(world.getRegisteredBlock("vanilla.deadcrop"), -1).setMineData(new MiningData().setTimes(0.01, 0.01, 0.01)).setLightOpacity(1).setName("deadcrop");
+		wire = new BlockWire(world.getRegisteredBlock("vanilla.wire")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire");
+		notGate = new BlockNotGate(world.getRegisteredBlock("vanilla.gate.not")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.not");
+		repeaterGate = new BlockRepeaterGate(world.getRegisteredBlock("vanilla.gate.repeater")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.repeater");
+		andGate = new BlockAndGate(world.getRegisteredBlock("vanilla.gate.and")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.and");
+		orGate = new BlockOrGate(world.getRegisteredBlock("vanilla.gate.or")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.or");
+		norGate = new BlockNorGate(world.getRegisteredBlock("vanilla.gate.nor")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.nor");
+		nandGate = new BlockNandGate(world.getRegisteredBlock("vanilla.gate.nand")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.nand");
+		flipFlop = new BlockFlipFlop(world.getRegisteredBlock("vanilla.flipflop")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("flipflop");
+		gapRepeaterGate = new BlockGapRepeaterGate(world.getRegisteredBlock("vanilla.gate.gaprepeater")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.gaprepeater");
+		button = new BlockButton(world.getRegisteredBlock("vanilla.button")).setMineData(new MiningData().setTimes(0.1, 0.1, 0.1)).setLightOpacity(1).setName("button");
+		redWire = new BlockWireColored(world.getRegisteredBlock("vanilla.wire.red"), new Color(255, 0, 0), new Color(127, 0, 0), true).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire.red");
+		blueWire = new BlockWireColored(world.getRegisteredBlock("vanilla.wire.blue"), new Color(0, 0, 255), new Color(0, 0, 127), true).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire.blue");
+		greenWire = new BlockWireColored(world.getRegisteredBlock("vanilla.wire.green"), new Color(0, 255, 0), new Color(0, 127, 0), false).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire.green");
+		yellowWire = new BlockWireColored(world.getRegisteredBlock("vanilla.wire.yellow"), new Color(255, 255, 0), new Color(127, 127, 0), false).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire.yellow");
 	}
 	
 	@Override
@@ -369,6 +386,7 @@ public class Vanilla extends Plugin {
 		seeds = new ItemSeeds(world.getRegisteredItem("vanilla.seeds")).setName("seeds");
 		fertilizer = new ItemPlantHelp(world.getRegisteredItem("vanilla.fertilizer"), 0).setName("fertilizer");
 		cure = new ItemPlantHelp(world.getRegisteredItem("vanilla.cure"), 1).setName("plantcure");
+		wrench = new ItemWrench(world.getRegisteredItem("vanilla.wrench")).setName("wrench");
 	}
 	
 	@Override

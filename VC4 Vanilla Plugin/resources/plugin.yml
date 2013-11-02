@@ -1,6 +1,6 @@
 name: Vanilla
-version: 0.0.1
-intversion: 1
+version: 0.3.0
+intversion: 3
 developers: [adventurerok]
 main: vc4.vanilla.Vanilla
 description: Vanilla plugin for VC4-Engine

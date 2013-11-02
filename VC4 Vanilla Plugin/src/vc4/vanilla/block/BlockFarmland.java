@@ -71,7 +71,7 @@ public class BlockFarmland extends Block {
 	}
 	
 	@Override
-	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
 		boolean water = hasWater(world, x, y, z);
 		if(data == 0 && water) world.setBlockData(x, y, z, 1);
 		else if(data == 1 && !water) world.setBlockData(x, y, z, 0);

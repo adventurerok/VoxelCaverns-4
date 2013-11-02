@@ -2,11 +2,14 @@ package vc4.vanilla.generation.village.stone;
 
 import vc4.api.math.MathUtils;
 import vc4.api.world.World;
+import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.village.Village;
 import vc4.vanilla.generation.village.Wall;
 
 public class StoneWall implements Wall {
 
+
+	
 	@Override
 	public void generate(World world, long x, long z, Village ville) {
 		long sx = x - 45;
@@ -106,8 +109,12 @@ public class StoneWall implements Wall {
 				boolean xSide = px == sx || px == ex;
 				for (long pz = sz; pz <= ez; ++pz) {
 					boolean zSide = pz == sz || pz == ez;
-					for (long py = y - 2; py <= y + 9; ++py) {
-						if (xSide && zSide) ville.setBrickBlock(px, py, pz);
+					for (long py = y - 2; py <= y + 10; ++py) {
+						if (xSide && zSide){
+							if(py == y + 10) ville.getWorld().setBlockId(px, py, pz, Vanilla.torch.uid);
+							else ville.setBrickBlock(px, py, pz);
+						}
+						if(py == y + 10) continue;
 						else if (xSide || zSide) {
 							if (py == y || py == y + 4 || py == y + 8) ville.setBrickBlock(px, py, pz);
 							else ville.setCobbleBlock(px, py, pz);
@@ -117,7 +124,6 @@ public class StoneWall implements Wall {
 				}
 			}
 		}
-		
 
 	}
 

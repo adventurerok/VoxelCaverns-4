@@ -83,6 +83,11 @@ public class OverworldGenerator implements WorldGenerator {
 		lavaLakeGen = new WorldGenUndergroundLake(Vanilla.lava.uid, 175);
 		biomes = Vanilla.biomes;
 	}
+	
+	@Override
+	public boolean hasBiomeMapGenerator(World world) {
+		return true;
+	}
 
 	public int[] getNoiseDiff(World world, long x, long y, long z, SimplexOctaveGenerator noise) {
 		int[] res = new int[32 * 32];

@@ -7,7 +7,7 @@ public class ItemTexture {
 	
 	public static int toolHandle, pickaxeHead, axeHead, hoeHead, shovelHead;
 	public static int cheese, bread, harvestFront, harvestBack, stick, metalBar, seeds;
-	public static int fertilizer, cure;
+	public static int fertilizer, cure, wrench;
 
 	public static void update(){
 		AnimatedTexture items = Resources.getAnimatedTexture("items");
@@ -25,5 +25,6 @@ public class ItemTexture {
 		seeds = items.getArrayIndex("seeds");
 		fertilizer = items.getArrayIndex("fertilizer");
 		cure = items.getArrayIndex("cure");
+		wrench = items.getArrayIndex("wrench");
 	}
 }

@@ -32,6 +32,11 @@ public class SkylandGenerator implements WorldGenerator {
 		return out;
 	}
 	
+	@Override
+	public boolean hasBiomeMapGenerator(World world) {
+		return false;
+	}
+	
 	public int[] getNoiseDiff(World world, long x, long y, long z, SimplexOctaveGenerator noise) {
 		int[] res = new int[32 * 32];
 		long px = (x << 5);

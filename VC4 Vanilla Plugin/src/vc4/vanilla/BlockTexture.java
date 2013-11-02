@@ -19,9 +19,19 @@ public class BlockTexture {
 	public static int sand, cracks, woodFront, cactusBottom, cactusTop, cactusSide;
 	public static int vines, tallGrass, craftingTop, chestFront, chestTop, chestSide;
 	public static int gravel, ladder, lightberries, algae, torch, cropsGrown, stakes;
-	public static int farmland, wetFarmland, reeds;
+	public static int farmland, wetFarmland, reeds, wire;
+	public static int notGateInput, notGateOutput, notGateOther;
+	public static int repeaterGateInput, repeaterGateOutput, repeaterGateOther;
+	public static int andGateInput, andGateOutput, andGateOther, andGateInputA, andGateInputB;
+	public static int orGateInput, orGateOutput, orGateOther, orGateInputA, orGateInputB;
+	public static int norGateInput, norGateOutput, norGateOther, norGateInputA, norGateInputB;
+	public static int nandGateInput, nandGateOutput, nandGateOther, nandGateInputA, nandGateInputB;
+	public static int flipFlopInput, flipFlopOutput;
+	public static int dataStorageInput, dataStorageOutput, dataStorageOther;
+	public static int gapRepeaterGateInput, gapRepeaterGateOutput, gapRepeaterGateOther;
 	public static int[] crops = new int[9];
 	public static int[] craftingTables = new int[5];
+	public static int digital[] = new int[10];
 	
 	public static void update(){
 		AnimatedTexture tex = Resources.getAnimatedTexture("blocks");
@@ -105,5 +115,43 @@ public class BlockTexture {
 		farmland = tex.getArrayIndex("farmland");
 		wetFarmland = tex.getArrayIndex("wetfarmland");
 		reeds = tex.getArrayIndex("reeds");
+		wire = tex.getArrayIndex("wire");
+		notGateInput = tex.getArrayIndex("notgateinput");
+		notGateOutput = tex.getArrayIndex("notgateoutput");
+		notGateOther = tex.getArrayIndex("notgateoutput");
+		repeaterGateInput = tex.getArrayIndex("repeatergateinput");
+		repeaterGateOutput = tex.getArrayIndex("repeatergateoutput");
+		repeaterGateOther = tex.getArrayIndex("repeatergateother");
+		andGateInput = tex.getArrayIndex("andgateinput");
+		andGateInputA = tex.getArrayIndex("andgateinputa");
+		andGateInputB = tex.getArrayIndex("andgateinputb");
+		andGateOutput = tex.getArrayIndex("andgateoutput");
+		andGateOther = tex.getArrayIndex("andgateother");
+		orGateInput = tex.getArrayIndex("orgateinput");
+		orGateInputA = tex.getArrayIndex("orgateinputa");
+		orGateInputB = tex.getArrayIndex("orgateinputb");
+		orGateOutput = tex.getArrayIndex("orgateoutput");
+		orGateOther = tex.getArrayIndex("orgateother");
+		norGateInput = tex.getArrayIndex("norgateinput");
+		norGateInputA = tex.getArrayIndex("norgateinputa");
+		norGateInputB = tex.getArrayIndex("norgateinputb");
+		norGateOutput = tex.getArrayIndex("norgateoutput");
+		norGateOther = tex.getArrayIndex("norgateother");
+		nandGateInput = tex.getArrayIndex("nandgateinput");
+		nandGateInputA = tex.getArrayIndex("nandgateinputa");
+		nandGateInputB = tex.getArrayIndex("nandgateinputb");
+		nandGateOutput = tex.getArrayIndex("nandgateoutput");
+		nandGateOther = tex.getArrayIndex("nandgateother");
+		flipFlopInput = tex.getArrayIndex("flipflopinput");
+		flipFlopOutput = tex.getArrayIndex("flipflopoutput");
+		dataStorageInput = tex.getArrayIndex("datastorageinput");
+		dataStorageOutput = tex.getArrayIndex("datastorageoutput");
+		dataStorageOther = tex.getArrayIndex("datastorageother");
+		gapRepeaterGateInput = tex.getArrayIndex("gaprepeatergateinput");
+		gapRepeaterGateOutput = tex.getArrayIndex("gaprepeatergateoutput");
+		gapRepeaterGateOther = tex.getArrayIndex("gaprepeatergateother");
+		for(int d = 0; d < 10; ++d){
+			digital[d] = tex.getArrayIndex("digital" + d);
+		}
 	}
 }

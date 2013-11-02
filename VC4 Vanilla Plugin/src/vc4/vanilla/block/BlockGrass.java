@@ -159,7 +159,7 @@ public class BlockGrass extends BlockMultitexture {
 	
 	
 	@Override
-	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
 		if(rand.nextInt(data + 1) == 0){
 			long nx = x - 1 + rand.nextInt(3);
 			long nz = z - 1 + rand.nextInt(3);

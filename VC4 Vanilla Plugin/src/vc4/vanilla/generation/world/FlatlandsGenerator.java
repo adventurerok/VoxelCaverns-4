@@ -96,11 +96,20 @@ public class FlatlandsGenerator implements WorldGenerator {
 
 	@Override
 	public void generateMapData(World world, MapData data) {
+		data.setBiomeMap(new short[32 * 32]);
+		data.setHeightMap(new int[32 * 32]);
+		data.setGenHeightMap(new int[32 * 32]);
 	}
 
 	@Override
 	public boolean generatePlants(World world, long x, long y, long z) {
 		return true;
+	}
+	
+	
+	@Override
+	public boolean hasBiomeMapGenerator(World world) {
+		return false;
 	}
 
 	@Override
