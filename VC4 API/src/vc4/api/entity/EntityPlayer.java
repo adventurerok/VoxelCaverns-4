@@ -312,6 +312,12 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 		}
 		inventory.clear();
 	}
+	
+	
+	public void dropHeldItem(){
+		dropItem(inventory.getHeldItemStack());
+		inventory.setHeldItemStack(null);;
+	}
 
 	public double getMinedAmount() {
 		return minedAmount;
@@ -504,6 +510,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 				} else {
 					itm.decrementAmount();
 					throwItem(itm.clone().setAmount(1));
+					if(!itm.exists()) inventory.setSelectedStack(null);
 				}
 			}
 		}

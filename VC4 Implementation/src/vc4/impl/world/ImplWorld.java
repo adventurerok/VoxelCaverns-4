@@ -95,7 +95,6 @@ public class ImplWorld implements World {
 	private String saveName;
 	private CompoundTag generatorTag = new CompoundTag("gen");
 	protected boolean loaded = false;
-	private LinkedList<Vector4l> blockUpdates = new LinkedList<>();
 	private LinkedList<Vector3l> lightUpdates = new LinkedList<>();
 	private LinkedList<Vector2l> downScans = new LinkedList<>();
 	private int visibleChunks = 0;
@@ -287,9 +286,8 @@ public class ImplWorld implements World {
 					toBuild.add(new BlockStoreDist(b, c, b.distance(pos, c)));
 				} else if (b.compileState == 2) {
 					toCompile.add(new BlockStoreDist(b, c, b.distance(pos, c)));
-				} else if (b.compileState == 4) {
-					render.add(new BlockStoreDist(b, c, b.distance(pos, c)));
 				}
+				render.add(new BlockStoreDist(b, c, b.distance(pos, c)));
 			}
 		}
 		Collections.sort(toBuild);
@@ -304,7 +302,7 @@ public class ImplWorld implements World {
 			if (toCompile.size() <= d) continue;
 			BlockStoreDist ds = toCompile.get(d);
 			ds.s.compileRenderData();
-			render.add(ds);
+			//render.add(ds);
 		}
 		ArrayList<BlockStoreDist> tRender = new ArrayList<>();
 		Fustrum fust = Client.getGame().getViewFustrum();
@@ -319,11 +317,13 @@ public class ImplWorld implements World {
 		render = tRender;
 		Collections.sort(render);
 		for (BlockStoreDist d : render) {
-			d.s.currentData[0].render();
+			if(d.s.oldData[0] != null && d.s.oldData[0].isCompiled()) d.s.oldData[0].render();
+			else if(d.s.currentData[0] != null && d.s.currentData[0].isCompiled()) d.s.currentData[0].render();
 		}
 		gl.disable(GLFlag.CULL_FACE);
 		for (BlockStoreDist d : render) {
-			d.s.currentData[1].render();
+			if(d.s.oldData[1] != null && d.s.oldData[1].isCompiled()) d.s.oldData[1].render();
+			else if(d.s.currentData[1] != null && d.s.currentData[1].isCompiled()) d.s.currentData[1].render();
 		}
 		gl.disableVertexAttribArray(6);
 		for (ImplChunk c : chunks.values()) {
@@ -340,7 +340,8 @@ public class ImplWorld implements World {
 		gl.depthFunc(GLCompareFunc.LEQUAL);
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Resources.getAnimatedTexture("blocks").getTexture());
 		for (BlockStoreDist d : render) {
-			d.s.currentData[2].render();
+			if(d.s.oldData[2] != null && d.s.oldData[2].isCompiled()) d.s.oldData[2].render();
+			else if(d.s.currentData[2] != null && d.s.currentData[2].isCompiled()) d.s.currentData[2].render();
 		}
 		gl.disableVertexAttribArray(6);
 		gl.disable(GLFlag.CULL_FACE);
@@ -874,6 +875,7 @@ public class ImplWorld implements World {
 		return true;
 	}
 
+	@Override
 	public void notifyNear(long x, long y, long z) {
 		Direction dir;
 		long px, py, pz;
@@ -1229,22 +1231,7 @@ public class ImplWorld implements World {
 		for (ImplChunk c : cnk.values()) {
 			c.update(rand);
 		}
-		Profiler.start("blocks");
-		{
-			LinkedList<Vector4l> current = (LinkedList<Vector4l>) blockUpdates.clone();
-			blockUpdates.clear();
-			int i;
-			for (Vector4l b : current) {
-				if (b.w == 0) {
-					i = getBlockType(b.x, b.y, b.z).blockUpdate(this, rand, b.x, b.y, b.z, getBlockData(b.x, b.y, b.z));
-					if (i > 0) blockUpdates.add(new Vector4l(b.x, b.y, b.z, i));
-				} else {
-					b.w--;
-					blockUpdates.add(b);
-				}
-			}
-		}
-		Profiler.stopStart("light");
+		Profiler.start("light");
 		{
 			LinkedList<Vector3l> current = (LinkedList<Vector3l>) lightUpdates.clone();
 			lightUpdates.clear();
@@ -1267,8 +1254,13 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public void scheduleBlockUpdate(long x, long y, long z, int time) {
-		blockUpdates.add(new Vector4l(x, y, z, time));
+	public boolean scheduleBlockUpdate(long x, long y, long z, int time, int buid) {
+		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) {
+			c.scheduleBlockUpdate((int) (x & 31), (int) (y & 31), (int) (z & 31), time, buid);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

@@ -21,11 +21,13 @@ public class CracksRenderer {
 		if(mined < 0.05) mined = 0.05;
 		mined *= 0.95;
 		gl.disable(GLFlag.CULL_FACE);
+		gl.enable(GLFlag.TEXTURE_3D);
 		gl.bindShader("texture3d");
 		AnimatedTexture tex = Resources.getAnimatedTexture("cracks");
-		tex.bind();
+		//tex.bind();
+		gl.bindTexture(GLTexture.TEX_3D, tex.getTexture());
 		if(!moddedTex){
-			tex.setSmooth(false);
+			tex.setSmooth(true);
 			tex.setMipmap(false);
 			moddedTex = true;
 		}
@@ -34,6 +36,7 @@ public class CracksRenderer {
 		render.compile();
 		render.render();
 		render.destroy();
+		gl.disable(GLFlag.TEXTURE_3D);
 		gl.unbindShader();
 	}
 }

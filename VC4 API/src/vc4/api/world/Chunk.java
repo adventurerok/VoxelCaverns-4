@@ -32,4 +32,5 @@ public interface Chunk {
 	public abstract byte getBlockLightWithBBCheck(int x, int y, int z);
 	public abstract boolean isLit();
 	public abstract void initialLight();
+	public void scheduleBlockUpdate(int x, int y, int z, int time, int buid);
 }

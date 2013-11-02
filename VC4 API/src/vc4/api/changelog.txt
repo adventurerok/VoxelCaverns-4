@@ -221,3 +221,25 @@ VC4-Development-0.0.1-250
 	* Changed ImplWorld to use XORShiftRandom
 VC4-Development-0.0.1-251
 	* Changed depreciated glGetProgram to glGetProgrami
+VC4-Development-0.0.1-252
+	+ Added a smoother for zooming generators (height & biomes)
+VC4-Development-0.0.1-253
+	+ Added BooleanUtils and PipeUtils from VoxelCaverns 3
+VC4-Development-0.0.1-254
+	+ Added API for signal wire
+VC4-Development-0.0.1-255
+	* Items cannot instantly be picked up
+VC4-Development-0.0.1-256
+	* World generators no longer have to have a biome map generator
+VC4-Development-0.0.1-257
+	* Attempted to fix the flicker bug
+VC4-Development-0.0.2-258
+	* Changed block updates so chunks handle them instead the world
+	+ Scheduled block updates now save
+	+ Scheduled block updates can store an int of data for use during the update
+VC4-Development-0.0.2-259
+	* Fixed crash bug with loading scheduled block updates
+VC4-Development-0.0.2-260
+	* Fixed bugs with animated textures
+VC4-Development-0.0.2-261
+	* Changed item pickup radius

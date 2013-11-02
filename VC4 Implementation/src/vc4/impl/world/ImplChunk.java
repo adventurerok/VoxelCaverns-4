@@ -42,6 +42,7 @@ public class ImplChunk implements Chunk {
 	private boolean lit = false;
 	private boolean skyChecked = false;
 	private int skyCheckZ = 0;
+	private LinkedList<BlockUpdate> blockUpdates = new LinkedList<>();
 	
 	private LinkedList<Vector3i> ilightPositions;
 	
@@ -276,6 +277,7 @@ public class ImplChunk implements Chunk {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void update(Random rand) {
 		for(int d = areas.size() - 1; d > -1; --d){
 			areas.get(d).updateTick();
@@ -307,9 +309,23 @@ public class ImplChunk implements Chunk {
 			x = rand.nextInt(32);
 			y = rand.nextInt(32);
 			z = rand.nextInt(32);
-			time = Block.byId(getBlockId(x, y, z)).blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z), getBlockData(x, y, z));
+			Block theBlock = Block.byId(getBlockId(x, y, z));
+			if(!theBlock.updatesRandomly()) continue;
+			time = theBlock.blockUpdate(world, rand, pos.worldX(x), pos.worldY(y), pos.worldZ(z), getBlockData(x, y, z), 0);
 			if(time > 0){
-				world.scheduleBlockUpdate(pos.worldX(x), pos.worldY(y), pos.worldZ(z), time);
+				blockUpdates.add(new BlockUpdate(x, y, z, time, 1));
+			}
+		}
+		LinkedList<BlockUpdate> current = (LinkedList<BlockUpdate>) blockUpdates.clone();
+		blockUpdates.clear();
+		int i;
+		for (BlockUpdate b : current) {
+			if (b.time == 0) {
+				i = Block.byId(getBlockId(b.x, b.y, b.z)).blockUpdate(world, rand, pos.worldX(b.x), pos.worldY(b.y), pos.worldZ(b.z), getBlockData(b.x, b.y, b.z), b.id);
+				if (i > 0) blockUpdates.add(new BlockUpdate(b.x, b.y, b.z, i, b.id));
+			} else {
+				b.time--;
+				blockUpdates.add(b);
 			}
 		}
 		List<TileEntity> tiles = new ArrayList<TileEntity>(tileEntitys.values());
@@ -602,6 +618,15 @@ public class ImplChunk implements Chunk {
 	protected void checkLight(int x, int y, int z, short bid) {
 		if (!populated) return;
 		if ((Block.blockLight[bid] != Block.blockLight[getBlockId(x, y, z)]) || (Block.blockOpacity[bid] != Block.blockOpacity[getBlockId(x, y, z)])) updateLight(x, y, z, 0);
+	}
+
+	@Override
+	public void scheduleBlockUpdate(int x, int y, int z, int time, int buid) {
+		blockUpdates.add(new BlockUpdate(x, y, z, time, buid));
+	}
+	
+	public LinkedList<BlockUpdate> getBlockUpdates() {
+		return blockUpdates;
 	}
 
 }

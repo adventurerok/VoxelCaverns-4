@@ -34,7 +34,6 @@ public class BlockRendererDefault implements BlockRenderer {
 		long y = c.getChunkPos().worldY(cy);
 		long z = c.getChunkPos().worldZ(cz);
 		if (block.isAir()) return;
-		if(c.getBlockLight(cx, cy, cz) > 4) System.out.println("Size");
 		Vector3f light;
 		Direction dir;
 		AABB bounds = block.getRenderSize(c.getWorld(), x, y, z);

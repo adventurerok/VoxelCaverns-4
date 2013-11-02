@@ -9,7 +9,7 @@ import vc4.api.item.ItemStack;
 import vc4.api.vector.Vector3f;
 import vc4.api.world.*;
 
-public class BlockRendererJoinable implements BlockRenderer {
+public class BlockRendererJoinable extends BlockRendererDefault {
 
 	@Override
 	public void renderBlock(Chunk chunk, MapData m, int cx, int cy, int cz, Block block, byte data, Renderer[] renderers) {

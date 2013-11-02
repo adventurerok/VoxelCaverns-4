@@ -144,6 +144,11 @@ public class Vector4f implements Vector4<Vector4f> {
 		return new Vector4l(MathUtils.floor(x), MathUtils.floor(y), MathUtils.floor(z), MathUtils.floor(w));
 	}
 
+	@Override
+	public Vector4i toVector4i() {
+		return new Vector4i(MathUtils.floor(x), MathUtils.floor(y), MathUtils.floor(z), MathUtils.floor(w));
+	}
+
 	
 
 }

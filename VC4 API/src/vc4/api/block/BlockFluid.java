@@ -114,7 +114,7 @@ public class BlockFluid extends Block {
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
 		world.setBlockIdData(x, y, z, uid, item.getData());
 		item.decrementAmount();
-		world.scheduleBlockUpdate(x, y, z, updateWait);
+		world.scheduleBlockUpdate(x, y, z, updateWait, 1);
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class BlockFluid extends Block {
 	}
 	
 	@Override
-	public int blockUpdate(World world, Random rand, long x, long y, long z, byte dat) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte dat, int buid) {
 		return 0;
 //		if(dat > 15) return 0;
 //		int lvl = (16 - (dat & 15));

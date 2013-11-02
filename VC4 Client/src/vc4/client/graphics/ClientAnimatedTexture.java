@@ -10,6 +10,8 @@ import java.util.*;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.opengl.GL30;
+
 import vc4.api.Resources;
 import vc4.api.graphics.*;
 import vc4.api.graphics.texture.AnimatedTexture;
@@ -25,6 +27,7 @@ public class ClientAnimatedTexture implements AnimatedTexture{
 	int arraysize;
 	int width, height;
 	boolean smooth = true, mipmap = true;
+	boolean mipmapGen = false;
 	boolean prefix = true;
 	double yRatio = 1;
 	
@@ -92,7 +95,7 @@ public class ClientAnimatedTexture implements AnimatedTexture{
 	}
 	
 	private void magMinChanged(){
-			gl.bindTexture(GLTexture.TEX_2D_ARRAY, tex);
+			gl.bindTexture(type, tex);
 			GLTextureFilter f;
 			GLTextureFilter mip = null;
 			if(smooth){
@@ -101,8 +104,12 @@ public class ClientAnimatedTexture implements AnimatedTexture{
 				f = GLTextureFilter.NEAREST;
 			}
 			if(mipmap) mip = f;
-			gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, f, mip);
-			gl.texParameterMagFilter(GLTexture.TEX_2D_ARRAY, f);
+			gl.texParameterMinFilter(type, f, mip);
+			gl.texParameterMagFilter(type, f);
+			if(mipmap && !mipmapGen){
+				GL30.glGenerateMipmap(type.getGlInt());
+				mipmapGen = true;
+			}
 		
 	}
 
@@ -240,7 +247,7 @@ public class ClientAnimatedTexture implements AnimatedTexture{
 		setMipmap(false);
 		setSmooth(false);
 		
-		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
+		gl.bindTexture(type, 0);
 		
 		tex = texid;
 		

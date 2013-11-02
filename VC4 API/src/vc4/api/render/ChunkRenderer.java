@@ -39,12 +39,18 @@ public class ChunkRenderer implements Renderer {
 	
 	boolean createdList = false;
 	int listId = 0;
+
+	private boolean compiled;
 	
 	/**
 	 * 
 	 */
 	public ChunkRenderer() {
 		if(gl == null) gl = Graphics.getOpenGL();
+	}
+	
+	public boolean isCompiled() {
+		return compiled;
 	}
 	
 	/* (non-Javadoc)
@@ -175,6 +181,7 @@ public class ChunkRenderer implements Renderer {
 		color = null;
 		tex = null;
 		trans = null;
+		compiled = true;
 	}
 	
 	/* (non-Javadoc)

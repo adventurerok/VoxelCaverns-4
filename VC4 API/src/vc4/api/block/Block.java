@@ -415,8 +415,60 @@ public class Block {
 		return size;
 	}
 
-	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data) {
+	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
 		return 0;
+	}
+	
+	
+	public int getProvidingSignal(World world, long x, long y, long z, int side){
+		return 0;
+	}
+	
+	public int getDirectSignal(World world, long x, long y, long z){
+		return getDirectSignal(world, x, y, z, -1);
+	}
+	
+	public int getDirectSignal(World world, long x, long y, long z, int nocheck){
+		int max = 0;
+		for(int dofor = 0; dofor < 6; ++dofor){
+			if(dofor == nocheck) continue;
+			Direction dir = Direction.getDirection(dofor);
+			long nx = x + dir.getX();
+			long ny = y + dir.getY();
+			long nz = z + dir.getZ();
+			int at = world.getBlockType(nx, ny, nz).getProvidingSignal(world, nx, ny, nz, dir.opposite().id());
+			if(at > max) max = at;
+			if(max == 15) return max;
+		}
+		return max;
+	}
+	
+	public int getIndirectSignal(World world, long x, long y, long z){
+		int max = 0;
+		for(int dofor = 0; dofor < 6; ++dofor){
+			Direction dir = Direction.getDirection(dofor);
+			long nx = x + dir.getX();
+			long ny = y + dir.getY();
+			long nz = z + dir.getZ();
+			dir = dir.opposite();
+			if(!world.getBlockType(nx, ny, nz).isSolid(world, nx, ny, nz, dir.id())){
+				int at = world.getBlockType(nx, ny, nz).getProvidingSignal(world, nx, ny, nz, dir.id());
+				if(at > max) max = at;
+				if(max == 15) return max;
+			}
+			int at = world.getBlockType(nx, ny, nz).getDirectSignal(world, nx, ny, nz, dir.id());
+			if(at > max) max = at;
+			if(max == 15) return max;
+		}
+		return max;
+	}
+	
+	public boolean takesSignalInput(World world, long x, long y, long z, int side){
+		return false;
+	}
+	
+	public boolean updatesRandomly(){
+		return true;
 	}
 
 }

@@ -34,6 +34,9 @@ public class ScreenMap extends Component {
 	public void draw() {
 		if(((Component)Client.getGame()).getFocusComponent() instanceof TextBox) return;
 		if(!Input.getClientKeyboard().isKeyDown(Key.M)) return;
+		if(Client.getPlayer() == null || Client.getPlayer().getWorld() == null) return;
+		if(Client.getPlayer().getWorld().getGenerator() == null ) return;
+		if(!Client.getPlayer().getWorld().getGenerator().hasBiomeMapGenerator(Client.getPlayer().getWorld())) return;
 		oldZoom = zoom;
 		if(Input.getClientKeyboard().keyPressed(Key.EQUALS) && zoom > 1) --zoom;
 		if(Input.getClientKeyboard().keyPressed(Key.MINUS) && zoom < 10) ++zoom;

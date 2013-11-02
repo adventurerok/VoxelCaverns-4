@@ -28,6 +28,7 @@ public interface WorldGenerator {
 	public void renderSkyBox(World world, EntityPlayer player);
 	public void generateMapData(World world, MapData data);
 	public boolean generatePlants(World world, long x, long y, long z);
+	public boolean hasBiomeMapGenerator(World world);
 	public abstract ZoomGenerator getBiomeMapGenerator(World world, int zoom);
 	public abstract ArrayList<MapIcon> getMapIcons(World world, long x, long z, int size);
 	public abstract Vector3f getLightColor(World world, MapData m, long x, long y, long z, int cx, int cz, int level);

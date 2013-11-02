@@ -21,7 +21,7 @@ public class BlockStore {
 	public byte[] data;
 	public byte[] light = new byte[4096];
 	
-//	public DataRenderer oldData[];
+	public ChunkRenderer oldData[] = new ChunkRenderer[3];
 	public ChunkRenderer currentData[] = new ChunkRenderer[3];
 	public int compileState = 0;
 	
@@ -166,9 +166,10 @@ public class BlockStore {
 	
 	public void calculateData(Chunk c, MapData m){
 		compileState = 1;
-		currentData[0] = new ChunkRenderer();
-		currentData[1] = new ChunkRenderer();
-		currentData[2] = new ChunkRenderer();
+		for(int d = 0; d < 3; ++d){
+			oldData[d] = currentData[d];
+			currentData[d] = new ChunkRenderer();
+		}
 		boolean allAir = true;
 		boolean noData = true;
 		int y, z, i;
@@ -198,6 +199,7 @@ public class BlockStore {
 		compileState = 3;
 		for(int d = 0; d < 3; ++d) currentData[d].compile();
 		compileState = 4;
+		oldData = new ChunkRenderer[3];
 	}
 	
 	public void clearRenderers(){

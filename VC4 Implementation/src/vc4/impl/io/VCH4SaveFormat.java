@@ -27,7 +27,7 @@ import vc4.impl.world.*;
  */
 public class VCH4SaveFormat implements SaveFormat {
 	
-	private static final boolean ENABLED = false;
+	private static final boolean ENABLED = true;
 
 	public static VCH4SaveFormat VCH4_SAVE_FORMAT = new VCH4SaveFormat();
 
@@ -76,6 +76,10 @@ public class VCH4SaveFormat implements SaveFormat {
 						Logger.getLogger("VC4").warning("Failed to load area " + world.getTileEntityName(ent.getShort("id")), e);
 					}
 				}
+			}
+			if(root.hasKey("bluds")){
+				ListTag bluds = root.getListTag("bluds");
+				loadBlockUpdateTag(chunk, bluds);
 			}
 			for(int d = 0; d < 8; ++d){
 				BlockStore store = chunk.getBlockStore(d);
@@ -135,6 +139,7 @@ public class VCH4SaveFormat implements SaveFormat {
 			alist.addTag(tag);
 		}
 		root.addTag(alist);
+		root.addTag(getBlockUpdateTag(chunk));
 		short[] blocks;
 		byte[] data;
 		try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(path))))) {
@@ -263,6 +268,34 @@ public class VCH4SaveFormat implements SaveFormat {
 			for(int d = 0; d < skyHeights.length; ++d){
 				out.writeInt(skyHeights[d]);
 			}
+		}
+	}
+	
+	public ListTag getBlockUpdateTag(ImplChunk chunk){
+		ListTag tag = new ListTag("bluds", CompoundTag.class);
+		for(BlockUpdate u : chunk.getBlockUpdates()){
+			CompoundTag p = new CompoundTag("u");
+			p.setByte("x", (byte) u.x);
+			p.setByte("y", (byte) u.y);
+			p.setByte("z", (byte) u.z);
+			p.setInt("t", u.time);
+			p.setInt("i", u.id);
+			tag.addTag(p);
+		}
+		return tag;
+		
+	}
+	
+	public void loadBlockUpdateTag(ImplChunk chunk, ListTag tag){
+		while(tag.hasNext()){
+			CompoundTag c = (CompoundTag) tag.getNextTag();
+			BlockUpdate ud = new BlockUpdate(0, 0, 0, 0, 0);
+			ud.x = c.getByte("x");
+			ud.y = c.getByte("y");
+			ud.z = c.getByte("z");
+			ud.time = c.getInt("t");
+			ud.id = c.getInt("i");
+			chunk.getBlockUpdates().add(ud);
 		}
 	}
 

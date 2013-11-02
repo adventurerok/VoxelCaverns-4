@@ -20,6 +20,7 @@ public class EntityItem extends Entity {
 	public ItemStack item;
 	private Renderer render;
 	private boolean compiled;
+	private int waitTime = 10;
 	
 	public EntityItem(World world) {
 		super(world);
@@ -47,25 +48,27 @@ public class EntityItem extends Entity {
 			isDead = true;
 			return;
 		}
-		List<Entity> entities = world.getEntitiesInBoundsExcluding(bounds.expand(0.5, 0.75, 0.5), this);
-		for(int d = 0; d < entities.size(); ++d){
-			Entity e = entities.get(d);
-			if(e == null) continue;
-			if(e instanceof IEntityPickUpItems){
-				item = ((IEntityPickUpItems)e).pickUpItem(item);
-			} else if(e instanceof EntityItem){
-				EntityItem itm = (EntityItem) e;
-				if(itm.position.distanceSquared(position) > 0.1) continue;
-				if(itm.item != null && itm.item.equals(item)){
-					item = itm.item.combineItemStack(item);
+		if(waitTime > 0) --waitTime;
+		else {
+			List<Entity> entities = world.getEntitiesInBoundsExcluding(bounds.expand(0.6, 0.75, 0.6), this);
+			for(int d = 0; d < entities.size(); ++d){
+				Entity e = entities.get(d);
+				if(e == null) continue;
+				if(e instanceof IEntityPickUpItems){
+					item = ((IEntityPickUpItems)e).pickUpItem(item);
+				} else if(e instanceof EntityItem){
+					EntityItem itm = (EntityItem) e;
+					if(itm.item != null && itm.item.equals(item)){
+						item = itm.item.combineItemStack(item);
+					}
+				}
+				if(item == null || !item.exists()){
+					isDead = true;
+					return;
 				}
 			}
-			if(item == null || !item.exists()){
-				isDead = true;
-				return;
-			}
+			entities = null;
 		}
-		entities = null;
 		motionX *= 0.6;
 		motionZ *= 0.6;
 		motionY -= world.getFallAcceleration();
