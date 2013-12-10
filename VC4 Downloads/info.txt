@@ -1,9 +1,0 @@
-VoxelCaverns 4 Repo:
-
-This repo is the primary repository for "VoxelCaverns 4.2", the latest version of the VoxelCaverns engine. It should contain the API, Implementation, Client, Server and Editor packages as well as the Vanilla plugin.
-VoxelCaverns uses Java-7 as its minimum required Java library. I, adventurerok, dislike having to work with old java librarys (Java-6)
-You may use this repository to see how to make your own repository for the launcher. Here are the main points:
-
- * repo.yml: This is the yml file which describes the repository and the packages/text files in it
- * package-name/package.yml: This describes the package and all versions it contains. Each package must have a separate folder
-  
