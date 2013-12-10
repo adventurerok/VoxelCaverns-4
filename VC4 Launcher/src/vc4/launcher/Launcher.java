@@ -39,7 +39,7 @@ public class Launcher {
 		tasks.start();
 		Repo rec = new Repo();
 		try {
-			rec.loadInfo(new URL("http://voxelcaverns.org.uk/repo"));
+			rec.loadInfo(new URL("http://repo.voxelcaverns.org.uk"));
 			vc4 = rec;
 			vc4.setCanDisable(false);
 			repos.add(vc4);
