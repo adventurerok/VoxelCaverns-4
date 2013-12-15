@@ -12,10 +12,20 @@ public class Command {
 	
 	
 	
+	/**
+	 * Gets the user/console who sent the command
+	 * 
+	 * @return The user who sent the command
+	 */
 	public User getSender() {
 		return sender;
 	}
 	
+	/**
+	 * Gets the arguments provided to the command
+	 * 
+	 * @return The arguments provided
+	 */
 	public String[] getArgs() {
 		return args;
 	}
@@ -24,14 +34,30 @@ public class Command {
 		return command;
 	}
 	
+	/**
+	 * Gets the name of the plugin that is handling the command
+	 * 
+	 * @return The name of the plugin that is handling the command
+	 */
 	public String getPlugin() {
 		return plugin;
 	}
 	
+	/**
+	 * Gets the argument at the given index in the command
+	 * 
+	 * @param index The index to get the argument
+	 * @return The argument at the index
+	 */
 	public String getArg(int index){
 		return args[index];
 	}
 	
+	/**
+	 * Gets the number of arguments given. Equivalent to GetArgs().length
+	 * 
+	 * @return The length of the argument array
+	 */
 	public int getArgsLength(){
 		return args.length;
 	}

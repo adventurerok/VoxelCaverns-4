@@ -12,6 +12,7 @@ import vc4.client.graphics.*;
 import vc4.client.input.ClientKeyboard;
 import vc4.client.input.ClientMouse;
 import vc4.impl.GameLoader;
+import vc4.impl.io.VCH4SaveFormat;
 
 public class Launcher implements ClientLauncher{
 
@@ -19,6 +20,9 @@ public class Launcher implements ClientLauncher{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		if(args != null && args.length > 0 && args[0] != null){
+			if(args[0].equals("nosave")) VCH4SaveFormat.ENABLED = false;
+		}
 		new ClientResources();
 		System.setProperty("org.lwjgl.librarypath", new File(DirectoryLocator.getPath() + "/bin/natives/").getAbsolutePath());
 		GameLoader.load(new ChatBoxHandler(), new FileOutputHandler());

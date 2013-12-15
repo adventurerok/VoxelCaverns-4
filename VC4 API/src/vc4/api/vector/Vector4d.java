@@ -9,14 +9,14 @@ import vc4.api.math.MathUtils;
  * @author paul
  *
  */
-public class Vector4f implements Vector4<Vector4f> {
+public class Vector4d implements Vector4<Vector4d> {
 
-	public float x;
-	public float y;
-	public float z;
-	public float w;
+	public double x;
+	public double y;
+	public double z;
+	public double w;
 	
-	public Vector4f(float x, float y, float z, float w) {
+	public Vector4d(double x, double y, double z, double w) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -28,67 +28,67 @@ public class Vector4f implements Vector4<Vector4f> {
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)
 	 */
 	@Override
-	public Vector4f add(Vector4f vec) {
-		return new Vector4f(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
+	public Vector4d add(Vector4d vec) {
+		return new Vector4d(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
 	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#multiply(java.lang.Object)
 	 */
 	@Override
-	public Vector4f multiply(Vector4f vec) {
-		return new Vector4f(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
+	public Vector4d multiply(Vector4d vec) {
+		return new Vector4d(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
 	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#subtract(java.lang.Object)
 	 */
 	@Override
-	public Vector4f subtract(Vector4f vec) {
-		return new Vector4f(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
+	public Vector4d subtract(Vector4d vec) {
+		return new Vector4d(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
 	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#divide(java.lang.Object)
 	 */
 	@Override
-	public Vector4f divide(Vector4f vec) {
-		return new Vector4f(x / vec.x, y / vec.y, z / vec.z, w / vec.w);
+	public Vector4d divide(Vector4d vec) {
+		return new Vector4d(x / vec.x, y / vec.y, z / vec.z, w / vec.w);
 	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#abs()
 	 */
 	@Override
-	public Vector4f abs() {
-		return new Vector4f(Math.abs(x), Math.abs(y), Math.abs(z), Math.abs(w));
+	public Vector4d abs() {
+		return new Vector4d(Math.abs(x), Math.abs(y), Math.abs(z), Math.abs(w));
 	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#negate()
 	 */
 	@Override
-	public Vector4f negate() {
-		return new Vector4f(-x, -y, -z, -w);
+	public Vector4d negate() {
+		return new Vector4d(-x, -y, -z, -w);
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Vector4f clone() {
-		return new Vector4f(x, y, z, w);
+	public Vector4d clone() {
+		return new Vector4d(x, y, z, w);
 	}
 
 	/* (non-Javadoc)
 	 * @see vc4.api.vector.Vector#distanceSquared(java.lang.Object)
 	 */
 	@Override
-	public double distanceSquared(Vector4f vec) {
-		float nx = x - vec.x;
-		float ny = y - vec.y;
-		float nz = z - vec.z;
-		float nw = w - vec.w;
+	public double distanceSquared(Vector4d vec) {
+		double nx = x - vec.x;
+		double ny = y - vec.y;
+		double nz = z - vec.z;
+		double nw = w - vec.w;
 		
 		return nx * nx + ny * ny + nz * nz + nw * nw;
 	}
@@ -97,21 +97,26 @@ public class Vector4f implements Vector4<Vector4f> {
 	 * @see vc4.api.vector.Vector#distance(java.lang.Object)
 	 */
 	@Override
-	public double distance(Vector4f vec) {
+	public double distance(Vector4d vec) {
 		return Math.sqrt(distanceSquared(vec));
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(w);
-		result = prime * result + Float.floatToIntBits(x);
-		result = prime * result + Float.floatToIntBits(y);
-		result = prime * result + Float.floatToIntBits(z);
+		long temp;
+		temp = Double.doubleToLongBits(w);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(x);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(z);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
@@ -123,7 +128,7 @@ public class Vector4f implements Vector4<Vector4f> {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		Vector4f other = (Vector4f) obj;
+		Vector4d other = (Vector4d) obj;
 		if (!MathUtils.equals(x, other.x)) return false;
 		if (!MathUtils.equals(y, other.y)) return false;
 		if (!MathUtils.equals(z, other.z)) return false;
@@ -136,7 +141,7 @@ public class Vector4f implements Vector4<Vector4f> {
 	 */
 	@Override
 	public Vector4f toVector4f() {
-		return clone();
+		return new Vector4f((float)x, (float)y, (float)z, (float)w);
 	}
 	
 	@Override
@@ -145,13 +150,13 @@ public class Vector4f implements Vector4<Vector4f> {
 	}
 
 	@Override
-	public Vector4i toVector4i() {
-		return new Vector4i(MathUtils.floor(x), MathUtils.floor(y), MathUtils.floor(z), MathUtils.floor(w));
-	}
-	
-	@Override
 	public Vector4d toVector4d() {
-		return new Vector4d(x, y, z, w);
+		return clone();
+	}
+
+	@Override
+	public Vector4i toVector4i() {
+		return new Vector4i((int)x, (int)y, (int)z, (int)w);
 	}
 
 	

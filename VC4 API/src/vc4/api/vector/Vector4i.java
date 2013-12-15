@@ -121,6 +121,9 @@ public class Vector4i implements Vector4<Vector4i> {
 		return clone();
 	}
 
-	
+	@Override
+	public Vector4d toVector4d() {
+		return new Vector4d(x, y, z, w);
+	}
 
 }

@@ -121,6 +121,9 @@ public class Vector4l implements Vector4<Vector4l> {
 		return new Vector4i((int)x, (int)y, (int)z,(int) w);
 	}
 
-	
+	@Override
+	public Vector4d toVector4d() {
+		return new Vector4d(x, y, z, w);
+	}
 
 }
