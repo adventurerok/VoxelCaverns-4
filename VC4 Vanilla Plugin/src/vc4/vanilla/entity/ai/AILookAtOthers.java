@@ -26,7 +26,7 @@ public class AILookAtOthers extends AI {
 	public boolean shouldStart() {
 		double shortest = max;
 		EntityLiving close = null;
-		List<Entity> titys = owner.world.getEntitiesInBoundsExcluding(owner.bounds.expand(15, 15, 15), owner);
+		List<Entity> titys = owner.world.getEntitiesInBoundsExcluding(owner.chunk, owner.bounds.expand(15, 15, 15), owner);
 		for(int d = 0; d < titys.size(); ++d){
 			Entity ett = titys.get(d);
 			if(!(ett instanceof EntityLiving)) continue;

@@ -28,6 +28,7 @@ public interface World {
 	public Random createRandom(long in1, long in2, long in3);
 	public Random createRandom(long in1, long in2, long in3, long in4);
 	public Chunk generateChunk(ChunkPos pos);
+	public AABB[] getAABBsInBounds(Chunk chunk, AABB bounds, Entity exclude);
 	public AABB[] getAABBsInBounds(AABB bounds, Entity exclude);
 	public Biome getBiome(long x, long z);
 	public byte getBlockData(long x, long y, long z);
@@ -37,6 +38,9 @@ public interface World {
 	public Chunk getChunk(ChunkPos pos);
 	public Chunk getChunk(long x, long y, long z);
 	public abstract String[] getDebugInfo();
+	public List<Entity> getEntitiesInBounds(Chunk chunk, AABB bounds);
+	public List<Entity> getCollidableEntitiesInBounds(Chunk chunk, AABB bounds);
+	public List<Entity> getEntitiesInBoundsExcluding(Chunk chunk, AABB bounds, Entity exclude);
 	public List<Entity> getEntitiesInBounds(AABB bounds);
 	public List<Entity> getCollidableEntitiesInBounds(AABB bounds);
 	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude);

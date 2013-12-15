@@ -37,7 +37,7 @@ public class AIFreeNPCs extends AI {
 	public boolean shouldStart() {
 		double shortest = max;
 		EntityNpc close = null;
-		List<Entity> titys = owner.world.getEntitiesInBoundsExcluding(owner.bounds.expand(15, 15, 15), owner);
+		List<Entity> titys = owner.world.getEntitiesInBoundsExcluding(owner.chunk, owner.bounds.expand(15, 15, 15), owner);
 		for(int d = 0; d < titys.size(); ++d){
 			Entity ett = titys.get(d);
 			if(!(ett instanceof EntityNpc)) continue;

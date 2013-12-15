@@ -11,6 +11,8 @@ import vc4.api.math.MathUtils;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.MapData;
 import vc4.api.world.World;
+import vc4.vanilla.Vanilla;
+import vc4.vanilla.underbiome.UnderBiome;
 
 public class RecursiveGenCaves extends RecursiveGenerator{
 
@@ -24,9 +26,11 @@ public class RecursiveGenCaves extends RecursiveGenerator{
 	@Override
 	protected void generateRecursive(World world, MapData map, Random rand, long x, long y, long z, long cx, long cy,
 			long cz, GeneratorOutput data) {
-		int change = rand.nextInt(rand.nextInt(115 - (int)Math.max(-20, Math.min(cy, 50))) + 1);
+		UnderBiome biom = UnderBiome.byId(Vanilla.underBiomesGen.generate((cx << 5) + 16, (cz << 5) + 16, 1)[0]);
+		if(biom.cavesAmount < 1) return;
+		int change = rand.nextInt(rand.nextInt(biom.cavesChance - (int)Math.max(-20, Math.min(cy, 50))) + 1);
 		if(change != 0) return;
-		int var = 7 + (int)Math.max(0, Math.min(-cy * 0.2, 3));
+		int var = biom.cavesAmount + (int)Math.max(0, Math.min(-cy * 0.2, 3));
 		int amount = rand.nextInt(rand.nextInt(var) + 1);
 		for(int dofor = 0; dofor < amount; ++dofor){
 			double sx = rand.nextInt(32) + rand.nextDouble() + (cx * 32);

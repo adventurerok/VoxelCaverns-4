@@ -50,7 +50,7 @@ public class EntityItem extends Entity {
 		}
 		if(waitTime > 0) --waitTime;
 		else {
-			List<Entity> entities = world.getEntitiesInBoundsExcluding(bounds.expand(0.6, 0.75, 0.6), this);
+			List<Entity> entities = world.getEntitiesInBoundsExcluding(this.chunk, bounds.expand(0.6, 0.75, 0.6), this);
 			for(int d = 0; d < entities.size(); ++d){
 				Entity e = entities.get(d);
 				if(e == null) continue;

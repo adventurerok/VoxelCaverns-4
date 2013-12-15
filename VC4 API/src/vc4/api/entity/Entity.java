@@ -83,6 +83,7 @@ public abstract class Entity implements Agent{
 	public Vector3d oldPos;
 	public boolean isDead = false;
 	public World world;
+	public Chunk chunk;
 
 	public boolean checkStep = true;
 	
@@ -210,7 +211,7 @@ public abstract class Entity implements Agent{
 		}
 		if (sneaking && onGround) {
 			double amount = 0.050000000000000003D;
-			for (; motionX != 0.0D && world.getAABBsInBounds(bounds.getOffsetBoundingBox(motionX, -1D, 0.0D), this).length == 0; startX = motionX) {
+			for (; motionX != 0.0D && world.getAABBsInBounds(chunk, bounds.getOffsetBoundingBox(motionX, -1D, 0.0D), this).length == 0; startX = motionX) {
 				if (motionX < amount && motionX >= -amount) {
 					motionX = 0.0D;
 					continue;
@@ -220,7 +221,7 @@ public abstract class Entity implements Agent{
 				else
 					motionX += amount;
 			}
-			for (; motionZ != 0.0D && world.getAABBsInBounds(bounds.getOffsetBoundingBox(0.0D, -1D, motionZ), this).length == 0; startZ = motionZ) {
+			for (; motionZ != 0.0D && world.getAABBsInBounds(chunk, bounds.getOffsetBoundingBox(0.0D, -1D, motionZ), this).length == 0; startZ = motionZ) {
 				if (motionZ < amount && motionZ >= -amount) {
 					motionZ = 0.0D;
 					continue;
@@ -231,7 +232,7 @@ public abstract class Entity implements Agent{
 				else
 					motionZ += amount;
 			}
-			while (motionX != 0.0D && motionZ != 0.0D && world.getAABBsInBounds(bounds.getOffsetBoundingBox(motionX, -1D, motionZ), this).length == 0) {
+			while (motionX != 0.0D && motionZ != 0.0D && world.getAABBsInBounds(chunk, bounds.getOffsetBoundingBox(motionX, -1D, motionZ), this).length == 0) {
 				if (motionX < amount && motionX >= -amount)
 					motionX = 0.0D;
 				else if (motionX > 0.0D)
@@ -251,7 +252,7 @@ public abstract class Entity implements Agent{
 			}
 		}
 
-		AABB in[] = world.getAABBsInBounds(bounds.include(motionX, motionY, motionZ), this);
+		AABB in[] = world.getAABBsInBounds(chunk, bounds.include(motionX, motionY, motionZ), this);
 
 		for (int s = 0; s < in.length; ++s)
 			motionY = in[s].calculateYOffset(bounds, motionY);
@@ -267,6 +268,13 @@ public abstract class Entity implements Agent{
 		bounds.add(0.0D, 0.0D, motionZ);
 
 		boolean notMovedFull = startX != motionX || startZ != motionZ;
+		
+		/*
+		 * Moves the player up by 0.5, then tries moving them in their direction.
+		 * If it fails to move the horizontally, puts them back to where they were before
+		 * If it succeeds, it tries to move them down to ground again.
+		 * This explains why blocks such as mud prevent you from going into two block high gaps
+		 */
 		if (stepHeight > 0.001F && grounded && notMovedFull && checkStep && !inQuicksand) {
 			double stepX = motionX;
 			double stepY = motionY;
@@ -276,7 +284,7 @@ public abstract class Entity implements Agent{
 			motionZ = startZ;
 			AABB ourBounds2 = this.bounds.clone();
 			bounds.setBB(ourBounds);
-			AABB in2[] = world.getAABBsInBounds(bounds.include(motionX, motionY, motionZ), this);
+			AABB in2[] = world.getAABBsInBounds(chunk, bounds.include(motionX, motionY, motionZ), this);
 			for (int s = 0; s < in2.length; ++s) {
 				motionY = in2[s].calculateYOffset(bounds, motionY);
 			}

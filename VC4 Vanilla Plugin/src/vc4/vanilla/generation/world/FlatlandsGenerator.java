@@ -27,9 +27,12 @@ public class FlatlandsGenerator implements WorldGenerator {
 	@Override
 	public GeneratorOutput generate(World world, long x, long y, long z, MapData data) {
 		GeneratorOutput out = new GeneratorOutput();
+		int woolType = (int) (((x & 3) << 4) + ((y & 3) << 2) + ((z & 3)));
+		short bid = woolType < 32 ? Vanilla.wool0.uid : Vanilla.wool1.uid;
+		byte dat = (byte) (woolType & 31);
 		if(y < 0){
-			Arrays.fill(out.blocks, world.getGeneratorTag().getShort("blockId", (short)1));
-			Arrays.fill(out.data, world.getGeneratorTag().getNibble("blockData", (byte)0));
+			Arrays.fill(out.blocks, bid);
+			Arrays.fill(out.data, dat);
 		}
 		return out;
 	}

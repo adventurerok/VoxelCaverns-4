@@ -288,6 +288,7 @@ public class ImplChunk implements Chunk {
 		for (int dofor = entitys.size() - 1; dofor > -1; --dofor) {
 			e = entitys.get(dofor);
 			if (e == null) continue;
+			e.chunk = this;
 			if (!e.hadUpdate) e.update();
 			if (!e.needsRemoving()) {
 				qx = MathUtils.floor(e.position.x) >> 5;
@@ -302,6 +303,7 @@ public class ImplChunk implements Chunk {
 				}
 
 			}
+			e.chunk = null;
 		}
 		entitys = alive;
 		int x, y, z, time;

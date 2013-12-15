@@ -89,7 +89,7 @@ public class ItemBlock extends Item {
 		ArrayList<Entity> mobs = new ArrayList<Entity>();
 		if(check != null){
 			for(int dofor = 0; dofor < check.length; ++dofor){
-				List<Entity> list = player.world.getCollidableEntitiesInBounds(check[dofor]);
+				List<Entity> list = player.world.getCollidableEntitiesInBounds(player.playerChunk, check[dofor]);
 				if(list != null) mobs.addAll(list);
 			}
 		}

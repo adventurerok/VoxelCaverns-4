@@ -26,8 +26,7 @@ import vc4.api.util.AABB;
 import vc4.api.util.RayTraceResult;
 import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3l;
-import vc4.api.world.ChunkPos;
-import vc4.api.world.World;
+import vc4.api.world.*;
 
 /**
  * @author paul
@@ -56,6 +55,8 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	private int ticksSinceUpdate;
 	
 	private long entityAttackTick = 0;
+	
+	public Chunk playerChunk;
 	
 	public EntityPlayer(World world) {
 		super(world);
@@ -463,6 +464,7 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems{
 	
 	@Override
 	public void update() {
+		this.playerChunk = chunk;
 		ticksSinceUpdate = 0;
 		super.update();
 		if(healing == 0) return;

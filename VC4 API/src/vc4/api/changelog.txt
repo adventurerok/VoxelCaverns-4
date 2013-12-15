@@ -243,3 +243,5 @@ VC4-Development-0.0.2-260
 	* Fixed bugs with animated textures
 VC4-Development-0.0.2-261
 	* Changed item pickup radius
+VC4-Development-0.0.2-262
+	* Attempted Hell-Distance lag fix

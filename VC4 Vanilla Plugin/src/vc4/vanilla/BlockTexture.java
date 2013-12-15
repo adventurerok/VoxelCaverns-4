@@ -29,6 +29,7 @@ public class BlockTexture {
 	public static int flipFlopInput, flipFlopOutput;
 	public static int dataStorageInput, dataStorageOutput, dataStorageOther;
 	public static int gapRepeaterGateInput, gapRepeaterGateOutput, gapRepeaterGateOther;
+	public static int bitMonitor, monitorInput, wool;
 	public static int[] crops = new int[9];
 	public static int[] craftingTables = new int[5];
 	public static int digital[] = new int[10];
@@ -153,5 +154,8 @@ public class BlockTexture {
 		for(int d = 0; d < 10; ++d){
 			digital[d] = tex.getArrayIndex("digital" + d);
 		}
+		bitMonitor = tex.getArrayIndex("bitmonitor");
+		monitorInput = tex.getArrayIndex("monitorinput");
+		wool = tex.getArrayIndex("wool");
 	}
 }

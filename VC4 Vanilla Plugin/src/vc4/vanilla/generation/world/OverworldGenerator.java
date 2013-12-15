@@ -26,6 +26,8 @@ import vc4.vanilla.generation.populate.*;
 import vc4.vanilla.generation.recursive.RecursiveGenCaves;
 import vc4.vanilla.generation.recursive.RecursiveGenVolcano;
 import vc4.vanilla.generation.village.VillageGenerator;
+import vc4.vanilla.underbiome.BiomeGenUnderBiomes;
+import vc4.vanilla.underbiome.UnderBiome;
 
 /**
  * @author paul
@@ -49,6 +51,7 @@ public class OverworldGenerator implements WorldGenerator {
 	private RecursiveGenVolcano volcanoGen = new RecursiveGenVolcano();
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
 	ArrayList<ArrayList<Integer>> biomes;
+	ZoomGenerator underBiomeGenerator;
 
 	public static Vector3f[] lightColors = new Vector3f[256];
 
@@ -82,6 +85,9 @@ public class OverworldGenerator implements WorldGenerator {
 		waterLakeGen = new WorldGenUndergroundLake(Vanilla.water.uid, 100);
 		lavaLakeGen = new WorldGenUndergroundLake(Vanilla.lava.uid, 175);
 		biomes = Vanilla.biomes;
+		underBiomeGenerator = new BiomeGenUnderBiomes(world, Vanilla.underBiomesList.toArray());
+		for(int d = 0; d < 8; ++d) underBiomeGenerator = new BiomeGenZoom(world, underBiomeGenerator);
+		Vanilla.underBiomesGen = underBiomeGenerator;
 	}
 	
 	@Override
@@ -136,9 +142,12 @@ public class OverworldGenerator implements WorldGenerator {
 		int cz;
 		long diff;
 		int cy;
+		int ubiomes[] = underBiomeGenerator.generate(x, z, 32);
+		UnderBiome ubiom;
 		boolean b;
 		for (int cx = 0; cx < 32; ++cx) {
 			for (cz = 0; cz < 32; ++cz) {
+				ubiom = UnderBiome.byId(ubiomes[cz * 32 + cx]);
 				bio = data.getBiome(cx, cz);
 				diff = nz[cz * 32 + cx];
 				for (cy = 31; cy >= 0; --cy) {
@@ -152,7 +161,10 @@ public class OverworldGenerator implements WorldGenerator {
 					if (diff > -1 && b) {
 						if (diff < bio.soilDepth) {
 							bio.placeBiomeBlock(out, rand, cx, cy, cz, diff, y);
-						} else if (diff < 5000) out.setBlockId(cx, cy, cz, 1);
+						} else if (diff < 5000){
+							out.setBlockId(cx, cy, cz, ubiom.stoneBlockId);
+							out.setBlockData(cx, cy, cz, ubiom.stoneBlockData);
+						}
 						else out.setBlockId(cx, cy, cz, Vanilla.hellrock.uid);
 					} else if (!b) {
 						if ((y << 5) + cy < -5975) {

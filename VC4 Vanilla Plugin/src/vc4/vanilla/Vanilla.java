@@ -4,8 +4,11 @@
 package vc4.vanilla;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 import vc4.api.area.Area;
 import vc4.api.biome.*;
@@ -19,6 +22,7 @@ import vc4.api.gui.GuiOpenContainer;
 import vc4.api.io.Dictionary;
 import vc4.api.item.Item;
 import vc4.api.itementity.ItemEntity;
+import vc4.api.list.IntList;
 import vc4.api.plugin.Plugin;
 import vc4.api.sound.Music;
 import vc4.api.sound.MusicType;
@@ -44,6 +48,7 @@ import vc4.vanilla.itementity.ItemEntityChest;
 import vc4.vanilla.npc.Names;
 import vc4.vanilla.npc.Trade;
 import vc4.vanilla.tileentity.TileEntityChest;
+import vc4.vanilla.underbiome.UnderBiome;
 
 /**
  * @author paul
@@ -52,6 +57,9 @@ import vc4.vanilla.tileentity.TileEntityChest;
 public class Vanilla extends Plugin {
 
 	static Dictionary trades = new Dictionary();
+	static Dictionary underBiomes = new Dictionary();
+	
+	public static Color[] woolColors = new Color[64];
 	
 	//Blocks
 	public static Block grass, dirt, logV, logX, logZ, leaf, brick, mossBrick;
@@ -63,8 +71,9 @@ public class Vanilla extends Plugin {
 	public static Block workbench, chest, table, chair, gravel, ladder, lightberries;
 	public static Block algae, torch, reeds, wheat, barley, stakes, farmland, deadCrop;
 	public static Block wire, notGate, repeaterGate, andGate, orGate, norGate, nandGate;
-	public static Block flipFlop, gapRepeaterGate, button;
+	public static Block flipFlop, gapRepeaterGate, button, bitMonitor;
 	public static Block redWire, blueWire, greenWire, yellowWire;
+	public static Block wool0, wool1;
 	
 	//Items
 	public static Item food, spawnStick, stick, metalBar, alloyBar, crop, seeds;
@@ -154,6 +163,9 @@ public class Vanilla extends Plugin {
 	public static BiomeHilly biomeForestBamboo;
 	public static Biome biomeForestBambooH;
 	
+	public static UnderBiome underStone;
+	public static UnderBiome underCobbleCaverns;
+	
 	//Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
 	public static short craftingEnchantedBook;
@@ -163,6 +175,8 @@ public class Vanilla extends Plugin {
 	public static Trade tradeGuard;
 	
 	public static ArrayList<ArrayList<Integer>> biomes;
+	public static IntList underBiomesList;
+	public static ZoomGenerator underBiomesGen;
 	
 	
 	private static ToolMaterial[] materials = new ToolMaterial[]{
@@ -196,6 +210,7 @@ public class Vanilla extends Plugin {
 	 */
 	@Override
 	public void onEnable() {
+		loadWoolColors();
 		//normal
 		plantTreeOak = new Plant("tree", "oak", "normal").setData((byte) 0);
 		plantTreeBirch = new Plant("tree", "birch", "normal").setData((byte) 1);
@@ -274,6 +289,23 @@ public class Vanilla extends Plugin {
 		
 	}
 	
+	public void loadWoolColors() {
+		BufferedImage buf = null;
+		try {
+			buf = ImageIO.read(Vanilla.class.getResourceAsStream("resources/images/64color.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+		}
+		if(buf != null){
+			for(int x = 0; x < 8; ++x){
+				for(int y = 0; y < 8; ++y){
+					woolColors[y * 8 + x] = new Color(buf.getRGB(x, y));
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void loadCraftingItems(World world) {
 		craftingSaw = world.getRegisteredCrafting("vanilla.saw");
@@ -305,6 +337,10 @@ public class Vanilla extends Plugin {
 		ItemTexture.update();
 		biomes = new ArrayList<>();
 		for(int d = 0; d < BiomeType.getNumberOfTypes(); ++d) biomes.add(new ArrayList<Integer>());
+		try {
+			loadDict(underBiomes = new Dictionary(), DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/underbiomes.dictionary");
+		} catch (FileNotFoundException e) {
+		}
 	}
 	
 	@Override
@@ -373,6 +409,9 @@ public class Vanilla extends Plugin {
 		blueWire = new BlockWireColored(world.getRegisteredBlock("vanilla.wire.blue"), new Color(0, 0, 255), new Color(0, 0, 127), true).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire.blue");
 		greenWire = new BlockWireColored(world.getRegisteredBlock("vanilla.wire.green"), new Color(0, 255, 0), new Color(0, 127, 0), false).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire.green");
 		yellowWire = new BlockWireColored(world.getRegisteredBlock("vanilla.wire.yellow"), new Color(255, 255, 0), new Color(127, 127, 0), false).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("wire.yellow");
+		bitMonitor = new BlockBitMonitor(world.getRegisteredBlock("vanilla.monitor.bit")).setName("monitor.bit");
+		wool0 = new BlockWool(world.getRegisteredBlock("vanilla.wool.0"), 0).setMineData(new MiningData().setPowers(0, 1, 25).setTimes(0.5, 0.2, 0.05)).setName("wool");
+		wool1 = new BlockWool(world.getRegisteredBlock("vanilla.wool.1"), 1).setMineData(new MiningData().setPowers(0, 1, 25).setTimes(0.5, 0.2, 0.05)).setName("wool");
 	}
 	
 	@Override
@@ -540,7 +579,17 @@ public class Vanilla extends Plugin {
 		biomeForestBambooH.addPlant(new PlantGrowth(plantBamboo, 150));
 		biomeForestBamboo.setHills(biomeForestBambooH.id);
 		
+		loadUnderBiomes(world);
+	}
+	
+	public void loadUnderBiomes(World world){
+		underStone = new UnderBiome(underBiomes.get("vanilla.stone"), "stone", Color.black).setStoneBlock(Block.stone.uid, 0);
+		underCobbleCaverns = new UnderBiome(underBiomes.get("vanilla.cobblecaverns"), "cobblecaverns", Color.green).setStoneBlock(Vanilla.brick.uid, 15).setCaveData(90, 10);
 		
+		
+		underBiomesList = new IntList();
+		for(int d = 0; d < 10; ++d) underBiomesList.add(underStone.id);
+		underBiomesList.add(underCobbleCaverns.id);
 	}
 	
 	public void loadBiomesList(){
@@ -599,6 +648,10 @@ public class Vanilla extends Plugin {
 	
 	@Override
 	public void onWorldSave(World world) {
+		try {
+			underBiomes.save(new FileOutputStream(DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/underbiomes.dictionary"));
+		} catch (FileNotFoundException e) {
+		}
 		try {
 			trades.save(new FileOutputStream(DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/trades.dictionary"));
 		} catch (FileNotFoundException e) {

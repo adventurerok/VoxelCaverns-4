@@ -535,4 +535,24 @@ public class TestWorld implements World {
 	public void notifyNear(long x, long y, long z) {
 	}
 
+	@Override
+	public AABB[] getAABBsInBounds(Chunk chunk, AABB bounds, Entity exclude) {
+		return null;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBounds(Chunk chunk, AABB bounds) {
+		return null;
+	}
+
+	@Override
+	public List<Entity> getCollidableEntitiesInBounds(Chunk chunk, AABB bounds) {
+		return null;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(Chunk chunk, AABB bounds, Entity exclude) {
+		return null;
+	}
+
 }

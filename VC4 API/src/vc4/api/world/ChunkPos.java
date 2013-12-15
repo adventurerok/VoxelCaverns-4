@@ -110,8 +110,5 @@ public class ChunkPos {
 		return createFromWorldPos((x << 5) + cx, (y << 5) + cy, (z << 5) + cz);
 	}
 	
-	
-	
-	
 
 }

@@ -443,6 +443,22 @@ public class ImplWorld implements World {
 	}
 
 	@Override
+	public AABB[] getAABBsInBounds(Chunk chunk, AABB bounds, Entity exclude) {
+		if(chunk == null) return getAABBsInBounds(bounds, exclude);
+		List<AABB> list = getBlockCollisionInBounds(bounds);
+		if (list == null) list = new ArrayList<AABB>();
+		List<Entity> entities = getEntitiesInBoundsExcluding(chunk, bounds, exclude);
+		for (int dofor = 0; dofor < entities.size(); ++dofor) {
+			if (entities.get(dofor).bounds != null && entities.get(dofor).canCollide(exclude)) {
+				list.add(entities.get(dofor).bounds);
+			}
+		}
+		while (list.contains(null))
+			list.remove(null);
+		return list.toArray(new AABB[list.size()]);
+	}
+	
+	@Override
 	public AABB[] getAABBsInBounds(AABB bounds, Entity exclude) {
 		List<AABB> list = getBlockCollisionInBounds(bounds);
 		if (list == null) list = new ArrayList<AABB>();
@@ -548,6 +564,39 @@ public class ImplWorld implements World {
 	}
 
 	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(Chunk chunk, AABB bounds, Entity exclude) {
+		if (bounds == null) return null;
+		if(chunk == null) return getEntitiesInBoundsExcluding(bounds, exclude);
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long x, y, z;
+		ImplChunk c;
+		for (x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					if(x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					else c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (Entity e : c.entitys) {
+						// Entity e = c.entitys.get(dofor);
+						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	@Override
 	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
 		if (bounds == null) return null;
 
@@ -558,10 +607,12 @@ public class ImplWorld implements World {
 		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
 		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
 		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
-		for (long x = minX; x <= maxX; ++x) {
-			for (long y = minY; y <= maxY; ++y) {
-				for (long z = minZ; z <= maxZ; ++z) {
-					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
+		long x, y, z;
+		ImplChunk c;
+		for (x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
 					for (Entity e : c.entitys) {
@@ -609,13 +660,49 @@ public class ImplWorld implements World {
 	}
 
 	@Override
+	public List<Entity> getEntitiesInBounds(Chunk chunk, AABB bounds) {
+		if (bounds == null) return null;
+
+		if(chunk == null) return getEntitiesInBounds(bounds);
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 1d) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 1d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 1d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long y, z;
+		int dofor;
+		ImplChunk c;
+		Entity e;
+		for (long x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					if(x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					else c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						e = c.entitys.get(dofor);
+						if (e != null && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	@Override
 	public List<Entity> getEntitiesInBounds(AABB bounds) {
 		if (bounds == null) return null;
 
 		List<Entity> list = new ArrayList<>();
-		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
-		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
-		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long minX = MathUtils.floor(bounds.minX - 1d) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 1d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 1d) >> 5;
 		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
 		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
 		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
@@ -1026,7 +1113,7 @@ public class ImplWorld implements World {
 			blockID = getBlockId(posX, posY, posZ);
 			blockData = getBlockData(posX, posY, posZ);
 			block = Block.byId(blockID);
-			if (!block.isAir() && block.includeInRayTrace((byte) blockData) && block.getRayTraceSize(this, posX, posY, posZ) != null) {
+			if (block != null && !block.isAir() && block.includeInRayTrace((byte) blockData) && block.getRayTraceSize(this, posX, posY, posZ) != null) {
 				newResult = block.getRayTrace(this, posX, posY, posZ, start, end);
 				if (newResult != null) return newResult;
 			}
@@ -1587,6 +1674,41 @@ public class ImplWorld implements World {
 		}
 	}
 
+	@Override
+	public List<Entity> getCollidableEntitiesInBounds(Chunk chunk, AABB bounds) {
+		if (bounds == null) return null;
+		if(chunk == null) return getCollidableEntitiesInBounds(bounds);
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long y, z;
+		int dofor;
+		ImplChunk c;
+		Entity e;
+		for (long x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					if(x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					else c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						e = c.entitys.get(dofor);
+						if (e != null && e.canCollide(null) && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+	
 	@Override
 	public List<Entity> getCollidableEntitiesInBounds(AABB bounds) {
 		if (bounds == null) return null;
