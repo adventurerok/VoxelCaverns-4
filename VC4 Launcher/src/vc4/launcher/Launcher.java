@@ -3,17 +3,17 @@ package vc4.launcher;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
-import java.lang.ProcessBuilder.Redirect;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.swing.JTextArea;
+
 import vc4.launcher.gui.frame.LauncherGui;
+import vc4.launcher.repo.*;
 import vc4.launcher.repo.Package;
-import vc4.launcher.repo.Repo;
-import vc4.launcher.task.TaskSystem;
-import vc4.launcher.util.DirectoryLocator;
-import vc4.launcher.util.YamlMap;
 import vc4.launcher.repo.Runnable;
+import vc4.launcher.task.TaskSystem;
+import vc4.launcher.util.*;
 
 public class Launcher {
 
@@ -22,6 +22,7 @@ public class Launcher {
 	private LauncherGui gui;
 	private Repo vc4;
 	private TaskSystem tasks = new TaskSystem();
+	private JTextArea consoleOut = new JTextArea();
 	
 	private ArrayList<Repo> repos = new ArrayList<>();
 	
@@ -33,8 +34,16 @@ public class Launcher {
 		return vc4;
 	}
 	
+	public JTextArea getConsoleOut() {
+		return consoleOut;
+	}
+	
 	
 	public Launcher() {
+		PrintStream con = new PrintStream(new TextAreaOutputStream(consoleOut));
+		System.setOut(con);
+		System.setErr(con);
+		System.out.println("Redirected system output to console tab");
 		singleton = this;
 		tasks.start();
 		Repo rec = new Repo();
@@ -54,6 +63,7 @@ public class Launcher {
 		for(Repo r : repos){
 			r.autoUpdate();
 		}
+		System.out.println("Creating GUI...");
 		gui = new LauncherGui();
 		gui.addWindowListener(new WindowAdapter() {
 			@Override
@@ -66,6 +76,7 @@ public class Launcher {
 			}
 		});
 		gui.setVisible(true);
+		System.out.println("GUI created successfully");
 	}
 	
 	public LauncherGui getGui() {
@@ -121,15 +132,22 @@ public class Launcher {
 	}
 
 	public void launchRunnable(Runnable r) {
+		System.out.println("Launching runnable: " + r.getName());
 		String run = DirectoryLocator.getPath() + r.getPath();
 		String separator = System.getProperty("file.separator");
 	    String path = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
-	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { path, "-Xmx" + r.getXmx(), "-Xms" + r.getXms(), "-cp", run, r.getLaunch(), "heapset" });
-	    processBuilder.redirectOutput(Redirect.INHERIT);
-    	processBuilder.redirectError(Redirect.INHERIT);
+	    String[] launchOptions = new String[] { path, "-Xmx" + r.getXmx(), "-Xms" + r.getXms(), "-cp", run, r.getLaunch(), "heapset" };
+	    ProcessBuilder processBuilder = new ProcessBuilder(launchOptions);
+	    
+	    StringBuilder launchString = new StringBuilder();
+	    for(String s : launchOptions) launchString.append(s).append(' ');
 		try {
-			processBuilder.start();
-		} catch (IOException e) {
+			System.out.println(launchString);
+			Process proc = processBuilder.start();
+			new StreamGobbler(proc.getInputStream(), r.getName()).start();
+		} catch (Throwable e) {
+			System.out.println("Failed to launch rubbable: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	

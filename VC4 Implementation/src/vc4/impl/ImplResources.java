@@ -98,7 +98,7 @@ public class ImplResources extends Resources {
 		SheetTextureLoader l = Graphics.getSheetLoader();
 		for (String s : lSheetTextures) {
 			try {
-				Logger.getLogger("VC4").fine("Loading  sheet texture: " + s);
+				Logger.getLogger("VC4").fine("Loading sheet texture: " + s);
 				SheetTexture t = l.loadTexture(s);
 				t.setSmooth(false);
 				sheetTextures.put(s, t);

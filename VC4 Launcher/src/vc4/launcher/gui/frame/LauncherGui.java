@@ -14,18 +14,18 @@ import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 
 import vc4.launcher.Launcher;
-import vc4.launcher.gui.tab.NewsTab;
-import vc4.launcher.gui.tab.SettingsTab;
+import vc4.launcher.gui.tab.*;
 
 public class LauncherGui extends JFrame {
 	
 	public LauncherGui() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(640, 480);
-		setTitle("VoxelCaverns Launcher v4.4");
+		setTitle("VoxelCaverns Launcher v4.5");
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.addTab("News", new ImageIcon(getClass().getClassLoader().getResource("resources/icons/news.png")), new NewsTab());
 		tabbedPane.addTab("Settings", new ImageIcon(getClass().getClassLoader().getResource("resources/icons/settings.png")), new SettingsTab());
+		tabbedPane.addTab("Console", new ConsoleTab());
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(10, 50));

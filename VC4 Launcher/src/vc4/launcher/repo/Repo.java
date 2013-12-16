@@ -72,6 +72,7 @@ public class Repo {
 
 	public boolean loadInfo(URL url){
 		try{
+			System.out.println("Loading repo info for: " + url.toString());
 			String s = url.toString();
 			if (!s.endsWith("/")) s = s + "/";
 			repoRoot = s;
@@ -79,13 +80,16 @@ public class Repo {
 			url = new URL(s);
 			YamlMap map = new YamlMap(url.openStream());
 			load(map);
+			System.out.println("Loaded repo info for: " + url.toString());
 			return true;
 		} catch(Exception e){
+			System.out.println("Failed to download repo info for: " + url.toString());
 			return false;
 		}
 	}
 	
 	public void autoUpdate(){
+		System.out.println("Checking for updates in repo: " + name);
 		for(Package p : packages){
 			p.autoUpdate();
 		}

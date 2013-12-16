@@ -98,6 +98,7 @@ public class Package {
 		if (!auto) return;
 		Version latest = getLatest();
 		if (version != null && latest.intVersion <= version.intVersion) return;
+		System.out.println("Update found for package: " + name + ", installing...");
 		try {
 			install(latest);
 		} catch (IOException e) {
