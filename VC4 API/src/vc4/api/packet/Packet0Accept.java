@@ -31,6 +31,11 @@ public class Packet0Accept extends Packet{
 		
 		
 	}
+	
+	@Override
+	public String toString() {
+		return "Accept connection";
+	}
 
 	/* (non-Javadoc)
 	 * @see game.vc3d.server.Packet#getId()

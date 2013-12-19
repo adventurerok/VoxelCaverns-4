@@ -44,7 +44,7 @@ public abstract class Packet {
 			register(Packet0Accept.class);
 			register(Packet1Disconnect.class);
 			register(Packet2Message.class);
-			register(Packet3Login.class);
+			register(Packet3NBT.class);
 //			register(Packet4Chat.class);
 //			register(Packet5Position.class);
 //			register(Packet6SpecialMessage.class);

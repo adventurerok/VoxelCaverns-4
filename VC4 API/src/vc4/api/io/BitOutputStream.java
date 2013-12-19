@@ -2,6 +2,9 @@ package vc4.api.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.jnbt.NBTOutputStream;
+import org.jnbt.Tag;
  
 /**
  * The BitOutputStream allows writing individual bits to a
@@ -33,6 +36,8 @@ public class BitOutputStream implements AutoCloseable{
 	 * Counts how many bits have been cached up to now.
 	 */
 	private int iBitCount;
+	
+	private NBTOutputStream not;
  
 	/**
 	 * Create a new bit output stream based on an
@@ -245,6 +250,11 @@ public class BitOutputStream implements AutoCloseable{
 	}
 	public void writeBytes(byte[] b) throws IOException{
 		for(int dofor = 0; dofor < b.length; ++dofor) writeByte(b[dofor]);
+	}
+	
+	public void writeNbt(Tag in) throws IOException{
+		if(not == null) not = new NBTOutputStream(this);
+		not.writeTag(in);
 	}
  
 }

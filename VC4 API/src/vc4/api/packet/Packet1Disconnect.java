@@ -56,6 +56,11 @@ public class Packet1Disconnect extends Packet{
 		player = in.readShort();
 		if(in.readByte() == 1) reason = in.readString();
 	}
+	
+	@Override
+	public String toString() {
+		return "Reason: " + reason;
+	}
 
 	/* (non-Javadoc)
 	 * @see game.vc3d.server.Packet#getId()

@@ -53,6 +53,11 @@ public class Packet2Message extends Packet {
 
 	}
 
+	@Override
+	public String toString() {
+		return "Message: " + message;
+	}
+	
 	/* (non-Javadoc)
 	 * @see game.vc3d.server.Packet#getId()
 	 */

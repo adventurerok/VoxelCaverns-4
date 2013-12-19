@@ -17,6 +17,7 @@ import vc4.api.logging.Logger;
 import vc4.api.server.ServerConsole;
 import vc4.api.text.Localization;
 import vc4.impl.GameLoader;
+import vc4.server.server.ServerHandler;
 
 /**
  * @author paul

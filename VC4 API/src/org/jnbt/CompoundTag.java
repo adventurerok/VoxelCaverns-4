@@ -244,11 +244,11 @@ public final class CompoundTag extends Tag {
 			append = "(\"" + this.getName() + "\")";
 		}
 		StringBuilder bldr = new StringBuilder();
-		bldr.append("TAG_Compound" + append + ": " + value.size() + " entries\r\n{\r\n");
+		bldr.append("TAG_Compound" + append + ": " + value.size() + " entries\n[\n");
 		for(Map.Entry<String, Tag> entry : value.entrySet()) {
-			bldr.append("   " + entry.getValue().toString().replaceAll("\r\n", "\r\n   ") + "\r\n");
+			bldr.append("   " + entry.getValue().toString().replaceAll("\n", "\n   ") + "\n");
 		}
-		bldr.append("}");
+		bldr.append("]");
 		return bldr.toString();
 	}
 	
@@ -275,8 +275,8 @@ public final class CompoundTag extends Tag {
 		addTag(new NibbleTag(name, def));
 	}
 
-	public void setByte(String name, byte b) {
-		addTag(new ByteTag(name, b));
+	public void setByte(String name, int b) {
+		addTag(new ByteTag(name, (byte)b));
 	}
 
 	public static CompoundTag createVector3dTag(String name, Vector3d vect) {

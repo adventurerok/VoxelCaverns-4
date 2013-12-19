@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vc4.server;
+package vc4.server.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,7 +9,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import vc4.api.logging.Logger;
+import vc4.api.packet.Packet0Accept;
 import vc4.api.server.Server;
+import vc4.server.packet.PacketHandler;
+import vc4.server.user.ServerUser;
 
 /**
  * @author paul
@@ -18,6 +21,7 @@ import vc4.api.server.Server;
 public class ServerHandler extends Thread implements Server {
 
 	ServerSocket socket;
+	PacketHandler packetHandler = new PacketHandler();
 	
 	private ArrayList<ServerUser> players = new ArrayList<ServerUser>();
 	
@@ -40,10 +44,10 @@ public class ServerHandler extends Thread implements Server {
 			while(true){
 				Socket user = socket.accept();
 				Logger.getLogger("VC4").info("Connection from " + user.getInetAddress().getCanonicalHostName() + ":" + user.getPort());
-				ServerUser player = new ServerUser(user);
+				ServerUser player = new ServerUser(user, packetHandler);
 				players.add(player);
 				player.start();
-				//TASK send user message saying accepted
+				player.writePacket(new Packet0Accept());
 			}
 		} catch (IOException e) {
 			Logger.getLogger(ServerHandler.class).warning("Error while accepting connection", e);

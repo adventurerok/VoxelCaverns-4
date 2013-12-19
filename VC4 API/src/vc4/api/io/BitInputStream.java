@@ -3,6 +3,9 @@ package vc4.api.io;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jnbt.NBTInputStream;
+import org.jnbt.Tag;
  
 /**
  * The BitInputStream allows reading individual bits from a
@@ -37,6 +40,7 @@ public class BitInputStream implements Closeable{
 	protected int markState = 0;
 	protected List<Integer> markData = new ArrayList<Integer>();
 	protected int markRead = 1;
+	private NBTInputStream nit;
  
 	/**
 	 * Create a new bit input stream based on an existing Java InputStream.
@@ -130,6 +134,11 @@ public class BitInputStream implements Closeable{
 		markData.add(iBuffer);
 		markRead = 0;
 		markState = 1;
+	}
+	
+	public Tag readNbt() throws IOException{
+		if(nit == null) nit = new NBTInputStream(this);
+		return nit.readTag();
 	}
 	
 	public void reset() throws IOException{
