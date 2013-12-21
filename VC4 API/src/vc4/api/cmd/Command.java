@@ -54,6 +54,20 @@ public class Command {
 	}
 	
 	/**
+	 * 
+	 * @param start The first argument to be included in the string
+	 * @return The constructed string
+	 */
+	public String getArgsAsString(int start){
+		StringBuilder result = new StringBuilder();
+		for(int d = start; d < args.length - 1; ++d){
+			result.append(args[d]).append(' ');
+		}
+		if(start < args.length) result.append(args[args.length - 1]);
+		return result.toString();
+	}
+	
+	/**
 	 * Gets the number of arguments given. Equivalent to GetArgs().length
 	 * 
 	 * @return The length of the argument array

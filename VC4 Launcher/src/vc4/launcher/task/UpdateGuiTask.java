@@ -15,7 +15,7 @@ public class UpdateGuiTask implements Task {
 
 	@Override
 	public void run(Progress progress) {
-		progress.setText("Updating Gui");
+		System.out.println("Updating GUI");
 		SwingUtilities.invokeLater(updateGui);
 		progress.setPercent(100);
 		progress.setDelete(true);

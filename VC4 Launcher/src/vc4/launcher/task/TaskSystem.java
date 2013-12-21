@@ -8,8 +8,6 @@ public class TaskSystem extends Thread {
 	private ListedTask current;
 	private boolean stop;
 	private MainProgress overall;
-	private boolean wasComplete = false;
-
 	public TaskSystem() {
 		overall = new MainProgress(this);
 	}
@@ -27,10 +25,8 @@ public class TaskSystem extends Thread {
 
 	public void update() {
 		if (current == null && tasks.size() < 1) {
-			if (!wasComplete) {
-				overall.setText("Complete");
-				overall.setPercent(100);
-			}
+			overall.setText("Complete");
+			overall.setPercent(100);
 			return;
 		}
 		if (current == null || !current.canRun() || current.delete()) {
@@ -44,7 +40,6 @@ public class TaskSystem extends Thread {
 		if (current.delete()) {
 			current = null;
 		}
-		wasComplete = false;
 	}
 
 	public Progress getOverall() {
@@ -89,7 +84,6 @@ public class TaskSystem extends Thread {
 	}
 
 	public void setUpdated(boolean b) {
-		wasComplete = true;
 		
 	}
 }

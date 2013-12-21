@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.JTextArea;
 
+import vc4.launcher.gui.AutoTextArea;
 import vc4.launcher.gui.frame.LauncherGui;
 import vc4.launcher.repo.*;
 import vc4.launcher.repo.Package;
@@ -22,7 +23,7 @@ public class Launcher {
 	private LauncherGui gui;
 	private Repo vc4;
 	private TaskSystem tasks = new TaskSystem();
-	private JTextArea consoleOut = new JTextArea();
+	private JTextArea consoleOut = new AutoTextArea();
 	
 	private ArrayList<Repo> repos = new ArrayList<>();
 	
@@ -39,13 +40,27 @@ public class Launcher {
 	}
 	
 	
-	public Launcher() {
+	public Launcher(String[] args) {
+		//Must do first
 		PrintStream con = new PrintStream(new TextAreaOutputStream(consoleOut));
 		System.setOut(con);
 		System.setErr(con);
 		System.out.println("Redirected system output to console tab");
 		singleton = this;
 		tasks.start();
+		
+		//Do what the hell you want now
+		boolean loder = false;
+		for(String s : args){
+			if(s.startsWith("loader:")){
+				String loader = s.substring(7);
+				System.out.println("Found loader: " + loader);
+				loder = true;
+			} else if(s.equals("noloader")) loder = true;
+		}
+		if(!loder) System.out.println("No loader found, please redownload the launcher");
+		
+		//Download default repo
 		Repo rec = new Repo();
 		try {
 			rec.loadInfo(new URL("http://repo.voxelcaverns.org.uk"));
@@ -135,7 +150,10 @@ public class Launcher {
 		System.out.println("Launching runnable: " + r.getName());
 		String run = DirectoryLocator.getPath() + r.getPath();
 		String separator = System.getProperty("file.separator");
-	    String path = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
+		String javaHome = System.getenv("JAVA_HOME");
+		System.out.println("JAVA_HOME env: " + javaHome);
+		if(javaHome == null || javaHome.isEmpty()) javaHome = System.getProperty("java.home");
+	    String path = javaHome + separator + "bin" + separator + "javaw";
 	    String[] launchOptions = new String[] { path, "-Xmx" + r.getXmx(), "-Xms" + r.getXms(), "-cp", run, r.getLaunch(), "heapset" };
 	    ProcessBuilder processBuilder = new ProcessBuilder(launchOptions);
 	    

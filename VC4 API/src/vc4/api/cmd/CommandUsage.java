@@ -7,7 +7,7 @@ public class CommandUsage {
 	public int maximumArgs = -1;
 	public boolean requiresUser = false;
 	public boolean consoleOnly = false;
-	public CommandArgument[] argumentChecks;
+	public CommandArgument[] argumentChecks = new CommandArgument[0];
 	public String[] permissions = new String[0];
 	
 	public CommandUsage setMaximumArgs(int maximumArgs) {
@@ -58,7 +58,7 @@ public class CommandUsage {
 			else command.getSender().message("{l:cmd.numargs," + minimumArgs + "," + maximumArgs + "}");
 			return false;
 		}
-		if(command.getArgsLength() > maximumArgs){
+		if(maximumArgs != -1 && command.getArgsLength() > maximumArgs){
 			if(minimumArgs == 0) if(maximumArgs == -1) command.getSender().message("{l:cmd.maxargs," + maximumArgs + "}");
 			else command.getSender().message("{l:cmd.numargs," + minimumArgs + "," + maximumArgs + "}");
 			return false;

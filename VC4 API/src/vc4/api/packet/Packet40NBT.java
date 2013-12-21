@@ -7,7 +7,9 @@ import org.jnbt.Tag;
 import vc4.api.io.BitInputStream;
 import vc4.api.io.BitOutputStream;
 
-public class Packet3NBT extends Packet {
+public class Packet40NBT extends Packet {
+	
+	public static final int ID = 40;
 	
 	/*
 	 * Type Index:
@@ -38,7 +40,7 @@ public class Packet3NBT extends Packet {
 		return type;
 	}
 	
-	public Packet3NBT setMessage(int type, Tag tag){
+	public Packet40NBT setMessage(int type, Tag tag){
 		this.type = (short) type;
 		this.tag = tag;
 		return this;
@@ -51,7 +53,7 @@ public class Packet3NBT extends Packet {
 
 	@Override
 	public int getId() {
-		return 3;
+		return ID;
 	}
 
 }

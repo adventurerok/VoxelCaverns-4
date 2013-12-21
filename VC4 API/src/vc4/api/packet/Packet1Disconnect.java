@@ -13,6 +13,8 @@ import vc4.api.io.BitOutputStream;
  *
  */
 public class Packet1Disconnect extends Packet{
+	
+	public static final int ID = 1;
 
 	public short player;
 	public String reason = null;
@@ -67,7 +69,7 @@ public class Packet1Disconnect extends Packet{
 	 */
 	@Override
 	public int getId() {
-		return 1;
+		return ID;
 	}
 
 }

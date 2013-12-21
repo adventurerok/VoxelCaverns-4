@@ -18,7 +18,7 @@ public class Loader {
 			e.printStackTrace();
 			return;
 		}
-		new Launcher();
+		new Launcher(args);
 	}
 	
 	

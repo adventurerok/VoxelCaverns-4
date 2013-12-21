@@ -12,19 +12,21 @@ import vc4.api.io.BitOutputStream;
  * @author Paul Durbaba
  *
  */
-public class Packet2Message extends Packet {
+public class Packet30MessageString extends Packet {
+	
+	public static final int ID = 30;
 
 	public String message;
 	
 	/**
 	 * 
 	 */
-	public Packet2Message() {
+	public Packet30MessageString() {
 	}
 	
 	
 	
-	public Packet2Message(String message) {
+	public Packet30MessageString(String message) {
 		super();
 		this.message = message;
 	}
@@ -63,7 +65,7 @@ public class Packet2Message extends Packet {
 	 */
 	@Override
 	public int getId() {
-		return 2;
+		return ID;
 	}
 
 }

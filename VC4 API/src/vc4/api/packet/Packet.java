@@ -21,6 +21,10 @@ public abstract class Packet {
 	public abstract void read(BitInputStream in) throws IOException;
 	public abstract int getId();
 	
+	public boolean processOnMain(){
+		return false;
+	}
+	
 	public Packet(){
 		
 	}
@@ -35,6 +39,7 @@ public abstract class Packet {
 		return loaded.get(id).newInstance();
 	}
 	
+	
 	public static void register(Class<? extends Packet> c) throws Exception{
 		int id = c.newInstance().getId();
 		loaded.put(id, c);
@@ -43,16 +48,10 @@ public abstract class Packet {
 		try {
 			register(Packet0Accept.class);
 			register(Packet1Disconnect.class);
-			register(Packet2Message.class);
-			register(Packet3NBT.class);
-//			register(Packet4Chat.class);
-//			register(Packet5Position.class);
-//			register(Packet6SpecialMessage.class);
-//			register(Packet7PlayerMove.class);
-//			register(Packet8SpecialMessage.class);
-//			register(Packet9Name.class);
-//			register(Packet10UserMessage.class);
-//			register(Packet11UserMessage.class);
+			register(Packet30MessageString.class);
+			register(Packet40NBT.class);
+			register(Packet4Login.class);
+			register(Packet31MessageInt.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

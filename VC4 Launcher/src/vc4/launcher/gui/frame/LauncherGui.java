@@ -21,7 +21,7 @@ public class LauncherGui extends JFrame {
 	public LauncherGui() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(640, 480);
-		setTitle("VoxelCaverns Launcher v4.5");
+		setTitle("VoxelCaverns Launcher v4.5.1");
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.addTab("News", new ImageIcon(getClass().getClassLoader().getResource("resources/icons/news.png")), new NewsTab());
 		tabbedPane.addTab("Settings", new ImageIcon(getClass().getClassLoader().getResource("resources/icons/settings.png")), new SettingsTab());
@@ -50,6 +50,8 @@ public class LauncherGui extends JFrame {
 		
 		_progressBar = new JProgressBar();
 		_progressBar.setStringPainted(true);
+		_progressBar.setString("No Job");
+		_progressBar.setValue(100);
 		panel.add(_progressBar, BorderLayout.CENTER);
 	}
 	

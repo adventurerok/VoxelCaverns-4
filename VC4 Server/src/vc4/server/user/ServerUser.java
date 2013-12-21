@@ -117,7 +117,7 @@ public class ServerUser extends Thread implements User{
 
 	@Override
 	public void message(String message) {
-		writePacket(new Packet2Message(message));
+		writePacket(new Packet30MessageString(message));
 	}
 	
 	

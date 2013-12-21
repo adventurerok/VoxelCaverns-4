@@ -22,7 +22,10 @@ public class Progress {
 	
 	public void setText(String text) {
 		this.text = text;
-		if(feeding != null) feeding.setText(text);
+		if(feeding != null){
+			feeding.setText(text);
+			System.out.println(text);
+		}
 	}
 	
 	public void setPercent(double percent) {

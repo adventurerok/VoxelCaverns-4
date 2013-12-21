@@ -17,6 +17,7 @@ public class MainProgress extends Progress{
 
 	@Override
 	public void setText(String text) {
+		if(text.equals(this.getText())) return;
 		super.setText(text);
 		final String s = text;
 		SwingUtilities.invokeLater(new Runnable() {
@@ -33,6 +34,7 @@ public class MainProgress extends Progress{
 	
 	@Override
 	public void setPercent(double percent) {
+		if(this.getPercent() == percent) return;
 		super.setPercent(percent);
 		final int per = (int) percent;
 		SwingUtilities.invokeLater(new Runnable() {

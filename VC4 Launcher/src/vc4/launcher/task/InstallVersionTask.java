@@ -41,6 +41,7 @@ public class InstallVersionTask implements Task {
 				if(install == pack.getInstalls().length - 1) pack.setVersion(version);
 				return;
 			}
+			//System.out.println("Installing package: " + pack.getName() + ", version: " + version.getVersion());
 			String installPath = DirectoryLocator.getPath() + instal.getEnd();
 			if(pack.isDisabled()) installPath = installPath + ".disabled";
 			progress.setPercent(33);
@@ -56,12 +57,13 @@ public class InstallVersionTask implements Task {
 				out.getChannel().transferFrom(rbc, 0, 1 << 28);
 				out.close();
 				progress.setPercent(55);
-				byte[] buffer = new byte[1024];
 				File folder = new File(installPath);
 				if (!folder.exists()) {
 					folder.mkdir();
 				}
+				progress.setText("Extracting zip");
 				progress.setPercent(77);
+				byte[] buffer = new byte[1024];
 				ZipInputStream zis = new ZipInputStream(new FileInputStream(tempPath));
 				ZipEntry ze = zis.getNextEntry();
 				while (ze != null) {
@@ -100,7 +102,10 @@ public class InstallVersionTask implements Task {
 
 				progress.setPercent(100);
 			}
-			if(install == pack.getInstalls().length - 1) pack.setVersion(version);
+			if(install == pack.getInstalls().length - 1){
+				pack.setVersion(version);
+				System.out.println("Installed package: " + pack.getName());
+			}
 			progress.setDelete(true);
 			try {
 				pack.save();
@@ -108,6 +113,7 @@ public class InstallVersionTask implements Task {
 				System.out.println("Failed to save package after update");
 			}
 		} catch (IOException e) {
+			System.out.println("Failed to install package: " + pack.getName());
 			e.printStackTrace();
 			progress.setDelete(true);
 		}

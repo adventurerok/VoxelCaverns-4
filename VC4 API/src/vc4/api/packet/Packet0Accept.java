@@ -13,6 +13,8 @@ import vc4.api.io.BitOutputStream;
  *
  */
 public class Packet0Accept extends Packet{
+	
+	public static final int ID = 0;
 
 	/* (non-Javadoc)
 	 * @see game.vc3d.server.Packet#write(game.vc3d.io.BitOutputStream)
@@ -42,7 +44,7 @@ public class Packet0Accept extends Packet{
 	 */
 	@Override
 	public int getId() {
-		return 0;
+		return ID;
 	}
 
 }

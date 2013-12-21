@@ -7,7 +7,7 @@ package vc4.api.server;
  * @author paul
  *
  */
-public abstract class ServerConsole {
+public abstract class ServerConsole{
 
 	private static ServerConsole console;
 	

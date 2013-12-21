@@ -1,60 +1,68 @@
-/**
- * 
- */
-package vc4.server;
+package vc4.tester;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.text.*;
 
+import org.jnbt.CompoundTag;
+import org.jnbt.Tag;
+
+import vc4.api.Version;
+import vc4.api.cmd.*;
 import vc4.api.font.ChatColor;
 import vc4.api.logging.ConsoleHandler;
 import vc4.api.logging.Logger;
 import vc4.api.server.ServerConsole;
+import vc4.api.server.User;
 import vc4.api.text.Localization;
+import vc4.api.util.OS;
+import vc4.api.util.StringSplitter;
 import vc4.impl.GameLoader;
-import vc4.server.server.ServerHandler;
+import vc4.tester.cmd.CommandListener;
 
 /**
  * @author paul
  * 
  */
-public class Console extends ServerConsole implements MouseListener, KeyListener, Runnable {
+public class TesterConsole extends ServerConsole implements MouseListener, KeyListener, Runnable {
 
 	private static String colorChart = "0123456789abcdefgnt";
+	
+	public HashMap<String, ExecutableCommand> commands = new HashMap<>();
+	public CommandHandler commandListener = new CommandListener();
+	public User user = new TestUser();
+	public ClientHandler client;
 
 	JFrame window;
 	JTextPane output;
 	JTextPane input;
 	
-	ServerHandler serverHandler;
+	//ServerHandler serverHandler;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		try{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch(Exception e){
-			e.printStackTrace();
-			return;
-		}
-		Console console = new Console();
+		TesterConsole console = new TesterConsole();
 		new ServerResources();
 		GameLoader.load(new ConsoleHandler());
 		console.run();
 	}
 	
 	
+	public ClientHandler getClient() {
+		return client;
+	}
+	
 
 	/**
 	 * 
 	 */
-	public Console() {
+	public TesterConsole() {
 		setConsole(this);
 		window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -76,8 +84,24 @@ public class Console extends ServerConsole implements MouseListener, KeyListener
 		window.add(scroll, BorderLayout.CENTER);
 		window.add(input, BorderLayout.SOUTH);
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		window.setTitle("VC4 Console");
+		window.setTitle("VC4 Server Testing Utility");
 		ConsoleHandler.setConsole(this);
+		
+		commands.put("msg", new ExecutableCommand(new CommandInfo("msg").setUsage("<msg>").setDescription("Sends the server a message").setCommandUsage(new CommandUsage().setMinimumArgs(1)), commandListener));
+	}
+	
+	public Tag getClientDetails(){
+		CompoundTag tag = new CompoundTag("client");
+		tag.setString("version", Version.VERSION);
+		tag.setString("name", "VC4 Server Debug/Testing Client");
+		tag.setByte("graphics", 0);
+		tag.setString("java", System.getProperty("java.version"));
+		tag.setString("zone", Calendar.getInstance().getTimeZone().getID());
+		tag.setInt("dst", Calendar.getInstance().getTimeZone().getDSTSavings());
+		//tag.setString("region", System.getProperty("user.region"));
+		//tag.setString("lang", System.getProperty("user.language"));
+		tag.setString("os", OS.getOs().name());
+		return tag;
 	}
 
 	private static class OneLineFilter extends DocumentFilter {
@@ -155,9 +179,23 @@ public class Console extends ServerConsole implements MouseListener, KeyListener
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			writeLine(input.getText());
+			processInput(input.getText());
 			input.setText("");
 		}
+	}
+	
+	public void processInput(String input){
+		String[] parts = StringSplitter.splitString(input, false);
+		String cmd = parts[0];
+		String[] args = Arrays.copyOfRange(parts, 1, parts.length);
+		Command command = new Command(cmd, args, user);
+		ExecutableCommand e = commands.get(command.getCommand());
+		if(e == null){
+			user.message("{l:cmd.nocommand," + "NOT_IMPLEMENTED" + "}");
+			return;
+		}
+		if(!e.getInfo().getCommandUsage().check(command)) return;
+		e.getHandler().handleCommand(command);
 	}
 
 	/*
@@ -175,7 +213,6 @@ public class Console extends ServerConsole implements MouseListener, KeyListener
 		StyleConstants.setForeground(attributes, Color.white);
 		StyleConstants.setBackground(attributes, Color.black);
 		write(line, attributes);
-		output.setCaretPosition(output.getStyledDocument().getLength());
 	}
 
 	public SimpleAttributeSet write(String line, SimpleAttributeSet attributes) {
@@ -196,7 +233,7 @@ public class Console extends ServerConsole implements MouseListener, KeyListener
 				try {
 					d.insertString(d.getLength(), text.toString(), attributes);
 				} catch (BadLocationException e) {
-					Logger.getLogger(Console.class).warning("Failed to append text", e);
+					Logger.getLogger(TesterConsole.class).warning("Failed to append text", e);
 				}
 				text = new StringBuilder();
 				attributes = handleFormat(format.toString(), attributes);
@@ -206,7 +243,7 @@ public class Console extends ServerConsole implements MouseListener, KeyListener
 		try {
 			d.insertString(d.getLength(), text.toString(), attributes);
 		} catch (BadLocationException e) {
-			Logger.getLogger(Console.class).warning("Failed to append text", e);
+			Logger.getLogger(TesterConsole.class).warning("Failed to append text", e);
 		}
 		return attributes;
 	}
@@ -289,12 +326,12 @@ public class Console extends ServerConsole implements MouseListener, KeyListener
 	public void run() {
 		window.setVisible(true);
 		try {
-			serverHandler = new ServerHandler();
+			client = new ClientHandler("localhost");
 		} catch (IOException e) {
-			Logger.getLogger(Console.class).warning("Failed to start server", e);
+			Logger.getLogger(TesterConsole.class).warning("Failed to start server", e);
 			return;
 		}
-		serverHandler.start();
+		client.start();
 	}
 
 }
