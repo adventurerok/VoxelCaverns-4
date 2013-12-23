@@ -10,7 +10,7 @@ import java.util.*;
  * @author paul
  *
  */
-public class YamlMap {
+public class YamlMap implements Iterable<Object>{
 
 	private Map<Object, Object> baseMap;
 
@@ -155,6 +155,15 @@ public class YamlMap {
 	
 	public void setList(String key, List<Object> list){
 		baseMap.put(key, list);
+	}
+	
+	public Map<Object, Object> getBaseMap() {
+		return baseMap;
+	}
+
+	@Override
+	public Iterator<Object> iterator() {
+		return baseMap.values().iterator();
 	}
 	
 }

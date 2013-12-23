@@ -2,10 +2,13 @@ package vc4.client;
 
 import java.io.File;
 
+import org.lwjgl.Sys;
+
 import vc4.api.client.ClientLauncher;
 import vc4.api.client.ClientWindow;
 import vc4.api.logging.ChatBoxHandler;
 import vc4.api.logging.FileOutputHandler;
+import vc4.api.logging.Logger;
 import vc4.api.util.DirectoryLocator;
 import vc4.client.font.ClientFontRendererFactory;
 import vc4.client.graphics.*;
@@ -26,6 +29,7 @@ public class Launcher implements ClientLauncher{
 		new ClientResources();
 		System.setProperty("org.lwjgl.librarypath", new File(DirectoryLocator.getPath() + "/bin/natives/").getAbsolutePath());
 		GameLoader.load(new ChatBoxHandler(), new FileOutputHandler());
+		Logger.getLogger("VC4").info("LWJGL Version: " + Sys.getVersion());
 		new ClientVoxelCaverns();
 		new ClientGL();
 		new ClientAnimatedTextureLoader();

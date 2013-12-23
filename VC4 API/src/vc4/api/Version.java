@@ -64,7 +64,7 @@ public class Version {
 			}
 		}
 		
-		String path = DirectoryLocator.getPath() + "\\settings\\build.yml";
+		String path = DirectoryLocator.getPath() + "/settings/build.yml";
 		File f = new File(path);
 		//Build modifier only works in eclipse!
 		if(f.exists() && !Version.class.getClassLoader().getResource("vc4/impl/build/build.yml").getFile().contains("!")){

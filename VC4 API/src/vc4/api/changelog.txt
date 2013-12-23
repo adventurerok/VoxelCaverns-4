@@ -245,3 +245,6 @@ VC4-Development-0.0.2-261
 	* Changed item pickup radius
 VC4-Development-0.0.2-262
 	* Attempted Hell-Distance lag fix
+VC4-Development-0.0.2-263
+	+ Added the permission manager
+	* Refractored server
