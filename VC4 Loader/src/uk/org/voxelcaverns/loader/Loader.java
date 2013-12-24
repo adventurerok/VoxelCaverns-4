@@ -6,6 +6,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 
@@ -24,8 +25,13 @@ public class Loader {
 			e.printStackTrace();
 			return;
 		}
-		checkUpdates();
-		runLauncher();
+		try{
+			checkUpdates();
+			runLauncher();
+		} catch(Exception e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Launcher Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 	
 	public static void checkUpdates() throws Exception{
@@ -67,7 +73,7 @@ public class Loader {
 		String myLoc = Loader.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
 		String run = DirectoryLocator.getPath() + "/bin/VC4-Launcher.jar";
 		String separator = System.getProperty("file.separator");
-	    String jvm = System.getProperty("java.home") + separator + "bin" + separator + "javaw";
+	    String jvm = System.getProperty("java.home") + separator + "bin" + separator + "java";
 	    String memory = "64M";
 	    ProcessBuilder processBuilder = new ProcessBuilder(new String[] { jvm, "-Xmx" + memory, "-Xms" + memory, "-cp", run, "vc4.launcher.Loader", "loader:" + myLoc });
 	    processBuilder.redirectOutput(Redirect.INHERIT);
@@ -75,6 +81,8 @@ public class Loader {
 		try {
 			processBuilder.start();
 		} catch (IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Launcher Error", JOptionPane.ERROR_MESSAGE);
 		}
 		System.exit(0);
 	}

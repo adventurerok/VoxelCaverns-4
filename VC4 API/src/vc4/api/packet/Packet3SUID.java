@@ -13,6 +13,13 @@ public class Packet3SUID extends Packet {
 	public Packet3SUID() {
 		super();
 	}
+	
+	/*
+	 * Message:
+	 * 	0	You requested a new ID, here it is
+	 * 	1	Server ID (The server's unique ID, shoudn't change)
+	 * 
+	 */
 
 	public byte message;
 	public byte[] suid;

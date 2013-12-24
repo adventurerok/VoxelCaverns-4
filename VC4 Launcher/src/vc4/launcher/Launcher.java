@@ -153,7 +153,7 @@ public class Launcher {
 		String javaHome = System.getenv("JAVA_HOME");
 		System.out.println("JAVA_HOME env: " + javaHome);
 		if(javaHome == null || javaHome.isEmpty()) javaHome = System.getProperty("java.home");
-	    String path = javaHome + separator + "bin" + separator + "javaw";
+	    String path = javaHome + separator + "bin" + separator + "java";
 	    String[] launchOptions = new String[] { path, "-Xmx" + r.getXmx(), "-Xms" + r.getXms(), "-cp", run, r.getLaunch(), "heapset" };
 	    ProcessBuilder processBuilder = new ProcessBuilder(launchOptions);
 	    

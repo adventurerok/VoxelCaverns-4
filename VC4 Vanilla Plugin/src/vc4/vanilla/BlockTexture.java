@@ -30,6 +30,7 @@ public class BlockTexture {
 	public static int dataStorageInput, dataStorageOutput, dataStorageOther;
 	public static int gapRepeaterGateInput, gapRepeaterGateOutput, gapRepeaterGateOther;
 	public static int bitMonitor, monitorInput, wool;
+	public static int presentSideBlue, presentTopBlue;
 	public static int[] crops = new int[9];
 	public static int[] craftingTables = new int[5];
 	public static int digital[] = new int[10];
@@ -157,5 +158,7 @@ public class BlockTexture {
 		bitMonitor = tex.getArrayIndex("bitmonitor");
 		monitorInput = tex.getArrayIndex("monitorinput");
 		wool = tex.getArrayIndex("wool");
+		presentSideBlue = tex.getArrayIndex("presentsideblue");
+		presentTopBlue = tex.getArrayIndex("presenttopblue");
 	}
 }

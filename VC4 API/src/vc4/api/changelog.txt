@@ -288,3 +288,20 @@ VC4-Development-0.0.2-281
 	* perms list user doesn't crash if user's permissions are null
 VC4-Development-0.0.2-282
 	* Fixed a bug with listing permissions
+VC4-Development-0.0.2-283
+	+ User info now saves
+	+ Group info now saves
+VC4-Development-0.0.2-284
+	+ Details are now saved when the server shuts down
+VC4-Development-0.0.2-285
+	+ Added ServerSettings
+	+ Servers have their own unique ids
+	* Moved some classes to the API
+VC4-Development-0.0.2-286
+	* The api should be capable of generating random suids on all platforms
+VC4-Development-0.0.2-288
+	* Fixed negative array index when parsing hex
+VC4-Development-0.0.2-289
+	+ Server now displays USID
+VC4-Development-0.0.2-290
+	* User settings won't save unless they have been loaded (if loading fails, they will not be wiped)

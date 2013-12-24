@@ -11,14 +11,17 @@ import vc4.api.packet.Packet0Accept;
 import vc4.api.packet.Packet1Disconnect;
 import vc4.api.packet.Packet30MessageString;
 import vc4.api.packet.Packet31MessageInt;
+import vc4.api.packet.Packet3SUID;
 import vc4.api.packet.Packet40NBT;
 import vc4.api.packet.Packet43SettingString;
 import vc4.api.packet.Packet4Login;
 import vc4.api.packet.Packet5Chat;
+import vc4.api.server.SUID;
 import vc4.api.server.ServerConsole;
 import vc4.api.util.StringSplitter;
+import vc4.api.util.SuidUtils;
 import vc4.impl.cmd.CommandExecutor;
-import vc4.server.user.SUID;
+import vc4.server.server.ServerSettings;
 import vc4.server.user.ServerUser;
 import vc4.server.user.UserInfo;
 import vc4.server.user.UserManager;
@@ -48,6 +51,7 @@ public class PacketHandler {
 
 	public boolean handlePacketAccept(ServerUser s, Packet0Accept p){
 		s.setAccepted(true);
+		s.writePacket(new Packet3SUID(1, ServerSettings.usid));
 		return true;
 	}
 	
@@ -73,6 +77,11 @@ public class PacketHandler {
 	}
 	
 	public boolean handlePacketMsgInt(ServerUser s, Packet31MessageInt p){
+		switch(p.message){
+		case 0:
+			s.writePacket(new Packet3SUID(0, SuidUtils.generateRandomSuid()));
+			break;
+		}
 		return true;
 	}
 	

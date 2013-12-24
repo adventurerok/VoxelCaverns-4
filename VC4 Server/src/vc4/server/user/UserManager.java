@@ -13,7 +13,9 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import vc4.api.logging.Logger;
+import vc4.api.server.SUID;
 import vc4.api.util.DirectoryLocator;
+import vc4.api.util.SuidUtils;
 import vc4.api.yaml.YamlMap;
 import vc4.impl.permissions.ImplPermissionGroup;
 
@@ -25,6 +27,7 @@ public class UserManager {
 	private static HashMap<SUID, UserInfo> userInfo = new HashMap<>();
 	private static HashMap<String, UserInfo> userNames = new HashMap<>();
 	private static ArrayList<String> chatNames = new ArrayList<>();
+	private static boolean loaded = false;
 	
 	public static UserGroup getGroup(String name){
 		return groups.get(name);
@@ -107,6 +110,7 @@ public class UserManager {
 		try {
 			YamlMap map = new YamlMap(new FileInputStream(file));
 			loadUsers(map);
+			loaded = true;
 		} catch (FileNotFoundException e) {
 			Logger.getLogger(UserManager.class).warning("Exception", e);
 		}
@@ -115,10 +119,12 @@ public class UserManager {
 	private static void createDefault() {
 		Logger.getLogger("VC4").info("No /server/users.yml file found, creating");
 		groups.put("default", new UserGroup("default", "", new ImplPermissionGroup()));
+		loaded = true;
 		
 	}
 	
 	public static void saveUsers(){
+		if(!loaded) return;
 		YamlMap map = new YamlMap();
 		map.setSubMap("groups", getGroupMap());
 		map.setSubMap("users", getUserMap());
@@ -135,7 +141,7 @@ public class UserManager {
 	private static YamlMap getUserMap(){
 		YamlMap res = new YamlMap();
 		for(Entry<SUID, UserInfo> e : userInfo.entrySet()){
-			res.setSubMap(UserfileLookup.getUserfileHex(e.getKey().getSuid()), e.getValue().toYaml());
+			res.setSubMap(SuidUtils.getSuidHex(e.getKey().getSuid()), e.getValue().toYaml());
 		}
 		return res;
 	}
@@ -168,7 +174,7 @@ public class UserManager {
 				if(!(e.getValue() instanceof Map)) continue;
 				String name = e.getKey().toString();
 				UserInfo info = new UserInfo(userMap.getSubMap(name));
-				userInfo.put(new SUID(UserfileLookup.parseSUID(name.trim())), info);
+				userInfo.put(new SUID(SuidUtils.parseSuid(name.trim())), info);
 				userNames.put(info.getChatName(), info);
 				chatNames.add(name);
 			}

@@ -13,4 +13,5 @@ public interface Server {
 
 	public void sendPacket(Packet p);
 	public void sendPacket(Packet p, User exclude);
+	public void exit();
 }

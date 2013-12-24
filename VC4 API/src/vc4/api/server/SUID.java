@@ -1,4 +1,4 @@
-package vc4.server.user;
+package vc4.api.server;
 
 import java.util.Arrays;
 

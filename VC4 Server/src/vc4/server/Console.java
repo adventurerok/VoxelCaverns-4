@@ -6,9 +6,6 @@ package vc4.server;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -40,15 +37,16 @@ import vc4.impl.GameLoader;
 import vc4.impl.cmd.CommandExecutor;
 import vc4.impl.server.ConsoleUser;
 import vc4.server.cmd.PermissionCommand;
+import vc4.server.gui.ConsoleListener;
 import vc4.server.server.ServerHandler;
+import vc4.server.server.ServerSettings;
 import vc4.server.user.UserManager;
 
 /**
  * @author paul
  * 
  */
-public class Console extends ServerConsole implements MouseListener,
-		KeyListener, Runnable {
+public class Console extends ServerConsole implements Runnable {
 
 	private static String colorChart = "0123456789abcdefgnt";
 
@@ -83,22 +81,26 @@ public class Console extends ServerConsole implements MouseListener,
 	 */
 	public Console() {
 		setConsole(this);
+		
+		ConsoleListener listen = new ConsoleListener(this);
+		
 		window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setSize(675, 340);
 		window.setLayout(new BorderLayout());
+		window.addWindowListener(listen);
 		output = new JTextPane();
 		output.setEditable(false);
 		output.setBackground(Color.black);
 		output.setForeground(Color.white);
-		output.addMouseListener(this);
+		output.addMouseListener(listen);
 		output.setFont(new Font("Monospaced", 0, 12));
 		input = new JTextPane();
 		((AbstractDocument) input.getDocument())
 				.setDocumentFilter(new OneLineFilter());
 		input.setBackground(Color.black);
 		input.setForeground(Color.white);
-		input.addKeyListener(this);
+		input.addKeyListener(listen);
 		input.setFont(new Font("Monospaced", 0, 12));
 		JScrollPane scroll = new JScrollPane(output);
 		window.add(scroll, BorderLayout.CENTER);
@@ -120,84 +122,6 @@ public class Console extends ServerConsole implements MouseListener,
 				String string, AttributeSet attr) throws BadLocationException {
 			fb.insertString(offset, string.replaceAll("\\n", ""), attr);
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseClicked(java.awt.event.MouseEvent e) {
-		input.requestFocusInWindow();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mousePressed(java.awt.event.MouseEvent e) {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseReleased(java.awt.event.MouseEvent e) {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseEntered(java.awt.event.MouseEvent e) {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseExited(java.awt.event.MouseEvent e) {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
-	 */
-	@Override
-	public void keyTyped(KeyEvent e) {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-	 */
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			handleInput(input.getText());
-			input.setText("");
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
-	 */
-	@Override
-	public void keyReleased(KeyEvent e) {
 	}
 
 	public void handleInput(String input) {
@@ -340,6 +264,7 @@ public class Console extends ServerConsole implements MouseListener,
 	@Override
 	public void run() {
 		window.setVisible(true);
+		ServerSettings.load();
 		UserManager.load();
 		loadCommands();
 		try {
@@ -360,6 +285,13 @@ public class Console extends ServerConsole implements MouseListener,
 				.setDescription("{l:cmd.perms.desc}").setCommandUsage(new CommandUsage().setMinimumArgs(1)), perms));
 		DefaultPermissions.setPermission("vc4.cm.perms.list", 1);
 		DefaultPermissions.setPermission("vc4.cm.perms.get", 1);
+	}
+	
+	public void stop(){
+		Logger.getLogger("VC4").info("Server shutting down...");
+		UserManager.saveUsers();
+		ServerSettings.save();
+		serverHandler.exit();
 	}
 
 }

@@ -12,6 +12,7 @@ import vc4.api.VoxelCaverns;
 import vc4.api.logging.Logger;
 import vc4.api.packet.Packet;
 import vc4.api.packet.Packet0Accept;
+import vc4.api.packet.Packet1Disconnect;
 import vc4.api.server.Server;
 import vc4.api.server.User;
 import vc4.server.packet.PacketHandler;
@@ -67,6 +68,16 @@ public class ServerHandler extends Thread implements Server {
 			if(players.get(d) == exclude) continue;
 			players.get(d).writePacket(p);
 		}
+	}
+
+	@Override
+	public void exit() {
+		sendPacket(new Packet1Disconnect("Server shutting down"));
+		while(players.size() > 0){
+			ServerUser u = players.remove(0);
+			u.interrupt();
+		}
+		interrupt();
 	}
 
 }
