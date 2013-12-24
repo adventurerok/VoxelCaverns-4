@@ -52,6 +52,11 @@ public abstract class Packet {
 			register(Packet40NBT.class);
 			register(Packet4Login.class);
 			register(Packet31MessageInt.class);
+			register(Packet3SUID.class);
+			register(Packet41SettingInt.class);
+			register(Packet42SettingDouble.class);
+			register(Packet43SettingString.class);
+			register(Packet5Chat.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

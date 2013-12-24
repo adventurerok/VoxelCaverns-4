@@ -30,7 +30,7 @@ public class CommandUsage {
 		return this;
 	}
 	
-	public CommandUsage setPermissions(String[] permissions) {
+	public CommandUsage setPermissions(String...permissions) {
 		this.permissions = permissions;
 		return this;
 	}

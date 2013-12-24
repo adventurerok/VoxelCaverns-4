@@ -15,5 +15,6 @@ public interface User {
 	public boolean hasPermission(String permission);
 	public EntityPlayer getPlayer();
 	public void message(String message);
+	public Server getServer();
 	
 }

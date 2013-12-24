@@ -8,9 +8,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import vc4.api.VoxelCaverns;
 import vc4.api.logging.Logger;
+import vc4.api.packet.Packet;
 import vc4.api.packet.Packet0Accept;
 import vc4.api.server.Server;
+import vc4.api.server.User;
 import vc4.server.packet.PacketHandler;
 import vc4.server.user.ServerUser;
 
@@ -33,6 +36,7 @@ public class ServerHandler extends Thread implements Server {
 		socket = new ServerSocket(4775);
 		Logger.getLogger("VC4").info("Starting server on port 4775");
 		setDaemon(true);
+		VoxelCaverns.setServer(this);
 	}
 	
 	/* (non-Javadoc)
@@ -51,6 +55,17 @@ public class ServerHandler extends Thread implements Server {
 			}
 		} catch (IOException e) {
 			Logger.getLogger(ServerHandler.class).warning("Error while accepting connection", e);
+		}
+	}
+	
+	public void sendPacket(Packet p){
+		sendPacket(p, null);
+	}
+	
+	public void sendPacket(Packet p, User exclude){
+		for(int d = 0; d < players.size(); ++d){
+			if(players.get(d) == exclude) continue;
+			players.get(d).writePacket(p);
 		}
 	}
 

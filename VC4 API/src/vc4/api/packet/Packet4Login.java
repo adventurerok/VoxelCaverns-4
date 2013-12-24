@@ -9,7 +9,7 @@ public class Packet4Login extends Packet{
 	
 	public static final int ID = 4;
 	
-	byte[] uid;
+	public byte[] uid;
 
 	@Override
 	public void write(BitOutputStream out) throws IOException {

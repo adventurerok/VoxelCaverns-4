@@ -3,8 +3,20 @@
  */
 package vc4.api.yaml;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
+
 
 /**
  * @author paul
@@ -63,6 +75,21 @@ public class YamlMap implements Iterable<Object>{
 	public Object[] getList(String key){
 		List<Object> l = (List<Object>) baseMap.get(key);
 		return l.toArray(new Object[l.size()]);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<?> getJavaList(String key){
+		List<Object> l = (List<Object>) baseMap.get(key);
+		return l;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Iterator<YamlMap> getSubMapsIterator(){
+		ArrayList<YamlMap> stuff = new ArrayList<>();
+		for(Object o : baseMap.values()){
+			if(o instanceof Map) stuff.add(new YamlMap((Map<Object, Object>) o));
+		}
+		return stuff.iterator();
 	}
 	
 	public float getFloat(String key){
@@ -153,7 +180,7 @@ public class YamlMap implements Iterable<Object>{
 		baseMap.put(key, Arrays.asList(list));
 	}
 	
-	public void setList(String key, List<Object> list){
+	public void setList(String key, List<?> list){
 		baseMap.put(key, list);
 	}
 	
@@ -165,5 +192,17 @@ public class YamlMap implements Iterable<Object>{
 	public Iterator<Object> iterator() {
 		return baseMap.values().iterator();
 	}
+
+	public void setBoolean(String key, boolean b) {
+		baseMap.put(key, b);
+		
+	}
+
+	public void save(OutputStream out) {
+		Yaml yaml = ThreadYaml.getYamlForThread();
+		yaml.dump(baseMap, new OutputStreamWriter(out));
+		
+	}
+
 	
 }

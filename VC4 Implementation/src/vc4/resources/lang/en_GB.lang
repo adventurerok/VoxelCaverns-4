@@ -68,5 +68,16 @@ cmd.nocommand=That command does not exist. To see avaliable commands, type {0}
 cmd.tp.done=Teleported to {0}, {1}, {2}
 cmd.tp.desc=Teleports you to the given coordinates
 cmd.sound.desc=Plays a sound
+cmd.log.desc=Logs a message
+cmd.log.badlvl=No logger level exists with the name "{0}"
+cmd.log.vc4=Logging with the name "VC4" is not allowed
+cmd.broadcast.desc=Broadcasts a message to everyone
+cmd.print.desc=Prints a message to the sender
+cmd.script.desc=Runs a script
+cmd.script.noscript=Script {0} does not exist
+cmd.perms.desc=Does an action relating to permissions
+cmd.perms.nouser=No user exists with chat name {0}
+cmd.perms.nogroup=No group exists with name {0}
+cmd.perms.wrongargs=permissions {0} requires {1} arguments 
 
 cmd.fail=Failed to execute command

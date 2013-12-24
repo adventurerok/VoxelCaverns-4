@@ -10,14 +10,16 @@ public interface PermissionGroup {
 	
 	public int getP();
 	public int getK();
-	public boolean getSubPermission(String perm);
+	public int getSubPermission(String perm);
 	public void permissionCalc(IntList ints, String perm);
 	public void setP(int p);
 	public void setK(int k);
 	public void setSubPermission(String perm, int on);
-	public abstract void loadPermissions(String...perms);
-	public abstract void loadPermissions(InputStream in) throws IOException;
-	public abstract void loadPermissions(YamlMap in);
+	public void loadPermissions(String...perms);
+	public void loadPermissions(InputStream in) throws IOException;
+	public void loadPermissions(YamlMap in);
+	public String[] list();
+	public YamlMap toYaml();
 	
 	
 

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -183,10 +184,60 @@ public class ImplPermissionGroup implements PermissionGroup {
 	}
 
 	@Override
-	public boolean getSubPermission(String perm) {
+	public int getSubPermission(String perm) {
 		IntList ints = new IntList();
 		permissionCalc(ints, perm);
 		int res = ordinal(ints.toArray());
-		return res > 0 ? true : false;
+		return res;
+	}
+
+	@Override
+	public String[] list() {
+		ArrayList<String> result = new ArrayList<>();
+		subList(result, "");
+		return result.toArray(new String[result.size()]);
+	}
+	
+	private void subList(ArrayList<String> list, String prefix){
+		if(k != 0) list.add(prefix + "*: " + (k == 1 ? "true" : "false"));
+		for(Entry<String, Object> e : subs.entrySet()){
+			if(e.getValue() == null) continue;
+			if(e.getValue() instanceof Number){
+				int val = ((Number)e.getValue()).intValue();
+				if(val == 0) continue;
+				list.add(prefix + e.getKey() + ": " + (val == 1 ? "true" : "false"));
+			} else if(e.getValue() instanceof ImplPermissionGroup){
+				ImplPermissionGroup val = (ImplPermissionGroup) e.getValue();
+				if(val.p != 0){
+					list.add(prefix + e.getKey() + ": " + (val.p == 1 ? "true" : "false"));
+				}
+				val.subList(list, prefix + e.getKey() + ".");
+			}
+		}
+	}
+	
+	private void subYaml(YamlMap list, String prefix){
+		if(k != 0) list.setBoolean(prefix + "*", k == 1);;
+		for(Entry<String, Object> e : subs.entrySet()){
+			if(e.getValue() == null) continue;
+			if(e.getValue() instanceof Number){
+				int val = ((Number)e.getValue()).intValue();
+				if(val == 0) continue;
+				list.setBoolean(prefix + e.getKey(), val == 1);;
+			} else if(e.getValue() instanceof ImplPermissionGroup){
+				ImplPermissionGroup val = (ImplPermissionGroup) e.getValue();
+				if(val.p != 0){
+					list.setBoolean(prefix + e.getKey(), val.p == 1);
+				}
+				val.subYaml(list, prefix + e.getKey() + ".");
+			}
+		}
+	}
+
+	@Override
+	public YamlMap toYaml() {
+		YamlMap res = new YamlMap();
+		subYaml(res, "");
+		return res;
 	}
 }

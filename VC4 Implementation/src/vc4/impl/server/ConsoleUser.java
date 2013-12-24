@@ -2,9 +2,16 @@ package vc4.impl.server;
 
 import vc4.api.entity.EntityPlayer;
 import vc4.api.logging.Logger;
+import vc4.api.server.Server;
 import vc4.api.server.User;
 
 public class ConsoleUser implements User {
+	
+	private static Server server;
+	
+	public static void setServer(Server server) {
+		ConsoleUser.server = server;
+	}
 	
 	public static ConsoleUser CONSOLE = new ConsoleUser();
 
@@ -28,6 +35,11 @@ public class ConsoleUser implements User {
 	@Override
 	public void message(String message) {
 		Logger.getLogger("CMD").info(message);
+	}
+
+	@Override
+	public Server getServer() {
+		return server;
 	}
 
 }

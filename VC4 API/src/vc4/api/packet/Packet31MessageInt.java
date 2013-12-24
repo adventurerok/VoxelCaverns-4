@@ -9,6 +9,11 @@ public class Packet31MessageInt extends Packet {
 	
 	public static final int ID = 31;
 	
+	/*
+	 * Message index:
+	 * 0	New SUID (Request a new SUID)
+	 */
+	
 	public int message;
 
 	@Override

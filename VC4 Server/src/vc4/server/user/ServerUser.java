@@ -9,8 +9,13 @@ import vc4.api.entity.EntityPlayer;
 import vc4.api.io.BitInputStream;
 import vc4.api.io.BitOutputStream;
 import vc4.api.logging.Logger;
-import vc4.api.packet.*;
+import vc4.api.packet.Packet;
+import vc4.api.packet.Packet30MessageString;
+import vc4.api.permissions.DefaultPermissions;
+import vc4.api.server.Server;
+import vc4.api.server.ServerConsole;
 import vc4.api.server.User;
+import vc4.server.Console;
 import vc4.server.packet.PacketHandler;
 
 public class ServerUser extends Thread implements User{
@@ -23,6 +28,8 @@ public class ServerUser extends Thread implements User{
 	private boolean accepted = false;
 	private long timer = 0;
 	private CompoundTag infoTag;
+	
+	private UserInfo info;
 	
 	byte[] uid; //16 byte (128-bit) uid
 
@@ -37,6 +44,18 @@ public class ServerUser extends Thread implements User{
 		}
 		this.handler = handler;
 		this.timer = System.nanoTime();
+	}
+	
+	public UserInfo getInfo() {
+		return info;
+	}
+	
+	public String getChatName(){
+		return info.getChatName();
+	}
+	
+	public void setInfo(UserInfo info) {
+		this.info = info;
 	}
 	
 	/* (non-Javadoc)
@@ -62,8 +81,8 @@ public class ServerUser extends Thread implements User{
 	
 	protected void handlePacket(Packet p){
 		handler.handlePacket(this, p);
-		Logger.getLogger("VC4").info("Recieved packet of id: " + p.getId());
-		Logger.getLogger("VC4").info("Payload: " + p.toString());
+		//Logger.getLogger("VC4").fine("Recieved packet of id: " + p.getId());
+		//Logger.getLogger("VC4").fine("Payload: " + p.toString());
 	}
 	
 	
@@ -94,7 +113,12 @@ public class ServerUser extends Thread implements User{
 
 	@Override
 	public boolean hasPermission(String permission) {
-		return true;
+		int i = info.getPermission(permission);
+		if(i != 0) return i > 0 ? true : false;
+		i = info.getGroup().getPermission(permission);
+		if(i != 0) return i > 0 ? true : false;
+		i = DefaultPermissions.getPermission(permission);
+		return i > 0 ? true : false;
 	}
 
 	@Override
@@ -118,6 +142,11 @@ public class ServerUser extends Thread implements User{
 	@Override
 	public void message(String message) {
 		writePacket(new Packet30MessageString(message));
+	}
+
+	@Override
+	public Server getServer() {
+		return ((Console)ServerConsole.getConsole()).getServerHandler();
 	}
 	
 	

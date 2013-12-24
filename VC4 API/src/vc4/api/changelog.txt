@@ -248,3 +248,43 @@ VC4-Development-0.0.2-262
 VC4-Development-0.0.2-263
 	+ Added the permission manager
 	* Refractored server
+VC4-Development-0.0.2-264
+	+ Added the user manager
+VC4-Development-0.0.2-265
+	+ Added a chat filter for filtering rude words, disabled by default
+	+ Added a name filter to check names contain only allowed characters (a-z, 0-9, -, #, _)
+VC4-Development-0.0.2-266
+	+ Added the log command
+VC4-Development-0.0.2-267
+	+ Commands can now be executed on the server
+VC4-Development-0.0.2-268
+	* Error messages are now logged when a command fails to run
+VC4-Development-0.0.2-269
+	* The log command should now work
+VC4-Development-0.0.2-270
+	+ Users now have chat names as well as SUIDs
+VC4-Development-0.0.2-271
+	* Packets 41-43 are now registered
+VC4-Development-0.0.2-272
+	+ Server users can now change their chat names
+VC4-Development-0.0.2-273
+	+ Chat messages show up on clients
+VC4-Development-0.0.2-274
+	+ Added print and broadcast commands
+VC4-Development-0.0.2-275
+	+ Can execute commands sent my the client
+VC4-Development-0.0.2-276
+	+ Added default permissions
+	* Server users now check permissions
+VC4-Development-0.0.2-277
+	+ Added the permissions command
+VC4-Development-0.0.2-278
+	* Fixed a bug with the permissions command
+VC4-Development-0.0.2-279
+	+ The permissions command can now list user permissions
+VC4-Development-0.0.2-280
+	* List user permissions should now work
+VC4-Development-0.0.2-281
+	* perms list user doesn't crash if user's permissions are null
+VC4-Development-0.0.2-282
+	* Fixed a bug with listing permissions

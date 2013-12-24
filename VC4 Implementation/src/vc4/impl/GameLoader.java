@@ -9,10 +9,12 @@ import vc4.api.Version;
 import vc4.api.io.SaveFormats;
 import vc4.api.logging.Handler;
 import vc4.api.logging.Logger;
+import vc4.api.permissions.DefaultPermissions;
 import vc4.api.text.Localization;
 import vc4.impl.io.VBTSaveFormat;
 import vc4.impl.io.VCH4SaveFormat;
 import vc4.impl.logging.ImplLoggerFactory;
+import vc4.impl.permissions.ImplPermissionGroup;
 
 /**
  * @author paul
@@ -27,9 +29,8 @@ public class GameLoader {
 		}
 		Logger.getLogger("VC4").info(new Date());
 		Version.loadVersion();
-//		Locale locale = Locale.getDefault();
-//		System.out.println(locale.getDisplayCountry());
-//		Localization.loadLocalization(locale.toString());
+		
+		DefaultPermissions.setPerms(new ImplPermissionGroup());
 		Localization.loadLocalization("en_GB");
 		loadSaveFormats();
 	}
