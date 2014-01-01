@@ -18,4 +18,19 @@ public class ClientUser extends ConsoleUser{
 	public void message(String message) {
 		Client.getGame().printChatLine(message);
 	}
+	
+	@Override
+	public String getChatName() {
+		return "player";
+	}
+	
+	@Override
+	public boolean isPlayer() {
+		return true;
+	}
+	
+	@Override
+	public int getUserLevel() {
+		return 0b110;
+	}
 }

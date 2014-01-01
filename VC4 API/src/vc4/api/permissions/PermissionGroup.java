@@ -20,6 +20,7 @@ public interface PermissionGroup {
 	public void loadPermissions(YamlMap in);
 	public String[] list();
 	public YamlMap toYaml();
+	public void clear();
 	
 	
 

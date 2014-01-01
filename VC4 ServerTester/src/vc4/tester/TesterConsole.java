@@ -28,7 +28,7 @@ import vc4.tester.cmd.CommandListener;
  * @author paul
  * 
  */
-public class TesterConsole extends ServerConsole implements MouseListener, KeyListener, Runnable {
+public class TesterConsole extends ServerConsole implements MouseListener, WindowListener, KeyListener, Runnable {
 
 	private static String colorChart = "0123456789abcdefgnt";
 	
@@ -68,6 +68,7 @@ public class TesterConsole extends ServerConsole implements MouseListener, KeyLi
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setSize(675, 340);
 		window.setLayout(new BorderLayout());
+		window.addWindowListener(this);
 		output = new JTextPane();
 		output.setEditable(false);
 		output.setBackground(Color.black);
@@ -324,6 +325,7 @@ public class TesterConsole extends ServerConsole implements MouseListener, KeyLi
 	 */
 	@Override
 	public void run() {
+		ServerMap.loadSuids();
 		window.setVisible(true);
 		try {
 			client = new ClientHandler("localhost");
@@ -332,6 +334,54 @@ public class TesterConsole extends ServerConsole implements MouseListener, KeyLi
 			return;
 		}
 		client.start();
+	}
+
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		ServerMap.saveSuids();
+	}
+
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

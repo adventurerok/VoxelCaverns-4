@@ -305,3 +305,23 @@ VC4-Development-0.0.2-289
 	+ Server now displays USID
 VC4-Development-0.0.2-290
 	* User settings won't save unless they have been loaded (if loading fails, they will not be wiped)
+VC4-Development-0.0.2-291
+	* Improved the permissions command
+VC4-Development-0.0.2-292
+	* permissions get can list multiple permissions
+VC4-Development-0.0.2-293
+	+ Added perms get user/group
+VC4-Development-0.0.2-294
+	* Fixed missing text with the permissions command
+VC4-Development-0.0.2-295
+	* perms get is always right
+VC4-Development-0.0.2-296
+	* Test permissions set
+VC4-Development-0.0.2-297
+	+ Permissions set for default/group/user
+VC4-Development-0.0.2-298
+	+ Groups can inherit permissions from another group (can be stacked)
+VC4-Development-0.0.2-299
+	+ Suids now stored on the client
+VC4-Development-0.0.2-300
+	+ Added "name" command to change your chat name

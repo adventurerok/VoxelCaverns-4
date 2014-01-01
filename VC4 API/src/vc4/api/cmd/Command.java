@@ -85,6 +85,10 @@ public class Command {
 		}
 	}
 	
+	public boolean hasArg(int index){
+		return args != null && index < args.length;
+	}
+	
 	public int getArgAsBool(int index){
 		if(index >= args.length) return -1;
 		try{

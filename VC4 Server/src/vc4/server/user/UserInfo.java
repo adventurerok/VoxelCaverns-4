@@ -55,24 +55,34 @@ public class UserInfo {
 		return permissions.getSubPermission(perm);
 	}
 	
-	public void changeChatName(String change, boolean any){
-		if(change.equals(chatName)) return;
-		int numIndex = change.length();
-		for(int d = change.length() - 1; d > -1; --d){
-			if(change.charAt(d) > 47 && change.charAt(d) < 58) continue;
-			numIndex = d + 1;
-			break;
+	public boolean changeChatName(String change, boolean any){
+		if(change.equals(chatName)) return true;
+		if(any){
+			int numIndex = change.length();
+			for(int d = change.length() - 1; d > -1; --d){
+				if(change.charAt(d) > 47 && change.charAt(d) < 58) continue;
+				numIndex = d + 1;
+				break;
+			}
+			String characters = change;
+			int num = 0;
+			if(numIndex != change.length()){
+				characters = change.substring(0, numIndex);
+				num = Integer.parseInt(change.substring(numIndex, change.length()));
+			}
+			UserManager.removeChatName(chatName);
+			UserManager.setUserName(chatName = UserManager.generateChatName(characters, num), this);
+			return true;
 		}
-		String characters = change;
-		int num = 0;
-		if(numIndex != change.length()){
-			characters = change.substring(0, numIndex);
-			num = Integer.parseInt(change.substring(numIndex, change.length()));
-		}
+		if(!UserManager.hasChatName(change)) return false;
 		UserManager.removeChatName(chatName);
-		UserManager.setUserName(chatName, null);
-		UserManager.addChatName(chatName = UserManager.generateChatName(characters, num));
-		UserManager.setUserName(chatName, this);
+		UserManager.setUserName(chatName = change, this);
+		return true;
+	}
+
+	public void setPermission(String perm, int on) {
+		if(permissions == null) permissions = new ImplPermissionGroup();
+		permissions.setSubPermission(perm, on);
 	}
 	
 }

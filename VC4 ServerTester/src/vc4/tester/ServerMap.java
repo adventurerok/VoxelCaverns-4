@@ -25,8 +25,13 @@ public class ServerMap {
 	public static void addSuid(byte[] server, byte[] suid) {
 		servers.put(new SUID(server), new SUID(suid));
 	}
+	
+	public static boolean hasServer(byte[] suid){
+		return servers.containsKey(new SUID(suid));
+	}
 
 	public static void saveSuids() {
+		Logger.getLogger("TST").info("Saving server:suid map");
 		String path = DirectoryLocator.getPath() + "/settings/suids";
 		File file = new File(path);
 		if (!file.exists())
@@ -42,6 +47,7 @@ public class ServerMap {
 	}
 	
 	public static void loadSuids(){
+		Logger.getLogger("TST").info("Loading server:suid map");
 		String path = DirectoryLocator.getPath() + "/settings/suids";
 		File file = new File(path);
 		if(!file.exists()) return;

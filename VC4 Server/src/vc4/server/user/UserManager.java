@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,7 +25,6 @@ public class UserManager {
 	private static HashMap<String, UserGroup> groups = new HashMap<>();
 	private static HashMap<SUID, UserInfo> userInfo = new HashMap<>();
 	private static HashMap<String, UserInfo> userNames = new HashMap<>();
-	private static ArrayList<String> chatNames = new ArrayList<>();
 	private static boolean loaded = false;
 	
 	public static UserGroup getGroup(String name){
@@ -58,28 +56,34 @@ public class UserManager {
 		int tries = 0;
 		while(true){
 			String test = chars + (startNum == 0 ? "" : startNum);
-			if(!chatNames.contains(test)) return test;
+			if(!userNames.containsKey(test)) return test;
 			++startNum;
 			++tries;
 			if((tries % 5 == 0)) startNum += rand.nextInt(250);
 		}
 	}
 	
+	public static boolean hasChatName(String name){
+		return !userNames.containsKey(name);
+	}
+	
+	public static boolean hasChatName(String chars, int startNum){
+		String test = chars + (startNum == 0 ? "" : startNum);
+		return hasChatName(test);
+	}
+	
 	public static UserInfo getOrCreateUserInfo(SUID user){
 		UserInfo u = userInfo.get(user);
 		if(u == null) u = new UserInfo(generateChatName("generic", 1));
-		chatNames.add(u.getChatName());
 		userInfo.put(user, u);
+		userNames.put(u.getChatName(), u);
 		return u;
 	}
 	
 	public static void removeChatName(String name){
-		chatNames.remove(name);
+		userNames.remove(name);
 	}
 	
-	public static void addChatName(String name){
-		chatNames.add(name);
-	}
 	
 //	private static void loadNames() {
 //		String path = DirectoryLocator.getPath() + "/server/names.txt";
@@ -176,7 +180,6 @@ public class UserManager {
 				UserInfo info = new UserInfo(userMap.getSubMap(name));
 				userInfo.put(new SUID(SuidUtils.parseSuid(name.trim())), info);
 				userNames.put(info.getChatName(), info);
-				chatNames.add(name);
 			}
 		}
 	}

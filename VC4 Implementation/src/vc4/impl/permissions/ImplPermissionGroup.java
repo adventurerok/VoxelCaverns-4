@@ -240,4 +240,11 @@ public class ImplPermissionGroup implements PermissionGroup {
 		subYaml(res, "");
 		return res;
 	}
+
+	@Override
+	public void clear() {
+		p = 0;
+		k = 0;
+		subs.clear();
+	}
 }

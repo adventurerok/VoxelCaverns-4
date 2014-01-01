@@ -5,8 +5,7 @@ public class CommandUsage {
 
 	public int minimumArgs = 0;
 	public int maximumArgs = -1;
-	public boolean requiresUser = false;
-	public boolean consoleOnly = false;
+	public int capabilities = 0;
 	public CommandArgument[] argumentChecks = new CommandArgument[0];
 	public String[] permissions = new String[0];
 	
@@ -20,8 +19,8 @@ public class CommandUsage {
 		return this;
 	}
 	
-	public CommandUsage setConsoleOnly(boolean consoleOnly) {
-		this.consoleOnly = consoleOnly;
+	public CommandUsage setRequiredCapabilities(int capabilities) {
+		this.capabilities = capabilities;
 		return this;
 	}
 	
@@ -35,14 +34,19 @@ public class CommandUsage {
 		return this;
 	}
 	
-	public CommandUsage setRequiresUser(boolean requiresUser) {
-		this.requiresUser = requiresUser;
-		return this;
-	}
+	
 	
 	public boolean check(Command command){
-		if(requiresUser && command.getSender().getPlayer() == null){
-			command.getSender().message("{l:cmd.nouser}");
+		if((command.getSender().getUserLevel() & capabilities) != capabilities){
+			if((capabilities & 0b1) == 0b1 && (command.getSender().getUserLevel() & 0b1) == 0){
+				command.getSender().message("{l:cmd.nouser}");
+			}
+			if((capabilities & 0b10) == 0b10 && (command.getSender().getUserLevel() & 0b10) == 0){
+				command.getSender().message("{l:cmd.noplayer}");
+			}
+			if((capabilities & 0b100) == 0b100 && (command.getSender().getUserLevel() & 0b100) == 0){
+				command.getSender().message("{l:cmd.consoleonly}");
+			}
 			return false;
 		}
 		for(String s : permissions){

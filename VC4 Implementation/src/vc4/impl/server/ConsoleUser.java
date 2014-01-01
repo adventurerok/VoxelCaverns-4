@@ -2,6 +2,8 @@ package vc4.impl.server;
 
 import vc4.api.entity.EntityPlayer;
 import vc4.api.logging.Logger;
+import vc4.api.packet.Packet;
+import vc4.api.server.Group;
 import vc4.api.server.Server;
 import vc4.api.server.User;
 
@@ -40,6 +42,62 @@ public class ConsoleUser implements User {
 	@Override
 	public Server getServer() {
 		return server;
+	}
+
+	@Override
+	public int getPermission(String permission) {
+		return 1;
+	}
+
+	@Override
+	public void setPermission(String permission, int change) {
+	}
+
+	@Override
+	public void setPermission(String permission, boolean change) {
+	}
+
+	@Override
+	public String getChatName() {
+		return "console";
+	}
+
+	@Override
+	public boolean changeChatName(String change) {
+		return false;
+	}
+
+	@Override
+	public boolean changeChatName(String change, boolean addNumbers) {
+		return false;
+	}
+
+	@Override
+	public Group getGroup() {
+		return null;
+	}
+
+	@Override
+	public void setGroup(Group g) {
+	}
+
+	@Override
+	public void sendPacket(Packet p) {
+	}
+
+	@Override
+	public boolean isUser() {
+		return false;
+	}
+
+	@Override
+	public boolean isPlayer() {
+		return false;
+	}
+
+	@Override
+	public int getUserLevel() {
+		return 4;
 	}
 
 }

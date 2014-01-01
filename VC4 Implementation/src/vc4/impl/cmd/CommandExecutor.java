@@ -29,7 +29,7 @@ public class CommandExecutor implements CommandHandler {
 				.addAlias("tp")
 				.setCommandUsage(
 						new CommandUsage()
-								.setRequiresUser(true)
+								.setRequiredCapabilities(0b10)
 								.setMinimumArgs(3)
 								.setMaximumArgs(3)
 								.setPermissions("vc4.cmd.tp")
@@ -41,35 +41,32 @@ public class CommandExecutor implements CommandHandler {
 				.setDescription("{l:cmd.sound.desc}")
 				.setCommandUsage(
 						new CommandUsage()
-								.setRequiresUser(true)
+								.setRequiredCapabilities(0b10)
 								.setMinimumArgs(1)
 								.setMaximumArgs(3)
 								.setArgumentChecks(CommandArgument.STRING,
 										CommandArgument.DOUBLE,
 										CommandArgument.DOUBLE)), handle));
-		addCommand(new ExecutableCommand(new CommandInfo("log")
-				.setUsage("<name> <level> <message>")
-				.setDescription("{l:cmd.log.desc}")
-				.setCommandUsage(
-						new CommandUsage()
-								.setRequiresUser(false)
-								.setMinimumArgs(3)
-								.setArgumentChecks(CommandArgument.STRING,
-										CommandArgument.STRING)), handle));
+		addCommand(new ExecutableCommand(
+				new CommandInfo("log")
+						.setUsage("<name> <level> <message>")
+						.setDescription("{l:cmd.log.desc}")
+						.setCommandUsage(
+								new CommandUsage().setMinimumArgs(3)
+										.setArgumentChecks(
+												CommandArgument.STRING,
+												CommandArgument.STRING)),
+				handle));
 		addCommand(new ExecutableCommand(new CommandInfo("broadcast")
 				.setUsage("[message]")
 				.setDescription("{l:cmd.broadcast.desc}")
 				.setCommandUsage(
-						new CommandUsage().setRequiresUser(false)
-								.setMinimumArgs(0)
-								.setPermissions("vc4.cmd.broadcast")), handle));
+						new CommandUsage().setMinimumArgs(0).setPermissions(
+								"vc4.cmd.broadcast")), handle));
 		addCommand(new ExecutableCommand(new CommandInfo("print")
-				.addAlias("echo")
-				.setUsage("[message]")
+				.addAlias("echo").setUsage("[message]")
 				.setDescription("{l:cmd.print.desc}")
-				.setCommandUsage(
-						new CommandUsage().setRequiresUser(false)
-								.setMinimumArgs(0)), handle));
+				.setCommandUsage(new CommandUsage().setMinimumArgs(0)), handle));
 	}
 
 	public static void addCommand(ExecutableCommand cmd) {
@@ -113,6 +110,7 @@ public class CommandExecutor implements CommandHandler {
 		case "broadcast":
 			handleCommand_broadcast(command);
 			return;
+		case "echo":
 		case "print":
 			handleCommand_print(command);
 			return;

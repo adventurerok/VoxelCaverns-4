@@ -12,6 +12,7 @@ import vc4.api.logging.Logger;
 import vc4.api.packet.Packet;
 import vc4.api.packet.Packet30MessageString;
 import vc4.api.permissions.DefaultPermissions;
+import vc4.api.server.Group;
 import vc4.api.server.Server;
 import vc4.api.server.ServerConsole;
 import vc4.api.server.User;
@@ -28,6 +29,7 @@ public class ServerUser extends Thread implements User{
 	private boolean accepted = false;
 	private long timer = 0;
 	private CompoundTag infoTag;
+	private EntityPlayer player;
 	
 	private UserInfo info;
 	
@@ -147,6 +149,63 @@ public class ServerUser extends Thread implements User{
 	@Override
 	public Server getServer() {
 		return ((Console)ServerConsole.getConsole()).getServerHandler();
+	}
+
+	@Override
+	public int getPermission(String permission) {
+		return info.getPermission(permission);
+	}
+
+	@Override
+	public void setPermission(String permission, int change) {
+		info.setPermission(permission, change);
+	}
+
+	@Override
+	public void setPermission(String permission, boolean change) {
+		info.setPermission(permission, change ? 1 : -1);
+	}
+
+	@Override
+	public boolean changeChatName(String change) {
+		return info.changeChatName(change, false);
+	}
+
+	@Override
+	public boolean changeChatName(String change, boolean addNumbers) {
+		return info.changeChatName(change, addNumbers);
+	}
+
+	@Override
+	public Group getGroup() {
+		return info.getGroup();
+	}
+
+	@Override
+	public void setGroup(Group g) {
+		info.setGroupName(g.getName());
+	}
+
+	@Override
+	public void sendPacket(Packet p) {
+		writePacket(p);
+	}
+
+	@Override
+	public boolean isUser() {
+		return info != null;
+	}
+
+	@Override
+	public boolean isPlayer() {
+		return player != null;
+	}
+
+	@Override
+	public int getUserLevel() {
+		if(isPlayer()) return 3;
+		if(isUser()) return 1;
+		return 0;
 	}
 	
 	

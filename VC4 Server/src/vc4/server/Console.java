@@ -36,6 +36,7 @@ import vc4.api.util.StringSplitter;
 import vc4.impl.GameLoader;
 import vc4.impl.cmd.CommandExecutor;
 import vc4.impl.server.ConsoleUser;
+import vc4.server.cmd.BasicCommand;
 import vc4.server.cmd.PermissionCommand;
 import vc4.server.gui.ConsoleListener;
 import vc4.server.server.ServerHandler;
@@ -81,9 +82,9 @@ public class Console extends ServerConsole implements Runnable {
 	 */
 	public Console() {
 		setConsole(this);
-		
+
 		ConsoleListener listen = new ConsoleListener(this);
-		
+
 		window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setSize(675, 340);
@@ -279,15 +280,26 @@ public class Console extends ServerConsole implements Runnable {
 
 	private void loadCommands() {
 		CommandHandler perms = new PermissionCommand();
+		CommandHandler basic = new BasicCommand();
 		CommandExecutor.addCommand(new ExecutableCommand(new CommandInfo(
 				"permissions").addAlias("perms")
 				.setUsage("<task> [taskoptions]")
-				.setDescription("{l:cmd.perms.desc}").setCommandUsage(new CommandUsage().setMinimumArgs(1)), perms));
-		DefaultPermissions.setPermission("vc4.cm.perms.list", 1);
-		DefaultPermissions.setPermission("vc4.cm.perms.get", 1);
+				.setDescription("{l:cmd.perms.desc}")
+				.setCommandUsage(new CommandUsage().setMinimumArgs(1)), perms));
+		CommandExecutor
+				.addCommand(new ExecutableCommand(new CommandInfo("name")
+						.addAlias("nick")
+						.setUsage("<newname> [any]")
+						.setDescription("{l:cmd.name.desc}")
+						.setCommandUsage(
+								new CommandUsage().setMinimumArgs(1)
+										.setMaximumArgs(2)
+										.setRequiredCapabilities(0b1)), basic));
+		DefaultPermissions.setPermission("vc4.cmd.perms.list", 1);
+		DefaultPermissions.setPermission("vc4.cmd.perms.get", 1);
 	}
-	
-	public void stop(){
+
+	public void stop() {
 		Logger.getLogger("VC4").info("Server shutting down...");
 		UserManager.saveUsers();
 		ServerSettings.save();
