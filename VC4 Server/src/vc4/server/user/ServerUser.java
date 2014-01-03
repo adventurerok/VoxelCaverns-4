@@ -52,6 +52,7 @@ public class ServerUser extends Thread implements User{
 		return info;
 	}
 	
+	@Override
 	public String getChatName(){
 		return info.getChatName();
 	}

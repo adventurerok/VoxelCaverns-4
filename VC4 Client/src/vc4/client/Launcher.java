@@ -6,9 +6,7 @@ import org.lwjgl.Sys;
 
 import vc4.api.client.ClientLauncher;
 import vc4.api.client.ClientWindow;
-import vc4.api.logging.ChatBoxHandler;
-import vc4.api.logging.FileOutputHandler;
-import vc4.api.logging.Logger;
+import vc4.api.logging.*;
 import vc4.api.util.DirectoryLocator;
 import vc4.client.font.ClientFontRendererFactory;
 import vc4.client.graphics.*;
@@ -23,6 +21,7 @@ public class Launcher implements ClientLauncher{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		//System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 		if(args != null && args.length > 0 && args[0] != null){
 			if(args[0].equals("nosave")) VCH4SaveFormat.ENABLED = false;
 		}

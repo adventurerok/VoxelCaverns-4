@@ -59,10 +59,12 @@ public class ServerHandler extends Thread implements Server {
 		}
 	}
 	
+	@Override
 	public void sendPacket(Packet p){
 		sendPacket(p, null);
 	}
 	
+	@Override
 	public void sendPacket(Packet p, User exclude){
 		for(int d = 0; d < players.size(); ++d){
 			if(players.get(d) == exclude) continue;
