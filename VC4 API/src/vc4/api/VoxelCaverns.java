@@ -1,5 +1,6 @@
 package vc4.api;
 
+import vc4.api.client.Client;
 import vc4.api.server.Server;
 import vc4.api.world.World;
 
@@ -28,5 +29,13 @@ public abstract class VoxelCaverns {
 	
 	public static boolean isServer(){
 		return server != null;
+	}
+	
+	public static boolean isClient(){
+		return Client.getGame() != null;
+	}
+	
+	public static boolean hasGraphics() {
+		return isClient();
 	}
 }

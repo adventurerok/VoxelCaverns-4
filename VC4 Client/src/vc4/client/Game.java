@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+import org.jnbt.CompoundTag;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
@@ -22,8 +23,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.yaml.snakeyaml.Yaml;
 
-import vc4.api.GameState;
-import vc4.api.Resources;
+import vc4.api.*;
 import vc4.api.biome.Biome;
 import vc4.api.block.BlockFluid;
 import vc4.api.client.*;
@@ -46,6 +46,7 @@ import vc4.api.world.World;
 import vc4.api.yaml.ThreadYaml;
 import vc4.client.camera.PlayerController;
 import vc4.client.gui.*;
+import vc4.client.server.*;
 import vc4.client.sound.SoundManager;
 import vc4.impl.plugin.PluginManager;
 import vc4.impl.world.ImplWorld;
@@ -123,6 +124,7 @@ public class Game extends Component implements ClientGame {
 	private PlayerController camera;
 	
 	private Cursor cursor;
+	private Server server;
 
 	ChatBox chatBox;
 	
@@ -430,15 +432,7 @@ public class Game extends Component implements ClientGame {
 		cursor = getCursor("pointer");
 		currentMenu = menus.get("main");
 		add(chatBox = new ChatBox());
-		world = new ImplWorld("World");
-		world.loadWorld();
-		try {
-			world.saveInfo();
-		} catch (IOException e) {
-			Logger.getLogger(Game.class).warning("Exception occured", e);
-		}
-		player = world.loadPlayer("player");
-		camera = new PlayerController(player);
+		ServerMap.loadSuids();
 		gl = Graphics.getOpenGL();
 		ingameGui = new IngameGui();
 		add(ingameGui);
@@ -453,8 +447,10 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void unload() {
-		world.savePlayer(player);
-		world.unload();
+		if(world != null) {
+			world.savePlayer(player);
+			world.unload();
+		}
 		saveSettingsFile(DirectoryLocator.getPath() + "/settings/");
 		SoundManager.dispose();
 	}
@@ -544,8 +540,29 @@ public class Game extends Component implements ClientGame {
 				GameState n = GameState.valueOf(where.toUpperCase());
 				if (n == null) return;
 				gameState = n;
+				if(n == GameState.SINGLEPLAYER){
+					world = new ImplWorld("World");
+					world.loadWorld();
+					try {
+						world.saveInfo();
+					} catch (IOException e) {
+						Logger.getLogger(Game.class).warning("Exception occured", e);
+					}
+					player = world.loadPlayer("player");
+					camera = new PlayerController(player);
+					ingameGui.onWorldLoad();
+				}
 			} catch (Exception e) {
 				return;
+			}
+		} else if(action.startsWith("connect:")){
+			gameState = GameState.MULTIPLAYER;
+			String ip = action.substring(8);
+			try {
+				server = new Server(ip);
+				server.start();
+			} catch (IOException e) {
+				Logger.getLogger(Game.class).warning("Exception occured", e);
 			}
 		}
 		if (action.equals("back")) {
@@ -856,13 +873,36 @@ public class Game extends Component implements ClientGame {
 
 	@Override
 	public void handlePacket(Packet pack) {
-		
-		
+		try {
+			ClientPacketHandler.handlePacket(server, pack);
+		} catch (IOException e) {
+			Logger.getLogger(Game.class).warning("Error while handling packet:", e);
+		}
 	}
 
 	@Override
 	public ColorScheme getCurrentColorScheme() {
 		return getColorScheme(getColorSchemeSetting().getString());
+	}
+	
+	@Override
+	public CompoundTag getClientDetails(){
+		CompoundTag tag = new CompoundTag("client");
+		tag.setString("version", Version.VERSION);
+		tag.setString("name", "VC4 Server Debug/Testing Client");
+		tag.setByte("graphics", 1);
+		tag.setString("java", System.getProperty("java.version"));
+		tag.setString("zone", Calendar.getInstance().getTimeZone().getID());
+		tag.setInt("dst", Calendar.getInstance().getTimeZone().getDSTSavings());
+		//tag.setString("region", System.getProperty("user.region"));
+		//tag.setString("lang", System.getProperty("user.language"));
+		tag.setString("os", OS.getOs().name());
+		return tag;
+	}
+
+	@Override
+	public ClientServer getServer() {
+		return server;
 	}
 
 }

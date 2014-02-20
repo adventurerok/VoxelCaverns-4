@@ -80,6 +80,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 //		return Item.itemList[getId()].getItemStats(getDamage());
 //	}
 	public String getName(){
+		if(getItem() == null) return "null";
 		return getRarityColorCode() + getItem().getLocalizazedItemName(this);
 	}
 	
@@ -317,6 +318,7 @@ public class ItemStack implements Comparable<ItemStack>, Serializable{
 	 * @return The localized description of the Item
 	 */
 	public String getDescription(){
+		if(getItem() == null) return "A nice specimen of nullvoid";
 		String result = getItem().getLocalizedItemDescription(this);
 		return (result != null) ? "\n{c:8}\"" + result + "\"" : "";
 	}

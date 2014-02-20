@@ -33,4 +33,5 @@ gui:
         - "main"
         - "settings"
         - "worldselect"
+        - "multiplayer"
         

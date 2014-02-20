@@ -24,6 +24,10 @@ public class Client {
 		return _game.getPlayer();
 	}
 	
+	public static ClientServer getServer(){
+		return _game.getServer();
+	}
+	
 	/**
 	 * @param game the game to set
 	 */

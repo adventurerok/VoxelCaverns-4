@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import vc4.api.VoxelCaverns;
 import vc4.api.area.Area;
 import vc4.api.biome.*;
 import vc4.api.block.*;
@@ -333,8 +334,10 @@ public class Vanilla extends Plugin {
 
 	@Override
 	public void preWorldLoad(World world) {
-		BlockTexture.update();
-		ItemTexture.update();
+		if(VoxelCaverns.hasGraphics()){
+			BlockTexture.update();
+			ItemTexture.update();
+		}
 		biomes = new ArrayList<>();
 		for(int d = 0; d < BiomeType.getNumberOfTypes(); ++d) biomes.add(new ArrayList<Integer>());
 		try {

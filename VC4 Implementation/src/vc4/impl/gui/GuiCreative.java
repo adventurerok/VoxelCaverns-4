@@ -275,5 +275,10 @@ public class GuiCreative extends Component {
 //		}
 		super.update();
 	}
+	
+	public void reloadItems(){
+		inventory = new ContainerCreative();
+		recalculateDisplayLists();
+	}
 
 }

@@ -13,8 +13,8 @@ public class Vertex{
 		public Vertex(Vector3d position, Vector4f color, Vector4f tex) {
 			super();
 			this.position = position;
-			this.color = color;
-			this.tex = tex;
+			this.color = color.clone();
+			this.tex = tex.clone();
 		}
 
 

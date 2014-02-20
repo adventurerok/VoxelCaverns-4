@@ -21,6 +21,7 @@ import vc4.api.server.User;
 import vc4.api.text.Localization;
 import vc4.api.util.OS;
 import vc4.api.util.StringSplitter;
+import vc4.api.world.World;
 import vc4.impl.GameLoader;
 import vc4.tester.cmd.CommandListener;
 
@@ -382,6 +383,12 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 	public void windowDeactivated(WindowEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public World getWorld() {
+		return null;
 	}
 
 }

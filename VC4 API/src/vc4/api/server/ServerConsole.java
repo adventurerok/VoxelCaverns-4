@@ -3,6 +3,8 @@
  */
 package vc4.api.server;
 
+import vc4.api.world.World;
+
 /**
  * @author paul
  *
@@ -35,6 +37,8 @@ public abstract class ServerConsole{
 	 */
 	public void writeLine(String line) {
 	}
+	
+	public abstract World getWorld(); 
 
 	
 

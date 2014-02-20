@@ -325,3 +325,35 @@ VC4-Development-0.0.2-299
 	+ Suids now stored on the client
 VC4-Development-0.0.2-300
 	+ Added "name" command to change your chat name
+VC4-Development-0.0.2-301
+	+ Server now loads plugins
+VC4-Development-0.0.2-302
+	+ Experimental world loading
+VC4-Development-0.0.2-303
+	* Fixed world load crash bugs
+VC4-Development-0.0.2-304
+	+ Multiplayer button
+VC4-Development-0.0.2-305
+	+ Added basic multiplayer menu
+VC4-Development-0.0.2-306
+	* Fixed multiplayer menu
+VC4-Development-0.0.2-307
+	* Client only loads world when play is clicked
+VC4-Development-0.0.2-308
+	* Chat input and overlays now render in any game state
+VC4-Development-0.0.2-309
+	* Fixed glitchy rendering
+VC4-Development-0.0.2-310
+	+ Basic server handling in the client
+VC4-Development-0.0.2-311
+	* Fixed client crashing on recieving message from server
+VC4-Development-0.0.2-312
+	+ The client can now message the server
+VC4-Development-0.0.2-313
+	* Client now sends messages properly
+VC4-Development-0.0.2-314
+	* Client now renders black box around input when inputting
+VC4-Development-0.0.2-315
+	* Client no longer crashes when trying to input text
+VC4-Development-0.0.2-316
+	* Changed the size of the input box

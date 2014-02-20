@@ -3,29 +3,14 @@
  */
 package vc4.server;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.UIManager;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
+import javax.swing.*;
+import javax.swing.text.*;
 
-import vc4.api.cmd.Command;
-import vc4.api.cmd.CommandHandler;
-import vc4.api.cmd.CommandInfo;
-import vc4.api.cmd.CommandUsage;
-import vc4.api.cmd.ExecutableCommand;
+import vc4.api.cmd.*;
 import vc4.api.font.ChatColor;
 import vc4.api.logging.ConsoleHandler;
 import vc4.api.logging.Logger;
@@ -33,9 +18,12 @@ import vc4.api.permissions.DefaultPermissions;
 import vc4.api.server.ServerConsole;
 import vc4.api.text.Localization;
 import vc4.api.util.StringSplitter;
+import vc4.api.world.World;
 import vc4.impl.GameLoader;
 import vc4.impl.cmd.CommandExecutor;
+import vc4.impl.plugin.PluginManager;
 import vc4.impl.server.ConsoleUser;
+import vc4.impl.world.ImplWorld;
 import vc4.server.cmd.BasicCommand;
 import vc4.server.cmd.PermissionCommand;
 import vc4.server.gui.ConsoleListener;
@@ -54,6 +42,7 @@ public class Console extends ServerConsole implements Runnable {
 	public JFrame window;
 	public JTextPane output;
 	public JTextPane input;
+	public ImplWorld world;
 
 	ServerHandler serverHandler;
 
@@ -264,10 +253,7 @@ public class Console extends ServerConsole implements Runnable {
 	 */
 	@Override
 	public void run() {
-		window.setVisible(true);
-		ServerSettings.load();
-		UserManager.load();
-		loadCommands();
+		load();
 		try {
 			serverHandler = new ServerHandler();
 		} catch (IOException e) {
@@ -276,6 +262,29 @@ public class Console extends ServerConsole implements Runnable {
 			return;
 		}
 		serverHandler.start();
+	}
+	
+	public void load() {
+		window.setVisible(true);
+		new ServerVoxelCaverns();
+		ServerSettings.load();
+		UserManager.load();
+		loadCommands();
+		PluginManager.loadAndEnablePlugins();
+		loadWorld("World");
+		
+	}
+	
+	public void loadWorld(String name) {
+		Logger.getLogger("VC4").info("Loading world: " + name);
+		world = new ImplWorld(name);
+		world.loadWorld();
+		try {
+			world.saveInfo();
+		} catch (IOException e) {
+			Logger.getLogger(Console.class).warning("Failed to save world details", e);
+		}
+		Logger.getLogger("VC4").info("World loaded");
 	}
 
 	private void loadCommands() {
@@ -304,6 +313,11 @@ public class Console extends ServerConsole implements Runnable {
 		UserManager.saveUsers();
 		ServerSettings.save();
 		serverHandler.exit();
+	}
+
+	@Override
+	public World getWorld() {
+		return world;
 	}
 
 }

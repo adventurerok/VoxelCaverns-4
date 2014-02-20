@@ -111,12 +111,17 @@ public class ImplWorld implements World {
 	private static double WORLD_SECOND = 50;
 
 	private ZoomGenerator biomeLookup;
+	private boolean multiplayer = false;
 
 	/**
 	 * 
 	 */
 	public ImplWorld(String saveName) {
 		this.saveName = saveName;
+	}
+	
+	public ImplWorld(boolean server) {
+		multiplayer = server;
 	}
 
 	@Override
@@ -1300,6 +1305,7 @@ public class ImplWorld implements World {
 	@SuppressWarnings("unchecked")
 	public void updateTick(Vector3d loc) {
 		skyLight = calculateSkyLight();
+		if(multiplayer) return;
 		SpawnControl.updateTick(this);
 		for (EntityPlayer plr : players) {
 			plr.addTickSinceUpdate();

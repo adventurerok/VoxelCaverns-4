@@ -1,0 +1,22 @@
+gui:
+    name: "multiplayer"
+    type: "menu"
+    columns: 1
+    rows: 0
+    fontsize: 18
+    border: "fill"
+    button:
+        startx: 15
+        starty: 15
+        width: 246
+        height: 30
+        gapx: 15
+        gapy: 15
+localhost:
+    class: "button"
+    text: "menu.multiplayer.localhost"
+    action: "connect:localhost"
+back:
+    class: "button"
+    text: "menu.back"
+    action: "back"

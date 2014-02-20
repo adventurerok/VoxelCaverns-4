@@ -21,6 +21,9 @@ menu.settings.crosshair=Crosshair={0}
 menu.worlds.create=Create World
 menu.worlds.rename=Rename Selected
 menu.worlds.delete=Delete Selected
+menu.singleplayer=Play Singleplayer
+menu.multiplayer=Play Multiplayer
+menu.multiplayer.localhost=Connect to localhost
 
 gui.creative.pages=Page {0} of {1}
 

@@ -14,8 +14,12 @@ gui:
         gapy: 15
 play:
     class: "button"
-    text: "menu.play"
+    text: "menu.singleplayer"
     action: "goto:worldselect"
+multiplayer:
+    class: "button"
+    text: "menu.multiplayer"
+    action: "goto:multiplayer"
 settings:
     class: "button"
     text: "menu.settings"

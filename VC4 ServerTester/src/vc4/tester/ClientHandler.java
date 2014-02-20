@@ -67,10 +67,7 @@ public class ClientHandler extends Thread{
 		}
 	}
 	
-	public void close() throws IOException {
-		open = false;
-		socket.close();
-	}
+	
 
 	public Packet handlePacket(int id) {
 		try {
@@ -95,6 +92,11 @@ public class ClientHandler extends Thread{
 		out.writeBits(p.getId(), (short) 8);
 		p.write(out);
 		out.flush();
+	}
+	
+	public void close() throws IOException {
+		open = false;
+		socket.close();
 	}
 	
 }

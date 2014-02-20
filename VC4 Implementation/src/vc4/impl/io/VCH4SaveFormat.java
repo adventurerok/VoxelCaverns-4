@@ -303,7 +303,7 @@ public class VCH4SaveFormat implements SaveFormat {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void writeChunk(Chunk c, BitOutputStream bos) {
-		if (!ENABLED) return;
+		//if (!ENABLED) return;
 		Profiler.start("writechunk");
 		ImplChunk chunk = (ImplChunk) c;
 		String path = DirectoryLocator.getPath() + "/worlds/" + chunk.getWorld().getSaveName() + "/chunks/" + chunk.getChunkPos().y + "/" + chunk.getChunkPos().z + "/" + chunk.getChunkPos().x + ".vch4";
@@ -387,7 +387,7 @@ public class VCH4SaveFormat implements SaveFormat {
 	@SuppressWarnings("resource")
 	@Override
 	public Chunk readChunk(World world, BitInputStream bis) {
-		if (!ENABLED) return null;
+		//if (!ENABLED) return null;
 		ImplChunk chunk;
 		try {
 		DataInputStream in = new DataInputStream(bis.getInputStream());

@@ -3,6 +3,7 @@ package vc4.api.crafting;
 import java.util.*;
 
 import vc4.api.Resources;
+import vc4.api.VoxelCaverns;
 import vc4.api.item.ItemStack;
 
 public class CraftingManager {
@@ -13,6 +14,7 @@ public class CraftingManager {
 	private static Integer zero = Integer.valueOf(0);
 	
 	public static void setToolIcon(int tool, String icon){
+		if(!VoxelCaverns.hasGraphics()) return;
 		int ico = Resources.getAnimatedTexture("crafting").getArrayIndex(icon);
 		toolIcons.put(tool, ico);
 	}

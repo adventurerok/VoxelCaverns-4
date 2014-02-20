@@ -3,6 +3,8 @@
  */
 package vc4.api.client;
 
+import org.jnbt.CompoundTag;
+
 import vc4.api.GameState;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.gui.Component;
@@ -72,4 +74,6 @@ public interface ClientGame {
 	public Component getHoveringComponent();
 	public abstract World getWorld();
 	public abstract boolean guiVisible();
+	public CompoundTag getClientDetails();
+	public ClientServer getServer();
 }
