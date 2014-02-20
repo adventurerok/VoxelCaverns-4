@@ -128,6 +128,10 @@ public class BitInputStream implements Closeable{
 		return bit;
 	}
 	
+	public InputStream getInputStream() {
+		return iIs;
+	}
+	
 	public void mark(int readLimit){
 		iMarkedBit = iNextBit;
 		markData.clear();

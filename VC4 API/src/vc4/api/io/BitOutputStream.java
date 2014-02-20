@@ -61,10 +61,10 @@ public class BitOutputStream implements AutoCloseable{
 		if (iOs == null)
 			throw new IOException("Already closed");
  
-		if (aBit != 0 && aBit != 1)
-		{
-			throw new IOException(aBit + " is not a bit");
-		}
+//		if (aBit != 0 && aBit != 1) LAG - Not necessary as finished code should not send anything other than 0s and 1s
+//		{
+//			throw new IOException(aBit + " is not a bit");
+//		}
  
 		iBuffer |= aBit << iBitCount;
 		iBitCount++;
@@ -73,6 +73,10 @@ public class BitOutputStream implements AutoCloseable{
 		{
 			flush();
 		}
+	}
+	
+	public OutputStream getOutputStream() {
+		return iOs;
 	}
 	
 	/**

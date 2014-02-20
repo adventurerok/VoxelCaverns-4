@@ -157,6 +157,15 @@ public class VBTSaveFormat implements SaveFormat {
 		return null;
 	}
 
+	@Override
+	public void writeChunk(Chunk chunk, BitOutputStream out) {
+	}
+
+	@Override
+	public Chunk readChunk(World world, BitInputStream in) {
+		return null;
+	}
+
 	
 
 }

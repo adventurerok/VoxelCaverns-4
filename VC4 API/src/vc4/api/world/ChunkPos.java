@@ -76,6 +76,10 @@ public class ChunkPos {
 	public Vector3l worldPos(int cx, int cy, int cz){
 		return new Vector3l((x << 5) + cx, (y << 5) + cy, (z << 5) + cz);
 	}
+	
+	public Vector3l toVector3l(){
+		return new Vector3l(x, y, z);
+	}
 
 	/**
 	 * @param loc

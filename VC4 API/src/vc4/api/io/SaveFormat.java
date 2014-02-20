@@ -11,4 +11,6 @@ public interface SaveFormat {
 	public void writeChunk(Chunk chunk) throws IOException;
 	public MapData readMap(World world, long x, long z) throws IOException;
 	public void writeMap(World world, MapData map) throws IOException;
+	public void writeChunk(Chunk chunk, BitOutputStream out);
+	public Chunk readChunk(World world, BitInputStream in);
 }
