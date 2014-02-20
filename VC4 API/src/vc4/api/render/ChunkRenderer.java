@@ -129,17 +129,26 @@ public class ChunkRenderer implements Renderer {
 	 */
 	@Override
 	public void color(float r, float g, float b, float a){
-		color = new Vector4f(r, g, b, a);
+		color.x = r;
+		color.y = g;
+		color.z = b;
+		color.w = a;
 	}
 	
 	@Override
 	public void light(float r, float g, float b, boolean sky){
-		light = new Vector4f(r, g, b, sky ? 1 : 0);
+		light.x = r;
+		light.y = g;
+		light.z = b;
+		light.w = sky ? 1 : 0;
 	}
 	
 	@Override
 	public void color(double r, double g, double b, double a){
-		color = new Vector4f((float)r, (float)g, (float)b, (float)a);
+		color.x = (float)r;
+		color.y = (float)g;
+		color.z = (float)b;
+		color.w = (float)a;
 	}
 	
 	/* (non-Javadoc)
@@ -147,7 +156,10 @@ public class ChunkRenderer implements Renderer {
 	 */
 	@Override
 	public void tex(float s, float t, float r, float q){
-		tex = new Vector4f(s, t, r, q);
+		tex.x = s;
+		tex.y = t;
+		tex.z = r;
+		tex.w = q;
 	}
 	
 	/* (non-Javadoc)
@@ -155,7 +167,9 @@ public class ChunkRenderer implements Renderer {
 	 */
 	@Override
 	public void setTranslate(double x, double y, double z){
-		trans = new Vector3d(x, y, z);
+		trans.x = x;
+		trans.y = y;
+		trans.z = z;
 	}
 	
 	/* (non-Javadoc)
@@ -265,22 +279,34 @@ public class ChunkRenderer implements Renderer {
 
 	@Override
 	public void light(float r, float g, float b, float sky) {
-		light = new Vector4f(r, g, b, sky);
+		light.x = r;
+		light.y = g;
+		light.z = b;
+		light.w = sky;
 	}
 
 	@Override
 	public void light(Vector3f light, boolean sky) {
-		this.light = new Vector4f(light.x, light.y, light.z, sky ? 1 : 0);
+		this.light.x = light.x;
+		this.light.y = light.y;
+		this.light.z = light.z;
+		this.light.w = sky ? 1 : 0;
 	}
 
 	@Override
 	public void light(Vector3f light, float sky) {
-		this.light = new Vector4f(light.x, light.y, light.z, sky);
+		this.light.x = light.x;
+		this.light.y = light.y;
+		this.light.z = light.z;
+		this.light.w = sky;
 	}
 
 	@Override
 	public void tex(double s, double t, double r) {
-		tex = new Vector4f((float)s, (float)t, (float) r, 0);
+		tex.x = (float)s;
+		tex.y = (float)t;
+		tex.z = (float)r;
+		tex.w = 0;
 	}
 	
 
