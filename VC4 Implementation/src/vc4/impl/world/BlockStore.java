@@ -54,7 +54,7 @@ public class BlockStore {
 		return light;
 	}
 	
-	BlockStore(int xMod, int yMod, int zMod) {
+	public BlockStore(int xMod, int yMod, int zMod) {
 		super();
 		this.xMod = xMod;
 		this.yMod = yMod;
@@ -165,6 +165,7 @@ public class BlockStore {
 	}
 	
 	public void calculateData(Chunk c, MapData m){
+		if(m == null) return;
 		compileState = 1;
 		for(int d = 0; d < 3; ++d){
 			oldData[d] = currentData[d];

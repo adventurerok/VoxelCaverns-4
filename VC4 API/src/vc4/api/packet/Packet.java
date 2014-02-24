@@ -6,8 +6,8 @@ package vc4.api.packet;
 import java.io.IOException;
 import java.util.HashMap;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.*;
+import vc4.api.logging.Logger;
 
 /**
  * @author Paul Durbaba
@@ -17,8 +17,8 @@ public abstract class Packet {
 
 	private static HashMap<Integer, Class<? extends Packet>> loaded = new HashMap<Integer, Class<? extends Packet>>();
 	
-	public abstract void write(BitOutputStream out) throws IOException;
-	public abstract void read(BitInputStream in) throws IOException;
+	public abstract void write(SwitchOutputStream out) throws IOException;
+	public abstract void read(SwitchInputStream in) throws IOException;
 	public abstract int getId();
 	
 	public boolean processOnMain(){
@@ -28,7 +28,7 @@ public abstract class Packet {
 	public Packet(){
 		
 	}
-	public Packet(BitInputStream in){
+	public Packet(SwitchInputStream in){
 		try {
 			read(in);
 		} catch (IOException e) {
@@ -36,7 +36,12 @@ public abstract class Packet {
 		}
 	}
 	public static Packet get(int id) throws Exception{
-		return loaded.get(id).newInstance();
+		try{
+			return loaded.get(id).newInstance();
+		} catch(NullPointerException e){
+			Logger.getLogger(Packet.class).severe("Server sent unknown packet id: " + id);
+			return null;
+		}
 	}
 	
 	
@@ -57,6 +62,7 @@ public abstract class Packet {
 			register(Packet42SettingDouble.class);
 			register(Packet43SettingString.class);
 			register(Packet5Chat.class);
+			register(Packet6Chunk.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

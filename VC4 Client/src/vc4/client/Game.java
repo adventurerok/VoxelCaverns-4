@@ -44,7 +44,7 @@ import vc4.api.util.*;
 import vc4.api.vector.*;
 import vc4.api.world.World;
 import vc4.api.yaml.ThreadYaml;
-import vc4.client.camera.PlayerController;
+import vc4.client.camera.*;
 import vc4.client.gui.*;
 import vc4.client.server.*;
 import vc4.client.sound.SoundManager;
@@ -121,7 +121,7 @@ public class Game extends Component implements ClientGame {
 	private long currentMenu = 0;
 
 	private ImplWorld world;
-	private PlayerController camera;
+	private FPCamera camera;
 	
 	private Cursor cursor;
 	private Server server;
@@ -162,14 +162,14 @@ public class Game extends Component implements ClientGame {
 			resources.animatedTextureTick((int) tenTicks);
 			previousTenTicks = tenTicks;
 		}
-		if (gameState == GameState.SINGLEPLAYER) {
+		if (gameState == GameState.SINGLEPLAYER || gameState == GameState.MULTIPLAYER) {
 			getWindow().enterRenderMode(RenderType.GAME);
 			calculateFustrum();
 			camera.rotate();
-			world.drawBackground(player);
+			if(gameState == GameState.SINGLEPLAYER) world.drawBackground(player);
 			camera.translate();
 			world.draw(camera.getPosition());
-			player.drawCube();
+			if(gameState == GameState.SINGLEPLAYER) player.drawCube();
 		}
 		gl.disable(GLFlag.DEPTH_TEST);
 		getWindow().enterRenderMode(RenderType.GUI);
@@ -317,7 +317,7 @@ public class Game extends Component implements ClientGame {
 				if (mouseSet.getCurrent().rightButtomPressed()) player.rightMouseDown(delta);
 			}
 			if(!textFocus) player.updateInput();
-			world.update(camera.getPosition(), delta);
+			world.update(delta, camera.getPosition());
 			Audio.playMusic(world.getMusic(player));
 			if(!textFocus){
 				Keyboard keys = Input.getClientKeyboard();
@@ -447,7 +447,7 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void unload() {
-		if(world != null) {
+		if(world != null && server == null) {
 			world.savePlayer(player);
 			world.unload();
 		}
@@ -561,6 +561,8 @@ public class Game extends Component implements ClientGame {
 			try {
 				server = new Server(ip);
 				server.start();
+				world = new ImplWorld(true);
+				camera = new FPCameraController(0, 0, 0);
 			} catch (IOException e) {
 				Logger.getLogger(Game.class).warning("Exception occured", e);
 			}

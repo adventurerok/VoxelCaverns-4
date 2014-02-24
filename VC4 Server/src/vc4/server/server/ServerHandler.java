@@ -16,6 +16,7 @@ import vc4.api.packet.Packet1Disconnect;
 import vc4.api.server.Server;
 import vc4.api.server.User;
 import vc4.server.packet.PacketHandler;
+import vc4.server.task.TaskManager;
 import vc4.server.user.ServerUser;
 
 /**
@@ -52,7 +53,7 @@ public class ServerHandler extends Thread implements Server {
 				ServerUser player = new ServerUser(user, packetHandler);
 				players.add(player);
 				player.start();
-				player.writePacket(new Packet0Accept());
+				TaskManager.sendPackets(player, new Packet0Accept());
 			}
 		} catch (IOException e) {
 			Logger.getLogger(ServerHandler.class).warning("Error while accepting connection", e);
@@ -68,7 +69,7 @@ public class ServerHandler extends Thread implements Server {
 	public void sendPacket(Packet p, User exclude){
 		for(int d = 0; d < players.size(); ++d){
 			if(players.get(d) == exclude) continue;
-			players.get(d).writePacket(p);
+			TaskManager.sendPackets(players.get(d), p);
 		}
 	}
 

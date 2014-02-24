@@ -18,6 +18,7 @@ import vc4.api.permissions.DefaultPermissions;
 import vc4.api.server.ServerConsole;
 import vc4.api.text.Localization;
 import vc4.api.util.StringSplitter;
+import vc4.api.vector.Vector3d;
 import vc4.api.world.World;
 import vc4.impl.GameLoader;
 import vc4.impl.cmd.CommandExecutor;
@@ -29,6 +30,7 @@ import vc4.server.cmd.PermissionCommand;
 import vc4.server.gui.ConsoleListener;
 import vc4.server.server.ServerHandler;
 import vc4.server.server.ServerSettings;
+import vc4.server.task.TaskManager;
 import vc4.server.user.UserManager;
 
 /**
@@ -43,6 +45,7 @@ public class Console extends ServerConsole implements Runnable {
 	public JTextPane output;
 	public JTextPane input;
 	public ImplWorld world;
+	public boolean running = true;
 
 	ServerHandler serverHandler;
 
@@ -253,6 +256,7 @@ public class Console extends ServerConsole implements Runnable {
 	 */
 	@Override
 	public void run() {
+		new TaskManager().start();
 		load();
 		try {
 			serverHandler = new ServerHandler();
@@ -262,6 +266,27 @@ public class Console extends ServerConsole implements Runnable {
 			return;
 		}
 		serverHandler.start();
+		Thread logic = new Thread(){
+			@Override
+			public void run() {
+				try{
+					while(running){
+						long start = System.nanoTime();
+						updateTick();
+						long time = (System.nanoTime() - start) / 1000000;
+						if(time > 40) time = 40;
+						Thread.sleep(50 - time);
+					}
+				} catch(Exception e){
+					Logger.getLogger(Console.class).fatal("Main thread failed: ", e);
+				}
+			}
+		};
+		logic.start();
+	}
+	
+	public void updateTick() {
+		world.updateTick(new Vector3d(0, 0, 0));
 	}
 	
 	public void load() {
@@ -309,6 +334,7 @@ public class Console extends ServerConsole implements Runnable {
 	}
 
 	public void stop() {
+		running = false;
 		Logger.getLogger("VC4").info("Server shutting down...");
 		UserManager.saveUsers();
 		ServerSettings.save();

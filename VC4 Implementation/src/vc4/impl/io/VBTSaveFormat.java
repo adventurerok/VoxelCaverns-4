@@ -166,6 +166,16 @@ public class VBTSaveFormat implements SaveFormat {
 		return null;
 	}
 
+
+	@Override
+	public void writeNetworkBytes(Chunk chunk, SwitchOutputStream out) throws IOException {
+	}
+
+	@Override
+	public Chunk readNetworkBytes(World world, long x, long y, long z, SwitchInputStream in) throws IOException {
+		return null;
+	}
+
 	
 
 }

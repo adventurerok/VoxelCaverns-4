@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import vc4.api.entity.EntityPlayer;
-import vc4.api.logging.Logger;
 import vc4.api.world.World;
 
 public class SpawnControl {
@@ -19,7 +18,7 @@ public class SpawnControl {
 	static Random rand = new Random();
 	
 	static public void updateTick(World world){
-		if(world.getPlayers().isEmpty()) Logger.getLogger("SpawnControl").info("No players");
+		if(world.getPlayers().isEmpty()) return;
 		for(EntityPlayer p : world.getPlayers()){
 			for(int d = 0; d < 20; ++d) if(spawnAttempt(p)) break;
 		}

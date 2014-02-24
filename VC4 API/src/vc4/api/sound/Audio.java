@@ -2,6 +2,7 @@ package vc4.api.sound;
 
 import java.io.IOException;
 
+import vc4.api.VoxelCaverns;
 import vc4.api.entity.Entity;
 import vc4.api.vector.Vector3d;
 
@@ -38,7 +39,7 @@ public abstract class Audio {
 	 * @throws IOException If there is an io error
 	 */
 	public static void loadSound(String path) throws IOException{
-		audio.aloadSound(path);
+		if(VoxelCaverns.hasGraphics()) audio.aloadSound(path);
 	}
 	
 	/**
@@ -48,7 +49,7 @@ public abstract class Audio {
 	 * @throws IOException If there is an io error
 	 */
 	public static void loadMusic(String path) throws IOException{
-		audio.aloadMusic(path);
+		if(VoxelCaverns.hasGraphics()) audio.aloadMusic(path);
 	}
 	
 	/**
@@ -57,7 +58,7 @@ public abstract class Audio {
 	 * @param name The resourcedir path of the music track to play
 	 */
 	public static void playMusic(String name){
-		audio.aplayMusic(name);
+		if(VoxelCaverns.hasGraphics()) audio.aplayMusic(name);
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public abstract class Audio {
 	 * @param music The music object to play
 	 */
 	public static void playMusic(Music music){
-		audio.aplayMusic(music);
+		if(VoxelCaverns.hasGraphics()) audio.aplayMusic(music);
 	}
 	
 	/**
@@ -78,16 +79,16 @@ public abstract class Audio {
 	 * @param pitch The pitch to play the sound at
 	 */
 	public static void playSound(String name, float volume, float pitch){
-		audio.aplaySound(name, volume, pitch);
+		if(VoxelCaverns.hasGraphics()) audio.aplaySound(name, volume, pitch);
 	}
 	public static void playSound(String name, double x, double y, double z, float volume, float pitch){
-		audio.aplaySound(name, x, y, z, volume, pitch);
+		if(VoxelCaverns.hasGraphics()) audio.aplaySound(name, x, y, z, volume, pitch);
 	}
 	public static void playSound(String name, Vector3d pos, float volume, float pitch){
-		audio.aplaySound(name, pos.x, pos.y, pos.z, volume, pitch);
+		if(VoxelCaverns.hasGraphics()) audio.aplaySound(name, pos.x, pos.y, pos.z, volume, pitch);
 	}
 	public static void playSound(String name, Entity e, float volume, float pitch){
-		playSound(name, e.position, volume, pitch);
+		if(VoxelCaverns.hasGraphics()) playSound(name, e.position, volume, pitch);
 	}
 	
 }

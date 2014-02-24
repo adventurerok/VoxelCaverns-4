@@ -3,6 +3,8 @@ package vc4.api.io;
 import java.io.*;
 import java.util.Map.Entry;
 
+import org.jnbt.*;
+
 import vc4.api.logging.Logger;
 import vc4.api.map.BidiMap;
 
@@ -65,6 +67,31 @@ public class Dictionary {
 			out.println(e.getKey() + "=" + e.getValue());
 		}
 		out.close();
+	}
+	
+	public CompoundTag getSaveCompound(){
+		CompoundTag root = new CompoundTag("dict");
+		ListTag bidi = new ListTag("dict", CompoundTag.class);
+		for(Entry<String, Integer> e : dict.entrySet()){
+			CompoundTag k = new CompoundTag("entry");
+			k.setString("k", e.getKey());
+			k.setInt("v", e.getValue());
+			bidi.addTag(k);
+		}
+		root.addTag(bidi);
+		root.setInt("min", min);
+		root.setInt("max", max);
+		return root;
+	}
+	
+	public void load(CompoundTag root){
+		ListTag bidi = root.getListTag("dict");
+		while(bidi.hasNext()){
+			CompoundTag k = (CompoundTag) bidi.getNextTag();
+			put(k.getString("k"), k.getInt("v"));
+		}
+		min = root.getInt("min", 0);
+		max = root.getInt("max", Integer.MAX_VALUE);
 	}
 	
 	public void load(InputStream i){

@@ -2,8 +2,8 @@ package vc4.api.packet;
 
 import java.io.IOException;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.SwitchInputStream;
+import vc4.api.io.SwitchOutputStream;
 
 public class Packet41SettingInt extends Packet {
 	
@@ -13,13 +13,13 @@ public class Packet41SettingInt extends Packet {
 	int change;
 
 	@Override
-	public void write(BitOutputStream out) throws IOException {
+	public void write(SwitchOutputStream out) throws IOException {
 		out.writeInt(setting);
 		out.writeInt(change);
 	}
 
 	@Override
-	public void read(BitInputStream in) throws IOException {
+	public void read(SwitchInputStream in) throws IOException {
 		setting = in.readInt();
 		change = in.readInt();
 	}

@@ -31,7 +31,7 @@ public class ImplChunk implements Chunk {
 	private static LinkedList<Vector3i> stat_ilightPositions;
 	private static ChunkPos stat_ilightingChunk;
 	
-	BlockStore[] stores = new BlockStore[8];
+	public BlockStore[] stores = new BlockStore[8];
 	ChunkPos pos;
 	private ImplWorld world;
 	private boolean populated;

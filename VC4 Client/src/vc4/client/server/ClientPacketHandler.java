@@ -2,8 +2,12 @@ package vc4.client.server;
 
 import java.io.IOException;
 
+import vc4.api.VoxelCaverns;
 import vc4.api.client.Client;
+import vc4.api.logging.Logger;
 import vc4.api.packet.*;
+import vc4.api.world.ChunkPos;
+import vc4.impl.world.ImplWorld;
 
 public class ClientPacketHandler {
 	
@@ -14,11 +18,19 @@ public class ClientPacketHandler {
 		case Packet0Accept.ID: return handlePacketAccept(h, (Packet0Accept) p);
 		case Packet3SUID.ID: return handlePacketSUID(h, (Packet3SUID) p);
 		case Packet5Chat.ID: return handlePacketChat(h, (Packet5Chat) p);
+		case Packet6Chunk.ID: return handlePacketChunk(h, (Packet6Chunk) p);
 		case Packet30MessageString.ID: return handlePacketMsgString(h, (Packet30MessageString) p);
 		}
 		return true;
 	}
 	
+	private static boolean handlePacketChunk(Server h, Packet6Chunk p) {
+		ChunkPos pos = p.chunk.getChunkPos();
+		Logger.getLogger("VC4").info("Recieved chunk at: " + pos.x + ", " + pos.y + ", " + pos.z);
+		((ImplWorld)VoxelCaverns.getCurrentWorld()).addChunk(p.chunk);
+		return true;
+	}
+
 	public static boolean handlePacketChat(Server h, Packet5Chat p){
 		Client.getGame().printChatLine(p.prefix + p.name + ": " + p.msg);
 		return true;

@@ -134,5 +134,7 @@ public abstract class FPCamera {
 	 */
 	public void translate() {
 	}
+	
+	public abstract Vector3d getLook();
 
 }

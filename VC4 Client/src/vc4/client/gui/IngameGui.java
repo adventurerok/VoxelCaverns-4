@@ -111,10 +111,19 @@ public class IngameGui extends Component {
 					Command command = new Command(cmd, args, ClientUser.CLIENT_USER);
 					CommandExecutor.executeCommand(command);
 				} else if(Client.getGame().getGameState() == GameState.MULTIPLAYER){
-					try {
-						Client.getServer().writePacket(new Packet30MessageString(input));
-					} catch (IOException e) {
-						Logger.getLogger(IngameGui.class).warning("Failed to send chat to server", e);
+					if(input.startsWith("!")){
+						input = input.substring(1);
+						String[] parts = StringSplitter.splitString(input, false);
+						String cmd = parts[0];
+						String[] args = Arrays.copyOfRange(parts, 1, parts.length);
+						Command command = new Command(cmd, args, ClientUser.CLIENT_USER);
+						CommandExecutor.executeCommand(command);
+					} else {
+						try {
+							Client.getServer().writePacket(new Packet30MessageString(input));
+						} catch (IOException e) {
+							Logger.getLogger(IngameGui.class).warning("Failed to send chat to server", e);
+						}
 					}
 				}
 			}

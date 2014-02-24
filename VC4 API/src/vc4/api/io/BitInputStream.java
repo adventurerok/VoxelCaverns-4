@@ -17,7 +17,7 @@ import org.jnbt.Tag;
  *
  * @author Andreas Jakl
  */
-public class BitInputStream implements Closeable{
+public class BitInputStream implements Closeable, BitInput{
 	/**
 	 * The Java InputStream this class is working on.
 	 */
@@ -60,6 +60,7 @@ public class BitInputStream implements Closeable{
 	 * @return integer value containing the bits read from the stream.
 	 * @throws IOException
 	 */
+	@Override
 	synchronized public int readBits(final int aNumberOfBits) 
             throws IOException
 	{
@@ -81,6 +82,7 @@ public class BitInputStream implements Closeable{
 	 * @return integer value containing the bits read from the stream.
 	 * @throws IOException
 	 */
+	@Override
 	synchronized public long readLongBits(final int aNumberOfBits) 
             throws IOException
 	{
@@ -97,6 +99,7 @@ public class BitInputStream implements Closeable{
 	 * @return 0 if the bit is 0, 1 if the bit is 1.
 	 * @throws IOException
 	 */
+	@Override
 	synchronized public int readBit() throws IOException
 	{
 		if (iIs == null)
@@ -157,6 +160,7 @@ public class BitInputStream implements Closeable{
 	 * @return 0 if the bit is 0, 1 if the bit is 1.
 	 * @throws IOException
 	 */
+	@Override
 	synchronized public long readLongBit() throws IOException
 	{
 		if (iIs == null)
@@ -180,6 +184,7 @@ public class BitInputStream implements Closeable{
 		return bit;
 	}
 	
+	@Override
 	public String readString() throws IOException{
 		StringBuilder builder = new StringBuilder();
 		int i = readBits((short) 32);
@@ -202,23 +207,29 @@ public class BitInputStream implements Closeable{
 	}
 	
 	
+	@Override
 	public boolean readBoolean() throws IOException{
 		return readBit() == 1;
 	}
 	
+	@Override
 	public int readInt() throws IOException{
 		return readBits((short) 32);
 	}
 	
+	@Override
 	public long readLong() throws IOException{
 		return readLongBits((short) 64);
 	}
+	@Override
 	public short readShort() throws IOException{
 		return (short) readBits((short) 16);
 	}
+	@Override
 	public float readFloat() throws IOException{
 		return Float.intBitsToFloat(readInt());
 	}
+	@Override
 	public double readDouble() throws IOException{
 		return Double.longBitsToDouble(readLong());
 	}
@@ -234,10 +245,12 @@ public class BitInputStream implements Closeable{
 		iIs = null;
 	}
 
+	@Override
 	public byte readByte() throws IOException {
 		return (byte) readBits((short) 8);
 	}
 
+	@Override
 	public void readBytes(byte[] bytes) throws IOException {
 		for(int dofor = 0; dofor < bytes.length; ++dofor){
 			bytes[dofor] = readByte();
@@ -246,5 +259,15 @@ public class BitInputStream implements Closeable{
 	
 	public void skip(long bytes) throws IOException{
 		iIs.skip(bytes);
+	}
+
+	@Override
+	public void finish() throws IOException {
+		
+	}
+
+	@Override
+	public Tag readVBT() throws IOException {
+		return readNbt();
 	}
 }

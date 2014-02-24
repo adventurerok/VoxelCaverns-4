@@ -303,7 +303,7 @@ public class VCH4SaveFormat implements SaveFormat {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void writeChunk(Chunk c, BitOutputStream bos) {
-		//if (!ENABLED) return;
+		// if (!ENABLED) return;
 		Profiler.start("writechunk");
 		ImplChunk chunk = (ImplChunk) c;
 		String path = DirectoryLocator.getPath() + "/worlds/" + chunk.getWorld().getSaveName() + "/chunks/" + chunk.getChunkPos().y + "/" + chunk.getChunkPos().z + "/" + chunk.getChunkPos().x + ".vch4";
@@ -311,7 +311,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		file.getParentFile().mkdirs();
 		CompoundTag root = new CompoundTag("root");
 		root.addTag(CompoundTag.createVector3lTag("pos", chunk.getChunkPos().toVector3l()));
-		root.setBoolean("populated", chunk.isPopulated());
+		root.setByte("populated", chunk.isPopulated() ? 1 : 0);
 		ListTag elist = new ListTag("entitys", CompoundTag.class);
 		List<Entity> lis = (List<Entity>) c.getEntityList().clone();
 		for (int d = 0; d < lis.size(); ++d) {
@@ -340,7 +340,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		try {
 			DataOutputStream out = new DataOutputStream(bos.getOutputStream());
 			bos.writeNbt(root);
-			bos.flush();
+			//Logger.getLogger("TST").fine("IBC: " + bos.getBitCount());
 			for (int d = 0; d < 8; ++d) {
 				Profiler.start("blockstore");
 				BlockStore store = chunk.getBlockStore(d);
@@ -377,7 +377,7 @@ public class VCH4SaveFormat implements SaveFormat {
 					}
 				}
 			}
-			out.flush();
+			// out.flush();
 		} catch (Exception e) {
 			Logger.getLogger(VCH4SaveFormat.class).severe("Failed to write chunk", e);
 		}
@@ -387,14 +387,14 @@ public class VCH4SaveFormat implements SaveFormat {
 	@SuppressWarnings("resource")
 	@Override
 	public Chunk readChunk(World world, BitInputStream bis) {
-		//if (!ENABLED) return null;
+		// if (!ENABLED) return null;
 		ImplChunk chunk;
 		try {
-		DataInputStream in = new DataInputStream(bis.getInputStream());
+			DataInputStream in = new DataInputStream(bis.getInputStream());
 			CompoundTag root = (CompoundTag) new NBTInputStream(bis).readTag();
 			Vector3l chunkPos = root.getCompoundTag("pos").readVector3l();
 			chunk = new ImplChunk((ImplWorld) world, ChunkPos.create(chunkPos.x, chunkPos.y, chunkPos.z));
-			chunk.setPopulated(root.getBoolean("populated", false));
+			chunk.setPopulated(root.getByte("populated", 0) == 1 ? true : false);
 			if (root.hasKey("entitys")) {
 				ListTag elist = root.getListTag("entitys");
 				while (elist.hasNext()) {
@@ -455,11 +455,63 @@ public class VCH4SaveFormat implements SaveFormat {
 					}
 				}
 			}
-		} catch (Exception e){
+		} catch (Exception e) {
 			Logger.getLogger(VCH4SaveFormat.class).severe("Failed to read chunk", e);
 			return null;
 		}
 		return chunk;
+	}
+
+	@Override
+	public void writeNetworkBytes(Chunk chunk, SwitchOutputStream out) throws IOException {
+		out.startDeflateMode();
+		ImplChunk c = (ImplChunk) chunk;
+		int idat;
+		for(int d = 0; d < 8; ++d){
+			BlockStore store = c.getBlockStore(d);
+			int dinfo = 0;
+			if(store.blocks != null) dinfo |= 1;
+			if(store.data != null) dinfo |= 2;
+			out.writeByte((byte) dinfo);
+			if(store.blocks != null && store.data != null){
+				for(int i = 0; i < 4096; ++i){
+					idat = store.blocks[i] + (store.data[i] << 11);
+					out.writeShort(idat);
+				}
+			}
+			if(store.blocks != null) {
+				for(int i = 0; i < 4096; ++i){
+					out.writeShort(store.blocks[i]);
+				}
+			}
+		}
+		out.endDeflateMode();
+	}
+
+	@Override
+	public Chunk readNetworkBytes(World world, long x, long y, long z, SwitchInputStream in) throws IOException{
+		ImplChunk c = new ImplChunk((ImplWorld) world, ChunkPos.create(x, y, z));
+		in.readDeflated();
+		short idat;
+		for(int d = 0; d < 8; ++d) {
+			BlockStore s = new BlockStore((d >> 2) << 4, ((d >> 1) & 1) << 4, (d & 1) << 4);
+			int dinfo = in.readByte();
+			if((dinfo & 1) != 0) s.blocks = new short[4096];
+			if((dinfo & 2) != 0) s.data = new byte[4096];
+			if((dinfo & 3) == 3){
+				for(int i = 0; i < 4096; ++i){
+					idat = in.readShort();
+					s.blocks[i] = (short) (idat & 2047);
+					s.data[i] = (byte) (idat >> 11);
+				}
+			} else if((dinfo & 1) == 1) {
+				for(int i = 0; i < 4096; ++i){
+					s.blocks[i] = in.readShort();
+				}
+			}
+		}
+		Logger.getLogger("VC4").fine("In inflate mode: " + in.inInflateMode());
+		return c;
 	}
 
 }

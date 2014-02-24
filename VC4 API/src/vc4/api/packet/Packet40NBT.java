@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.jnbt.Tag;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.SwitchInputStream;
+import vc4.api.io.SwitchOutputStream;
 
 public class Packet40NBT extends Packet {
 	
@@ -15,21 +15,22 @@ public class Packet40NBT extends Packet {
 	 * Type Index:
 	 * 	0	Client details
 	 * 	1	Server details
+	 *  2	Dictionary
 	 */
 	
 	public short type;
 	public Tag tag;
 
 	@Override
-	public void write(BitOutputStream out) throws IOException {
+	public void write(SwitchOutputStream out) throws IOException {
 		out.writeShort(type);
-		out.writeNbt(tag);
+		out.writeVBT(tag);
 	}
 
 	@Override
-	public void read(BitInputStream in) throws IOException {
+	public void read(SwitchInputStream in) throws IOException {
 		type = in.readShort();
-		tag = in.readNbt();
+		tag = in.readVBT();
 	}
 	
 	public Tag getTag() {

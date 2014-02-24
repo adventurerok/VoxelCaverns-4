@@ -6,16 +6,15 @@ import java.net.*;
 
 import vc4.api.client.Client;
 import vc4.api.client.ClientServer;
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.*;
 import vc4.api.logging.Logger;
 import vc4.api.packet.Packet;
 
 public class Server extends Thread implements ClientServer{
 
 	public Socket socket;
-	BitInputStream in;
-	BitOutputStream out;
+	SwitchInputStream in;
+	SwitchOutputStream out;
 	private boolean open = true;
 	
 	public Server(String host) throws UnknownHostException, IOException{
@@ -29,15 +28,15 @@ public class Server extends Thread implements ClientServer{
 			} catch(Exception e){}
 		}
 		socket = new Socket(address, port);
-		out = new BitOutputStream(socket.getOutputStream());
-		in = new BitInputStream(socket.getInputStream());
+		out = new SwitchOutputStream(socket.getOutputStream());
+		in = new SwitchInputStream(socket.getInputStream());
 		setDaemon(true);
 	}
 	
 	public Server(String ip, int port) throws UnknownHostException, IOException{
 		socket = new Socket(ip, port);
-		out = new BitOutputStream(socket.getOutputStream());
-		in = new BitInputStream(socket.getInputStream());
+		out = new SwitchOutputStream(socket.getOutputStream());
+		in = new SwitchInputStream(socket.getInputStream());
 	}
 	
 	@Override
@@ -62,9 +61,9 @@ public class Server extends Thread implements ClientServer{
 	
 	@Override
 	public void writePacket(Packet pack) throws IOException{
+		Logger.getLogger("VC4").fine("Sending packet id: " + pack.getId());
 		out.writeByte((byte) pack.getId());
 		pack.write(out);
-		//out.flush();
 	}
 	
 	@Override

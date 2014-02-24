@@ -5,12 +5,10 @@ package vc4.tester;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.SwitchInputStream;
+import vc4.api.io.SwitchOutputStream;
 import vc4.api.logging.Logger;
 import vc4.api.packet.Packet;
 import vc4.tester.packet.PacketHandler;
@@ -25,8 +23,8 @@ public class ClientHandler extends Thread{
 
 	private Socket socket;
 	private boolean open = true;
-	private BitInputStream in;
-	private BitOutputStream out;
+	private SwitchInputStream in;
+	private SwitchOutputStream out;
 	
 	public ClientHandler(String ip) throws UnknownHostException, IOException{
 		Logger.getLogger("TST").info("Connecting to " + ip);
@@ -39,8 +37,8 @@ public class ClientHandler extends Thread{
 			} catch(Exception e){}
 		}
 		socket = new Socket(address, port);
-		out = new BitOutputStream(socket.getOutputStream());
-		in = new BitInputStream(socket.getInputStream());
+		out = new SwitchOutputStream(socket.getOutputStream());
+		in = new SwitchInputStream(socket.getInputStream());
 		setDaemon(true);
 	}
 	
@@ -89,9 +87,8 @@ public class ClientHandler extends Thread{
 	}
 	
 	public void sendPacket(Packet p) throws IOException{
-		out.writeBits(p.getId(), (short) 8);
+		out.writeByte(p.getId());
 		p.write(out);
-		out.flush();
 	}
 	
 	public void close() throws IOException {

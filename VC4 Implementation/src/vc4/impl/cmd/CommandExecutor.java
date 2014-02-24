@@ -23,50 +23,12 @@ public class CommandExecutor implements CommandHandler {
 	static CommandExecutor handle = new CommandExecutor();
 
 	static {
-		addCommand(new ExecutableCommand(new CommandInfo("teleport")
-				.setUsage("<x> <y> <z>")
-				.setDescription("{l:cmd.tp.desc}")
-				.addAlias("tp")
-				.setCommandUsage(
-						new CommandUsage()
-								.setRequiredCapabilities(0b10)
-								.setMinimumArgs(3)
-								.setMaximumArgs(3)
-								.setPermissions("vc4.cmd.tp")
-								.setArgumentChecks(CommandArgument.DOUBLE,
-										CommandArgument.DOUBLE,
-										CommandArgument.DOUBLE)), handle));
-		addCommand(new ExecutableCommand(new CommandInfo("sound")
-				.setUsage("<name> [volume] [pitch]")
-				.setDescription("{l:cmd.sound.desc}")
-				.setCommandUsage(
-						new CommandUsage()
-								.setRequiredCapabilities(0b10)
-								.setMinimumArgs(1)
-								.setMaximumArgs(3)
-								.setArgumentChecks(CommandArgument.STRING,
-										CommandArgument.DOUBLE,
-										CommandArgument.DOUBLE)), handle));
-		addCommand(new ExecutableCommand(
-				new CommandInfo("log")
-						.setUsage("<name> <level> <message>")
-						.setDescription("{l:cmd.log.desc}")
-						.setCommandUsage(
-								new CommandUsage().setMinimumArgs(3)
-										.setArgumentChecks(
-												CommandArgument.STRING,
-												CommandArgument.STRING)),
-				handle));
-		addCommand(new ExecutableCommand(new CommandInfo("broadcast")
-				.setUsage("[message]")
-				.setDescription("{l:cmd.broadcast.desc}")
-				.setCommandUsage(
-						new CommandUsage().setMinimumArgs(0).setPermissions(
-								"vc4.cmd.broadcast")), handle));
-		addCommand(new ExecutableCommand(new CommandInfo("print")
-				.addAlias("echo").setUsage("[message]")
-				.setDescription("{l:cmd.print.desc}")
-				.setCommandUsage(new CommandUsage().setMinimumArgs(0)), handle));
+		addCommand(new ExecutableCommand(new CommandInfo("teleport").setUsage("<x> <y> <z>").setDescription("{l:cmd.tp.desc}").addAlias("tp").setCommandUsage(new CommandUsage().setRequiredCapabilities(0b10).setMinimumArgs(3).setMaximumArgs(3).setPermissions("vc4.cmd.tp").setArgumentChecks(CommandArgument.DOUBLE, CommandArgument.DOUBLE, CommandArgument.DOUBLE)), handle));
+		addCommand(new ExecutableCommand(new CommandInfo("sound").setUsage("<name> [volume] [pitch]").setDescription("{l:cmd.sound.desc}").setCommandUsage(new CommandUsage().setRequiredCapabilities(0b10).setMinimumArgs(1).setMaximumArgs(3).setArgumentChecks(CommandArgument.STRING, CommandArgument.DOUBLE, CommandArgument.DOUBLE)), handle));
+		addCommand(new ExecutableCommand(new CommandInfo("log").setUsage("<name> <level> <message>").setDescription("{l:cmd.log.desc}").setCommandUsage(new CommandUsage().setMinimumArgs(3).setArgumentChecks(CommandArgument.STRING, CommandArgument.STRING)), handle));
+		addCommand(new ExecutableCommand(new CommandInfo("broadcast").setUsage("[message]").setDescription("{l:cmd.broadcast.desc}").setCommandUsage(new CommandUsage().setMinimumArgs(0).setPermissions("vc4.cmd.broadcast")), handle));
+		addCommand(new ExecutableCommand(new CommandInfo("print").addAlias("echo").setUsage("[message]").setDescription("{l:cmd.print.desc}").setCommandUsage(new CommandUsage().setMinimumArgs(0)), handle));
+		addCommand(new ExecutableCommand(new CommandInfo("getblock").setUsage("<x> <y> <z>").setCommandUsage(new CommandUsage().setMaximumArgs(3).setMinimumArgs(3).setArgumentChecks(CommandArgument.INTEGER, CommandArgument.INTEGER, CommandArgument.INTEGER)), handle));
 	}
 
 	public static void addCommand(ExecutableCommand cmd) {
@@ -83,37 +45,36 @@ public class CommandExecutor implements CommandHandler {
 				PluginManager.handleCommand(command);
 				return;
 			}
-			if (!e.getInfo().getCommandUsage().check(command))
-				return;
+			if (!e.getInfo().getCommandUsage().check(command)) return;
 			e.getHandler().handleCommand(command);
 		} catch (Exception e) {
 			command.getSender().message("{l:cmd.fail}");
-			Logger.getLogger("VC4").warning(
-					"Failed to execute command \"" + command.getCommand()
-							+ "\"", e);
+			Logger.getLogger("VC4").warning("Failed to execute command \"" + command.getCommand() + "\"", e);
 		}
 	}
 
 	@Override
 	public void handleCommand(Command command) {
 		switch (command.getCommand().toLowerCase()) {
-		case "teleport":
-		case "tp":
-			handleCommand_tp(command);
-			return;
-		case "log":
-			handleCommand_log(command);
-			return;
-		case "sound":
-			handleCommand_sound(command);
-			return;
-		case "broadcast":
-			handleCommand_broadcast(command);
-			return;
-		case "echo":
-		case "print":
-			handleCommand_print(command);
-			return;
+			case "teleport":
+			case "tp":
+				handleCommand_tp(command);
+				return;
+			case "log":
+				handleCommand_log(command);
+				return;
+			case "sound":
+				handleCommand_sound(command);
+				return;
+			case "broadcast":
+				handleCommand_broadcast(command);
+				return;
+			case "echo":
+			case "print":
+				handleCommand_print(command);
+			case "getblock":
+				handleCommand_getBlock(command);
+				return;
 		}
 	}
 
@@ -122,8 +83,17 @@ public class CommandExecutor implements CommandHandler {
 		double y = command.getArgAsDouble(1, 0);
 		double z = command.getArgAsDouble(2, 0);
 		command.getSender().getPlayer().teleport(x, y, z);
-		command.getSender().message(
-				"{l:cmd.tp.done," + x + "," + y + "," + z + "}");
+		command.getSender().message("{l:cmd.tp.done," + x + "," + y + "," + z + "}");
+	}
+
+	private void handleCommand_getBlock(Command command) {
+		long x = command.getArgAsInt(0, 0);
+		long y = command.getArgAsInt(1, 0);
+		long z = command.getArgAsInt(2, 0);
+		int id = VoxelCaverns.getCurrentWorld().getBlockId(x, y, z);
+		int data = VoxelCaverns.getCurrentWorld().getBlockData(x, y, z);
+		int light = VoxelCaverns.getCurrentWorld().getBlockLight(x, y, z);
+		command.getSender().message("Block: " + id + ":" + data + ", Light: " + light);
 	}
 
 	private void handleCommand_sound(Command command) {

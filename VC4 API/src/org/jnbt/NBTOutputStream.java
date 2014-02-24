@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
+import vc4.api.io.BitOutput;
 import vc4.api.io.BitOutputStream;
 
 /*
@@ -55,9 +56,9 @@ public final class NBTOutputStream implements Closeable {
 	/**
 	 * The output stream.
 	 */
-	private final BitOutputStream os;
+	private final BitOutput os;
 	
-	public NBTOutputStream(BitOutputStream os){
+	public NBTOutputStream(BitOutput os){
 		this.os = os;
 	}
 	

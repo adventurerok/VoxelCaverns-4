@@ -17,7 +17,7 @@ public class GeneratorThread extends Thread {
 	public static ImplWorld world;
 	public static boolean stop;
 	public static boolean generate = true;
-	public static Vector3d location;
+	public static Vector3d[] locations;
 	public ConcurrentLinkedQueue<ImplChunk> generated = new ConcurrentLinkedQueue<>();
 	public ConcurrentLinkedQueue<ImplMapData> newData = new ConcurrentLinkedQueue<>();
 	public ConcurrentLinkedQueue<ImplChunk> toSave = new ConcurrentLinkedQueue<>();
@@ -37,7 +37,7 @@ public class GeneratorThread extends Thread {
 			start = System.nanoTime();
 			if(world.loaded){
 				save();
-				if(generate) generate(location);
+				if(generate) generate(locations);
 			}
 			time = System.nanoTime() - start;
 			time /= 1000000;
@@ -66,16 +66,20 @@ public class GeneratorThread extends Thread {
 		Profiler.stop();
 	}
 
-	public void generate(Vector3d loc){
+	public void generate(Vector3d...loc){
+		if(loc == null || loc.length == 0) return;
 		Profiler.start("load");
 		Profiler.start("find");
 		ArrayList<ChunkPos> closestToLoad = new ArrayList<>();
-		ChunkPos me = ChunkPos.createFromWorldVector(loc);
-		int y, z;
-		for (int x = -ImplWorld.CHUNK_RANGE; x <= ImplWorld.CHUNK_RANGE; ++x) {
-			for (y = -ImplWorld.CHUNK_RANGE; y <= ImplWorld.CHUNK_RANGE; ++y) {
-				for (z = -ImplWorld.CHUNK_RANGE; z <= ImplWorld.CHUNK_RANGE; ++z) {
-					checkLoad(loc, me, x, y, z, closestToLoad);
+		int li = 0;
+		for(li = 0; li < loc.length; ++li) {
+			ChunkPos me = ChunkPos.createFromWorldVector(loc[li]);
+			int y, z;
+			for (int x = -ImplWorld.CHUNK_RANGE; x <= ImplWorld.CHUNK_RANGE; ++x) {
+				for (y = -ImplWorld.CHUNK_RANGE; y <= ImplWorld.CHUNK_RANGE; ++y) {
+					for (z = -ImplWorld.CHUNK_RANGE; z <= ImplWorld.CHUNK_RANGE; ++z) {
+						checkLoad(loc[li], me, x, y, z, closestToLoad);
+					}
 				}
 			}
 		}

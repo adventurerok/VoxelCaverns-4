@@ -166,6 +166,7 @@ public class PlayerController extends FPCamera {
 		GL11.glTranslated(-pos.x, -pos.y, -pos.z);
 	}
 
+	@Override
 	public Vector3d getLook() {
 		double f = Math.cos(-player.moveYaw * 0.01745329F - Math.PI);
 		double f2 = Math.sin(-player.moveYaw * 0.01745329F - Math.PI);

@@ -1,6 +1,7 @@
 package vc4.api;
 
 import vc4.api.client.Client;
+import vc4.api.io.SaveFormat;
 import vc4.api.server.Server;
 import vc4.api.world.World;
 
@@ -38,4 +39,10 @@ public abstract class VoxelCaverns {
 	public static boolean hasGraphics() {
 		return isClient();
 	}
+	
+	public static SaveFormat getSaveFormat() {
+		return inst.agetSaveFormat();
+	}
+	
+	public abstract SaveFormat agetSaveFormat();
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.jnbt.CompoundTag;
 
 import vc4.api.Resources;
+import vc4.api.VoxelCaverns;
 import vc4.api.client.Client;
 import vc4.api.entity.ai.AI;
 import vc4.api.entity.ai.MovementHandler;
@@ -41,7 +42,7 @@ public abstract class EntityLiving extends Entity {
 	public EntityLiving(World world) {
 		super(world);
 		moveHandler = new MovementHandler(this);
-		if (font == null) font = FontRenderer.createFontRenderer("unispaced_24", 0.15f);
+		if (font == null && VoxelCaverns.hasGraphics()) font = FontRenderer.createFontRenderer("unispaced_24", 0.15f);
 	}
 	
 	public void dropItem(ItemStack drop){

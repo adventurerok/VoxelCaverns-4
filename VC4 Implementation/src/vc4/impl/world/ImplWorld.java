@@ -5,6 +5,7 @@ package vc4.impl.world;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.jnbt.*;
 
@@ -112,6 +113,8 @@ public class ImplWorld implements World {
 
 	private ZoomGenerator biomeLookup;
 	private boolean multiplayer = false;
+	
+	private ConcurrentLinkedDeque<ImplChunk> chunksToAdd = new ConcurrentLinkedDeque<>();
 
 	/**
 	 * 
@@ -195,7 +198,7 @@ public class ImplWorld implements World {
 		GeneratorThread.world = this;
 		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
 		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
-		GeneratorThread.location = new Vector3d(0, 0, 0);
+		GeneratorThread.locations = new Vector3d[0];
 		GeneratorThread.maxNum = num - 1;
 		genThreads = new GeneratorThread[num];
 		for (int d = 0; d < num; ++d) {
@@ -262,6 +265,10 @@ public class ImplWorld implements World {
 
 	public void removePlayer(EntityPlayer player) {
 		players.remove(player);
+	}
+	
+	public void addChunk(Chunk chunk){
+		chunksToAdd.add((ImplChunk)chunk);
 	}
 
 	public void draw(Vector3d pos) {
@@ -856,14 +863,22 @@ public class ImplWorld implements World {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void infiniteWorld(Vector3d loc) {
+	public void infiniteWorld(Vector3d...loc) {
 		Profiler.start("generation");
 		Profiler.start("remove");
 		ArrayList<ImplChunk> toRemove = new ArrayList<>();
 		ArrayList<ImplChunk> toPopulate = new ArrayList<>();
 		ArrayList<ImplChunk> toLight = new ArrayList<>();
+		int li = 0;
+		boolean unload = true;
 		for (ImplChunk c : chunks.values()) {
-			if (c.distanceSquared(loc) > RENDER_DISTANCE_SQUARED) {
+			unload = true;
+			for(li = 0; li < loc.length; ++li){
+				if (c.distanceSquared(loc[li]) <= RENDER_DISTANCE_SQUARED) {
+					unload = false;
+				}
+			}
+			if(unload) {
 				c.setUnloading(true);
 				c.removeGraphics();
 				toRemove.add(c);
@@ -875,7 +890,7 @@ public class ImplWorld implements World {
 		Profiler.stopStart("load");
 		ImplChunk cnk;
 		ImplMapData dta;
-		GeneratorThread.location = loc.clone();
+		GeneratorThread.locations = Arrays.copyOf(loc, loc.length);
 		for (int d = 0; d < genThreads.length; ++d) {
 			while ((dta = genThreads[d].newData.poll()) != null) {
 				if (heights.get(dta.getPosition()) != null) continue;
@@ -888,12 +903,20 @@ public class ImplWorld implements World {
 				chunks.put(cnk.pos, cnk);
 			}
 		}
+		while((cnk = chunksToAdd.poll()) != null){
+			if (chunks.get(cnk.pos) != null) continue;
+			chunks.put(cnk.pos, cnk);
+		}
 		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
 		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
 		Profiler.stopStart("killmapdata");
 		ArrayList<MapData> deadData = new ArrayList<>();
 		for (ImplMapData d : heights.values()) {
-			if (d.distanceSquared(loc) > RENDER_RANGE_SQUARED) {
+			unload = true;
+			for(li = 0; li < loc.length; ++li){
+				if (d.distanceSquared(loc[li]) <= RENDER_RANGE_SQUARED) unload = false;
+			}
+			if(unload){
 				deadData.add(d);
 			}
 		}
@@ -1288,7 +1311,7 @@ public class ImplWorld implements World {
 
 	}
 
-	public void update(Vector3d loc, double delta) {
+	public void update(double delta, Vector3d...loc) {
 		tickTime += delta;
 		int amt = 0;
 		while (tickTime >= WORLD_SECOND && amt < 2) {
@@ -1303,7 +1326,7 @@ public class ImplWorld implements World {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void updateTick(Vector3d loc) {
+	public void updateTick(Vector3d...loc) {
 		skyLight = calculateSkyLight();
 		if(multiplayer) return;
 		SpawnControl.updateTick(this);
@@ -1629,6 +1652,7 @@ public class ImplWorld implements World {
 
 	@Override
 	public Chunk loadChunk(ChunkPos pos) {
+		if(chunks.containsKey(pos)) return chunks.get(pos);
 		ImplChunk c = null;
 		try {
 			c = (ImplChunk) getSaveFormat().readChunk(this, pos.x, pos.y, pos.z);
@@ -1638,7 +1662,11 @@ public class ImplWorld implements World {
 		if (c != null) {
 			chunks.put(pos, c);
 			return c;
-		} else return generateChunk(pos);
+		} else {
+			c = (ImplChunk) generateChunk(pos);
+			chunks.put(pos, c);
+			return c;
+		}
 	}
 
 	@Override

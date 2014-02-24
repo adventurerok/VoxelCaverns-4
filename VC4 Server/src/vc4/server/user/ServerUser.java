@@ -6,8 +6,7 @@ import java.net.Socket;
 import org.jnbt.CompoundTag;
 
 import vc4.api.entity.EntityPlayer;
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.*;
 import vc4.api.logging.Logger;
 import vc4.api.packet.Packet;
 import vc4.api.packet.Packet30MessageString;
@@ -23,8 +22,8 @@ public class ServerUser extends Thread implements User{
 	
 	private PacketHandler handler;
 	protected Socket socket;
-	private BitInputStream input;
-	private BitOutputStream output;
+	private SwitchInputStream input;
+	private SwitchOutputStream output;
 	private boolean connected = true;
 	private boolean accepted = false;
 	private long timer = 0;
@@ -39,8 +38,8 @@ public class ServerUser extends Thread implements User{
 		super();
 		this.socket = socket;
 		try {
-			output = new BitOutputStream(socket.getOutputStream());
-			input = new BitInputStream(socket.getInputStream());
+			output = new SwitchOutputStream(socket.getOutputStream());
+			input = new SwitchInputStream(socket.getInputStream());
 		} catch (IOException e) {
 			Logger.getLogger(ServerUser.class).warning("Failed to create output streams for player", e);
 		}
@@ -69,6 +68,7 @@ public class ServerUser extends Thread implements User{
 		try {
 			while(connected){
 				int pid = input.readByte();
+				Logger.getLogger("VC4").fine("Recieved Packet id: " + pid);
 				if(pid == -1){
 					Logger.getLogger("VC4").info("Recieved end of stream");
 					break;
@@ -107,6 +107,7 @@ public class ServerUser extends Thread implements User{
 		try {
 			output.writeByte((byte) p.getId());
 			p.write(output);
+			//output.clearOutput();
 			return true;
 		} catch (IOException e) {
 			Logger.getLogger(ServerUser.class).warning("Failed to write package (id=" + p.getId() + ")", e);

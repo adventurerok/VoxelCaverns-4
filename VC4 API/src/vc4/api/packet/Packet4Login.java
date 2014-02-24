@@ -2,8 +2,8 @@ package vc4.api.packet;
 
 import java.io.IOException;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.SwitchInputStream;
+import vc4.api.io.SwitchOutputStream;
 
 public class Packet4Login extends Packet{
 	
@@ -12,14 +12,14 @@ public class Packet4Login extends Packet{
 	public byte[] uid;
 
 	@Override
-	public void write(BitOutputStream out) throws IOException {
-		out.writeBytes(uid);
+	public void write(SwitchOutputStream out) throws IOException {
+		out.write(uid, 0, uid.length);
 	}
 
 	@Override
-	public void read(BitInputStream in) throws IOException {
+	public void read(SwitchInputStream in) throws IOException {
 		uid = new byte[16];
-		in.readBytes(uid);
+		in.read(uid, 0, 16);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import vc4.api.block.Block;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.stats.Stats;
 import vc4.api.text.Localization;
@@ -133,6 +134,7 @@ public class Item {
 	
 	public static void clearItems(){
 		itemsList = new Item[65536];
+		addItemBlock(Block.stone.uid);
 	}
 	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> res = new ArrayList<>();

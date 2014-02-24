@@ -2,8 +2,8 @@ package vc4.api.packet;
 
 import java.io.IOException;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.SwitchInputStream;
+import vc4.api.io.SwitchOutputStream;
 
 public class Packet3SUID extends Packet {
 
@@ -25,16 +25,16 @@ public class Packet3SUID extends Packet {
 	public byte[] suid;
 	
 	@Override
-	public void write(BitOutputStream out) throws IOException {
+	public void write(SwitchOutputStream out) throws IOException {
 		out.writeByte(message);
-		out.writeBytes(suid);
+		out.write(suid, 0, suid.length);
 	}
 
 	@Override
-	public void read(BitInputStream in) throws IOException {
+	public void read(SwitchInputStream in) throws IOException {
 		message = in.readByte();
 		suid = new byte[16];
-		in.readBytes(suid);
+		in.read(suid, 0, suid.length);
 	}
 
 	public Packet3SUID(int message, byte[] suid) {

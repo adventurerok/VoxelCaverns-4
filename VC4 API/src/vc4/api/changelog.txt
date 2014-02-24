@@ -357,3 +357,36 @@ VC4-Development-0.0.2-315
 	* Client no longer crashes when trying to input text
 VC4-Development-0.0.2-316
 	* Changed the size of the input box
+VC4-Development-0.0.2-317
+	+ Client now uses a special type of ImplWorld for multiplayer
+VC4-Development-0.0.2-318
+	* Fixed client crash bug on connecting to server
+VC4-Development-0.0.2-319
+	+ Server now does ticks once every 20 seconds
+VC4-Development-0.0.2-320
+	- Removed spawn control no players warning (spammed server log)
+VC4-Development-0.0.2-321
+	* Fixed crash bug when server tries to play sound
+VC4-Development-0.0.2-322
+	+ Server now tries to send all chunks to client
+VC4-Development-0.0.2-323
+	+ Added a task system to the server
+VC4-Development-0.0.2-324
+	* Task system now works instead of crashing
+VC4-Development-0.0.2-325
+	+ Added getblock command
+VC4-Development-0.0.2-327
+	* Attempted to fix extra 0s being written at the end of a chunk
+VC4-Development-0.0.2-328
+	* Fixed issues sending chunks
+	+ Server now sends all its chunks to the client
+VC4-Development-0.0.2-329
+	* Fixed some crashes relating to the stone block
+VC4-Development-0.0.2-330
+	+ Added new SwitchInputStream and SwitchOutputStream for better multiplayer io
+VC4-Development-0.0.2-331
+	* Changed the way chunks are sent in multiplayer
+VC4-Development-0.0.2-332
+	* Fixed bugs with switch streams and inflate/deflate mode
+VC4-Development-0.0.2-333
+	* Optimised and fixed bugs in switch streams

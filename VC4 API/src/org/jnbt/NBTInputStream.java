@@ -37,6 +37,7 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
+import vc4.api.io.BitInput;
 import vc4.api.io.BitInputStream;
 
 /**
@@ -55,9 +56,9 @@ public final class NBTInputStream implements Closeable {
 	/**
 	 * The data input stream.
 	 */
-	private final BitInputStream is;
+	private final BitInput is;
 	
-	public NBTInputStream(BitInputStream is){
+	public NBTInputStream(BitInput is){
 		this.is = is;
 	}
 	

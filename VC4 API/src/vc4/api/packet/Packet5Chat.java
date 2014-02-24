@@ -2,8 +2,8 @@ package vc4.api.packet;
 
 import java.io.IOException;
 
-import vc4.api.io.BitInputStream;
-import vc4.api.io.BitOutputStream;
+import vc4.api.io.SwitchInputStream;
+import vc4.api.io.SwitchOutputStream;
 
 public class Packet5Chat extends Packet {
 	
@@ -24,14 +24,14 @@ public class Packet5Chat extends Packet {
 	}
 
 	@Override
-	public void write(BitOutputStream out) throws IOException {
+	public void write(SwitchOutputStream out) throws IOException {
 		out.writeString(name);
 		out.writeString(prefix);
 		out.writeString(msg);
 	}
 
 	@Override
-	public void read(BitInputStream in) throws IOException {
+	public void read(SwitchInputStream in) throws IOException {
 		name = in.readString();
 		prefix = in.readString();
 		msg = in.readString();
