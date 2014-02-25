@@ -282,35 +282,35 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 	@Override
 	public byte readByte() throws IOException {
-		return 0;
+		return (byte)read();
 	}
 
 	@Override
 	public int readUnsignedByte() throws IOException {
-		return 0;
+		return read() & 0xFF;
 	}
 
 	@Override
 	public short readShort() throws IOException {
-		return 0;
+		return (read() << 8) | read();
 	}
 
 	@Override
 	public int readUnsignedShort() throws IOException {
-		return 0;
+		return (read() << 8) | read();
 	}
 
 	@Override
 	public char readChar() throws IOException {
-		return 0;
+		return (char)readShort();
 	}
 
 	@Override
 	public int readInt() throws IOException {
-		ch1 = in.read();
-        ch2 = in.read();
-        ch3 = in.read();
-        ch4 = in.read();
+		ch1 = read();
+        ch2 = read();
+        ch3 = read();
+        ch4 = read();
         if ((ch1 | ch2 | ch3 | ch4) < 0)
             throw new EOFException();
         return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
