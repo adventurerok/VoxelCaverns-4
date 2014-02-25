@@ -225,22 +225,34 @@ public class SwitchOutputStream extends OutputStream implements DataOutput{
 
 	@Override
 	public void writeShort(int v) throws IOException {
+		if(!inDeflateMode){
+			out.write((v >>> 8) & 0xFF);
+        	out.write((v >>> 0) & 0xFF);
+		} else {
+			temp[index++] = (v >>> 8) & 0xFF;
+			temp[index++] = (v >>> 0) & 0xFF;
+		}
+	}
+
+	@Override
+	public void writeChar(int v) throws IOException {
 		write((v >>> 8) & 0xFF);
         write((v >>> 0) & 0xFF);
 	}
 
 	@Override
-	public void writeChar(int v) throws IOException {
-		out.write((v >>> 8) & 0xFF);
-        out.write((v >>> 0) & 0xFF);
-	}
-
-	@Override
 	public void writeInt(int v) throws IOException {
-		out.write((v >>> 24) & 0xFF);
-        out.write((v >>> 16) & 0xFF);
-        out.write((v >>>  8) & 0xFF);
-        out.write((v >>>  0) & 0xFF);
+		if(!inDeflateMode){
+			out.write((v >>> 24) & 0xFF);
+        	out.write((v >>> 16) & 0xFF);
+        	out.write((v >>>  8) & 0xFF);
+    		out.write((v >>>  0) & 0xFF);
+		} else {
+			temp[index++] = (v >>> 24) & 0xFF;
+			temp[index++] = (v >>> 16) & 0xFF;
+			temp[index++] = (v >>>  8) & 0xFF;
+			temp[index++] = (v >>>  0) & 0xFF;
+		}
 	}
 
 	@Override
@@ -270,7 +282,7 @@ public class SwitchOutputStream extends OutputStream implements DataOutput{
 	public void writeBytes(String s) throws IOException {
 		int len = s.length();
         for (int i = 0 ; i < len ; i++) {
-            out.write((byte)s.charAt(i));
+            write((byte)s.charAt(i));
         }
 	}
 
