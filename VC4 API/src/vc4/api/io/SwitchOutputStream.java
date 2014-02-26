@@ -229,8 +229,8 @@ public class SwitchOutputStream extends OutputStream implements DataOutput{
 			out.write((v >>> 8) & 0xFF);
         	out.write((v >>> 0) & 0xFF);
 		} else {
-			temp[index++] = (v >>> 8) & 0xFF;
-			temp[index++] = (v >>> 0) & 0xFF;
+			temp[index++] = (byte) ((v >>> 8) & 0xFF);
+			temp[index++] = (byte) ((v >>> 0) & 0xFF);
 		}
 	}
 
@@ -248,10 +248,10 @@ public class SwitchOutputStream extends OutputStream implements DataOutput{
         	out.write((v >>>  8) & 0xFF);
     		out.write((v >>>  0) & 0xFF);
 		} else {
-			temp[index++] = (v >>> 24) & 0xFF;
-			temp[index++] = (v >>> 16) & 0xFF;
-			temp[index++] = (v >>>  8) & 0xFF;
-			temp[index++] = (v >>>  0) & 0xFF;
+			temp[index++] = (byte) ((v >>> 24) & 0xFF);
+			temp[index++] = (byte) ((v >>> 16) & 0xFF);
+			temp[index++] = (byte) ((v >>>  8) & 0xFF);
+			temp[index++] = (byte) ((v >>>  0) & 0xFF);
 		}
 	}
 

@@ -478,8 +478,7 @@ public class VCH4SaveFormat implements SaveFormat {
 					idat = store.blocks[i] + (store.data[i] << 11);
 					out.writeShort(idat);
 				}
-			}
-			if(store.blocks != null) {
+			} else if(store.blocks != null) {
 				for(int i = 0; i < 4096; ++i){
 					out.writeShort(store.blocks[i]);
 				}

@@ -292,7 +292,7 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 	@Override
 	public short readShort() throws IOException {
-		return (read() << 8) | read();
+		return (short) ((read() << 8) | read());
 	}
 
 	@Override

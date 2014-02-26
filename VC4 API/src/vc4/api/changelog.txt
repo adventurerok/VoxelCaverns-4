@@ -390,3 +390,7 @@ VC4-Development-0.0.2-332
 	* Fixed bugs with switch streams and inflate/deflate mode
 VC4-Development-0.0.2-333
 	* Optimised and fixed bugs in switch streams
+VC4-Development-0.0.2-334
+	* Fixed more bugs in Switch streams
+VC4-Development-0.0.2-335
+	* Fixed bug in writing chunk data to multiplayer
