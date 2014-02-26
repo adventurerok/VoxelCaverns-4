@@ -274,7 +274,7 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 	@Override
 	public boolean readBoolean() throws IOException {
-		int ch = in.read();
+		int ch = read();
         if (ch < 0)
             throw new EOFException();
         return (ch != 0);
@@ -292,12 +292,12 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 	@Override
 	public short readShort() throws IOException {
-		return (read() << 8) | read();
+		return (short) ((read() << 8) + read());
 	}
 
 	@Override
 	public int readUnsignedShort() throws IOException {
-		return (read() << 8) | read();
+		return (read() << 8) + read();
 	}
 
 	@Override
