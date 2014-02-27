@@ -10,14 +10,14 @@ public class BiomeDesert extends BiomeHilly {
 
 	public BiomeDesert(int id, String name, BiomeType type, Color mapColor) {
 		super(id, name, type, mapColor);
-		
+
 	}
 
 	@Override
 	public int generateSubBiome(FastRandom rand, int op) {
-		if(op == 0) return super.generateSubBiome(rand, op);
-		if(op == 3 && rand.nextInt(20) == 0) return Vanilla.biomeDesertOasis.id;
+		if (op == 0) return super.generateSubBiome(rand, op);
+		if (op == 3 && rand.nextInt(20) == 0) return Vanilla.biomeDesertOasis.id;
 		return id;
 	}
-	
+
 }

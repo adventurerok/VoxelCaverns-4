@@ -10,17 +10,17 @@ public class BlockBookshelfEnchanted extends BlockBookshelf {
 	public BlockBookshelfEnchanted(int id) {
 		super(id);
 	}
-	
+
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
 		return side < 4 ? BlockTexture.enchantedBookshelf : BlockTexture.woodFront;
 	}
-	
+
 	@Override
 	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
 		return side < 4 ? BlockTexture.enchantedBookshelf : BlockTexture.woodFront;
 	}
-	
+
 	@Override
 	protected String getModifiedName(ItemStack item) {
 		return "bookshelfench." + WoodBlocks.getName(item.getDamage() & 15);

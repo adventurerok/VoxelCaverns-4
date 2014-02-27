@@ -12,7 +12,7 @@ import vc4.api.sound.MusicType;
 public class Biome {
 
 	private static Biome[] biomesList = new Biome[256];
-	
+
 	public BiomeType type;
 	public Color mapColor;
 	public int id;
@@ -27,18 +27,18 @@ public class Biome {
 	public int maxEnf = 30;
 	public int soilDepth = 6;
 	public int diffHeight = 26, midHeight = 13;
-	public boolean enfHeight = true; //If the height should be clamped
+	public boolean enfHeight = true; // If the height should be clamped
 	public Music music = new Music("First_Day", MusicType.BIOME);
 	public Color grassColor = new Color(0x1C8F1C);
 	public Color waterColor = new Color(0, 156, 254, 128);
 	public Color plantColor = new Color(0x269100);
-	
+
 	public Color dayColor = new Color(0xADD8E6);
-    public Color dawnColor = new Color(255, 74, 0);
-    public Color nightColor = new Color(0, 0, 75);
-	
+	public Color dawnColor = new Color(255, 74, 0);
+	public Color nightColor = new Color(0, 0, 75);
+
 	public ArrayList<PlantGrowth> plants = new ArrayList<>();
-	
+
 	public BiomeType getType() {
 		return type;
 	}
@@ -54,37 +54,36 @@ public class Biome {
 	public String getName() {
 		return name;
 	}
-	
-	public int generateSubBiome(FastRandom rand, int op){
+
+	public int generateSubBiome(FastRandom rand, int op) {
 		return id;
 	}
-	
-	public Biome setHeights(BiomeHeightModel model){
+
+	public Biome setHeights(BiomeHeightModel model) {
 		setHeights(model.max, model.min);
 		maxEnf = model.eMax;
 		minEnf = model.eMin;
 		return this;
 	}
-	
-	public Biome setColors(Color grass, Color water, Color plant){
+
+	public Biome setColors(Color grass, Color water, Color plant) {
 		waterColor = water;
 		grassColor = grass;
 		plantColor = plant;
 		return this;
 	}
-	
+
 	public void setIcingBlock(int icingBlock) {
 		this.icingBlock = icingBlock;
 	}
-	
-	public void placeBiomeBlock(GeneratorOutput out, Random rand, int cx, int cy, int cz, long diff, long y){
-		if(diff == -1){
+
+	public void placeBiomeBlock(GeneratorOutput out, Random rand, int cx, int cy, int cz, long diff, long y) {
+		if (diff == -1) {
 			out.setBlockId(cx, cy, cz, icingBlock);
-		} else if (diff == 0){
-			if((y << 5) + cy < -1) out.setBlockId(cx, cy, cz, fillerBlock);
+		} else if (diff == 0) {
+			if ((y << 5) + cy < -1) out.setBlockId(cx, cy, cz, fillerBlock);
 			else out.setBlockId(cx, cy, cz, topBlock);
-		}
-		else if(diff < 5) out.setBlockId(cx, cy, cz, fillerBlock);
+		} else if (diff < 5) out.setBlockId(cx, cy, cz, fillerBlock);
 		else out.setBlockId(cx, cy, cz, bottomBlock);
 	}
 
@@ -100,19 +99,19 @@ public class Biome {
 		return music;
 	}
 
-	public static Biome byId(int id){
+	public static Biome byId(int id) {
 		return biomesList[id];
 	}
-	
-	public Biome setHeights(int max, int min){
+
+	public Biome setHeights(int max, int min) {
 		minHeight = min;
 		maxHeight = max;
 		diffHeight = max - min;
 		midHeight = (max + min) / 2;
 		return this;
 	}
-	
-	public Biome setBiomeBlocks(int top, int filler, int bottom){
+
+	public Biome setBiomeBlocks(int top, int filler, int bottom) {
 		topBlock = top;
 		fillerBlock = filler;
 		bottomBlock = bottom;
@@ -127,30 +126,28 @@ public class Biome {
 		this.id = id;
 		biomesList[id] = this;
 	}
-	
-	private Biome(){
-		
+
+	private Biome() {
+
 	}
-	
-	public static Biome createFake(){
+
+	public static Biome createFake() {
 		return new Biome();
 	}
-	
+
 	public ArrayList<PlantGrowth> getPlants() {
 		return plants;
 	}
-	
-	public void addPlant(PlantGrowth plant){
+
+	public void addPlant(PlantGrowth plant) {
 		plants.add(plant);
 	}
-	
 
 	public static void clear() {
-		for(Biome b : biomesList){
-			if(b == null) continue;
+		for (Biome b : biomesList) {
+			if (b == null) continue;
 			b.plants.clear();
 		}
 	}
-	
-	
+
 }

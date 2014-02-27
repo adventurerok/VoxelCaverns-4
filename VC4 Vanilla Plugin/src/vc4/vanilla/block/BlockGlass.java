@@ -9,7 +9,7 @@ import vc4.api.world.World;
 
 /**
  * @author paul
- *
+ * 
  */
 public class BlockGlass extends Block {
 
@@ -20,31 +20,37 @@ public class BlockGlass extends Block {
 	 */
 	public BlockGlass(int uid, int texture, Material m) {
 		super(uid, texture, m);
-		
+
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#isSolid(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return false;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getRendererToUse(byte, int)
 	 */
 	@Override
 	public int getRendererToUse(byte data, int side) {
 		return 1;
 	}
-	
+
 	@Override
 	public boolean canGrowPlant(Plant plant) {
 		return true;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#renderSide(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override

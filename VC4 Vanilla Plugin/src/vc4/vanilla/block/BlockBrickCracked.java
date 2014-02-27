@@ -13,24 +13,26 @@ import vc4.vanilla.BlockTexture;
 
 /**
  * @author paul
- *
+ * 
  */
-public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
+public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture {
 
 	/**
 	 * @param uid
 	 */
 	public BlockBrickCracked(short uid) {
 		super(uid);
-		
+
 	}
-	
+
 	@Override
 	protected String getModifiedName(ItemStack item) {
 		return "cracked" + super.getModifiedName(item);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#renderSideMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -38,7 +40,9 @@ public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 		return renderSide(world, x, y, z, side);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getColorMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -46,7 +50,9 @@ public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 		return Color.white;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getTextureIndexMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -54,7 +60,9 @@ public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 		return BlockTexture.cracks;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getColorMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
@@ -62,16 +70,19 @@ public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 		return Color.white;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getTextureIndexMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
 		return BlockTexture.moss;
 	}
-	
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#multitextureUsed(byte, int)
 	 */
 	@Override
@@ -81,13 +92,12 @@ public class BlockBrickCracked extends BlockBrick implements IBlockMultitexture{
 
 	@Override
 	public void setOrientationMultitexture(World world, long x, long y, long z, int side, TextureCoords coords) {
-		
+
 	}
 
 	@Override
 	public void setOrientationMultitexture(ItemStack item, int side, TextureCoords coords) {
-		
+
 	}
-	
 
 }

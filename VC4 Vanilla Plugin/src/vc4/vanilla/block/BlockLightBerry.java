@@ -20,49 +20,49 @@ public class BlockLightBerry extends BlockMultitexture {
 		blockOpacity[uid] = 1;
 		renderer = new BlockRendererCross();
 	}
-	
+
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return false;
 	}
-	
+
 	@Override
 	public Color getColor(ItemStack current, int side) {
 		return Color.green;
 	}
-	
+
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
 		return Color.green;
 	}
-	
+
 	@Override
 	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {
-		if(dir != Direction.UP && dir != Direction.DOWN) return;
-		if(!world.getBlockType(x, y + 1, z).isSolid(world, x, y + 1, z, 5) && !world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)){
+		if (dir != Direction.UP && dir != Direction.DOWN) return;
+		if (!world.getBlockType(x, y + 1, z).isSolid(world, x, y + 1, z, 5) && !world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)) {
 			dropItems(world, x, y, z, null);
 			world.setBlockId(x, y, z, 0);
-			
+
 		}
 	}
-	
+
 	@Override
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
-		if(!world.getBlockType(x, y + 1, z).isSolid(world, x, y + 1, z, 5) && !world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)) return;
+		if (!world.getBlockType(x, y + 1, z).isSolid(world, x, y + 1, z, 5) && !world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)) return;
 		world.setBlockIdData(x, y, z, uid, item.getData());
 		item.decrementAmount();
 	}
-	
+
 	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
 		return new AABB[0];
 	}
-	
+
 	@Override
 	public boolean render3d(byte data) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean renderSide(World world, long x, long y, long z, int side) {
 		return true;

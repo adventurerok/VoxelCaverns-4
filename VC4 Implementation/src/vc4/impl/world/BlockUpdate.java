@@ -5,7 +5,7 @@ public class BlockUpdate {
 	public int x, y, z;
 	public int time;
 	public int id;
-	
+
 	public BlockUpdate(int x, int y, int z, int time, int id) {
 		super();
 		this.x = x;
@@ -14,6 +14,5 @@ public class BlockUpdate {
 		this.time = time;
 		this.id = id;
 	}
-	
-	
+
 }

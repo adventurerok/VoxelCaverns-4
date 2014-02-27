@@ -22,7 +22,6 @@ public class SkylandGenerator implements WorldGenerator {
 
 	@Override
 	public void onWorldLoad(World world) {
-		
 
 	}
 
@@ -31,12 +30,12 @@ public class SkylandGenerator implements WorldGenerator {
 		GeneratorOutput out = new GeneratorOutput();
 		return out;
 	}
-	
+
 	@Override
 	public boolean hasBiomeMapGenerator(World world) {
 		return false;
 	}
-	
+
 	public int[] getNoiseDiff(World world, long x, long y, long z, SimplexOctaveGenerator noise) {
 		int[] res = new int[32 * 32];
 		long px = (x << 5);
@@ -76,13 +75,14 @@ public class SkylandGenerator implements WorldGenerator {
 	@Override
 	public void renderSkyBox(World world, EntityPlayer player) {
 		// TASK Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void generateMapData(World world, MapData data) {
-		
+
 	}
+
 	@Override
 	public boolean generatePlants(World world, long x, long y, long z) {
 		return true;

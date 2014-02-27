@@ -5,7 +5,7 @@ package vc4.vanilla.generation.dungeon;
 
 /**
  * @author paul
- *
+ * 
  */
 public class RoomBB {
 
@@ -20,8 +20,8 @@ public class RoomBB {
 		this.maxY = maxY;
 		this.maxZ = maxZ;
 	}
-	
-	public RoomBB expand(long amt){
+
+	public RoomBB expand(long amt) {
 		long mix = minX - amt;
 		long miy = minY - amt;
 		long miz = minZ - amt;
@@ -30,19 +30,14 @@ public class RoomBB {
 		long maz = maxZ + amt;
 		return new RoomBB(mix, miy, miz, max, may, maz);
 	}
-	
-	public boolean intercepts(RoomBB aabb){
-		if(aabb == null) return false;
-		if (aabb.maxX <= minX || aabb.minX >= maxX) {
-			return false;
-		}
 
-		if (aabb.maxY <= minY || aabb.minY >= maxY) {
-			return false;
-		}
+	public boolean intercepts(RoomBB aabb) {
+		if (aabb == null) return false;
+		if (aabb.maxX <= minX || aabb.minX >= maxX) { return false; }
+
+		if (aabb.maxY <= minY || aabb.minY >= maxY) { return false; }
 
 		return aabb.maxZ > minZ && aabb.minZ < maxZ;
 	}
-	
-	
+
 }

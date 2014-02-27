@@ -18,11 +18,11 @@ public class Window extends ClientWindow {
 	private String _title;
 	private int _width, _height;
 	private boolean _closeRequested = false;
-	
+
 	private Game game;
 
 	AnimatedTexture test;
-	
+
 	Renderer tr;
 
 	int texindex = 0;
@@ -111,11 +111,11 @@ public class Window extends ClientWindow {
 	protected void load() {
 		gl.enable(GLFlag.BLEND);
 		gl.blendFunc(GLBlendFunc.SRC_ALPHA, GLBlendFunc.ONE_MINUS_SRC_ALPHA);
-		
+
 		gl.depthFunc(GLCompareFunc.LEQUAL);
 		gl.enable(GLFlag.ALPHA_TEST);
 		gl.alphaFunc(GLCompareFunc.GREATER, 0.35F);
-		
+
 		game.load();
 	}
 
@@ -129,7 +129,7 @@ public class Window extends ClientWindow {
 		_width = Display.getWidth();
 		_height = Display.getHeight();
 		enterRenderMode(RenderType.GAME);
-		
+
 		game.resized();
 	}
 
@@ -269,7 +269,7 @@ public class Window extends ClientWindow {
 		gl.loadIdentity();
 		gl.viewport(0, 0, _width, _height);
 	}
-	
+
 	/**
 	 * @return the game
 	 */
@@ -279,7 +279,7 @@ public class Window extends ClientWindow {
 	}
 
 	public float getAspectRatio() {
-		return _width / (float)_height;
+		return _width / (float) _height;
 	}
 
 }

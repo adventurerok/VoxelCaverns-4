@@ -8,15 +8,15 @@ import javax.swing.JMenuItem;
 import vc4.launcher.Launcher;
 import vc4.launcher.repo.Runnable;
 
-public class RunnableMenuItem extends JMenuItem implements ActionListener{
+public class RunnableMenuItem extends JMenuItem implements ActionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2757561468492361096L;
-	
+
 	Runnable runner;
-	
+
 	public RunnableMenuItem(Runnable runner) {
 		super(runner.getName());
 		this.runner = runner;

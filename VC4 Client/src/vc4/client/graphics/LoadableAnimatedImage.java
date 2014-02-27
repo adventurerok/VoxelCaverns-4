@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class LoadableAnimatedImage implements Comparable<LoadableAnimatedImage>{
+public class LoadableAnimatedImage implements Comparable<LoadableAnimatedImage> {
 
 	URL image;
 	URL txt;
@@ -24,8 +24,8 @@ public class LoadableAnimatedImage implements Comparable<LoadableAnimatedImage>{
 	public InputStream getImageStream() throws IOException {
 		return image.openStream();
 	}
-	
-	public InputStream getTxtStream() throws IOException{
+
+	public InputStream getTxtStream() throws IOException {
 		return txt.openStream();
 	}
 
@@ -33,6 +33,5 @@ public class LoadableAnimatedImage implements Comparable<LoadableAnimatedImage>{
 	public int compareTo(LoadableAnimatedImage o) {
 		return texName.compareTo(o.texName);
 	}
-
 
 }

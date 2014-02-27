@@ -87,13 +87,13 @@ public class ItemBlock extends Item {
 		}
 		AABB[] check = Block.byId(item.getId()).getCollisionBounds(player.getWorld(), x, y, z);
 		ArrayList<Entity> mobs = new ArrayList<Entity>();
-		if(check != null){
-			for(int dofor = 0; dofor < check.length; ++dofor){
+		if (check != null) {
+			for (int dofor = 0; dofor < check.length; ++dofor) {
 				List<Entity> list = player.world.getCollidableEntitiesInBounds(player.playerChunk, check[dofor]);
-				if(list != null) mobs.addAll(list);
+				if (list != null) mobs.addAll(list);
 			}
 		}
-		if(mobs.size() < 1) Block.byId(item.getId()).place(player.getWorld(), x, y, z, player, item);
+		if (mobs.size() < 1) Block.byId(item.getId()).place(player.getWorld(), x, y, z, player, item);
 		player.setCoolDown(200);
 	}
 }

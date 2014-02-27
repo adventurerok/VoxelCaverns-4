@@ -19,10 +19,10 @@ public class ZoomGenSmooth extends ZoomGenerator {
 		for (int az = 0; az < size; ++az) {
 			for (int ax = 0; ax < size; ++ax) {
 				int dp = pints[ax + 1 + (az + 1) * psize];
-				int dn = pints[ax + 2 + (az + 1) * psize]; //north
-				int de = pints[ax + 1 + (az + 2) * psize]; //east
-				int ds = pints[ax + 0 + (az + 1) * psize]; //south
-				int dw = pints[ax + 1 + (az + 0) * psize]; //west
+				int dn = pints[ax + 2 + (az + 1) * psize]; // north
+				int de = pints[ax + 1 + (az + 2) * psize]; // east
+				int ds = pints[ax + 0 + (az + 1) * psize]; // south
+				int dw = pints[ax + 1 + (az + 0) * psize]; // west
 
 				if (ds == dn && dw == de) {
 					initSeed((long) (ax + x), (long) (az + z));

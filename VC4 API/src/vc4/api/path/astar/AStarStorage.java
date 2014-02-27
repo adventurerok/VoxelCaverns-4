@@ -1,13 +1,13 @@
 package vc4.api.path.astar;
 
 public interface AStarStorage {
-    void close(AStarNode node);
+	void close(AStarNode node);
 
-    AStarNode getBestNode();
+	AStarNode getBestNode();
 
-    void open(AStarNode node);
+	void open(AStarNode node);
 
-    AStarNode removeBestNode();
+	AStarNode removeBestNode();
 
-    boolean shouldExamine(AStarNode neighbour);
+	boolean shouldExamine(AStarNode neighbour);
 }

@@ -8,7 +8,7 @@ import vc4.vanilla.BlockTexture;
 
 /**
  * @author paul
- *
+ * 
  */
 public class BlockObsidian extends Block {
 
@@ -19,7 +19,7 @@ public class BlockObsidian extends Block {
 	 */
 	public BlockObsidian(int uid) {
 		super(uid, BlockTexture.obsidian, "obsidian");
-		
+
 	}
 
 }

@@ -19,29 +19,28 @@ import vc4.api.vector.Vector3l;
 import vc4.api.world.Chunk;
 import vc4.api.world.World;
 
-public abstract class Entity implements Agent{
+public abstract class Entity implements Agent {
 
 	private static HashMap<String, Constructor<? extends Entity>> types = new HashMap<String, Constructor<? extends Entity>>();
-	
-	static{
+
+	static {
 		registerEntity("item", EntityItem.class);
 		registerEntity("player", EntityPlayer.class);
 	}
-	
-	public static Set<String> getEntityNames(){
+
+	public static Set<String> getEntityNames() {
 		return types.keySet();
 	}
-	
+
 	public Vector3d getEyePos() {
 		return new Vector3d(position.x, getEyeHeight(), position.z);
 	}
-	
-	public double getEyeHeight(){
+
+	public double getEyeHeight() {
 		return position.y;
 	}
-	
-	
-	public static void registerEntity(String name, Class<? extends Entity> clz){
+
+	public static void registerEntity(String name, Class<? extends Entity> clz) {
 		try {
 			VoxelCaverns.getCurrentWorld().getRegisteredEntity(name);
 			types.put(name, clz.getConstructor(World.class));
@@ -49,12 +48,12 @@ public abstract class Entity implements Agent{
 			Logger.getLogger(Entity.class).warning("Entity class does not have correct constructor", e);
 		}
 	}
-	
-	public static Constructor<? extends Entity> getEntityType(String name){
+
+	public static Constructor<? extends Entity> getEntityType(String name) {
 		return types.get(name);
 	}
-	
-	public static Entity loadEntity(World world, CompoundTag tag){
+
+	public static Entity loadEntity(World world, CompoundTag tag) {
 		short id = tag.getShort("id");
 		String name = world.getEntityName(id);
 		Constructor<? extends Entity> clz = getEntityType(name);
@@ -67,8 +66,8 @@ public abstract class Entity implements Agent{
 		}
 		return null;
 	}
-	
-	public boolean persistent(){
+
+	public boolean persistent() {
 		return true;
 	}
 
@@ -78,7 +77,7 @@ public abstract class Entity implements Agent{
 	public boolean collision = false;
 	public boolean onGround = false;
 	public boolean hadUpdate = false;
-	
+
 	public Vector3d position;
 	public Vector3d oldPos;
 	public boolean isDead = false;
@@ -86,7 +85,7 @@ public abstract class Entity implements Agent{
 	public Chunk chunk;
 
 	public boolean checkStep = true;
-	
+
 	public Random rand = new Random();
 
 	public double motionX = 0D;
@@ -98,32 +97,30 @@ public abstract class Entity implements Agent{
 	public AABB bounds;
 
 	public Vector3d size = new Vector3d(0.3, 1.6, 0.3);
-	
+
 	public int health = 100;
-	
+
 	public int fireTicks = 0;
 
 	private boolean noClip;
-	
+
 	protected long ticksAlive = 0;
-	
-	
+
 	private HashMap<String, Trait> traits = new HashMap<>();
-	
-	public Entity(World world){
+
+	public Entity(World world) {
 		this.world = world;
 		size = getDefaultSize();
 	}
-	
-	public Entity setPosition(double x, double y, double z){
+
+	public Entity setPosition(double x, double y, double z) {
 		position = new Vector3d(x, y, z);
 		oldPos = position;
 		size = getDefaultSize();
 		calculateBounds();
 		return this;
 	}
-	
-	
+
 	public Entity setPosition(Vector3d position) {
 		this.position = position;
 		oldPos = position.clone();
@@ -132,64 +129,61 @@ public abstract class Entity implements Agent{
 		return this;
 	}
 
-	public void damage(int amount, DamageSource source){
+	public void damage(int amount, DamageSource source) {
 		health -= amount;
 		onEvent("Damage");
-		if(health < 1) kill();
+		if (health < 1) kill();
 	}
-	
-	public Vector3l getBlockPos(){
+
+	public Vector3l getBlockPos() {
 		return new Vector3l(MathUtils.floor(position.x), MathUtils.floor(position.y), MathUtils.floor(position.z));
 	}
-	
-	public void kill(){
+
+	public void kill() {
 		health = 0;
 		isDead = true;
 		onEvent("Death");
 	}
-	
-	public void damage(int amount, DamageSource source, int ticks){
-		if(world.getTime() % ticks == 0) damage(amount, source);
+
+	public void damage(int amount, DamageSource source, int ticks) {
+		if (world.getTime() % ticks == 0) damage(amount, source);
 	}
-	
-	public boolean includeInRayTrace(){
+
+	public boolean includeInRayTrace() {
 		return false;
 	}
-	
-	
+
 	public int getHealth() {
 		return health;
 	}
-	protected void calculateBounds(){
-		if (bounds == null)
-			bounds = AABB.getBoundingBox(0, 0, 0, 0, 0, 0);
-		if (Double.isNaN(position.x))
-			return;
+
+	protected void calculateBounds() {
+		if (bounds == null) bounds = AABB.getBoundingBox(0, 0, 0, 0, 0, 0);
+		if (Double.isNaN(position.x)) return;
 		bounds.setBounds(position.x - size.x, position.y - size.y, position.z - size.z, position.x + size.x, position.y + size.y, position.z + size.z);
 	}
-	
-	public Vector3d getDefaultSize(){
+
+	public Vector3d getDefaultSize() {
 		return new Vector3d(0.3, 0.93, 0.3);
 	}
-	
-	public Entity addToWorld(){
+
+	public Entity addToWorld() {
 		long x = MathUtils.floor(position.x) >> 5;
 		long y = MathUtils.floor(position.y) >> 5;
 		long z = MathUtils.floor(position.z) >> 5;
 		Chunk c = world.getChunk(x, y, z);
-		if(c == null) return null;
+		if (c == null) return null;
 		c.addEntity(this);
 		return this;
 	}
-	
+
 	public boolean noClip() {
 		return noClip;
 	}
-	
+
 	public void move(double motionX, double motionY, double motionZ) {
-		if(Math.abs(motionX) < 0.0001 && Math.abs(motionY) < 0.0001 && Math.abs(motionZ) < 0.0001) return;
-		if (isDead)
-			motionX = motionZ = 0D;
+		if (Math.abs(motionX) < 0.0001 && Math.abs(motionY) < 0.0001 && Math.abs(motionZ) < 0.0001) return;
+		if (isDead) motionX = motionZ = 0D;
 		if (noClip()) {
 			oldPos = position.clone();
 			bounds.add(motionX, motionY, motionZ);
@@ -216,10 +210,8 @@ public abstract class Entity implements Agent{
 					motionX = 0.0D;
 					continue;
 				}
-				if (motionX > 0.0D)
-					motionX -= amount;
-				else
-					motionX += amount;
+				if (motionX > 0.0D) motionX -= amount;
+				else motionX += amount;
 			}
 			for (; motionZ != 0.0D && world.getAABBsInBounds(chunk, bounds.getOffsetBoundingBox(0.0D, -1D, motionZ), this).length == 0; startZ = motionZ) {
 				if (motionZ < amount && motionZ >= -amount) {
@@ -227,25 +219,17 @@ public abstract class Entity implements Agent{
 					continue;
 				}
 
-				if (motionZ > 0.0D)
-					motionZ -= amount;
-				else
-					motionZ += amount;
+				if (motionZ > 0.0D) motionZ -= amount;
+				else motionZ += amount;
 			}
 			while (motionX != 0.0D && motionZ != 0.0D && world.getAABBsInBounds(chunk, bounds.getOffsetBoundingBox(motionX, -1D, motionZ), this).length == 0) {
-				if (motionX < amount && motionX >= -amount)
-					motionX = 0.0D;
-				else if (motionX > 0.0D)
-					motionX -= amount;
-				else
-					motionX += amount;
+				if (motionX < amount && motionX >= -amount) motionX = 0.0D;
+				else if (motionX > 0.0D) motionX -= amount;
+				else motionX += amount;
 
-				if (motionZ < amount && motionZ >= -amount)
-					motionZ = 0.0D;
-				else if (motionZ > 0.0D)
-					motionZ -= amount;
-				else
-					motionZ += amount;
+				if (motionZ < amount && motionZ >= -amount) motionZ = 0.0D;
+				else if (motionZ > 0.0D) motionZ -= amount;
+				else motionZ += amount;
 
 				startX = motionX;
 				startZ = motionZ;
@@ -268,12 +252,10 @@ public abstract class Entity implements Agent{
 		bounds.add(0.0D, 0.0D, motionZ);
 
 		boolean notMovedFull = startX != motionX || startZ != motionZ;
-		
+
 		/*
-		 * Moves the player up by 0.5, then tries moving them in their direction.
-		 * If it fails to move the horizontally, puts them back to where they were before
-		 * If it succeeds, it tries to move them down to ground again.
-		 * This explains why blocks such as mud prevent you from going into two block high gaps
+		 * Moves the player up by 0.5, then tries moving them in their direction. If it fails to move the horizontally, puts them back to where they were before If it succeeds, it tries to move them down to ground again. This explains why
+		 * blocks such as mud prevent you from going into two block high gaps
 		 */
 		if (stepHeight > 0.001F && grounded && notMovedFull && checkStep && !inQuicksand) {
 			double stepX = motionX;
@@ -314,12 +296,9 @@ public abstract class Entity implements Agent{
 			}
 		}
 
-		if (!MathUtils.equals(startX, motionX))
-			this.motionX = 0;
-		if (!MathUtils.equals(startY, motionY))
-			this.motionY = 0;
-		if (!MathUtils.equals(startZ, motionZ))
-			this.motionZ = 0;
+		if (!MathUtils.equals(startX, motionX)) this.motionX = 0;
+		if (!MathUtils.equals(startY, motionY)) this.motionY = 0;
+		if (!MathUtils.equals(startZ, motionZ)) this.motionZ = 0;
 		oldPos = position.clone();
 		// bounds.add(motionX, motionY, motionZ);
 		position.x = (bounds.minX + bounds.maxX) / 2D;
@@ -342,25 +321,25 @@ public abstract class Entity implements Agent{
 		for (long qx = mix; qx <= max; qx++) {
 			for (qy = miy; qy <= may; qy++) {
 				for (qz = miz; qz <= maz; qz++) {
-//					int id = world.getBlockId(qx, qy, qz);
-//					if (id > 0)
-//						Block.byId(id).onEntityCollidedWith(world, qx, qy, qz, this);
+					// int id = world.getBlockId(qx, qy, qz);
+					// if (id > 0)
+					// Block.byId(id).onEntityCollidedWith(world, qx, qy, qz, this);
 				}
 			}
 		}
 
 		return;
 	}
-	
-	public void addTrait(Trait trait){
+
+	public void addTrait(Trait trait) {
 		traits.put(trait.name(), trait);
 	}
-	
-	public Trait getTrait(String name){
+
+	public Trait getTrait(String name) {
 		return traits.get(name);
 	}
-	
-	public int getMaxHealth(){
+
+	public int getMaxHealth() {
 		return 100;
 	}
 
@@ -374,23 +353,23 @@ public abstract class Entity implements Agent{
 		updateEffects();
 		updateTraits();
 		move(motionX, motionY, motionZ);
-		
+
 	}
-	
+
 	public abstract String getName();
-	
+
 	public void updateTraits() {
-		for(Entry<String, Trait> t : traits.entrySet()){
+		for (Entry<String, Trait> t : traits.entrySet()) {
 			t.getValue().update();
 		}
 	}
-	
-	public int getId(){
+
+	public int getId() {
 		return world.getRegisteredEntity(getName());
 	}
-	
+
 	public void onEvent(String name) {
-		for(Entry<String, Trait> t : traits.entrySet()){
+		for (Entry<String, Trait> t : traits.entrySet()) {
 			try {
 				Method meth = t.getValue().getClass().getMethod("on" + name);
 				meth.invoke(t.getValue());
@@ -399,10 +378,10 @@ public abstract class Entity implements Agent{
 		}
 	}
 
-	public void updateAge(){
+	public void updateAge() {
 		++ticksAlive;
 	}
-	
+
 	public void updateSurroundings() {
 		boolean alsoCollide = true;
 		inQuicksand = false;
@@ -424,19 +403,19 @@ public abstract class Entity implements Agent{
 			world.getBlockType(x, y, z).onEntityStandOn(world, x, y, z, this);
 		}
 	}
-	
-	public void updateEffects(){
-		if(fireTicks > 0){
+
+	public void updateEffects() {
+		if (fireTicks > 0) {
 			damage(1, DamageSource.fireDamage, 2);
 			fireTicks--;
 		}
 	}
-	
-	public void addFireTicks(int ticks){
-		if(fireTicks < ticks) fireTicks = ticks;
+
+	public void addFireTicks(int ticks) {
+		if (fireTicks < ticks) fireTicks = ticks;
 	}
-	
-	public void setFireTicks(int ticks){
+
+	public void setFireTicks(int ticks) {
 		fireTicks = ticks;
 	}
 
@@ -445,8 +424,7 @@ public abstract class Entity implements Agent{
 	}
 
 	public void draw() {
-		
-		
+
 	}
 
 	public Entity setVelocity(double x, double y, double z) {
@@ -455,8 +433,8 @@ public abstract class Entity implements Agent{
 		motionZ = z;
 		return this;
 	}
-	
-	public void teleport(double x, double y, double z){
+
+	public void teleport(double x, double y, double z) {
 		teleport(new Vector3d(x, y, z));
 	}
 
@@ -469,16 +447,15 @@ public abstract class Entity implements Agent{
 	public World getWorld() {
 		return world;
 	}
-	
-	
+
 	/**
-	 * All other entities should override this, starting with getting the parent tag.
-	 * Then should then add their own tags, and return the result
+	 * All other entities should override this, starting with getting the parent tag. Then should then add their own tags, and return the result
+	 * 
 	 * @return The save compound
 	 */
-	public CompoundTag getSaveCompound(){
+	public CompoundTag getSaveCompound() {
 		CompoundTag root = new CompoundTag("root");
-		root.setShort("id", (short)getId());
+		root.setShort("id", (short) getId());
 		CompoundTag pos = new CompoundTag("pos");
 		pos.setDouble("x", position.x);
 		pos.setDouble("y", position.y);
@@ -492,15 +469,15 @@ public abstract class Entity implements Agent{
 		root.setInt("hp", getHealth());
 		root.setLong("alive", ticksAlive);
 		ListTag trs = new ListTag("traits", CompoundTag.class);
-		for(Trait t : traits.values()){
-			if(!t.persistent()) continue;
+		for (Trait t : traits.values()) {
+			if (!t.persistent()) continue;
 			trs.addTag(t.getSaveCompound());
 		}
 		root.addTag(trs);
 		return root;
 	}
-	
-	public void loadSaveCompound(CompoundTag tag){
+
+	public void loadSaveCompound(CompoundTag tag) {
 		CompoundTag pos = tag.getCompoundTag("pos");
 		position = new Vector3d();
 		position.x = pos.getDouble("x");
@@ -515,19 +492,19 @@ public abstract class Entity implements Agent{
 		health = tag.getInt("hp");
 		ticksAlive = tag.getLong("alive");
 		HashMap<String, Trait> newTraits = new HashMap<>();
-		for(Trait t : traits.values()){
-			if(!t.persistent()) newTraits.put(t.name(), t);
+		for (Trait t : traits.values()) {
+			if (!t.persistent()) newTraits.put(t.name(), t);
 		}
 		traits.clear();
 		traits = newTraits;
-		if(tag.hasKey("traits")){
+		if (tag.hasKey("traits")) {
 			ListTag trs = tag.getListTag("traits");
-			while(trs.hasNext()){
-				try{
+			while (trs.hasNext()) {
+				try {
 					CompoundTag tal = (CompoundTag) trs.getNextTag();
 					Trait rait = Trait.loadTrait(this, tal);
 					traits.put(rait.name(), rait);
-				} catch(Exception e){
+				} catch (Exception e) {
 					Logger.getLogger(Entity.class).info("Failed to load trait");
 				}
 			}
@@ -535,11 +512,7 @@ public abstract class Entity implements Agent{
 	}
 
 	public void onRightClick(EntityPlayer player) {
-		
+
 	}
-	
-	
-	
-	
-	
+
 }

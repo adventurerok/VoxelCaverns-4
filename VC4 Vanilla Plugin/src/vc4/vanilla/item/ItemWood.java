@@ -8,7 +8,7 @@ import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.vanilla.block.BlockPlanks;
 
-public class ItemWood extends Item{
+public class ItemWood extends Item {
 
 	public ItemWood(int id, int textureIndex) {
 		super(id, textureIndex);
@@ -19,14 +19,12 @@ public class ItemWood extends Item{
 		super(id);
 		// TASK Auto-generated constructor stub
 	}
-	
 
-	
 	@Override
 	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> result = new ArrayList<>();
-		for(int d = 0; d < BlockPlanks.frontColors.length; ++d){
-			if(BlockPlanks.frontColors[d] != null) result.add(new ItemStack(id, d, 1));
+		for (int d = 0; d < BlockPlanks.frontColors.length; ++d) {
+			if (BlockPlanks.frontColors[d] != null) result.add(new ItemStack(id, d, 1));
 		}
 		return result;
 	}

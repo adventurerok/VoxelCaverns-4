@@ -10,7 +10,7 @@ public class RepoSettingsPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -5871109623096633441L;
-	
+
 	public RepoSettingsPanel(Repo repo) {
 	}
 

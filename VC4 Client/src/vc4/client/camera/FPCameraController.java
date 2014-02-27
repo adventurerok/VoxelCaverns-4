@@ -83,9 +83,9 @@ public class FPCameraController extends FPCamera {
 		// roatate the yaw around the Y axis
 		GL11.glRotated(yaw, 0.0f, 1.0f, 0.0f);
 	}
-	
+
 	@Override
-	public void translate(){
+	public void translate() {
 		GL11.glTranslated(position.x, position.y, position.z);
 	}
 

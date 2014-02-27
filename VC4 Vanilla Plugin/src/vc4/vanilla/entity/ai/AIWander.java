@@ -7,7 +7,7 @@ import vc4.api.math.MathUtils;
 import vc4.api.vector.Vector3d;
 
 public class AIWander extends AI {
-	
+
 	double speed;
 	double range;
 	int ir;
@@ -23,7 +23,7 @@ public class AIWander extends AI {
 	public int conflictId() {
 		return 1;
 	}
-	
+
 	@Override
 	public boolean shouldStart() {
 		return true;
@@ -31,12 +31,12 @@ public class AIWander extends AI {
 
 	@Override
 	public void start() {
-		
+
 	}
 
 	@Override
 	public boolean update() {
-		if(owner.getMoveHandler().getExecuting() == null || owner.position.horizontalDistanceSquared(owner.getMoveHandler().getExecuting().getPosition()) < 1){
+		if (owner.getMoveHandler().getExecuting() == null || owner.position.horizontalDistanceSquared(owner.getMoveHandler().getExecuting().getPosition()) < 1) {
 			double dist = rand();
 			double ang = owner.rand.nextDouble() * 2 * Math.PI;
 			Vector3d n = new Vector3d();
@@ -48,17 +48,17 @@ public class AIWander extends AI {
 		}
 		return true;
 	}
-	
-	public double rand(){
+
+	public double rand() {
 		double r = owner.rand.nextDouble();
 		r *= range;
-		if(r < 2) return range;
+		if (r < 2) return range;
 		return r;
 	}
 
 	@Override
 	public void stop() {
-		
+
 	}
 
 }

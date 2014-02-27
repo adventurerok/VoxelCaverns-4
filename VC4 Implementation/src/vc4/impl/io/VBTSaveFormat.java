@@ -19,7 +19,7 @@ public class VBTSaveFormat implements SaveFormat {
 		String path = DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/chunks/" + y + "/" + z + "/" + x + ".vbt";
 		File file = new File(path);
 		if (!file.exists()) return null;
-		//long start = System.nanoTime();
+		// long start = System.nanoTime();
 		try (NBTInputStream in = new NBTInputStream(new FileInputStream(file), true)) {
 			CompoundTag root = (CompoundTag) in.readTag();
 
@@ -46,7 +46,7 @@ public class VBTSaveFormat implements SaveFormat {
 				}
 			}
 
-			//System.out.println("Took " + ((System.nanoTime() - start) / 1000000) + "ms");
+			// System.out.println("Took " + ((System.nanoTime() - start) / 1000000) + "ms");
 			return chunk;
 		}
 	}
@@ -144,11 +144,10 @@ public class VBTSaveFormat implements SaveFormat {
 		return o.toByteArray();
 	}
 
-
 	@Override
 	public void writeMap(World world, MapData map) throws IOException {
 		// TASK Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -166,7 +165,6 @@ public class VBTSaveFormat implements SaveFormat {
 		return null;
 	}
 
-
 	@Override
 	public void writeNetworkBytes(Chunk chunk, SwitchOutputStream out) throws IOException {
 	}
@@ -175,7 +173,5 @@ public class VBTSaveFormat implements SaveFormat {
 	public Chunk readNetworkBytes(World world, long x, long y, long z, SwitchInputStream in) throws IOException {
 		return null;
 	}
-
-	
 
 }

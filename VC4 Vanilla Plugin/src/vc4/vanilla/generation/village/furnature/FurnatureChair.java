@@ -5,11 +5,11 @@ import vc4.api.util.Direction;
 import vc4.api.vector.Vector3l;
 import vc4.vanilla.generation.village.Village;
 
-public class FurnatureChair extends Furnature{
-	
+public class FurnatureChair extends Furnature {
+
 	int bid;
 	int dir;
-	
+
 	@Override
 	public void place(Village ville, Vector3l start, Direction dir) {
 		start = pos.adjust(start, dir);

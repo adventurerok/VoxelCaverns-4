@@ -5,7 +5,6 @@ import vc4.vanilla.generation.village.wood.*;
 
 public class VillageStyleWood extends VillageStyle {
 
-	
 	public VillageStyleWood() {
 		addBuilding(new WeightedBuilding(new WoodHouse(), 50));
 		addBuilding(new WeightedBuilding(new WoodShop(), 50));

@@ -12,27 +12,28 @@ import vc4.api.input.MouseSet;
 import vc4.api.item.ItemStack;
 import vc4.api.render.*;
 
-public class GuiInventory extends Component{
+public class GuiInventory extends Component {
 
 	public ContainerInventory inventory;
 
 	public GuiInventory() {
 		setResizer(new ResizerBorder(Border.SOUTHCENTRE));
 	}
-	
-	private static ColorScheme getColorScheme(){
+
+	private static ColorScheme getColorScheme() {
 		ClientGame g = Client.getGame();
 		return g.getColorScheme(g.getColorSchemeSetting().getString());
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.gui.Component#getDefaultBounds()
 	 */
 	@Override
 	public Rectangle getDefaultBounds() {
 		return new Rectangle(352, 128);
 	}
-	
 
 	@Override
 	public void draw() {
@@ -97,7 +98,7 @@ public class GuiInventory extends Component{
 
 	@Override
 	public void update() {
-		//draw();
+		// draw();
 		if (!Client.getGame().isPaused()) return;
 		inventory = Client.getGame().getPlayer().getInventory();
 		if (inventory == null) return;
@@ -107,7 +108,7 @@ public class GuiInventory extends Component{
 		MouseSet mice = Client.getGame().getMouseSet();
 		boolean left = mice.buttonPressed(0);
 		boolean right = mice.buttonPressed(1);
-		if(!left && !right) return;
+		if (!left && !right) return;
 		int x = (int) getBounds().getX();
 		int y = (int) getBounds().getY();
 		Rectangle mouse = mice.getMouseRectangle();
@@ -136,7 +137,7 @@ public class GuiInventory extends Component{
 				}
 				Rectangle slot = new Rectangle(x + sx * 32, y + sy * 32, 32, 32);
 				if (mouse.intersects(slot)) {
-					//Container.setContainerGui(this);
+					// Container.setContainerGui(this);
 					try {
 						if (left) inventory.setHeldItemStack(inventory.leftClick(at, inventory.getHeldItemStack()));
 						else inventory.setHeldItemStack(inventory.rightClick(at, inventory.getHeldItemStack()));
@@ -150,21 +151,23 @@ public class GuiInventory extends Component{
 		}
 	}
 
-//	/**
-//	 * @param item
-//	 * @return The remaining items
-//	 */
-//	@Override
-//	public ItemStack controlClick(ItemStack item, int slot) {
-//		EntityPlayer p = SingleplayerUtils.getPlayer();
-//		if (p.getCurrentTab() == 2) {
-//			ContainerChest c = p.getActiveContainer().chest;
-//			if (c != null) { return c.addItemStack(item); }
-//		}
-//		return item;
-//	}
+	// /**
+	// * @param item
+	// * @return The remaining items
+	// */
+	// @Override
+	// public ItemStack controlClick(ItemStack item, int slot) {
+	// EntityPlayer p = SingleplayerUtils.getPlayer();
+	// if (p.getCurrentTab() == 2) {
+	// ContainerChest c = p.getActiveContainer().chest;
+	// if (c != null) { return c.addItemStack(item); }
+	// }
+	// return item;
+	// }
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.gui.Component#isClickable()
 	 */
 	@Override

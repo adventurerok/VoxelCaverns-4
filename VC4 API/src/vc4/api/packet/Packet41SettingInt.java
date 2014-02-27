@@ -6,9 +6,9 @@ import vc4.api.io.SwitchInputStream;
 import vc4.api.io.SwitchOutputStream;
 
 public class Packet41SettingInt extends Packet {
-	
+
 	public static final int ID = 41;
-	
+
 	int setting;
 	int change;
 
@@ -23,7 +23,7 @@ public class Packet41SettingInt extends Packet {
 		setting = in.readInt();
 		change = in.readInt();
 	}
-	
+
 	public Packet41SettingInt() {
 	}
 

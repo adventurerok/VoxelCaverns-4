@@ -18,12 +18,12 @@ public class Vector3f implements Vector3<Vector3f> {
 	public Vector3f() {
 		// TASK Auto-generated constructor stub
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Vector3f[" + x + ", " + y + ", " + z + "]";
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -37,10 +37,10 @@ public class Vector3f implements Vector3<Vector3f> {
 	}
 
 	public Vector3f(double x, double y, double z) {
-		this((float)x, (float)y, (float)z);
+		this((float) x, (float) y, (float) z);
 	}
-	
-	public Vector3f(Color c){
+
+	public Vector3f(Color c) {
 		this(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
 	}
 

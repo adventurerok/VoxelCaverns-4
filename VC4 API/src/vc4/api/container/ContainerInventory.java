@@ -44,7 +44,7 @@ public class ContainerInventory extends Container {
 	public ContainerInventory() {
 		super(44);
 	}
-	
+
 	@Override
 	public String getGuiName() {
 		return "inventory";
@@ -127,23 +127,22 @@ public class ContainerInventory extends Container {
 
 	}
 
-
 	/**
 	 * 
 	 */
 	public void sort() {
 		ArrayList<ItemStack> items = new ArrayList<>();
-		for(int d = 0; d < getSize(); ++d){
+		for (int d = 0; d < getSize(); ++d) {
 			ItemStack item = getItem(d);
-			if(item == null || !item.exists()) continue;
+			if (item == null || !item.exists()) continue;
 			int ind = items.indexOf(item);
-			if(ind == -1){
+			if (ind == -1) {
 				items.add(item);
 				continue;
 			} else {
 				ItemStack c = items.get(ind);
 				item = c.combineItemStack(item);
-				if(item != null && item.exists()){
+				if (item != null && item.exists()) {
 					items.set(ind, item);
 				} else {
 					setItem(d, null);

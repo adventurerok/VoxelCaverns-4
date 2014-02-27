@@ -3,7 +3,7 @@ package vc4.vanilla.generation.dungeon.style;
 import vc4.vanilla.generation.dungeon.WeightedRoom;
 import vc4.vanilla.generation.dungeon.room.*;
 
-public class DungeonStyleStone extends DungeonStyle{
+public class DungeonStyleStone extends DungeonStyle {
 
 	public DungeonStyleStone() {
 		addRoom(new WeightedRoom(new DungeonRoomBase(), 15));
@@ -15,6 +15,5 @@ public class DungeonStyleStone extends DungeonStyle{
 		addRoom(new WeightedRoom(new DungeonRoomLibrary(), 2));
 		addRoom(new WeightedRoom(new DungeonRoomLoot(), 6));
 	}
-	
-	
+
 }

@@ -7,23 +7,19 @@ import vc4.api.io.SwitchOutputStream;
 
 public class Packet3SUID extends Packet {
 
-	
 	public static final int ID = 3;
-	
+
 	public Packet3SUID() {
 		super();
 	}
-	
+
 	/*
-	 * Message:
-	 * 	0	You requested a new ID, here it is
-	 * 	1	Server ID (The server's unique ID, shoudn't change)
-	 * 
+	 * Message: 0 You requested a new ID, here it is 1 Server ID (The server's unique ID, shoudn't change)
 	 */
 
 	public byte message;
 	public byte[] suid;
-	
+
 	@Override
 	public void write(SwitchOutputStream out) throws IOException {
 		out.writeByte(message);

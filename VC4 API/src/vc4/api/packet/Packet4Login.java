@@ -5,10 +5,10 @@ import java.io.IOException;
 import vc4.api.io.SwitchInputStream;
 import vc4.api.io.SwitchOutputStream;
 
-public class Packet4Login extends Packet{
-	
+public class Packet4Login extends Packet {
+
 	public static final int ID = 4;
-	
+
 	public byte[] uid;
 
 	@Override
@@ -35,7 +35,7 @@ public class Packet4Login extends Packet{
 	public Packet4Login() {
 		super();
 	}
-	
+
 	public Packet4Login setUid(byte[] uid) {
 		this.uid = uid;
 		return this;

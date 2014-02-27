@@ -25,8 +25,8 @@ public class ServerMap {
 	public static void addSuid(byte[] server, byte[] suid) {
 		servers.put(new SUID(server), new SUID(suid));
 	}
-	
-	public static boolean hasServer(byte[] suid){
+
+	public static boolean hasServer(byte[] suid) {
 		return servers.containsKey(new SUID(suid));
 	}
 
@@ -34,28 +34,26 @@ public class ServerMap {
 		Logger.getLogger("TST").info("Saving server:suid map");
 		String path = DirectoryLocator.getPath() + "/settings/suids";
 		File file = new File(path);
-		if (!file.exists())
-			file.getParentFile().mkdirs();
+		if (!file.exists()) file.getParentFile().mkdirs();
 		try (PrintStream out = new PrintStream(file)) {
 			for (Entry<SUID, SUID> e : servers.entrySet()) {
-				out.println(SuidUtils.getSuidHex(e.getKey().getSuid())
-						+ SuidUtils.getSuidHex(e.getValue().getSuid()));
+				out.println(SuidUtils.getSuidHex(e.getKey().getSuid()) + SuidUtils.getSuidHex(e.getValue().getSuid()));
 			}
 		} catch (FileNotFoundException e) {
 			Logger.getLogger(ServerMap.class).warning("Exception", e);
 		}
 	}
-	
-	public static void loadSuids(){
+
+	public static void loadSuids() {
 		Logger.getLogger("TST").info("Loading server:suid map");
 		String path = DirectoryLocator.getPath() + "/settings/suids";
 		File file = new File(path);
-		if(!file.exists()) return;
-		try (BufferedReader in = new BufferedReader(new FileReader(file))){
+		if (!file.exists()) return;
+		try (BufferedReader in = new BufferedReader(new FileReader(file))) {
 			String line;
-			while((line = in.readLine()) != null){
+			while ((line = in.readLine()) != null) {
 				line = line.trim();
-				if(line.length() != 64) continue;
+				if (line.length() != 64) continue;
 				SUID server = new SUID(SuidUtils.parseSuid(line.substring(0, 32)));
 				SUID client = new SUID(SuidUtils.parseSuid(line.substring(32, 64)));
 				servers.put(server, client);

@@ -15,17 +15,16 @@ public class SoundGroup {
 
 	public ArrayList<Sound> sounds = new ArrayList<Sound>();
 
-	public SoundGroup(String path, String type) throws MalformedURLException{
+	public SoundGroup(String path, String type) throws MalformedURLException {
 		this.name = path;
-		for(URL res : Resources.getResourceURLs()){
+		for (URL res : Resources.getResourceURLs()) {
 			URL full = new URL(res.toString() + "/" + type + "/" + path);
 			ArrayList<URL> result = FileSorter.getFiles(full);
-			for(URL url : result){
+			for (URL url : result) {
 				sounds.add(new Sound(name, url));
 			}
 		}
 	}
-
 
 	public Sound getRandomSound() {
 		int i = sounds.size();
@@ -40,6 +39,6 @@ public class SoundGroup {
 
 	public void merge(SoundGroup sounds) {
 		this.sounds.addAll(sounds.sounds);
-		
+
 	}
 }

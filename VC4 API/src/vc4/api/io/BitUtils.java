@@ -5,7 +5,7 @@ package vc4.api.io;
 
 /**
  * @author Paul Durbaba
- *
+ * 
  */
 public class BitUtils {
 

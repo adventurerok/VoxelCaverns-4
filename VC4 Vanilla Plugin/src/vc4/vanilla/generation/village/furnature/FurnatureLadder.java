@@ -8,7 +8,7 @@ import vc4.vanilla.generation.village.Village;
 public class FurnatureLadder extends Furnature {
 
 	int bid, dir;
-	
+
 	public FurnatureLadder(Adjustment pos, int bid, int dir) {
 		super(pos);
 		this.bid = bid;

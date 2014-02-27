@@ -8,6 +8,7 @@ public class TaskSystem extends Thread {
 	private ListedTask current;
 	private boolean stop;
 	private MainProgress overall;
+
 	public TaskSystem() {
 		overall = new MainProgress(this);
 	}
@@ -75,7 +76,7 @@ public class TaskSystem extends Thread {
 			++total;
 			current += t.getProgress().getPercent();
 		}
-		if(this.current != null){
+		if (this.current != null) {
 			++total;
 			current += this.current.getProgress().getPercent();
 		}
@@ -84,6 +85,6 @@ public class TaskSystem extends Thread {
 	}
 
 	public void setUpdated(boolean b) {
-		
+
 	}
 }

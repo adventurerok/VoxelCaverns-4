@@ -3,12 +3,12 @@ package vc4.api.tool;
 public class ToolMaterial {
 
 	private int id;
-	private int durability; //Max durability 
+	private int durability; // Max durability
 	private String name;
-	private double power; //How fast it breaks things, and what it can break
-	
+	private double power; // How fast it breaks things, and what it can break
+
 	private static int nextId;
-	
+
 	public ToolMaterial(int id, String name, int durability, double power) {
 		super();
 		this.id = id;
@@ -33,7 +33,6 @@ public class ToolMaterial {
 		return durability;
 	}
 
-
 	public String getName() {
 		return name;
 	}
@@ -41,10 +40,5 @@ public class ToolMaterial {
 	public double getPower() {
 		return power;
 	}
-	
-	
-	
-	
-	
-	
+
 }

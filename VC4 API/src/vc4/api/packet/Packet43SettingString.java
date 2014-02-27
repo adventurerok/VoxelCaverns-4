@@ -5,16 +5,14 @@ import java.io.IOException;
 import vc4.api.io.SwitchInputStream;
 import vc4.api.io.SwitchOutputStream;
 
-public class Packet43SettingString extends Packet{
-	
+public class Packet43SettingString extends Packet {
+
 	public static final int ID = 43;
-	
+
 	/*
-	 * Settings:
-	 * 	0	chatname
-	 * 
+	 * Settings: 0 chatname
 	 */
-	
+
 	public int setting;
 	public String change;
 
@@ -29,7 +27,7 @@ public class Packet43SettingString extends Packet{
 		setting = in.readInt();
 		change = in.readString();
 	}
-	
+
 	public Packet43SettingString() {
 	}
 
@@ -43,5 +41,5 @@ public class Packet43SettingString extends Packet{
 	public int getId() {
 		return ID;
 	}
-	
+
 }

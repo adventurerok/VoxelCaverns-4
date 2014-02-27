@@ -5,9 +5,7 @@ import vc4.api.text.Localization;
 public class StatInt implements Stat {
 
 	int value;
-	
-	
-	
+
 	public StatInt(int value) {
 		super();
 		this.value = value;
@@ -16,7 +14,7 @@ public class StatInt implements Stat {
 	public void setValue(int value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String displayStat(String name) {
 		return Localization.getLocalization("stat." + name, value);
@@ -29,7 +27,7 @@ public class StatInt implements Stat {
 
 	@Override
 	public Object[] getValues() {
-		return new Object[]{value};
+		return new Object[] { value };
 	}
 
 }

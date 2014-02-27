@@ -41,9 +41,9 @@ public class ClientResources extends ImplResources {
 			}
 		}
 	}
-	
-	public void animatedTextureTick(int ticks){
-		for(AnimatedTexture t : getAnimatedTextures().values()){
+
+	public void animatedTextureTick(int ticks) {
+		for (AnimatedTexture t : getAnimatedTextures().values()) {
 			t.updateAnimation(ticks);
 		}
 	}

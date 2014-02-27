@@ -7,11 +7,10 @@ import java.lang.annotation.*;
 
 /**
  * @author paul
- *
+ * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface EventHandler {
 
-	
 }

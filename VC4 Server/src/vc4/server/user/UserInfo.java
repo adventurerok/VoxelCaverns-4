@@ -9,64 +9,64 @@ public class UserInfo {
 	private String chatName = "genericUser";
 	private String groupName = "default";
 	private ImplPermissionGroup permissions;
-	
-	public UserInfo(String name){
+
+	public UserInfo(String name) {
 		chatName = name;
 	}
-	
-	public UserInfo(YamlMap map){
-		if(map.hasKey("name")) chatName = map.getString("name");
-		if(map.hasKey("group")) groupName = map.getString("group");
-		if(map.hasKey("permissions")) permissions = new ImplPermissionGroup(map.getSubMap("permissions"));
+
+	public UserInfo(YamlMap map) {
+		if (map.hasKey("name")) chatName = map.getString("name");
+		if (map.hasKey("group")) groupName = map.getString("group");
+		if (map.hasKey("permissions")) permissions = new ImplPermissionGroup(map.getSubMap("permissions"));
 	}
-	
+
 	public String getGroupName() {
 		return groupName;
 	}
-	
+
 	public String getChatName() {
 		return chatName;
 	}
-	
+
 	public ImplPermissionGroup getPermissions() {
 		return permissions;
 	}
-	
-	public Group getGroup(){
+
+	public Group getGroup() {
 		return UserManager.getGroup(groupName);
 	}
-	
+
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
-	
-	public YamlMap toYaml(){
+
+	public YamlMap toYaml() {
 		YamlMap map = new YamlMap();
 		map.setString("name", chatName);
-		if(!groupName.equals("default")) map.setString("group", groupName);
-		if(permissions != null){
+		if (!groupName.equals("default")) map.setString("group", groupName);
+		if (permissions != null) {
 			map.setSubMap("permissions", permissions.toYaml());
 		}
 		return map;
 	}
-	
-	public int getPermission(String perm){
-		if(permissions == null) return 0;
+
+	public int getPermission(String perm) {
+		if (permissions == null) return 0;
 		return permissions.getSubPermission(perm);
 	}
-	
-	public boolean changeChatName(String change, boolean any){
-		if(change.equals(chatName)) return true;
-		if(any){
+
+	public boolean changeChatName(String change, boolean any) {
+		if (change.equals(chatName)) return true;
+		if (any) {
 			int numIndex = change.length();
-			for(int d = change.length() - 1; d > -1; --d){
-				if(change.charAt(d) > 47 && change.charAt(d) < 58) continue;
+			for (int d = change.length() - 1; d > -1; --d) {
+				if (change.charAt(d) > 47 && change.charAt(d) < 58) continue;
 				numIndex = d + 1;
 				break;
 			}
 			String characters = change;
 			int num = 0;
-			if(numIndex != change.length()){
+			if (numIndex != change.length()) {
 				characters = change.substring(0, numIndex);
 				num = Integer.parseInt(change.substring(numIndex, change.length()));
 			}
@@ -74,15 +74,15 @@ public class UserInfo {
 			UserManager.setUserName(chatName = UserManager.generateChatName(characters, num), this);
 			return true;
 		}
-		if(!UserManager.hasChatName(change)) return false;
+		if (!UserManager.hasChatName(change)) return false;
 		UserManager.removeChatName(chatName);
 		UserManager.setUserName(chatName = change, this);
 		return true;
 	}
 
 	public void setPermission(String perm, int on) {
-		if(permissions == null) permissions = new ImplPermissionGroup();
+		if (permissions == null) permissions = new ImplPermissionGroup();
 		permissions.setSubPermission(perm, on);
 	}
-	
+
 }

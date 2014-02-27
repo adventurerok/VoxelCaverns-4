@@ -101,7 +101,7 @@ public class ItemPanel extends Panel {
 		}
 		int hover = getHovering(msx, msy);
 		if (Client.getGame().getHoveringComponent() != this) hover = -1;
-		if(hover != -1){
+		if (hover != -1) {
 			if (left) inventory.setHeldItemStack(container.leftClick(hover, inventory.getHeldItemStack()));
 			else inventory.setHeldItemStack(container.rightClick(hover, inventory.getHeldItemStack()));
 		}

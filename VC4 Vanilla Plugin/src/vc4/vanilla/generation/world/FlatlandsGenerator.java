@@ -20,7 +20,6 @@ public class FlatlandsGenerator implements WorldGenerator {
 
 	@Override
 	public void onWorldLoad(World world) {
-		
 
 	}
 
@@ -30,13 +29,13 @@ public class FlatlandsGenerator implements WorldGenerator {
 		int woolType = (int) (((x & 3) << 4) + ((y & 3) << 2) + ((z & 3)));
 		short bid = woolType < 32 ? Vanilla.wool0.uid : Vanilla.wool1.uid;
 		byte dat = (byte) (woolType & 31);
-		if(y < 0){
+		if (y < 0) {
 			Arrays.fill(out.blocks, bid);
 			Arrays.fill(out.data, dat);
 		}
 		return out;
 	}
-	
+
 	@Override
 	public Music getBiomeMusic(EntityPlayer player) {
 		return Vanilla.musicOverworld;
@@ -44,7 +43,7 @@ public class FlatlandsGenerator implements WorldGenerator {
 
 	@Override
 	public void populate(World world, long x, long y, long z) {
-		
+
 	}
 
 	@Override
@@ -108,8 +107,7 @@ public class FlatlandsGenerator implements WorldGenerator {
 	public boolean generatePlants(World world, long x, long y, long z) {
 		return true;
 	}
-	
-	
+
 	@Override
 	public boolean hasBiomeMapGenerator(World world) {
 		return false;

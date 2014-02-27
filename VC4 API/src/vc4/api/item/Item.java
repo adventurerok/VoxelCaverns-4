@@ -15,11 +15,10 @@ import vc4.api.tool.Tool;
 
 /**
  * @author paul
- *
+ * 
  */
 public class Item {
 
-	
 	public final int id;
 	protected int textureIndex;
 	protected String name;
@@ -28,98 +27,105 @@ public class Item {
 	protected int maxStack = 99;
 	protected boolean overrideLeftClick;
 	protected Stats defaultStats = new Stats();
-	
+
 	protected static Item[] itemsList = new Item[65536];
+
 	public Item(int id) {
 		super();
 		this.id = id;
 		itemsList[id] = this;
 	}
+
 	public Item(int id, int textureIndex) {
 		this(id);
 		this.textureIndex = textureIndex;
 	}
-	
-	public static Item byId(int id){
+
+	public static Item byId(int id) {
 		return itemsList[id];
 	}
-	
-	public static void addItemBlock(int id){
+
+	public static void addItemBlock(int id) {
 		new ItemBlock(id);
 	}
-	
-	public Tool getTool(ItemStack item){
+
+	public Tool getTool(ItemStack item) {
 		return null;
 	}
-	
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public Item setName(String name) {
 		this.name = name;
 		return this;
 	}
-	
+
 	/**
 	 * @return the damageOnUse
 	 */
 	public boolean isDamagedOnUse() {
 		return damageOnUse;
 	}
-	
+
 	/**
 	 * @return the maxDamage
 	 */
 	public int getMaxDamage() {
 		return maxDamage;
 	}
-	
-	public int getMaxStack(int damage){
+
+	public int getMaxStack(int damage) {
 		return maxStack;
 	}
-	
-	public String getItemName(ItemStack stack){
+
+	public String getItemName(ItemStack stack) {
 		return "item." + getModifiedItemName(stack) + ".name";
 	}
-	public String getItemDescription(ItemStack stack){
+
+	public String getItemDescription(ItemStack stack) {
 		return "item." + getModifiedItemName(stack) + ".desc";
 	}
-	public String getModifiedItemName(ItemStack stack){
+
+	public String getModifiedItemName(ItemStack stack) {
 		return name;
 	}
-	public String getLocalizazedItemName(ItemStack stack){
+
+	public String getLocalizazedItemName(ItemStack stack) {
 		return Localization.getLocalization(getItemName(stack));
 	}
+
 	public String getLocalizedItemDescription(ItemStack stack) {
 		return Localization.getLocalization(getItemDescription(stack));
 	}
-	
-	public Stats getStats(ItemStack item){
+
+	public Stats getStats(ItemStack item) {
 		return defaultStats;
 	}
-	
+
 	/**
 	 * @return the overrideLeftClick
 	 */
 	public boolean overrideLeftClick() {
 		return overrideLeftClick;
 	}
-	
-	public void onLeftClick(EntityPlayer player, ItemStack item){
-		
+
+	public void onLeftClick(EntityPlayer player, ItemStack item) {
+
 	}
-	
-	public void onRightClick(EntityPlayer player, ItemStack item){
-		
+
+	public void onRightClick(EntityPlayer player, ItemStack item) {
+
 	}
-	
+
 	/**
 	 * @param current
 	 * @return The items texture index
@@ -127,19 +133,20 @@ public class Item {
 	public int getTextureIndex(ItemStack current) {
 		return textureIndex;
 	}
-	
-	public Color getColor(ItemStack item){
+
+	public Color getColor(ItemStack item) {
 		return Color.white;
 	}
-	
-	public static void clearItems(){
+
+	public static void clearItems() {
 		itemsList = new Item[65536];
 		addItemBlock(Block.stone.uid);
 	}
+
 	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> res = new ArrayList<>();
 		res.add(new ItemStack(id, 0, 1));
 		return res;
 	}
-	
+
 }

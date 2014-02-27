@@ -16,7 +16,7 @@ public class BlockLadder extends Block {
 
 	Color color = new Color(0x492100);
 	int ench = 0;
-	
+
 	public BlockLadder(int uid) {
 		super(uid, BlockTexture.ladder, "ladder");
 		renderer = new BlockRendererFace();
@@ -83,40 +83,40 @@ public class BlockLadder extends Block {
 	public boolean canStandOn() {
 		return false;
 	}
-	
-	public double getClimbSpeed(World world, long x, long y, long z){
+
+	public double getClimbSpeed(World world, long x, long y, long z) {
 		return 0.2 * (getEnchantmentLevel(world, x, y, z) * 0.5 + 1);
 	}
-	
-	public double getFallSpeed(World world, long x, long y, long z){
+
+	public double getFallSpeed(World world, long x, long y, long z) {
 		return 0.3 * (getEnchantmentLevel(world, x, y, z) * 0.1 + 1);
 	}
-	
-	public int getEnchantmentLevel(World world, long x, long y, long z){
+
+	public int getEnchantmentLevel(World world, long x, long y, long z) {
 		return ench + ((world.getBlockData(x, y, z) >> 2) & 3);
 	}
 
 	@Override
 	public void onEntityTickInside(World world, long x, long y, long z, Entity entity) {
 		if (entity.isDead) return;
-		if(!(entity instanceof EntityLiving)) return;
+		if (!(entity instanceof EntityLiving)) return;
 		EntityLiving creature = (EntityLiving) entity;
 		if (creature.isSneaking()) creature.motionY = 0;
 		creature.fallDistance = 0;
 		if (creature.motionY < -getFallSpeed(world, x, y, z)) creature.motionY = -getFallSpeed(world, x, y, z);
-		//if (creature.getMaxFallSpeed() > getFallSpeed(world, x, y, z) && MathUtils.equals(creature.motionY, -creature.getMaxFallSpeed())) creature.motionY = -getFallSpeed(world, x, y, z);
+		// if (creature.getMaxFallSpeed() > getFallSpeed(world, x, y, z) && MathUtils.equals(creature.motionY, -creature.getMaxFallSpeed())) creature.motionY = -getFallSpeed(world, x, y, z);
 	}
-	
+
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return false;
 	}
-	
+
 	@Override
 	public ItemStack[] getItemDrops(World world, long x, long y, long z, ItemStack mined) {
-		return new ItemStack[]{new ItemStack(uid, world.getBlockData(x, y, z) & 12, 1)};
+		return new ItemStack[] { new ItemStack(uid, world.getBlockData(x, y, z) & 12, 1) };
 	}
-	
+
 	@Override
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
 		world.setBlockIdData(x, y, z, uid, (item.getData() & 12) + player.getSimpleFacing());
@@ -127,16 +127,16 @@ public class BlockLadder extends Block {
 	public Color getColor(ItemStack current, int side) {
 		return color;
 	}
-	
+
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
 		return color;
 	}
-	
+
 	@Override
 	public void onEntityCollideHorizontal(World world, long x, long y, long z, Entity entity) {
 		if (entity.isDead) return;
-		if(!(entity instanceof EntityLiving)) return;
+		if (!(entity instanceof EntityLiving)) return;
 		EntityLiving creature = (EntityLiving) entity;
 		creature.fallDistance = 0;
 		creature.motionY = getClimbSpeed(world, x, y, z);

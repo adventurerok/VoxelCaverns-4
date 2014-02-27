@@ -16,24 +16,26 @@ import vc4.vanilla.Vanilla;
 
 /**
  * @author paul
- *
+ * 
  */
-public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
+public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture {
 
 	/**
 	 * @param uid
 	 */
 	public BlockBrickMoss(short uid) {
 		super(uid);
-		
+
 	}
-	
+
 	@Override
 	protected String getModifiedName(ItemStack item) {
 		return "mossy" + super.getModifiedName(item);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#renderSideMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -41,7 +43,9 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 		return renderSide(world, x, y, z, side);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getColorMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -49,7 +53,9 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 		return Color.white;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getTextureIndexMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -57,7 +63,9 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 		return BlockTexture.moss;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getColorMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
@@ -65,28 +73,31 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 		return Color.white;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getTextureIndexMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
 		return BlockTexture.moss;
 	}
-	
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#multitextureUsed(byte, int)
 	 */
 	@Override
 	public boolean multitextureUsed(byte data, int side) {
 		return true;
 	}
-	
+
 	@Override
 	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
-		if(rand.nextInt(5) != 0) return 0;
+		if (rand.nextInt(5) != 0) return 0;
 		Direction dir = Direction.getDirection(rand.nextInt(10));
-		if(world.getNearbyBlockId(x, y, z, dir) == Vanilla.brick.uid){
+		if (world.getNearbyBlockId(x, y, z, dir) == Vanilla.brick.uid) {
 			byte dat = world.getNearbyBlockData(x, y, z, dir);
 			world.setNearbyBlockIdData(x, y, z, uid, dat, dir);
 		}
@@ -95,12 +106,12 @@ public class BlockBrickMoss extends BlockBrick implements IBlockMultitexture{
 
 	@Override
 	public void setOrientationMultitexture(World world, long x, long y, long z, int side, TextureCoords coords) {
-		
+
 	}
 
 	@Override
 	public void setOrientationMultitexture(ItemStack item, int side, TextureCoords coords) {
-		
+
 	}
 
 }

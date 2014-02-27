@@ -97,8 +97,8 @@ public class GuiCreative extends Component {
 
 	@Override
 	public void draw() {
-		if(!Client.getGame().isPaused()) return;
-		//if (!SingleplayerUtils.getPlayer().getGameMode().isCreativeGui()) return;
+		if (!Client.getGame().isPaused()) return;
+		// if (!SingleplayerUtils.getPlayer().getGameMode().isCreativeGui()) return;
 		gl = Graphics.getOpenGL();
 		ColorScheme scheme = Client.getGame().getColorScheme(Client.getGame().getColorSchemeSetting().getString());
 		int cx = getX();
@@ -198,7 +198,7 @@ public class GuiCreative extends Component {
 		if (!hover && show) sel = renderSelectedStack(ix, iy);
 		if (currentPage >= pages) currentPage = pages - 1;
 		if (!builtList[currentPage]) createListForPage(currentPage);
-		if (show){
+		if (show) {
 			Graphics.getClientShaderManager().bindShader("texture");
 			gl.callList(listId[currentPage]);
 		}
@@ -269,14 +269,14 @@ public class GuiCreative extends Component {
 
 	@Override
 	public void update() {
-		if(!Client.getGame().isPaused()) return;
-//		if (inventory.search(TextInputCreative.getInputText())) {
-//			recalculateDisplayLists();
-//		}
+		if (!Client.getGame().isPaused()) return;
+		// if (inventory.search(TextInputCreative.getInputText())) {
+		// recalculateDisplayLists();
+		// }
 		super.update();
 	}
-	
-	public void reloadItems(){
+
+	public void reloadItems() {
 		inventory = new ContainerCreative();
 		recalculateDisplayLists();
 	}

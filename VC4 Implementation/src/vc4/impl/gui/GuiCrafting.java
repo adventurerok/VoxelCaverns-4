@@ -7,13 +7,12 @@ import vc4.api.gui.Gui;
 import vc4.api.vector.Vector2i;
 import vc4.impl.gui.inner.InnerCraftingGui;
 
-
 public class GuiCrafting extends Gui {
 
 	public GuiCrafting() {
 		innerGui = new InnerCraftingGui();
 	}
-	
+
 	@Override
 	public Vector2i getMinSize() {
 		return new Vector2i(32 * 11 + 2 * SIDES_WIDTH, 32 * 4 + TOP_WIDTH + SIDES_WIDTH);
@@ -28,7 +27,7 @@ public class GuiCrafting extends Gui {
 	public Vector2i getDefaultSize() {
 		return new Vector2i(32 * 11 + 2 * SIDES_WIDTH, 32 * 4 + TOP_WIDTH + SIDES_WIDTH);
 	}
-	
+
 	@Override
 	public Rectangle getDefaultBounds() {
 		Vector2i size = getDefaultSize();
@@ -41,6 +40,5 @@ public class GuiCrafting extends Gui {
 	public void close() {
 		setVisible(false);
 	}
-	
 
 }

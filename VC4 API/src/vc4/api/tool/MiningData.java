@@ -38,24 +38,24 @@ public class MiningData {
 		this.maxToolPower = maxToolPower;
 		return this;
 	}
-	
+
 	public double getDropToolPower() {
 		return dropToolPower;
 	}
-	
+
 	public MiningData setDropToolPower(double dropToolPower) {
 		this.dropToolPower = dropToolPower;
 		return this;
 	}
-	
-	public MiningData setPowers(double drop, double min, double max){
+
+	public MiningData setPowers(double drop, double min, double max) {
 		dropToolPower = drop;
 		minToolPower = min;
 		maxToolPower = max;
 		return this;
 	}
-	
-	public MiningData setTimes(double fists, double min, double max){
+
+	public MiningData setTimes(double fists, double min, double max) {
 		fistDestroyTime = fists;
 		minDestroyTime = min;
 		maxDestroyTime = max;
@@ -108,60 +108,57 @@ public class MiningData {
 	public int getIncorrectDurabilityLoss() {
 		return incorrectDurabilityLoss;
 	}
-	
-	public MiningData setDurabilityLoss(int correct, int incorrect){
+
+	public MiningData setDurabilityLoss(int correct, int incorrect) {
 		incorrectDurabilityLoss = incorrect;
 		correctDurabilityLoss = correct;
 		return this;
 	}
-	
-	public double getTimeToMine(Tool tool){
-		if(required == null || minToolPower < 0.1 || tool == null || tool.getPower() < minToolPower || tool.getPower() < 0.1 || !tool.getType().equals(required)) return fistDestroyTime;
+
+	public double getTimeToMine(Tool tool) {
+		if (required == null || minToolPower < 0.1 || tool == null || tool.getPower() < minToolPower || tool.getPower() < 0.1 || !tool.getType().equals(required)) return fistDestroyTime;
 		double diff = (tool.getPower() - minToolPower) / (maxToolPower - minToolPower);
-		if(diff > 1) diff = 1;
+		if (diff > 1) diff = 1;
 		return minDestroyTime + (1 - diff) * (maxDestroyTime - minDestroyTime);
 	}
-	
-	public double getMineSpeed(Tool tool){
+
+	public double getMineSpeed(Tool tool) {
 		double time = getTimeToMine(tool);
-		if(time < 0.05) return 1;
+		if (time < 0.05) return 1;
 		return 0.05 / time * 1;
-		
+
 	}
-	
-	public double getMiningDone(Tool tool, double deltaMs){
+
+	public double getMiningDone(Tool tool, double deltaMs) {
 		double delta = deltaMs / 1000;
 		double time = getTimeToMine(tool);
-		if(time < delta) return 1;
+		if (time < delta) return 1;
 		return delta / time * 1;
 	}
-	
-	public boolean canDrop(Tool tool){
-		if(required == null) return true;
-		if(dropToolPower < 0.1) return true;
-		if(tool == null) return false;
-		else if(!required.equals(tool.getType())) return false;
+
+	public boolean canDrop(Tool tool) {
+		if (required == null) return true;
+		if (dropToolPower < 0.1) return true;
+		if (tool == null) return false;
+		else if (!required.equals(tool.getType())) return false;
 		return tool.getPower() >= dropToolPower;
 	}
-	
-	
-	public boolean onMine(ItemStack item){
+
+	public boolean onMine(ItemStack item) {
 		Tool tool = item != null ? item.getTool() : null;
 		boolean drp;
 		boolean crt;
-		if(required == null){
+		if (required == null) {
 			drp = true;
 			crt = false;
-		}
-		else if(dropToolPower < 0.1){
+		} else if (dropToolPower < 0.1) {
 			drp = true;
 			crt = false;
-		}
-		else if(tool == null) drp = crt = false;
-		else if(!required.equals(tool.getType())) drp = crt = false;
+		} else if (tool == null) drp = crt = false;
+		else if (!required.equals(tool.getType())) drp = crt = false;
 		else drp = crt = tool.getPower() >= dropToolPower;
-		if(crt) item.damage(correctDurabilityLoss);
-		else if(item != null) item.damage(incorrectDurabilityLoss);
+		if (crt) item.damage(correctDurabilityLoss);
+		else if (item != null) item.damage(incorrectDurabilityLoss);
 		return drp;
 	}
 

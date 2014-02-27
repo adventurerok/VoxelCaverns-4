@@ -6,14 +6,13 @@ import vc4.api.io.SwitchInputStream;
 import vc4.api.io.SwitchOutputStream;
 
 public class Packet31MessageInt extends Packet {
-	
+
 	public static final int ID = 31;
-	
+
 	/*
-	 * Message index:
-	 * 0	New SUID (Request a new SUID)
+	 * Message index: 0 New SUID (Request a new SUID)
 	 */
-	
+
 	public int message;
 
 	@Override
@@ -25,13 +24,11 @@ public class Packet31MessageInt extends Packet {
 	public void read(SwitchInputStream in) throws IOException {
 		message = in.readInt();
 	}
-	
+
 	public Packet31MessageInt setMessage(int message) {
 		this.message = message;
 		return this;
 	}
-	
-	
 
 	@Override
 	public int getId() {
@@ -46,7 +43,7 @@ public class Packet31MessageInt extends Packet {
 	public Packet31MessageInt() {
 		super();
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Message: " + message;

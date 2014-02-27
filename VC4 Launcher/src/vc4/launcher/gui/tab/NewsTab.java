@@ -12,43 +12,42 @@ import javax.swing.text.html.HTMLEditorKit;
 public class NewsTab extends JPanel {
 	public NewsTab() {
 		setLayout(new BorderLayout(0, 0));
-		
+
 		final JEditorPane news = new JEditorPane();
 		news.setEditorKit(new HTMLEditorKit());
 		news.setText("<html><body><font color=\"#0000ff\"><br><br><br><br><br><br><br><center>Loading update feed...</center></font></body></html>");
 		news.addHyperlinkListener(new HyperlinkListener() {
-	        @Override
+			@Override
 			public void hyperlinkUpdate(HyperlinkEvent he) {
-	          if (he.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
-	            try {
-	            	final String url = he.getURL().toString();
-	            	if(url.contains("blog.voxelcaverns.org.uk/page")){
-	            		Thread t = new Thread("Load URL"){
-	            			@Override
-	            			public void run() {
-	            				try{
-	            					news.setPage(url);
-	            					
-	            				} catch(Exception e){
-	            					news.setText("<html><body><font color=\"#0000ff\"><br><br><br><br><br><br><br><center>Failed to load news feed:<br>" + e.toString() + "<br>Please check your Internet connection</center></font></body></html>");
-	            				}
-	            			}
-	            		};
-	            		t.start();
-	            	}
-	            	else openLink(he.getURL().toURI());
-	            } catch (Exception e) {
-	              e.printStackTrace();
-	            }
-	        }
-	      });
-		Thread t = new Thread("Load URL"){
+				if (he.getEventType() == HyperlinkEvent.EventType.ACTIVATED) try {
+					final String url = he.getURL().toString();
+					if (url.contains("blog.voxelcaverns.org.uk/page")) {
+						Thread t = new Thread("Load URL") {
+							@Override
+							public void run() {
+								try {
+									news.setPage(url);
+
+								} catch (Exception e) {
+									news.setText("<html><body><font color=\"#0000ff\"><br><br><br><br><br><br><br><center>Failed to load news feed:<br>" + e.toString()
+											+ "<br>Please check your Internet connection</center></font></body></html>");
+								}
+							}
+						};
+						t.start();
+					} else openLink(he.getURL().toURI());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		Thread t = new Thread("Load URL") {
 			@Override
 			public void run() {
-				try{
+				try {
 					news.setPage("http://blog.voxelcaverns.org.uk/tagged/updates");
-					
-				} catch(Exception e){
+
+				} catch (Exception e) {
 					news.setText("<html><body><font color=\"#0000ff\"><br><br><br><br><br><br><br><center>Failed to load news feed:<br>" + e.toString() + "<br>Please check your Internet connection</center></font></body></html>");
 				}
 			}
@@ -59,7 +58,7 @@ public class NewsTab extends JPanel {
 		JScrollPane scroller = new JScrollPane(news);
 		add(scroller);
 	}
-	
+
 	public void openLink(URI uri) {
 		try {
 			Object o = Class.forName("java.awt.Desktop").getMethod("getDesktop", new Class[0]).invoke(null, new Object[0]);

@@ -23,9 +23,9 @@ public class ItemTooltipRenderer {
 	public static void renderTooltip(final ItemStack item, ToolTipType type, int slot) {
 		String text = null;
 		switch (type) {
-//			case ARMOUR:
-//				text = item.getArmourSlotText(slot);
-//				break;
+		// case ARMOUR:
+		// text = item.getArmourSlotText(slot);
+		// break;
 			case CREATIVE:
 				text = item.getCreativeTooltipText();
 				break;

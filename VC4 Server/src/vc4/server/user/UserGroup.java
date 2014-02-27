@@ -6,13 +6,11 @@ import vc4.api.yaml.YamlMap;
 import vc4.impl.permissions.ImplPermissionGroup;
 
 public class UserGroup implements Group {
-	
+
 	private String name;
 	private String prefix;
 	private String inherit;
 	private PermissionGroup permissions;
-	
-	
 
 	public UserGroup(String name, String prefix, PermissionGroup permissions) {
 		super();
@@ -20,34 +18,33 @@ public class UserGroup implements Group {
 		this.prefix = prefix;
 		this.permissions = permissions;
 	}
-	
-	public UserGroup(String name, YamlMap map){
+
+	public UserGroup(String name, YamlMap map) {
 		this.name = name;
-		if(map.hasKey("prefix")) prefix = map.getString("prefix");
-		if(map.hasKey("inherit")){
+		if (map.hasKey("prefix")) prefix = map.getString("prefix");
+		if (map.hasKey("inherit")) {
 			inherit = map.getString("inherit");
-			if(inherit != null && inherit.equals(name)) inherit = null;
-		}
-		else prefix = "";
-		if(map.hasKey("permissions")){
+			if (inherit != null && inherit.equals(name)) inherit = null;
+		} else prefix = "";
+		if (map.hasKey("permissions")) {
 			permissions = new ImplPermissionGroup(map.getSubMap("permissions"));
 		} else permissions = new ImplPermissionGroup();
 	}
-	
+
 	public void setInherit(String inherit) {
-		if(inherit != null && inherit.equals(name)) throw new RuntimeException("Can't inherit from self");
+		if (inherit != null && inherit.equals(name)) throw new RuntimeException("Can't inherit from self");
 		this.inherit = inherit;
 	}
-	
+
 	public void setChatPrefix(String prefix) {
 		this.prefix = prefix;
 	}
-	
-	public YamlMap toYaml(){
+
+	public YamlMap toYaml() {
 		YamlMap map = new YamlMap();
-		if(prefix != null && !prefix.isEmpty()) map.setString("prefix", prefix);
-		if(inherit != null && !inherit.isEmpty()) map.setString("inherit", inherit);
-		if(permissions != null){
+		if (prefix != null && !prefix.isEmpty()) map.setString("prefix", prefix);
+		if (inherit != null && !inherit.isEmpty()) map.setString("inherit", inherit);
+		if (permissions != null) {
 			map.setSubMap("permissions", permissions.toYaml());
 		}
 		return map;
@@ -66,7 +63,7 @@ public class UserGroup implements Group {
 	@Override
 	public int getPermission(String perm) {
 		int i = permissions.getSubPermission(perm);
-		if(i == 0 && inherit != null && !inherit.isEmpty()) return UserManager.getGroup(inherit).getPermission(perm);
+		if (i == 0 && inherit != null && !inherit.isEmpty()) return UserManager.getGroup(inherit).getPermission(perm);
 		return 0;
 	}
 

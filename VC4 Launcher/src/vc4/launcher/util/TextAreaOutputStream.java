@@ -100,9 +100,9 @@ public class TextAreaOutputStream extends OutputStream {
 				} catch (Throwable thr) { // sometimes throws a java.lang.Error: Interrupted attempt to aquire write lock
 					if (xa == 9) {
 						thr.printStackTrace();
-					} /*else {
-						EzTimer.delay(200);
-					}*/
+					} /*
+					 * else { EzTimer.delay(200); }
+					 */
 				}
 			}
 		} catch (Throwable thr) {

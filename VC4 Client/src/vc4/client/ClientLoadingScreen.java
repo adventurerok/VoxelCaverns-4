@@ -14,15 +14,13 @@ import vc4.api.graphics.RenderType;
 
 /**
  * @author paul
- *
+ * 
  */
-public class ClientLoadingScreen implements LoadingScreen{
-	
+public class ClientLoadingScreen implements LoadingScreen {
+
 	String title = "Loading...", info;
 	FontRenderer font;
 	Window window;
-
-	
 
 	public ClientLoadingScreen(FontRenderer font, Window window) {
 		super();
@@ -30,25 +28,29 @@ public class ClientLoadingScreen implements LoadingScreen{
 		this.window = window;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.client.LoadingScreen#setLoadingTitle(java.lang.String)
 	 */
 	@Override
 	public void setLoadingTitle(String title) {
 		this.title = title;
-		if(Display.wasResized()) window.resized();
-		
+		if (Display.wasResized()) window.resized();
+
 		glClearColor(0.3F, 0.5F, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		window.enterRenderMode(RenderType.GUI);
-		
+
 		font.renderString(10, 10, title);
-		if(info != null) font.renderString(30, 30, info);
-		
+		if (info != null) font.renderString(30, 30, info);
+
 		Display.update();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.client.LoadingScreen#getLoadingTitle()
 	 */
 	@Override
@@ -56,24 +58,28 @@ public class ClientLoadingScreen implements LoadingScreen{
 		return title;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.client.LoadingScreen#setLoadingInfo(java.lang.String)
 	 */
 	@Override
 	public void setLoadingInfo(String info) {
 		this.info = info;
-		if(Display.wasResized()) window.resized();
-		
+		if (Display.wasResized()) window.resized();
+
 		glClearColor(0.3F, 0.5F, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		window.enterRenderMode(RenderType.GUI);
 		font.renderString(10, 10, title);
-		if(info != null) font.renderString(30, 30, info);
-		
+		if (info != null) font.renderString(30, 30, info);
+
 		Display.update();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.client.LoadingScreen#getLoadingInfo()
 	 */
 	@Override

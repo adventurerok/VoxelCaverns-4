@@ -18,24 +18,24 @@ import vc4.impl.permissions.ImplPermissionGroup;
 
 /**
  * @author paul
- *
+ * 
  */
 public class GameLoader {
 
-	public static void load(Handler...startupHandlers){
+	public static void load(Handler... startupHandlers) {
 		new ImplLoggerFactory();
-		for(Handler h: startupHandlers){
+		for (Handler h : startupHandlers) {
 			Logger.addDefaultHandler(h);
 		}
 		Logger.getLogger("VC4").info(new Date());
 		Version.loadVersion();
-		
+
 		DefaultPermissions.setPerms(new ImplPermissionGroup());
 		Localization.loadLocalization("en_GB");
 		loadSaveFormats();
 	}
-	
-	private static void loadSaveFormats(){
+
+	private static void loadSaveFormats() {
 		SaveFormats.registerSaveFormat("VBT", new VBTSaveFormat());
 		SaveFormats.registerSaveFormat("VCH4", new VCH4SaveFormat());
 	}

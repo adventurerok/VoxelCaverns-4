@@ -21,37 +21,33 @@ public class TreeGenKapok extends TreeGen {
 	@Override
 	public boolean generate(long x, long y, long z, Plant plant) {
 		byte data = plant.getData();
-		if(rand.nextBoolean()) x -= 1;
-		if(rand.nextBoolean()) z -= 1;
-		if(!world.getBlockType(x, y - 1, z).canGrowPlant(plant)){
-			return false;
-		}
-		if(!world.getBlockType(x, y, z).replacableBy(world, x, y, z, Vanilla.logV.uid, data)) return false;
+		if (rand.nextBoolean()) x -= 1;
+		if (rand.nextBoolean()) z -= 1;
+		if (!world.getBlockType(x, y - 1, z).canGrowPlant(plant)) { return false; }
+		if (!world.getBlockType(x, y, z).replacableBy(world, x, y, z, Vanilla.logV.uid, data)) return false;
 		int height = 9 + rand.nextInt(35);
-		for(long ny = y - 2; ny < y + height - 2; ++ny){
-			//Trunk
+		for (long ny = y - 2; ny < y + height - 2; ++ny) {
+			// Trunk
 			setBlockAsWood(x, ny, z, data);
 			setBlockAsWood(x + 1, ny, z, data);
 			setBlockAsWood(x, ny, z + 1, data);
 			setBlockAsWood(x + 1, ny, z + 1, data);
 			generateLeaves(x, y + height, z, 2, data);
-			//TODO finish
+			// TODO finish
 		}
-		for (long ry = (y + height) - 2 - rand.nextInt(4); ry > y + height / 2; ry -= 2 + rand.nextInt(rand.nextInt(5) + 1))
-        {
-            float dir = rand.nextFloat() * (float)Math.PI * 2.0F;
-            long px = x + (int)(0.5F + MathUtils.cos(dir) * 4F);
-            long pz = z + (int)(0.5F + MathUtils.sin(dir) * 4F);
-            boolean big = rand.nextInt(3) == 0;
-            generateLeaves(px, ry, pz, big ? 1 : 0, data);
-            
-            for (int my = 0; my < (big ? 7 : 5); my++)
-            {
-                long bx = x + (int)(1.5F + MathUtils.cos(dir) * my);
-                long bz = z + (int)(1.5F + MathUtils.sin(dir) * my);
-                setBlockAsWood(bx, (ry - 3) + my / 2, bz, data);
-            }
-        }
+		for (long ry = (y + height) - 2 - rand.nextInt(4); ry > y + height / 2; ry -= 2 + rand.nextInt(rand.nextInt(5) + 1)) {
+			float dir = rand.nextFloat() * (float) Math.PI * 2.0F;
+			long px = x + (int) (0.5F + MathUtils.cos(dir) * 4F);
+			long pz = z + (int) (0.5F + MathUtils.sin(dir) * 4F);
+			boolean big = rand.nextInt(3) == 0;
+			generateLeaves(px, ry, pz, big ? 1 : 0, data);
+
+			for (int my = 0; my < (big ? 7 : 5); my++) {
+				long bx = x + (int) (1.5F + MathUtils.cos(dir) * my);
+				long bz = z + (int) (1.5F + MathUtils.sin(dir) * my);
+				setBlockAsWood(bx, (ry - 3) + my / 2, bz, data);
+			}
+		}
 		return true;
 	}
 

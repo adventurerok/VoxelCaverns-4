@@ -20,7 +20,7 @@ public class WorldGenFloatingIslands implements WorldPopulator {
 		long pz = (z << 5) + rand.nextInt(32);
 		int radius = 12 + rand.nextInt(12);
 		int size = radius + 4;
-		double large = size / (double)(radius * radius);
+		double large = size / (double) (radius * radius);
 		int cz, yFact, yMax, yMin, cy;
 		double xzSq;
 		for (int cx = -size; cx <= size; ++cx) {

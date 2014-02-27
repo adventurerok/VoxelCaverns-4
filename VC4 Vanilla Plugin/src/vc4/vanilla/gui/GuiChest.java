@@ -13,7 +13,7 @@ public class GuiChest extends GuiOpenContainer {
 		super(cont);
 		innerGui = new ItemPanel(cont.entity.getContainer());
 	}
-	
+
 	@Override
 	public Vector2i getMaxSize() {
 		int w = 2 * SIDES_WIDTH;
@@ -22,7 +22,7 @@ public class GuiChest extends GuiOpenContainer {
 		h += 32 * 20;
 		return new Vector2i(w, h);
 	}
-	
+
 	@Override
 	public Vector2i getMinSize() {
 		int w = 2 * SIDES_WIDTH;
@@ -31,7 +31,7 @@ public class GuiChest extends GuiOpenContainer {
 		h += 32 * 1;
 		return new Vector2i(w, h);
 	}
-	
+
 	@Override
 	public Vector2i getDefaultSize() {
 		int w = 2 * SIDES_WIDTH;
@@ -41,7 +41,7 @@ public class GuiChest extends GuiOpenContainer {
 		h += 32 * (container.entity.getContainer().getSize() / a);
 		return new Vector2i(w, h);
 	}
-	
+
 	@Override
 	public Rectangle getDefaultBounds() {
 		Vector2i size = getDefaultSize();

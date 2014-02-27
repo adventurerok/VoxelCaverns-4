@@ -18,8 +18,8 @@ import vc4.api.server.User;
 import vc4.server.Console;
 import vc4.server.packet.PacketHandler;
 
-public class ServerUser extends Thread implements User{
-	
+public class ServerUser extends Thread implements User {
+
 	private PacketHandler handler;
 	protected Socket socket;
 	private SwitchInputStream input;
@@ -29,10 +29,10 @@ public class ServerUser extends Thread implements User{
 	private long timer = 0;
 	private CompoundTag infoTag;
 	private EntityPlayer player;
-	
+
 	private UserInfo info;
-	
-	byte[] uid; //16 byte (128-bit) uid
+
+	byte[] uid; // 16 byte (128-bit) uid
 
 	public ServerUser(Socket socket, PacketHandler handler) {
 		super();
@@ -46,30 +46,32 @@ public class ServerUser extends Thread implements User{
 		this.handler = handler;
 		this.timer = System.nanoTime();
 	}
-	
+
 	public UserInfo getInfo() {
 		return info;
 	}
-	
+
 	@Override
-	public String getChatName(){
+	public String getChatName() {
 		return info.getChatName();
 	}
-	
+
 	public void setInfo(UserInfo info) {
 		this.info = info;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	@Override
 	public void run() {
 		try {
-			while(connected){
+			while (connected) {
 				int pid = input.readByte();
 				Logger.getLogger("VC4").fine("Recieved Packet id: " + pid);
-				if(pid == -1){
+				if (pid == -1) {
 					Logger.getLogger("VC4").info("Recieved end of stream");
 					break;
 				}
@@ -81,33 +83,32 @@ public class ServerUser extends Thread implements User{
 			Logger.getLogger(ServerUser.class).warning("Failed while reading packages", e);
 		}
 	}
-	
-	protected void handlePacket(Packet p){
+
+	protected void handlePacket(Packet p) {
 		handler.handlePacket(this, p);
-		//Logger.getLogger("VC4").fine("Recieved packet of id: " + p.getId());
-		//Logger.getLogger("VC4").fine("Payload: " + p.toString());
+		// Logger.getLogger("VC4").fine("Recieved packet of id: " + p.getId());
+		// Logger.getLogger("VC4").fine("Payload: " + p.toString());
 	}
-	
-	
+
 	public ServerUser setInfoTag(CompoundTag infoTag) {
 		this.infoTag = infoTag;
 		return this;
 	}
-	
+
 	public ServerUser setAccepted(boolean accepted) {
 		this.accepted = accepted;
 		return this;
 	}
-	
+
 	public CompoundTag getInfoTag() {
 		return infoTag;
 	}
 
-	public boolean writePacket(Packet p){
+	public boolean writePacket(Packet p) {
 		try {
 			output.writeByte((byte) p.getId());
 			p.write(output);
-			//output.clearOutput();
+			// output.clearOutput();
 			return true;
 		} catch (IOException e) {
 			Logger.getLogger(ServerUser.class).warning("Failed to write package (id=" + p.getId() + ")", e);
@@ -118,9 +119,9 @@ public class ServerUser extends Thread implements User{
 	@Override
 	public boolean hasPermission(String permission) {
 		int i = info.getPermission(permission);
-		if(i != 0) return i > 0 ? true : false;
+		if (i != 0) return i > 0 ? true : false;
 		i = info.getGroup().getPermission(permission);
-		if(i != 0) return i > 0 ? true : false;
+		if (i != 0) return i > 0 ? true : false;
 		i = DefaultPermissions.getPermission(permission);
 		return i > 0 ? true : false;
 	}
@@ -134,11 +135,11 @@ public class ServerUser extends Thread implements User{
 	public EntityPlayer getPlayer() {
 		return null;
 	}
-	
+
 	public boolean isAccepted() {
 		return accepted;
 	}
-	
+
 	public long getTimer() {
 		return timer;
 	}
@@ -150,7 +151,7 @@ public class ServerUser extends Thread implements User{
 
 	@Override
 	public Server getServer() {
-		return ((Console)ServerConsole.getConsole()).getServerHandler();
+		return ((Console) ServerConsole.getConsole()).getServerHandler();
 	}
 
 	@Override
@@ -205,10 +206,9 @@ public class ServerUser extends Thread implements User{
 
 	@Override
 	public int getUserLevel() {
-		if(isPlayer()) return 3;
-		if(isUser()) return 1;
+		if (isPlayer()) return 3;
+		if (isUser()) return 1;
 		return 0;
 	}
-	
-	
+
 }

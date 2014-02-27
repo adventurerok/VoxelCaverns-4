@@ -17,8 +17,8 @@ public class StoneMine implements Building {
 
 	private static ArrayList<Furnature> furniture = new ArrayList<>();
 	private static Village lastVille;
-	
-	public static void loadFurnature(Village ville){
+
+	public static void loadFurnature(Village ville) {
 		furniture.clear();
 		furniture.add(new FurnatureTorch(new Adjustment(2, -2, 2), Vanilla.torch.uid, 2));
 		furniture.add(new FurnatureTorch(new Adjustment(5, -2, 2), Vanilla.torch.uid, 2));
@@ -26,10 +26,10 @@ public class StoneMine implements Building {
 		furniture.add(new FurnatureTorch(new Adjustment(5, 3, 2), Vanilla.torch.uid, 4));
 		lastVille = ville;
 	}
-	
+
 	@Override
 	public void generate(World world, Door door, Village ville) {
-		if(ville != lastVille) loadFurnature(ville);
+		if (ville != lastVille) loadFurnature(ville);
 		Vector3l start = door.left;
 		start = start.move(3, door.dir.counterClockwise());
 		if (!ville.inBounds(start)) return;
@@ -75,26 +75,26 @@ public class StoneMine implements Building {
 			for (long z = sz + 1; z <= ez - 1; ++z) {
 				boolean zWall = z == sz + 1 || z == ez - 1;
 				for (long y = start.y - 1; y > start.y - 20; --y) {
-					if (xWall || zWall){
+					if (xWall || zWall) {
 						ville.setCobbleBlock(x, y, z);
 						continue;
 					}
 					c = new Vector3l(x, y, z);
 					ind = -1;
-					for(int num = 0; num < 8; ++num){
-						if(c.horizontalEquals(lads[num])){
+					for (int num = 0; num < 8; ++num) {
+						if (c.horizontalEquals(lads[num])) {
 							ind = num;
 							break;
 						}
 					}
-					if(ind != -1){
+					if (ind != -1) {
 						world.setBlockIdData(x, y, z, Vanilla.ladder.uid, ((ind & 3) + door.dir.id()) & 3);
-					} else if(y == start.y - 1 || (y & 127) == 0) ville.setGlassBlock(x, y, z);
+					} else if (y == start.y - 1 || (y & 127) == 0) ville.setGlassBlock(x, y, z);
 					else ville.setEmptyBlock(x, y, z);
 				}
 			}
 		}
-		for(Furnature f : furniture){
+		for (Furnature f : furniture) {
 			f.place(ville, door.left, door.dir);
 		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
@@ -126,7 +126,7 @@ public class StoneMine implements Building {
 		if (!ville.addRoom(bb)) return;
 		if ((y << 5) >= door.left.y - 10) return;
 		long depth = -512 - ville.getRand().nextInt(768);
-		if(((y << 5) | 31) <= depth) return;
+		if (((y << 5) | 31) <= depth) return;
 		long sy = Math.min(door.left.y - 10, (y << 5) | 31);
 		long ey = Math.max(y << 5, depth);
 		Vector3l[] lads = new Vector3l[8];
@@ -147,25 +147,23 @@ public class StoneMine implements Building {
 				boolean xWall = x == sx + 1 || x == ex - 1;
 				for (long z = sz + 1; z <= ez - 1; ++z) {
 					boolean zWall = z == sz + 1 || z == ez - 1;
-					if (xWall || zWall){
+					if (xWall || zWall) {
 						ville.setCobbleBlock(x, ay, z);
 						continue;
 					}
 					c = new Vector3l(x, ay, z);
 					ind = -1;
-					for(int num = 0; num < 8; ++num){
-						if(c.horizontalEquals(lads[num])){
+					for (int num = 0; num < 8; ++num) {
+						if (c.horizontalEquals(lads[num])) {
 							ind = num;
 							break;
 						}
 					}
-					if(ind != -1){
+					if (ind != -1) {
 						world.setBlockIdData(x, ay, z, Vanilla.ladder.uid, ((ind & 3) + door.dir.id()) & 3);
-					}
-					else if(spec){
+					} else if (spec) {
 						ville.setGlassBlock(x, ay, z);
-					}
-					else ville.setEmptyBlock(x, ay, z);
+					} else ville.setEmptyBlock(x, ay, z);
 
 				}
 			}

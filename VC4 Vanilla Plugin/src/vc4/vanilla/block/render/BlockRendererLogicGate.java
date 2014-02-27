@@ -35,7 +35,7 @@ public class BlockRendererLogicGate extends BlockRendererJoinable {
 			renderBlockFace(chunk.getWorld(), x, y, z, gate, renderers[rend], bounds, d);
 		}
 	}
-	
+
 	public void renderBlockFace(World world, long x, long y, long z, IBlockLogicGate gate, Renderer render, AABB bounds, int side) {
 		int tex = gate.getTextureIndexGate(world, x, y, z, side);
 		Color color = gate.getColorGate(world, x, y, z, side);
@@ -63,7 +63,6 @@ public class BlockRendererLogicGate extends BlockRendererJoinable {
 		}
 
 	}
-
 
 	@Override
 	public void renderBlock(ItemStack block, float x, float y, float z, Renderer render) {

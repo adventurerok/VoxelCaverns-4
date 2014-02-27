@@ -14,102 +14,99 @@ import vc4.api.permissions.PermissionGroup;
 import vc4.api.yaml.YamlMap;
 
 public class ImplPermissionGroup implements PermissionGroup {
-	
+
 	/*
-	 * 0 = unset
-	 * 1 = on
-	 * -1 = off
+	 * 0 = unset 1 = on -1 = off
 	 */
-	
-	private int ordinal(int o1, int o2){
+
+	private int ordinal(int o1, int o2) {
 		return o2 != 0 ? o2 : o1;
 	}
-	
-	private int ordinal(int...ints){
-		if(ints == null) return 0;
-		while(ints.length > 1){
+
+	private int ordinal(int... ints) {
+		if (ints == null) return 0;
+		while (ints.length > 1) {
 			ints[ints.length - 2] = ordinal(ints[ints.length - 2], ints[ints.length - 1]);
 			ints = Arrays.copyOf(ints, ints.length - 1);
 		}
 		return ints[0];
 	}
-	
+
 	public ImplPermissionGroup() {
-		
+
 	}
-	
-	public ImplPermissionGroup(YamlMap in){
+
+	public ImplPermissionGroup(YamlMap in) {
 		loadPermissions(in);
 	}
-	
+
 	@Override
-	public void loadPermissions(YamlMap in){
-		for(Entry<Object, Object> ent : in.getBaseMap().entrySet()){
+	public void loadPermissions(YamlMap in) {
+		for (Entry<Object, Object> ent : in.getBaseMap().entrySet()) {
 			String perm = ent.getKey().toString();
 			int val = 0;
-			if(ent.getValue() instanceof Boolean) val = ((Boolean)ent.getValue()).booleanValue() ? 1 : -1;
+			if (ent.getValue() instanceof Boolean) val = ((Boolean) ent.getValue()).booleanValue() ? 1 : -1;
 			setSubPermission(perm, val);
 		}
 	}
-	
-	public ImplPermissionGroup(InputStream in) throws IOException{
+
+	public ImplPermissionGroup(InputStream in) throws IOException {
 		loadPermissions(in);
 	}
-	
+
 	@Override
-	public void loadPermissions(InputStream in) throws IOException{
+	public void loadPermissions(InputStream in) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(in));
 		String line;
 		int on;
-		while((line = read.readLine()) != null){
+		while ((line = read.readLine()) != null) {
 			line = line.trim();
-			if(line.startsWith("#")) continue;
+			if (line.startsWith("#")) continue;
 			on = 1;
-			if(line.startsWith("+")){
+			if (line.startsWith("+")) {
 				on = 1;
 				line = line.substring(1);
-			} else if(line.startsWith("=")){
+			} else if (line.startsWith("=")) {
 				on = 0;
 				line = line.substring(1);
-			}
-			else if(line.startsWith("-")){
+			} else if (line.startsWith("-")) {
 				on = -1;
 				line = line.substring(1);
 			}
 			setSubPermission(line, on);
 		}
 	}
-	
-	public ImplPermissionGroup(String...perms) throws IOException{
+
+	public ImplPermissionGroup(String... perms) throws IOException {
 		loadPermissions(perms);
 	}
-	
+
 	@Override
-	public void loadPermissions(String...perms){
+	public void loadPermissions(String... perms) {
 		int on;
-		for(String line : perms){
-			if(line == null) continue;
+		for (String line : perms) {
+			if (line == null) continue;
 			line = line.trim();
-			if(line.startsWith("#")) continue;
+			if (line.startsWith("#")) continue;
 			on = 1;
-			if(line.startsWith("+")){
+			if (line.startsWith("+")) {
 				on = 1;
 				line = line.substring(1);
-			} else if(line.startsWith("=")){
+			} else if (line.startsWith("=")) {
 				on = 0;
 				line = line.substring(1);
-			}
-			else if(line.startsWith("-")){
+			} else if (line.startsWith("-")) {
 				on = -1;
 				line = line.substring(1);
 			}
 			setSubPermission(line, on);
 		}
 	}
-	
+
 	int p = 0;
 	int k = 0;
 	HashMap<String, Object> subs = new HashMap<>();
+
 	@Override
 	public int getP() {
 		return p;
@@ -122,21 +119,21 @@ public class ImplPermissionGroup implements PermissionGroup {
 
 	@Override
 	public void permissionCalc(IntList ints, String perm) {
-		if(perm.contains(".")){
+		if (perm.contains(".")) {
 			ints.add(k);
 			int dotIndex = perm.indexOf('.');
 			String before = perm.substring(0, dotIndex);
 			String after = perm.substring(dotIndex + 1, perm.length());
 			Object sub = subs.get(before);
-			if(sub == null) return;
-			else if(sub instanceof PermissionGroup) ((PermissionGroup)sub).permissionCalc(ints, after);
+			if (sub == null) return;
+			else if (sub instanceof PermissionGroup) ((PermissionGroup) sub).permissionCalc(ints, after);
 		} else {
 			ints.add(k);
-			if(perm.equals("*")) return;
+			if (perm.equals("*")) return;
 			Object sub = subs.get(perm);
-			if(sub == null) return;
-			else if(sub instanceof Number) ints.add(((Number)sub).intValue());
-			else if(sub instanceof PermissionGroup) ints.add(((PermissionGroup)sub).getP());
+			if (sub == null) return;
+			else if (sub instanceof Number) ints.add(((Number) sub).intValue());
+			else if (sub instanceof PermissionGroup) ints.add(((PermissionGroup) sub).getP());
 		}
 	}
 
@@ -152,16 +149,16 @@ public class ImplPermissionGroup implements PermissionGroup {
 
 	@Override
 	public void setSubPermission(String perm, int on) {
-		if(perm.contains(".")){
+		if (perm.contains(".")) {
 			int dotIndex = perm.indexOf('.');
 			String before = perm.substring(0, dotIndex);
 			String after = perm.substring(dotIndex + 1, perm.length());
 			Object sub = subs.get(before);
-			if(sub instanceof PermissionGroup){
-				((PermissionGroup)sub).setSubPermission(after, on);
-			} else if(sub instanceof Number){
+			if (sub instanceof PermissionGroup) {
+				((PermissionGroup) sub).setSubPermission(after, on);
+			} else if (sub instanceof Number) {
 				PermissionGroup gal = new ImplPermissionGroup();
-				gal.setP(((Number)sub).intValue());
+				gal.setP(((Number) sub).intValue());
 				gal.setSubPermission(after, on);
 				subs.put(before, gal);
 			} else {
@@ -170,15 +167,15 @@ public class ImplPermissionGroup implements PermissionGroup {
 				subs.put(before, gal);
 			}
 		} else {
-			if(perm.equals("*")){
+			if (perm.equals("*")) {
 				k = on;
 				return;
 			}
 			Object sub = subs.get(perm);
-			if(sub == null || !(sub instanceof PermissionGroup)){
+			if (sub == null || !(sub instanceof PermissionGroup)) {
 				subs.put(perm, Byte.valueOf((byte) on));
 			} else {
-				((PermissionGroup)sub).setP(on);
+				((PermissionGroup) sub).setP(on);
 			}
 		}
 	}
@@ -197,36 +194,38 @@ public class ImplPermissionGroup implements PermissionGroup {
 		subList(result, "");
 		return result.toArray(new String[result.size()]);
 	}
-	
-	private void subList(ArrayList<String> list, String prefix){
-		if(k != 0) list.add(prefix + "*: " + (k == 1 ? "true" : "false"));
-		for(Entry<String, Object> e : subs.entrySet()){
-			if(e.getValue() == null) continue;
-			if(e.getValue() instanceof Number){
-				int val = ((Number)e.getValue()).intValue();
-				if(val == 0) continue;
+
+	private void subList(ArrayList<String> list, String prefix) {
+		if (k != 0) list.add(prefix + "*: " + (k == 1 ? "true" : "false"));
+		for (Entry<String, Object> e : subs.entrySet()) {
+			if (e.getValue() == null) continue;
+			if (e.getValue() instanceof Number) {
+				int val = ((Number) e.getValue()).intValue();
+				if (val == 0) continue;
 				list.add(prefix + e.getKey() + ": " + (val == 1 ? "true" : "false"));
-			} else if(e.getValue() instanceof ImplPermissionGroup){
+			} else if (e.getValue() instanceof ImplPermissionGroup) {
 				ImplPermissionGroup val = (ImplPermissionGroup) e.getValue();
-				if(val.p != 0){
+				if (val.p != 0) {
 					list.add(prefix + e.getKey() + ": " + (val.p == 1 ? "true" : "false"));
 				}
 				val.subList(list, prefix + e.getKey() + ".");
 			}
 		}
 	}
-	
-	private void subYaml(YamlMap list, String prefix){
-		if(k != 0) list.setBoolean(prefix + "*", k == 1);;
-		for(Entry<String, Object> e : subs.entrySet()){
-			if(e.getValue() == null) continue;
-			if(e.getValue() instanceof Number){
-				int val = ((Number)e.getValue()).intValue();
-				if(val == 0) continue;
-				list.setBoolean(prefix + e.getKey(), val == 1);;
-			} else if(e.getValue() instanceof ImplPermissionGroup){
+
+	private void subYaml(YamlMap list, String prefix) {
+		if (k != 0) list.setBoolean(prefix + "*", k == 1);
+		;
+		for (Entry<String, Object> e : subs.entrySet()) {
+			if (e.getValue() == null) continue;
+			if (e.getValue() instanceof Number) {
+				int val = ((Number) e.getValue()).intValue();
+				if (val == 0) continue;
+				list.setBoolean(prefix + e.getKey(), val == 1);
+				;
+			} else if (e.getValue() instanceof ImplPermissionGroup) {
 				ImplPermissionGroup val = (ImplPermissionGroup) e.getValue();
-				if(val.p != 0){
+				if (val.p != 0) {
 					list.setBoolean(prefix + e.getKey(), val.p == 1);
 				}
 				val.subYaml(list, prefix + e.getKey() + ".");

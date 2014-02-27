@@ -15,29 +15,29 @@ public class DungeonStyle {
 	private ArrayList<WeightedRoom> rooms = new ArrayList<>();
 	private double roomFailChance = 0.25;
 	private int maxRooms = 125;
-	
+
 	protected LootChest loot = new LootChest();
-	
+
 	public void setRoomFailChance(double roomFailChance) {
 		this.roomFailChance = roomFailChance;
 	}
-	
+
 	public double getRoomFailChance() {
 		return roomFailChance;
 	}
-	
-	public boolean canGenerate(World world, long x, long y, long z){
+
+	public boolean canGenerate(World world, long x, long y, long z) {
 		return y < -32;
 	}
-	
+
 	public int getBrickId() {
 		return brickId;
 	}
-	
+
 	public int getMaxRooms() {
 		return maxRooms;
 	}
-	
+
 	public void setMaxRooms(int maxRooms) {
 		this.maxRooms = maxRooms;
 	}
@@ -49,11 +49,11 @@ public class DungeonStyle {
 	public int getType() {
 		return type;
 	}
-	
-	public void addRoom(WeightedRoom room){
+
+	public void addRoom(WeightedRoom room) {
 		rooms.add(room);
 	}
-	
+
 	public ArrayList<WeightedRoom> getRooms() {
 		return rooms;
 	}
@@ -61,24 +61,24 @@ public class DungeonStyle {
 	public DungeonStyle() {
 		type = 4;
 	}
-	
+
 	public void setBrickId(int brickId) {
 		this.brickId = brickId;
 	}
-	
+
 	public void setMossId(int mossId) {
 		this.mossId = mossId;
 	}
-	
+
 	public void setType(int type) {
 		this.type = type;
 	}
-	
-	public LootChest getLootChest(){
+
+	public LootChest getLootChest() {
 		return loot;
 	}
-	
-	public void onWorldLoad(World world){
+
+	public void onWorldLoad(World world) {
 		setBrickId(Vanilla.brick.uid);
 		setMossId(Vanilla.mossBrick.uid);
 		loot.clear();
@@ -92,8 +92,8 @@ public class DungeonStyle {
 		loot.addLoot(new LootItem(new ItemStack(world.getRegisteredItem("vanilla.shovel.bronze"), 0), 1, 1, 1));
 		loot.addLoot(new LootItem(new ItemStack(world.getRegisteredItem("vanilla.hoe.bronze"), 0), 1, 1, 1));
 	}
-	
-	public int getWeight(){
+
+	public int getWeight() {
 		return 100;
 	}
 }

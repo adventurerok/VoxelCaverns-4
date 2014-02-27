@@ -11,7 +11,7 @@ public class ClientVoxelCaverns extends VoxelCaverns {
 	public ClientVoxelCaverns() {
 		setInst(this);
 	}
-	
+
 	@Override
 	public World agetCurrentWorld() {
 		return Client.getGame().getWorld();

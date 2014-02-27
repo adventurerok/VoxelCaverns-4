@@ -15,7 +15,7 @@ import vc4.api.util.Clipboard;
  * 
  */
 public class TextBox extends Component {
-	
+
 	private static FontRenderer font = FontRenderer.createFontRenderer("unispaced_14", 14);
 
 	/** The key repeat interval */
@@ -39,12 +39,12 @@ public class TextBox extends Component {
 
 	/** The time since last key repeat */
 	protected long repeatTimer;
-	
+
 	protected boolean password = false;
 
 	/** The text before the paste in */
 	private String oldText;
-	
+
 	protected String notext = "";
 
 	/** The cursor position before the paste */
@@ -53,9 +53,9 @@ public class TextBox extends Component {
 	private boolean wasInFocus = false;
 
 	private Keyboard keyboard;
-	
+
 	private ArrayList<TextListener> listeners = new ArrayList<>();
-	
+
 	protected static String hidden;
 
 	static {
@@ -89,10 +89,10 @@ public class TextBox extends Component {
 		}
 		wasInFocus = hasFocus();
 	}
-	
+
 	@Override
 	public void setFocus(boolean focus) {
-		if(!focus) setText("");
+		if (!focus) setText("");
 		super.setFocus(focus);
 	}
 
@@ -102,7 +102,7 @@ public class TextBox extends Component {
 	 */
 	private void keyPressed(Key key, char c) {
 		if (!hasFocus()) return;
-		if(key == Key.ESCAPE){
+		if (key == Key.ESCAPE) {
 			setFocus(false);
 		}
 		boolean ctrl = keyboard.isKeyDown(Key.CONTROL);
@@ -145,14 +145,13 @@ public class TextBox extends Component {
 
 		} else if ((((c < 256) && (c > 31)) || c == '\t') && (value.length() < 100)) {
 			if (cursorPos < value.length()) {
-				value = value.substring(0, cursorPos) + c
-						+ value.substring(cursorPos);
+				value = value.substring(0, cursorPos) + c + value.substring(cursorPos);
 			} else {
 				value = value.substring(0, cursorPos) + c;
 			}
 			cursorPos++;
-		} else if(key == Key.RETURN){
-			for(TextListener l : listeners){
+		} else if (key == Key.RETURN) {
+			for (TextListener l : listeners) {
 				l.textRecieved(this, value);
 			}
 			setFocus(false);
@@ -172,12 +171,14 @@ public class TextBox extends Component {
 			keyPressed(null, text.charAt(i));
 		}
 	}
-	
+
 	/**
 	 * Do the undo of the paste, overrideable for custom behaviour
 	 * 
-	 * @param oldCursorPos before the paste
-	 * @param oldText The text before the last paste
+	 * @param oldCursorPos
+	 *            before the paste
+	 * @param oldText
+	 *            The text before the last paste
 	 */
 	protected void doUndo(int oldCursorPos, String oldText) {
 		if (oldText != null) {
@@ -185,11 +186,11 @@ public class TextBox extends Component {
 			setCursorPos(oldCursorPos);
 		}
 	}
-	
-	public void addListener(TextListener listener){
+
+	public void addListener(TextListener listener) {
 		listeners.add(listener);
 	}
-	
+
 	/**
 	 * Record the old position and content
 	 */
@@ -197,11 +198,11 @@ public class TextBox extends Component {
 		oldText = getText();
 		oldCursorPos = cursorPos;
 	}
-	
-	public String getText(){
+
+	public String getText() {
 		return value;
 	}
-	
+
 	/**
 	 * Set the value to be displayed in the text field
 	 * 
@@ -227,13 +228,13 @@ public class TextBox extends Component {
 			cursorPos = value.length();
 		}
 	}
-	
+
 	@Override
 	public void draw() {
-//		if(drawBackground){
-//			Renderer.drawRectangle(Color.brown, getBounds());
-//			Renderer.drawOutline(BasicButtonUI.getBackColor(state), getBounds());
-//		}
+		// if(drawBackground){
+		// Renderer.drawRectangle(Color.brown, getBounds());
+		// Renderer.drawOutline(BasicButtonUI.getBackColor(state), getBounds());
+		// }
 		if (lastKey != null) {
 			if (Input.getClientKeyboard().isKeyDown(lastKey)) {
 				if (repeatTimer < System.currentTimeMillis()) {
@@ -245,20 +246,20 @@ public class TextBox extends Component {
 			}
 		}
 
-		try{
-			if((value != null && !value.isEmpty()) || hasFocus()){
+		try {
+			if ((value != null && !value.isEmpty()) || hasFocus()) {
 				int cpos = (int) font.measureString(value.substring(0, cursorPos), 14).x;
 				int tx = 0;
 				if (cpos > getWidth()) {
 					tx = (int) (getWidth() - cpos - font.measureString("_", 14).x);
 				}
 				String rendering = value;
-				if(value == null) rendering = "";
-				else if(password){
+				if (value == null) rendering = "";
+				else if (password) {
 					int length = value.length();
 					rendering = hidden.substring(0, length);
 				}
-				if(cursorPos < rendering.length()){
+				if (cursorPos < rendering.length()) {
 					String start = rendering.substring(0, cursorPos);
 					String end = rendering.substring(cursorPos, rendering.length());
 					int at = 0;
@@ -268,13 +269,13 @@ public class TextBox extends Component {
 					at += font.measureString("|", 14).x;
 					font.renderString(at + tx + 2 + getX(), getY(), end);
 				} else {
-					font.renderString(tx + 2 + getX(), getY(), rendering + (hasFocus() && visibleCursor ? "_" : "") );
+					font.renderString(tx + 2 + getX(), getY(), rendering + (hasFocus() && visibleCursor ? "_" : ""));
 				}
 			} else {
 				font.renderString(2 + getX(), getY(), "{f:i}" + notext.toString());
 			}
 			font.resetStyles();
-		} catch(Exception e){
+		} catch (Exception e) {
 		}
 
 	}

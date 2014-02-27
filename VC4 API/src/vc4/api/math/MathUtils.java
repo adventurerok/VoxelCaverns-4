@@ -5,50 +5,47 @@ package vc4.api.math;
 
 /**
  * @author paul
- *
+ * 
  */
 public class MathUtils {
 
 	private static float f_ulp = 2 * Math.ulp(0F);
 	private static double d_ulp = 2 * Math.ulp(0D);
-	
+
 	private static float SIN_TABLE[];
-	
-	public static final float sin(float angle)
-    {
-        return SIN_TABLE[(int)(angle * 651.89862F) & 0xfff];
-    }
 
-    public static final float cos(float angle)
-    {
-        return SIN_TABLE[(int)(angle * 651.89862F + 1024F) & 0xfff];
-    }
-    
-    static{
-    	SIN_TABLE = new float[0x1000];
+	public static final float sin(float angle) {
+		return SIN_TABLE[(int) (angle * 651.89862F) & 0xfff];
+	}
 
-        for (int i = 0; i < 0x1000; i++)
-        {
-            SIN_TABLE[i] = (float)Math.sin(i * 3.141592653589793D * 2.0D / 4096.0D);
-        }
-    }
-	
-	public static int floor(float f){
-		int i = (int)f;
-        return f >= i ? i : i - 1;
+	public static final float cos(float angle) {
+		return SIN_TABLE[(int) (angle * 651.89862F + 1024F) & 0xfff];
 	}
-	
-	public static long floor(double d){
-		long i = (long)d;
-        return d >= (long)d ? i : i - 1;
+
+	static {
+		SIN_TABLE = new float[0x1000];
+
+		for (int i = 0; i < 0x1000; i++) {
+			SIN_TABLE[i] = (float) Math.sin(i * 3.141592653589793D * 2.0D / 4096.0D);
+		}
 	}
-	
-	public static boolean equals(double a, double b){
-		return (Math.abs(a-b) < d_ulp);
+
+	public static int floor(float f) {
+		int i = (int) f;
+		return f >= i ? i : i - 1;
 	}
-	
-	public static boolean equals(float a, float b){
-		return (Math.abs(a-b) < f_ulp);
+
+	public static long floor(double d) {
+		long i = (long) d;
+		return d >= (long) d ? i : i - 1;
+	}
+
+	public static boolean equals(double a, double b) {
+		return (Math.abs(a - b) < d_ulp);
+	}
+
+	public static boolean equals(float a, float b) {
+		return (Math.abs(a - b) < f_ulp);
 	}
 
 	/**
@@ -57,7 +54,7 @@ public class MathUtils {
 	public static long round(double d) {
 		return floor(d + 0.5);
 	}
-	
+
 	public static int avg(int n1, int n2) {
 		return (n1 + n2) / 2;
 	}
@@ -74,14 +71,14 @@ public class MathUtils {
 	 * @param x
 	 */
 	public static int ceil(float x) {
-		int i = (int)x;
-        return x <= (int)x ? i : i + 1;
+		int i = (int) x;
+		return x <= (int) x ? i : i + 1;
 	}
 
 	public static float clamp(float val, float min, float max) {
 		return Math.max(min, Math.min(val, max));
 	}
-	
+
 	public static double clamp(double val, double min, double max) {
 		return Math.max(min, Math.min(val, max));
 	}

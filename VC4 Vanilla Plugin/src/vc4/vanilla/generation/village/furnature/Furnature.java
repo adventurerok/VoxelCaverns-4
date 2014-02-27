@@ -7,14 +7,9 @@ import vc4.vanilla.generation.village.Village;
 
 public abstract class Furnature {
 
-	
 	Adjustment pos;
-	
-	
-	
+
 	public abstract void place(Village ville, Vector3l start, Direction dir);
-
-
 
 	public Furnature(Adjustment pos) {
 		super();

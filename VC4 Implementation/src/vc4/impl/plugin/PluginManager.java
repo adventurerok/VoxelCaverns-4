@@ -28,19 +28,19 @@ public class PluginManager {
 	private static HashMap<String, Plugin> loadedPlugins = new HashMap<>();
 	private static ArrayList<URL> resourceURLs = new ArrayList<>();
 	private static HashMap<String, Plugin> pluginCommands = new HashMap<>();
-	
-	public static void handleCommand(Command command){
+
+	public static void handleCommand(Command command) {
 		String s = command.getCommand();
 		Plugin p = pluginCommands.get(s);
-		if(p == null){
+		if (p == null) {
 			command.getSender().message("{l:cmd.noplugin," + s + "}");
 			return;
 		}
-		if(command.getArgsLength() == 0){
+		if (command.getArgsLength() == 0) {
 			printPluginHelp(p, command.getSender(), 1);
 			return;
 		}
-		if(command.getArgAsInt(0, -11204) != -11204){
+		if (command.getArgAsInt(0, -11204) != -11204) {
 			printPluginHelp(p, command.getSender(), command.getArgAsInt(0, -1));
 			return;
 		}
@@ -48,31 +48,31 @@ public class PluginManager {
 		String cmd = command.getArg(0);
 		String args[] = Arrays.copyOfRange(command.getArgs(), 1, command.getArgs().length);
 		Command plugCmd = new Command(plugin, cmd, args, command.getSender());
-		if(p.getExecutableCommands().get(plugCmd.getCommand()) == null){
+		if (p.getExecutableCommands().get(plugCmd.getCommand()) == null) {
 			command.getSender().message("{l:cmd.nocommand," + plugCmd.getCommand() + "}");
 			return;
 		}
-		if(!p.getExecutableCommands().get(plugCmd.getCommand()).getInfo().getCommandUsage().check(plugCmd)) return;
+		if (!p.getExecutableCommands().get(plugCmd.getCommand()).getInfo().getCommandUsage().check(plugCmd)) return;
 		p.getExecutableCommands().get(plugCmd.getCommand()).getHandler().handleCommand(plugCmd);
 	}
-	
-	public static void printPluginHelp(Plugin plugin, User user, int page){
-		if(plugin.getSortedCommands().size() < 1){
+
+	public static void printPluginHelp(Plugin plugin, User user, int page) {
+		if (plugin.getSortedCommands().size() < 1) {
 			user.message("{l:cmd.nocommands," + plugin.getPluginInfoFile().getName() + "}");
 			return;
 		}
 		page -= 1;
-		if(page * 8 > plugin.getSortedCommands().size() || page < 0){
+		if (page * 8 > plugin.getSortedCommands().size() || page < 0) {
 			user.message("{l:cmd.nohelppage," + (page + 1) + "}");
 			return;
 		}
 		user.message("{l:cmd.pluginhelp," + plugin.getPluginInfoFile().getName() + "," + (page + 1) + "," + ((plugin.getSortedCommands().size() + 7) / 8) + "}");
 		int start = page * 8;
-		for(int d = start; d < start + 8 && d < plugin.getSortedCommands().size(); ++d){
+		for (int d = start; d < start + 8 && d < plugin.getSortedCommands().size(); ++d) {
 			ExecutableCommand exc = plugin.getSortedCommands().get(d);
 			user.message("- " + exc.getInfo().getName() + " " + exc.getInfo().getUsage() + " : " + exc.getInfo().getDesc());
 		}
-		if((page + 1) * 8 <= plugin.getSortedCommands().size()) user.message("{l:cmd.nextpage,/" + plugin.getAliases()[0] + " " + (page + 2) + "}");
+		if ((page + 1) * 8 <= plugin.getSortedCommands().size()) user.message("{l:cmd.nextpage,/" + plugin.getAliases()[0] + " " + (page + 2) + "}");
 	}
 
 	static {
@@ -181,7 +181,8 @@ public class PluginManager {
 		Logger logger = Logger.getLogger("PluginManager");
 		for (Plugin p : loadedPlugins.values()) {
 			logger.info("Enabling plugin " + p.getPluginInfoFile().getName() + " version " + p.getPluginInfoFile().getVersion());
-			for(String s : p.getAliases()) pluginCommands.put(s, p);
+			for (String s : p.getAliases())
+				pluginCommands.put(s, p);
 			p.onEnable();
 		}
 	}
@@ -191,7 +192,7 @@ public class PluginManager {
 			p.onDisable();
 			pluginCommands.values().remove(p);
 		}
-		
+
 	}
 
 	public static void unloadPlugins() {
@@ -254,8 +255,8 @@ public class PluginManager {
 			p.onWorldLoad(world);
 
 	}
-	
-	public static void onWorldSave(World world){
+
+	public static void onWorldSave(World world) {
 		for (Plugin p : loadedPlugins.values())
 			p.onWorldSave(world);
 	}

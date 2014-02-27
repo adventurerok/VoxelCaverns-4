@@ -32,7 +32,7 @@ public class PlantGenCrops implements PlantGenerator {
 
 	public void generate(long x, long y, long z, Plant plant) {
 		if (!world.getBlockType(x, y - 1, z).canGrowPlant(plant)) return;
-		if (!world.getBlockType(x, y, z).canBeReplaced(id, (byte)0)) return;
+		if (!world.getBlockType(x, y, z).canBeReplaced(id, (byte) 0)) return;
 		world.setBlockIdData(x, y, z, id, rand.nextInt(7));
 	}
 

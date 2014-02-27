@@ -15,15 +15,15 @@ import vc4.client.input.ClientMouse;
 import vc4.impl.GameLoader;
 import vc4.impl.io.VCH4SaveFormat;
 
-public class Launcher implements ClientLauncher{
+public class Launcher implements ClientLauncher {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
-		if(args != null && args.length > 0 && args[0] != null){
-			if(args[0].equals("nosave")) VCH4SaveFormat.ENABLED = false;
+		// System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
+		if (args != null && args.length > 0 && args[0] != null) {
+			if (args[0].equals("nosave")) VCH4SaveFormat.ENABLED = false;
 		}
 		new ClientResources();
 		System.setProperty("org.lwjgl.librarypath", new File(DirectoryLocator.getPath() + "/bin/natives/").getAbsolutePath());
@@ -40,12 +40,14 @@ public class Launcher implements ClientLauncher{
 		Launcher l = new Launcher();
 		l.loadLauncherPreferences();
 		l.checkForUpdates();
-		//new Gylph("char id=32   x=72    y=29    width=1     height=1     xoffset=0     yoffset=25    xadvance=16    page=0  chnl=15");
+		// new Gylph("char id=32   x=72    y=29    width=1     height=1     xoffset=0     yoffset=25    xadvance=16    page=0  chnl=15");
 		ClientWindow c = l.createGameWindow("VoxelCaverns", 800, 600);
 		c.run();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.client.ClientLauncher#createGameWindow(java.lang.String, int, int)
 	 */
 	@Override
@@ -57,14 +59,18 @@ public class Launcher implements ClientLauncher{
 		return w;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.client.ClientLauncher#loadLauncherPreferences()
 	 */
 	@Override
 	public void loadLauncherPreferences() {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.client.ClientLauncher#checkForUpdates()
 	 */
 	@Override

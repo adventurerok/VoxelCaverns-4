@@ -6,22 +6,22 @@ import vc4.api.biome.Biome;
 import vc4.api.list.IntList;
 import vc4.api.world.World;
 
-public class BiomeFilter implements SpawnFilter{
-	
+public class BiomeFilter implements SpawnFilter {
+
 	IntList biomeIds = new IntList();
-	
-	public BiomeFilter(Biome...biomes) {
-		for(Biome b : biomes){
+
+	public BiomeFilter(Biome... biomes) {
+		for (Biome b : biomes) {
 			biomeIds.add(b.id);
 		}
 	}
-	
-	public BiomeFilter addBiome(Biome b){
+
+	public BiomeFilter addBiome(Biome b) {
 		biomeIds.add(b.id);
 		return this;
 	}
-	
-	public BiomeFilter addBiome(int b){
+
+	public BiomeFilter addBiome(int b) {
 		biomeIds.add(b);
 		return this;
 	}

@@ -18,39 +18,37 @@ import vc4.api.world.World;
 
 public class ScreenMap extends Component {
 
-	
-	
 	private Vector2l oldPos;
-	
+
 	int texture = 0;
-	
+
 	int size = 512;
 	int oldZoom = 8;
 	int zoom = 8;
 	private int[] biomeMap = new int[size * size];
 	ArrayList<MapIcon> icons;
-	
+
 	@Override
 	public void draw() {
-		if(((Component)Client.getGame()).getFocusComponent() instanceof TextBox) return;
-		if(!Input.getClientKeyboard().isKeyDown(Key.M)) return;
-		if(Client.getPlayer() == null || Client.getPlayer().getWorld() == null) return;
-		if(Client.getPlayer().getWorld().getGenerator() == null ) return;
-		if(!Client.getPlayer().getWorld().getGenerator().hasBiomeMapGenerator(Client.getPlayer().getWorld())) return;
+		if (((Component) Client.getGame()).getFocusComponent() instanceof TextBox) return;
+		if (!Input.getClientKeyboard().isKeyDown(Key.M)) return;
+		if (Client.getPlayer() == null || Client.getPlayer().getWorld() == null) return;
+		if (Client.getPlayer().getWorld().getGenerator() == null) return;
+		if (!Client.getPlayer().getWorld().getGenerator().hasBiomeMapGenerator(Client.getPlayer().getWorld())) return;
 		oldZoom = zoom;
-		if(Input.getClientKeyboard().keyPressed(Key.EQUALS) && zoom > 1) --zoom;
-		if(Input.getClientKeyboard().keyPressed(Key.MINUS) && zoom < 10) ++zoom;
+		if (Input.getClientKeyboard().keyPressed(Key.EQUALS) && zoom > 1) --zoom;
+		if (Input.getClientKeyboard().keyPressed(Key.MINUS) && zoom < 10) ++zoom;
 		int zadd = zoom;
 		int step = 1 << (zoom - 1);
 		OpenGL gl = Graphics.getOpenGL();
 		Vector3l pposl = Client.getPlayer().getBlockPos();
 		Vector2l pos = new Vector2l((pposl.x - (step * size)) >> zadd, (pposl.z - (step * size)) >> zadd);
-		if(oldZoom != zoom || !pos.equals(oldPos)){
+		if (oldZoom != zoom || !pos.equals(oldPos)) {
 			World world = Client.getPlayer().getWorld();
 			biomeMap = world.getGenerator().getBiomeMapGenerator(world, zoom).generate(pos.x, pos.y, size);
 			ByteBuffer data = BufferUtils.createByteBuffer(size * size * 3);
-			for(int y = 0; y < size; ++y){
-				for(int x = 0; x < size; ++x){
+			for (int y = 0; y < size; ++y) {
+				for (int x = 0; x < size; ++x) {
 					Color col = Biome.byId(biomeMap[y * size + x]).mapColor;
 					data.put((byte) col.getRed());
 					data.put((byte) col.getGreen());
@@ -58,7 +56,7 @@ public class ScreenMap extends Component {
 				}
 			}
 			data.flip();
-			if(texture == 0) texture = gl.genTextures();
+			if (texture == 0) texture = gl.genTextures();
 			gl.bindTexture(GLTexture.TEX_2D, texture);
 			gl.texImage2D(GLTexture.TEX_2D, 0, GLInternalFormat.RGB8, size, size, false, GLFormat.RGB, GLType.UNSIGNED_BYTE, data);
 			gl.texParameterMagFilter(GLTexture.TEX_2D, GLTextureFilter.LINEAR);
@@ -87,10 +85,10 @@ public class ScreenMap extends Component {
 		gl.disable(GLFlag.TEXTURE_2D);
 		gl.bindShader("texture");
 		Resources.getAnimatedTexture("mapicons").bind();
-		//gl.texParameterMagFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.NEAREST);
-		//gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.NEAREST, null);
+		// gl.texParameterMagFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.NEAREST);
+		// gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.NEAREST, null);
 		gl.begin(GLPrimative.QUADS);
-		for(MapIcon i : icons){
+		for (MapIcon i : icons) {
 			int ax = (int) (i.getPos().y * 512);
 			int ay = (int) ((1 - i.getPos().x) * 512);
 			gl.texCoord(0, 0, i.getIcon());
@@ -106,9 +104,7 @@ public class ScreenMap extends Component {
 		gl.unbindShader();
 		gl.disable(GLFlag.SCISSOR_TEST);
 	}
-	
 
-	
 	@Override
 	public boolean isClickable() {
 		return false;

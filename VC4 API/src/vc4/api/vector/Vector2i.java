@@ -5,11 +5,13 @@ package vc4.api.vector;
 
 /**
  * @author paul
- *
+ * 
  */
-public class Vector2i implements Vector2<Vector2i>{
+public class Vector2i implements Vector2<Vector2i> {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -21,7 +23,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -36,14 +40,16 @@ public class Vector2i implements Vector2<Vector2i>{
 	}
 
 	public int x, y;
-	
+
 	public Vector2i(int x, int y) {
 		super();
 		this.x = x;
 		this.y = y;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)
 	 */
 	@Override
@@ -51,7 +57,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return new Vector2i(x + vec.x, y + vec.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#multiply(java.lang.Object)
 	 */
 	@Override
@@ -59,7 +67,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return new Vector2i(x * vec.x, y * vec.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#subtract(java.lang.Object)
 	 */
 	@Override
@@ -67,7 +77,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return new Vector2i(x - vec.x, y - vec.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#divide(java.lang.Object)
 	 */
 	@Override
@@ -75,7 +87,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return new Vector2i(x / vec.x, y / vec.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#abs()
 	 */
 	@Override
@@ -83,20 +97,24 @@ public class Vector2i implements Vector2<Vector2i>{
 		return new Vector2i(Math.abs(x), Math.abs(y));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#negate()
 	 */
 	@Override
 	public Vector2i negate() {
 		return new Vector2i(-x, -y);
 	}
-	
+
 	@Override
-	public Vector2i clone(){
+	public Vector2i clone() {
 		return new Vector2i(x, y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distanceSquared(java.lang.Object)
 	 */
 	@Override
@@ -106,7 +124,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return nx * nx + ny * ny;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distance(java.lang.Object)
 	 */
 	@Override
@@ -114,7 +134,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return Math.sqrt(distanceSquared(vec));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2f()
 	 */
 	@Override
@@ -122,7 +144,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return new Vector2f(x, y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2i()
 	 */
 	@Override
@@ -130,7 +154,9 @@ public class Vector2i implements Vector2<Vector2i>{
 		return clone();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2l()
 	 */
 	@Override
@@ -138,14 +164,14 @@ public class Vector2i implements Vector2<Vector2i>{
 		return new Vector2l(x, y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector2#toVector2d()
 	 */
 	@Override
 	public Vector2d toVector2d() {
 		return new Vector2d(x, y);
 	}
-
-	
 
 }

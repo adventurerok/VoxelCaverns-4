@@ -17,13 +17,13 @@ import vc4.launcher.repo.Repo;
 import vc4.launcher.task.UpdateGuiTask;
 
 public class SettingsTab extends JPanel {
-	
+
 	private JToolBar toolBar;
 	SettingsTree tree;
-	
+
 	public SettingsTab() {
 		setLayout(new BorderLayout(0, 0));
-		
+
 		tree = new SettingsTree();
 		tree.setRootVisible(false);
 		tree.setPreferredSize(new Dimension(150, 64));
@@ -34,11 +34,11 @@ public class SettingsTab extends JPanel {
 		setupToolbar();
 		add(toolBar, BorderLayout.NORTH);
 	}
-	
-	public void setupToolbar(){
+
+	public void setupToolbar() {
 		JButton addRepo = new JButton(new ImageIcon(RepoNode.class.getClassLoader().getResource("resources/icons/repo_add.png")));
 		addRepo.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String nRepo = JOptionPane.showInputDialog("URL of new repository: ");
@@ -50,9 +50,9 @@ public class SettingsTab extends JPanel {
 					JOptionPane.showMessageDialog(null, "Please input a proper URL");
 					return;
 				}
-				if(rep.loadInfo(url)){
-					if(Launcher.getSingleton().getRepos().contains(rep)) JOptionPane.showMessageDialog(null, "You already have that repository");
-					else{
+				if (rep.loadInfo(url)) {
+					if (Launcher.getSingleton().getRepos().contains(rep)) JOptionPane.showMessageDialog(null, "You already have that repository");
+					else {
 						Launcher.getSingleton().getRepos().add(new Repo());
 						java.lang.Runnable run = new java.lang.Runnable() {
 
@@ -63,10 +63,9 @@ public class SettingsTab extends JPanel {
 						};
 						Launcher.getSingleton().getTasks().addTask(new UpdateGuiTask(run));
 					}
-				}
-				else JOptionPane.showMessageDialog(null, "That is not a proper repository");
+				} else JOptionPane.showMessageDialog(null, "That is not a proper repository");
 			}
-			
+
 		});
 		toolBar.add(addRepo);
 		JButton deleteRepo = new JButton(new ImageIcon(RepoNode.class.getClassLoader().getResource("resources/icons/repo_delete.png")));

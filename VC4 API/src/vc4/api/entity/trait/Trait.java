@@ -11,26 +11,26 @@ import vc4.api.logging.Logger;
 public abstract class Trait {
 
 	Entity entity;
-	
-private static HashMap<String, Constructor<? extends Trait>> types = new HashMap<String, Constructor<? extends Trait>>();
-	
-	static{
+
+	private static HashMap<String, Constructor<? extends Trait>> types = new HashMap<String, Constructor<? extends Trait>>();
+
+	static {
 		registerTrait("inventory", TraitInventory.class);
 	}
-	
-	public static void registerTrait(String name, Class<? extends Trait> clz){
+
+	public static void registerTrait(String name, Class<? extends Trait> clz) {
 		try {
 			types.put(name, clz.getConstructor(Entity.class));
 		} catch (NoSuchMethodException | SecurityException e) {
 			Logger.getLogger(Entity.class).warning("Entity class does not have correct constructor", e);
 		}
 	}
-	
-	public static Constructor<? extends Trait> getTraitType(String name){
+
+	public static Constructor<? extends Trait> getTraitType(String name) {
 		return types.get(name);
 	}
-	
-	public static Trait loadTrait(Entity entity, CompoundTag tag){
+
+	public static Trait loadTrait(Entity entity, CompoundTag tag) {
 		short id = tag.getShort("id");
 		String name = entity.world.getTraitName(id);
 		Constructor<? extends Trait> clz = getTraitType(name);
@@ -43,7 +43,7 @@ private static HashMap<String, Constructor<? extends Trait>> types = new HashMap
 		}
 		return null;
 	}
-	
+
 	public Trait(Entity entity) {
 		super();
 		this.entity = entity;
@@ -52,30 +52,32 @@ private static HashMap<String, Constructor<? extends Trait>> types = new HashMap
 	public Entity getEntity() {
 		return entity;
 	}
-	
+
 	public abstract void update();
+
 	public abstract String name();
+
 	public abstract boolean persistent();
-	
-	public short getId(){
+
+	public short getId() {
 		return entity.world.getRegisteredTrait(name());
 	}
-	
-	public CompoundTag getSaveCompound(){
+
+	public CompoundTag getSaveCompound() {
 		CompoundTag root = new CompoundTag("root");
 		root.setShort("id", getId());
 		return root;
 	}
-	
-	public void loadSaveCompound(CompoundTag tag){
-		
+
+	public void loadSaveCompound(CompoundTag tag) {
+
 	}
-	
-	public void onDeath(){
-		
+
+	public void onDeath() {
+
 	}
-	
-	public void onDamage(){
-		
+
+	public void onDamage() {
+
 	}
 }

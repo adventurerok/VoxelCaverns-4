@@ -8,18 +8,16 @@ import vc4.api.io.SwitchOutputStream;
 import vc4.api.world.Chunk;
 
 public class Packet6Chunk extends Packet {
-	
+
 	public static final int ID = 6;
 
 	public long x, y, z;
 	public Chunk chunk;
-	
+
 	public Packet6Chunk() {
-		
+
 	}
-	
-	
-	
+
 	@Override
 	public void write(SwitchOutputStream out) throws IOException {
 		out.writeLong(x);
@@ -41,15 +39,13 @@ public class Packet6Chunk extends Packet {
 		return 6;
 	}
 
-
-
-	public Packet6Chunk(Chunk chunk){
+	public Packet6Chunk(Chunk chunk) {
 		this.x = chunk.getChunkPos().x;
 		this.y = chunk.getChunkPos().y;
 		this.z = chunk.getChunkPos().z;
 		this.chunk = chunk;
 	}
-	
+
 	public Packet6Chunk(long x, long y, long z, Chunk chunk) {
 		super();
 		this.x = x;

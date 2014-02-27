@@ -28,10 +28,10 @@ public class DisablePackageTask implements Task {
 			return;
 		}
 		Install instal = pack.getInstalls()[install];
-		if(!instal.canInstall(pack.getVersion())){
+		if (!instal.canInstall(pack.getVersion())) {
 			progress.setPercent(100);
 			progress.setDelete(true);
-			if(install == pack.getInstalls().length - 1) pack.setDisabled(true);
+			if (install == pack.getInstalls().length - 1) pack.setDisabled(true);
 		}
 		String installPath = DirectoryLocator.getPath() + instal.getEnd();
 		progress.setPercent(33);
@@ -39,7 +39,7 @@ public class DisablePackageTask implements Task {
 			progress.setText("Disabling: " + instal.getEnd());
 			progress.setPercent(66);
 			File files = new File(installPath);
-			if(files.exists()){
+			if (files.exists()) {
 				try {
 					Files.move(files.toPath(), new File(installPath + ".disabled").toPath());
 				} catch (IOException e) {
@@ -47,11 +47,11 @@ public class DisablePackageTask implements Task {
 				}
 			}
 			progress.setPercent(100);
-		} else if(instal.getType() == InstallType.COPY){
+		} else if (instal.getType() == InstallType.COPY) {
 			progress.setText("Disabling: " + instal.getEnd());
 			progress.setPercent(50);
 			File files = new File(installPath);
-			if(files.exists()){
+			if (files.exists()) {
 				try {
 					Files.move(files.toPath(), new File(installPath + ".disabled").toPath());
 				} catch (IOException e) {
@@ -60,7 +60,7 @@ public class DisablePackageTask implements Task {
 			}
 			progress.setPercent(100);
 		}
-		if(install == pack.getInstalls().length - 1) pack.setDisabled(true);
+		if (install == pack.getInstalls().length - 1) pack.setDisabled(true);
 		progress.setDelete(true);
 		try {
 			pack.save();
@@ -74,7 +74,5 @@ public class DisablePackageTask implements Task {
 		return true;
 
 	}
-	
-
 
 }

@@ -89,8 +89,7 @@ public class Console extends ServerConsole implements Runnable {
 		output.addMouseListener(listen);
 		output.setFont(new Font("Monospaced", 0, 12));
 		input = new JTextPane();
-		((AbstractDocument) input.getDocument())
-				.setDocumentFilter(new OneLineFilter());
+		((AbstractDocument) input.getDocument()).setDocumentFilter(new OneLineFilter());
 		input.setBackground(Color.black);
 		input.setForeground(Color.white);
 		input.addKeyListener(listen);
@@ -105,21 +104,18 @@ public class Console extends ServerConsole implements Runnable {
 
 	private static class OneLineFilter extends DocumentFilter {
 		@Override
-		public void insertString(FilterBypass fb, int offset, String string,
-				AttributeSet attr) throws BadLocationException {
+		public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
 			fb.insertString(offset, string.replaceAll("\\n", ""), attr);
 		}
 
 		@Override
-		public void replace(FilterBypass fb, int offset, int length,
-				String string, AttributeSet attr) throws BadLocationException {
+		public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attr) throws BadLocationException {
 			fb.insertString(offset, string.replaceAll("\\n", ""), attr);
 		}
 	}
 
 	public void handleInput(String input) {
-		if (input == null || input.isEmpty())
-			return;
+		if (input == null || input.isEmpty()) return;
 		String[] parts = StringSplitter.splitString(input, false);
 		String cmd = parts[0];
 		String[] args = Arrays.copyOfRange(parts, 1, parts.length);
@@ -146,25 +142,20 @@ public class Console extends ServerConsole implements Runnable {
 				StringBuilder format = new StringBuilder();
 				for (q += 1; q < line.length(); ++q) {
 					char s = line.charAt(q);
-					if (s == '}')
-						--indent;
-					else if (s == '{')
-						++indent;
-					if (indent < 0)
-						break;
+					if (s == '}') --indent;
+					else if (s == '{') ++indent;
+					if (indent < 0) break;
 					format.append(s);
 				}
 				try {
 					d.insertString(d.getLength(), text.toString(), attributes);
 				} catch (BadLocationException e) {
-					Logger.getLogger(Console.class).warning(
-							"Failed to append text", e);
+					Logger.getLogger(Console.class).warning("Failed to append text", e);
 				}
 				text = new StringBuilder();
 				attributes = handleFormat(format.toString(), attributes);
 				continue;
-			} else
-				text.append(c);
+			} else text.append(c);
 		}
 		try {
 			d.insertString(d.getLength(), text.toString(), attributes);
@@ -192,11 +183,9 @@ public class Console extends ServerConsole implements Runnable {
 	 * @param s
 	 * @return
 	 */
-	private SimpleAttributeSet subHandleFormat(String format,
-			SimpleAttributeSet s) {
+	private SimpleAttributeSet subHandleFormat(String format, SimpleAttributeSet s) {
 		int firstPos = format.indexOf(":");
-		if (firstPos == -1)
-			return s;
+		if (firstPos == -1) return s;
 		String key = format.substring(0, firstPos);
 		String value = format.substring(firstPos + 1, format.length());
 		if (key.equals("c")) {
@@ -204,8 +193,7 @@ public class Console extends ServerConsole implements Runnable {
 			if (value.length() == 1) {
 				int pos = colorChart.indexOf(value.charAt(0));
 				color = ChatColor.getColor(pos);
-				if (color == null)
-					color = Color.white;
+				if (color == null) color = Color.white;
 			} else if (value.length() == 6) {
 				try {
 					color = new Color(Integer.parseInt(value, 16));
@@ -221,18 +209,15 @@ public class Console extends ServerConsole implements Runnable {
 			} else if (value.equals("u")) {
 				StyleConstants.setUnderline(s, !StyleConstants.isUnderline(s));
 			} else if (value.equals("s")) {
-				StyleConstants.setStrikeThrough(s,
-						!StyleConstants.isStrikeThrough(s));
+				StyleConstants.setStrikeThrough(s, !StyleConstants.isStrikeThrough(s));
 			}
 		} else if (key.equals("b")) {
 			Color color = Color.white;
 			if (value.length() == 1) {
 				int pos = colorChart.indexOf(value.charAt(0));
 				color = ChatColor.getColor(pos);
-				if (color == null)
-					color = Color.white;
-				else if (pos == 18)
-					color = Color.black;
+				if (color == null) color = Color.white;
+				else if (pos == 18) color = Color.black;
 			} else if (value.length() == 6) {
 				try {
 					color = new Color(Integer.parseInt(value, 16));
@@ -261,34 +246,33 @@ public class Console extends ServerConsole implements Runnable {
 		try {
 			serverHandler = new ServerHandler();
 		} catch (IOException e) {
-			Logger.getLogger(Console.class)
-					.warning("Failed to start server", e);
+			Logger.getLogger(Console.class).warning("Failed to start server", e);
 			return;
 		}
 		serverHandler.start();
-		Thread logic = new Thread(){
+		Thread logic = new Thread() {
 			@Override
 			public void run() {
-				try{
-					while(running){
+				try {
+					while (running) {
 						long start = System.nanoTime();
 						updateTick();
 						long time = (System.nanoTime() - start) / 1000000;
-						if(time > 40) time = 40;
+						if (time > 40) time = 40;
 						Thread.sleep(50 - time);
 					}
-				} catch(Exception e){
+				} catch (Exception e) {
 					Logger.getLogger(Console.class).fatal("Main thread failed: ", e);
 				}
 			}
 		};
 		logic.start();
 	}
-	
+
 	public void updateTick() {
 		world.updateTick(new Vector3d(0, 0, 0));
 	}
-	
+
 	public void load() {
 		window.setVisible(true);
 		new ServerVoxelCaverns();
@@ -297,9 +281,9 @@ public class Console extends ServerConsole implements Runnable {
 		loadCommands();
 		PluginManager.loadAndEnablePlugins();
 		loadWorld("World");
-		
+
 	}
-	
+
 	public void loadWorld(String name) {
 		Logger.getLogger("VC4").info("Loading world: " + name);
 		world = new ImplWorld(name);
@@ -315,20 +299,8 @@ public class Console extends ServerConsole implements Runnable {
 	private void loadCommands() {
 		CommandHandler perms = new PermissionCommand();
 		CommandHandler basic = new BasicCommand();
-		CommandExecutor.addCommand(new ExecutableCommand(new CommandInfo(
-				"permissions").addAlias("perms")
-				.setUsage("<task> [taskoptions]")
-				.setDescription("{l:cmd.perms.desc}")
-				.setCommandUsage(new CommandUsage().setMinimumArgs(1)), perms));
-		CommandExecutor
-				.addCommand(new ExecutableCommand(new CommandInfo("name")
-						.addAlias("nick")
-						.setUsage("<newname> [any]")
-						.setDescription("{l:cmd.name.desc}")
-						.setCommandUsage(
-								new CommandUsage().setMinimumArgs(1)
-										.setMaximumArgs(2)
-										.setRequiredCapabilities(0b1)), basic));
+		CommandExecutor.addCommand(new ExecutableCommand(new CommandInfo("permissions").addAlias("perms").setUsage("<task> [taskoptions]").setDescription("{l:cmd.perms.desc}").setCommandUsage(new CommandUsage().setMinimumArgs(1)), perms));
+		CommandExecutor.addCommand(new ExecutableCommand(new CommandInfo("name").addAlias("nick").setUsage("<newname> [any]").setDescription("{l:cmd.name.desc}").setCommandUsage(new CommandUsage().setMinimumArgs(1).setMaximumArgs(2).setRequiredCapabilities(0b1)), basic));
 		DefaultPermissions.setPermission("vc4.cmd.perms.list", 1);
 		DefaultPermissions.setPermission("vc4.cmd.perms.get", 1);
 	}

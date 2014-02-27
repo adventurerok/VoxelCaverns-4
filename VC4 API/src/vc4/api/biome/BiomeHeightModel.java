@@ -11,6 +11,5 @@ public class BiomeHeightModel {
 		this.eMax = eMax;
 		this.eMin = eMin;
 	}
-	
-	
+
 }

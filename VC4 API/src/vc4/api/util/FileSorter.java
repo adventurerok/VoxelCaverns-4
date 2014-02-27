@@ -41,7 +41,7 @@ public class FileSorter {
 						if (entryName.startsWith(packName) && entryName.length() > 4) {
 							entryName = entryName.substring(packName.length(), entryName.length());
 							String noNum = removeDigitsAtEnd(entryName.substring(0, entryName.lastIndexOf(".")));
-							if(noNum.equals(fileName)) names.add(new URL(folderURL + entryName));
+							if (noNum.equals(fileName)) names.add(new URL(folderURL + entryName));
 						}
 					}
 				}
@@ -56,7 +56,7 @@ public class FileSorter {
 					entryName = actual.getName();
 					if (!entryName.endsWith(".ogg") && !entryName.endsWith(".wav")) continue;
 					String noNum = removeDigitsAtEnd(entryName.substring(0, entryName.lastIndexOf(".")));
-					if(noNum.equals(fileName)) names.add(actual.toURI().toURL());
+					if (noNum.equals(fileName)) names.add(actual.toURI().toURL());
 				}
 			}
 		} catch (IOException e) {

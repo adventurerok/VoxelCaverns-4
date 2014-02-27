@@ -11,16 +11,15 @@ import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * @author paul
- *
+ * 
  */
 public class ThreadYaml {
 
 	private static HashMap<Thread, Yaml> map = new HashMap<Thread, Yaml>();
-	
-	
-	public static Yaml getYamlForThread(){
-		if(map.containsKey(Thread.currentThread())) return map.get(Thread.currentThread());
-		
+
+	public static Yaml getYamlForThread() {
+		if (map.containsKey(Thread.currentThread())) return map.get(Thread.currentThread());
+
 		DumperOptions yamlOptions = new DumperOptions();
 		yamlOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 		Representer yamlRep = new Representer();

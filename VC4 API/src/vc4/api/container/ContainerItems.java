@@ -9,7 +9,6 @@ public class ContainerItems extends Container {
 	 */
 	private static final long serialVersionUID = 36822208374927613L;
 
-	
 	public ContainerItems() {
 		// TASK Auto-generated constructor stub
 	}

@@ -3,10 +3,10 @@ package vc4.api.path.astar;
 /**
  * 
  * @author Citizens
- *
+ * 
  */
 public interface Plan {
-    boolean isComplete();
+	boolean isComplete();
 
-    void update(Agent agent);
+	void update(Agent agent);
 }

@@ -14,7 +14,7 @@ public class RayTraceResult {
 	public Vector3d vector;
 	public boolean isEntity = false;
 	public Entity entity;
-	
+
 	public RayTraceResult(long x, long y, long z, int side, Vector3d vector) {
 		super();
 		this.x = x;
@@ -23,8 +23,8 @@ public class RayTraceResult {
 		this.side = side;
 		this.vector = vector;
 	}
-	
-	public Vector3l getBlockPos(){
+
+	public Vector3l getBlockPos() {
 		return new Vector3l(x, y, z);
 	}
 

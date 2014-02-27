@@ -7,9 +7,7 @@ public class ResizorPercent implements Resizer {
 	float x, y;
 	float width, height;
 	int absWidth, absHeight;
-	
-	
-	
+
 	public ResizorPercent(float x, float y, float width, float height) {
 		super();
 		this.x = x;
@@ -18,7 +16,6 @@ public class ResizorPercent implements Resizer {
 		this.height = height;
 	}
 
-
 	public ResizorPercent(float x, float y, int width, int height) {
 		super();
 		this.x = x;
@@ -26,9 +23,6 @@ public class ResizorPercent implements Resizer {
 		this.absWidth = width;
 		this.absHeight = height;
 	}
-	
-	
-
 
 	public ResizorPercent(float x, float y, float width, int height) {
 		super();
@@ -37,9 +31,6 @@ public class ResizorPercent implements Resizer {
 		this.width = width;
 		this.absHeight = height;
 	}
-	
-	
-
 
 	public ResizorPercent(float x, float y, int width, float height) {
 		super();
@@ -49,16 +40,14 @@ public class ResizorPercent implements Resizer {
 		this.height = height;
 	}
 
-
 	@Override
 	public void resize(Component target) {
 		Component par = target.getParent();
-		int sx = par.getX() + (int)(par.getWidth() * x);
-		int sy = par.getY() + (int)(par.getHeight() * y);
-		int sw = absWidth != 0 ? absWidth : (int)(par.getWidth() * width);
-		int sh = absHeight != 0 ? absHeight : (int)(par.getHeight() * height);
+		int sx = par.getX() + (int) (par.getWidth() * x);
+		int sy = par.getY() + (int) (par.getHeight() * y);
+		int sw = absWidth != 0 ? absWidth : (int) (par.getWidth() * width);
+		int sh = absHeight != 0 ? absHeight : (int) (par.getHeight() * height);
 		target.setBounds(new Rectangle(sx, sy, sw, sh));
 	}
-	
 
 }

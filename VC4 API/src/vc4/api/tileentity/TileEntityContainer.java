@@ -6,7 +6,6 @@ import vc4.api.world.World;
 
 public abstract class TileEntityContainer extends TileEntity {
 
-
 	public abstract Container getContainer();
 
 	public TileEntityContainer(World world, Vector3l pos) {
@@ -18,7 +17,5 @@ public abstract class TileEntityContainer extends TileEntity {
 		super(world);
 		// TASK Auto-generated constructor stub
 	}
-	
-	
 
 }

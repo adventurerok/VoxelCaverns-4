@@ -12,12 +12,12 @@ import vc4.api.vector.Vector2i;
 public class GuiOpenContainer extends Gui {
 
 	private static HashMap<String, Class<? extends GuiOpenContainer>> types = new HashMap<>();
-	
-	public static void addContainerGui(String name, Class<? extends GuiOpenContainer> clz){
+
+	public static void addContainerGui(String name, Class<? extends GuiOpenContainer> clz) {
 		types.put(name, clz);
 	}
-	
-	public static GuiOpenContainer createContainerGui(OpenContainer container){
+
+	public static GuiOpenContainer createContainerGui(OpenContainer container) {
 		Class<? extends GuiOpenContainer> c = types.get(container.entity.getContainer().getGuiName());
 		try {
 			return c.getConstructor(OpenContainer.class).newInstance(container);
@@ -26,13 +26,13 @@ public class GuiOpenContainer extends Gui {
 		}
 		return null;
 	}
-	
+
 	protected OpenContainer container;
-	
+
 	public GuiOpenContainer(OpenContainer cont) {
 		container = cont;
 	}
-	
+
 	@Override
 	public Vector2i getMinSize() {
 		return new Vector2i(32 * 11 + 2 * SIDES_WIDTH, 32 * 4 + TOP_WIDTH + SIDES_WIDTH);
@@ -47,7 +47,7 @@ public class GuiOpenContainer extends Gui {
 	public Vector2i getDefaultSize() {
 		return new Vector2i(32 * 11 + 2 * SIDES_WIDTH, 32 * 4 + TOP_WIDTH + SIDES_WIDTH);
 	}
-	
+
 	@Override
 	public Rectangle getDefaultBounds() {
 		Vector2i size = getDefaultSize();

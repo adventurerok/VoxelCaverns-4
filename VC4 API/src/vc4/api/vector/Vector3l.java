@@ -5,20 +5,21 @@ package vc4.api.vector;
 
 import vc4.api.util.Direction;
 
-
 /**
  * @author paul
- *
+ * 
  */
 public class Vector3l implements Vector3<Vector3l> {
 
 	public long x, y, z;
-	
+
 	public Vector3l() {
 		// TASK Auto-generated constructor stub
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)
 	 */
 	public Vector3l(long x, long y, long z) {
@@ -27,8 +28,8 @@ public class Vector3l implements Vector3<Vector3l> {
 		this.y = y;
 		this.z = z;
 	}
-	
-	public Vector3l move(long amount, Direction dir){
+
+	public Vector3l move(long amount, Direction dir) {
 		return new Vector3l(x + amount * dir.getX(), y + amount * dir.getY(), z + amount * dir.getZ());
 	}
 
@@ -37,7 +38,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return new Vector3l(x + vec.x, y + vec.y, z + vec.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#multiply(java.lang.Object)
 	 */
 	@Override
@@ -45,7 +48,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return new Vector3l(x * vec.x, y * vec.y, z * vec.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#subtract(java.lang.Object)
 	 */
 	@Override
@@ -53,20 +58,24 @@ public class Vector3l implements Vector3<Vector3l> {
 		return new Vector3l(x - vec.x, y - vec.y, z - vec.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#divide(java.lang.Object)
 	 */
 	@Override
 	public Vector3l divide(Vector3l vec) {
 		return new Vector3l(x / vec.x, y / vec.y, z / vec.z);
 	}
-	
+
 	@Override
-	public Vector3l clone(){
+	public Vector3l clone() {
 		return new Vector3l(x, y, z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#abs()
 	 */
 	@Override
@@ -74,7 +83,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return new Vector3l(Math.abs(x), Math.abs(y), Math.abs(z));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#negate()
 	 */
 	@Override
@@ -82,7 +93,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return new Vector3l(-x, -y, -z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distanceSquared(java.lang.Object)
 	 */
 	@Override
@@ -90,11 +103,13 @@ public class Vector3l implements Vector3<Vector3l> {
 		long nx = x - vec.x;
 		long ny = y - vec.y;
 		long nz = z - vec.z;
-		
+
 		return nx * nx + ny * ny + nz * nz;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distance(java.lang.Object)
 	 */
 	@Override
@@ -102,8 +117,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return Math.sqrt(distanceSquared(vec));
 	}
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3f()
 	 */
 	@Override
@@ -111,7 +127,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return new Vector3f(x, y, z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -124,7 +142,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -138,7 +158,7 @@ public class Vector3l implements Vector3<Vector3l> {
 		if (z != other.z) return false;
 		return true;
 	}
-	
+
 	public boolean horizontalEquals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
@@ -149,7 +169,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3d()
 	 */
 	@Override
@@ -157,7 +179,9 @@ public class Vector3l implements Vector3<Vector3l> {
 		return new Vector3d(x, y, z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3l()
 	 */
 	@Override
@@ -165,14 +189,14 @@ public class Vector3l implements Vector3<Vector3l> {
 		return clone();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3i()
 	 */
 	@Override
 	public Vector3i toVector3i() {
-		return new Vector3i((int)x, (int)y, (int)z);
+		return new Vector3i((int) x, (int) y, (int) z);
 	}
-
-	
 
 }

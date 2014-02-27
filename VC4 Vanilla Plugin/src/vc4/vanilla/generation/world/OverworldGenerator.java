@@ -56,7 +56,7 @@ public class OverworldGenerator implements WorldGenerator {
 	public static Vector3f[] lightColors = new Vector3f[256];
 
 	static {
-		for(int d = 0; d < 16; ++d){
+		for (int d = 0; d < 16; ++d) {
 			Vector3f c = new Vector3f(1, 1, 1);
 			float multi = 0.83f + (d * 0.007777f);
 			for (int i = 15; i > -1; --i) {
@@ -75,8 +75,8 @@ public class OverworldGenerator implements WorldGenerator {
 
 	@Override
 	public Vector3f getLightColor(World world, MapData m, long x, long y, long z, int cx, int cz, int level) {
-		if(y >= -5050) return lightColors[level];
-		if(y <= -5144) return lightColors[240 + level];
+		if (y >= -5050) return lightColors[level];
+		if (y <= -5144) return lightColors[240 + level];
 		return lightColors[(int) (((14 - ((y + 5150) / 7)) << 4) + level)];
 	}
 
@@ -86,10 +86,11 @@ public class OverworldGenerator implements WorldGenerator {
 		lavaLakeGen = new WorldGenUndergroundLake(Vanilla.lava.uid, 175);
 		biomes = Vanilla.biomes;
 		underBiomeGenerator = new BiomeGenUnderBiomes(world, Vanilla.underBiomesList.toArray());
-		for(int d = 0; d < 8; ++d) underBiomeGenerator = new BiomeGenZoom(world, underBiomeGenerator);
+		for (int d = 0; d < 8; ++d)
+			underBiomeGenerator = new BiomeGenZoom(world, underBiomeGenerator);
 		Vanilla.underBiomesGen = underBiomeGenerator;
 	}
-	
+
 	@Override
 	public boolean hasBiomeMapGenerator(World world) {
 		return true;
@@ -161,11 +162,10 @@ public class OverworldGenerator implements WorldGenerator {
 					if (diff > -1 && b) {
 						if (diff < bio.soilDepth) {
 							bio.placeBiomeBlock(out, rand, cx, cy, cz, diff, y);
-						} else if (diff < 5000){
+						} else if (diff < 5000) {
 							out.setBlockId(cx, cy, cz, ubiom.stoneBlockId);
 							out.setBlockData(cx, cy, cz, ubiom.stoneBlockData);
-						}
-						else out.setBlockId(cx, cy, cz, Vanilla.hellrock.uid);
+						} else out.setBlockId(cx, cy, cz, Vanilla.hellrock.uid);
 					} else if (!b) {
 						if ((y << 5) + cy < -5975) {
 							out.setBlockId(cx, cy, cz, Vanilla.lava.uid);
@@ -235,7 +235,7 @@ public class OverworldGenerator implements WorldGenerator {
 			villageGen.generate(world, x, y, z);
 			villageGen.generateExtra(world, x, y, z);
 		}
-		if(y == 0 && world.getBiome((x << 5) + 16, (z << 5) + 16) == Vanilla.biomeSwamp){
+		if (y == 0 && world.getBiome((x << 5) + 16, (z << 5) + 16) == Vanilla.biomeSwamp) {
 			algaeGen.populate(world, x, y, z);
 		}
 		if (world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);
@@ -300,8 +300,8 @@ public class OverworldGenerator implements WorldGenerator {
 		long wz = data.getPosition().y << 5;
 		int op = 0;
 		ZoomGenerator bgen = new BiomeGenIslands(world);
-//		bgen = new BiomeGenZoom(world, bgen, false);
-//		bgen = new BiomeGenIslands(world, bgen);
+		// bgen = new BiomeGenZoom(world, bgen, false);
+		// bgen = new BiomeGenIslands(world, bgen);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		bgen = new BiomeGenSuperBiome(world, bgen);
 		bgen = new BiomeGenZoom(world, bgen, false);
@@ -366,8 +366,8 @@ public class OverworldGenerator implements WorldGenerator {
 	public ZoomGenerator getBiomeMapGenerator(World world, int zoom) {
 		int op = 0;
 		ZoomGenerator bgen = new BiomeGenIslands(world);
-//		bgen = new BiomeGenZoom(world, bgen, false);
-//		bgen = new BiomeGenIslands(world, bgen);
+		// bgen = new BiomeGenZoom(world, bgen, false);
+		// bgen = new BiomeGenIslands(world, bgen);
 		bgen = new BiomeGenZoom(world, bgen, true);
 		bgen = new BiomeGenSuperBiome(world, bgen);
 		bgen = new BiomeGenZoom(world, bgen, false);

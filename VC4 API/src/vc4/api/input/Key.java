@@ -7,11 +7,10 @@ import java.util.*;
 
 /**
  * @author paul
- *
+ * 
  */
 public enum Key {
 
-	
 	ESCAPE(1),
 	NUM_1(2),
 	NUM_2(3),
@@ -135,37 +134,34 @@ public enum Key {
 	APPS(221),
 	POWER(222),
 	SLEEP(223),
-	
+
 	CONTROL(1024, LCONTROL.getKey(), RCONTROL.getKey()),
 	SHIFT(1025, LSHIFT.getKey(), RSHIFT.getKey()),
 	META(1026, LMETA.getKey(), RMETA.getKey()),
 	MENU(1027, LMENU.getKey(), RMENU.getKey()),
 	BRACKET(1028, LBRACKET.getKey(), RBRACKET.getKey());
-	
-	
+
 	private int key;
-	
+
 	private int first, second;
-	
+
 	private static HashMap<Integer, Key> keyMap = new HashMap<Integer, Key>();
-	
-	static
-    {
-        
-        for (Key key : EnumSet.allOf(Key.class))
-        {
-            keyMap.put(key.key, key);
-        }
-    }
-	
+
+	static {
+
+		for (Key key : EnumSet.allOf(Key.class)) {
+			keyMap.put(key.key, key);
+		}
+	}
+
 	/**
 	 * 
 	 */
 	private Key(int key) {
 		this.key = key;
-		
+
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -174,25 +170,25 @@ public enum Key {
 		this.first = first;
 		this.second = second;
 	}
-	
-	public static Key getKey(int id){
+
+	public static Key getKey(int id) {
 		return keyMap.get(id);
 	}
-	
+
 	/**
 	 * @return the key
 	 */
 	public int getKey() {
 		return key;
 	}
-	
+
 	/**
 	 * @return the first
 	 */
 	public int getFirst() {
 		return first;
 	}
-	
+
 	/**
 	 * @return the second
 	 */

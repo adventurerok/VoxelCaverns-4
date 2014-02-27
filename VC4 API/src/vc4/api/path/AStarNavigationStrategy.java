@@ -31,7 +31,7 @@ public class AStarNavigationStrategy extends AbstractPathStrategy {
 			vector = plan.getCurrentVector().toVector3d();
 		}
 	}
-	
+
 	public Vector3d getLocation() {
 		return location;
 	}
@@ -52,7 +52,7 @@ public class AStarNavigationStrategy extends AbstractPathStrategy {
 
 		if (entity.position.distanceSquared(vector) <= DISTANCE_MARGIN) {
 			plan.update(entity);
-			if(plan.isComplete()) return true;
+			if (plan.isComplete()) return true;
 			vector = plan.getCurrentVector().toVector3d();
 		}
 		double dX = vector.x - entity.position.x;

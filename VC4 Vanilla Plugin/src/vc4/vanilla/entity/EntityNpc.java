@@ -18,41 +18,40 @@ public class EntityNpc extends EntityLiving {
 
 	static int boySkins = -1;
 	static int girlSkins = -1;
-	
-	public enum NpcState{
-		FREED,
-		TRAPPED
+
+	public enum NpcState {
+		FREED, TRAPPED
 	}
-	
+
 	String firstName = "Unnamed";
-	String lastName =  "Villager";
+	String lastName = "Villager";
 	boolean man = true;
-	double faction = 0; //100 <> -100
+	double faction = 0; // 100 <> -100
 	NpcState old = NpcState.FREED;
 	NpcState state = NpcState.FREED;
 	byte skinId = 0;
 	short trade = 0;
-	
+
 	AreaVillage village;
-	
+
 	int broadcastWait = 0;
-	
+
 	public void setMan(boolean man) {
 		this.man = man;
 	}
-	
+
 	public void setState(NpcState state) {
 		this.state = state;
 	}
-	
+
 	public void setVillage(AreaVillage village) {
 		this.village = village;
 	}
-	
+
 	public AreaVillage getVillage() {
 		return village;
 	}
-	
+
 	public EntityNpc(World world) {
 		super(world);
 		trade = (short) Trade.random(rand);
@@ -61,12 +60,12 @@ public class EntityNpc extends EntityLiving {
 		stateChanged();
 		addTrait(new TraitInventory(this));
 	}
-	
+
 	@Override
 	public Entity addToWorld() {
 		return super.addToWorld();
 	}
-	
+
 	public void setSkinId(byte skinId) {
 		this.skinId = skinId;
 	}
@@ -75,57 +74,57 @@ public class EntityNpc extends EntityLiving {
 	public String getName() {
 		return "vanilla.villager";
 	}
-	
-	public String getNameColor(){
-		if(faction < -9.9999) return "{c:ff0000}";
-		else if(faction > 9.9999) return "{c:00ff00}";
+
+	public String getNameColor() {
+		if (faction < -9.9999) return "{c:ff0000}";
+		else if (faction > 9.9999) return "{c:00ff00}";
 		else return "{c:f}";
 	}
-	
+
 	public String getFirstName() {
 		return firstName;
 	}
-	
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-	
+
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
+
 	public String getLastName() {
 		return lastName;
 	}
-	
-	public String getSkin(){
-		if(man) return "npc_boy_" + ((skinId & 0xff) % boySkins);
+
+	public String getSkin() {
+		if (man) return "npc_boy_" + ((skinId & 0xff) % boySkins);
 		return "npc_girl_" + ((skinId & 0xff) % girlSkins);
 	}
-	
+
 	@Override
 	public void draw() {
-		if(boySkins == -1){
+		if (boySkins == -1) {
 			calcSkins();
 		}
-		if(state == NpcState.TRAPPED){
-			renderHumanModel(getSkin(), getNameColor() + firstName + " " + lastName, "gag"); 
+		if (state == NpcState.TRAPPED) {
+			renderHumanModel(getSkin(), getNameColor() + firstName + " " + lastName, "gag");
 		} else {
-			renderHumanModel(getSkin(), getNameColor() + firstName + " " + lastName, "trade_" + Trade.byId(trade).getSkin()); 
+			renderHumanModel(getSkin(), getNameColor() + firstName + " " + lastName, "trade_" + Trade.byId(trade).getSkin());
 		}
 	}
-	
+
 	private static void calcSkins() {
 		AnimatedTexture tex = Resources.getAnimatedTexture("human");
 		int m = 0;
-		while(true){
-			if(!tex.hasArrayIndex("npc_boy_" + m)) break;
+		while (true) {
+			if (!tex.hasArrayIndex("npc_boy_" + m)) break;
 			++m;
 		}
 		boySkins = m;
 		m = 0;
-		while(true){
-			if(!tex.hasArrayIndex("npc_girl_" + m)) break;
+		while (true) {
+			if (!tex.hasArrayIndex("npc_girl_" + m)) break;
 			++m;
 		}
 		girlSkins = m;
@@ -133,24 +132,24 @@ public class EntityNpc extends EntityLiving {
 
 	@Override
 	public void onRightClick(EntityPlayer player) {
-		if(state == NpcState.TRAPPED){
+		if (state == NpcState.TRAPPED) {
 			free();
 			String msg = formatChat() + "{l:villager.thanks" + (1 + rand.nextInt(2)) + "}";
 			player.message(msg);
 			faction++;
 		}
 	}
-	
-	public void free(){
+
+	public void free() {
 		state = NpcState.FREED;
 		Audio.playSound("npc/thanks", this, 1, 0.75f + rand.nextFloat() / 2);
 	}
-	
-	public void addFaction(double amount){
+
+	public void addFaction(double amount) {
 		faction += amount;
 		faction = MathUtils.clamp(faction, -100, 100);
 	}
-	
+
 	@Override
 	public CompoundTag getSaveCompound() {
 		CompoundTag tag = super.getSaveCompound();
@@ -163,7 +162,7 @@ public class EntityNpc extends EntityLiving {
 		tag.setShort("trade", trade);
 		return tag;
 	}
-	
+
 	@Override
 	public void loadSaveCompound(CompoundTag tag) {
 		super.loadSaveCompound(tag);
@@ -176,44 +175,44 @@ public class EntityNpc extends EntityLiving {
 		trade = tag.getShort("trade", trade);
 		stateChanged();
 	}
-	
+
 	@Override
 	public void update() {
-		if(village != null){
-			if(!village.getBounds().isVecInside(position)) village = null;
+		if (village != null) {
+			if (!village.getBounds().isVecInside(position)) village = null;
 		}
-		if(broadcastWait == 0){
+		if (broadcastWait == 0) {
 			broadcastMessage();
 			broadcastWait = 400 + rand.nextInt(1800);
 		} else broadcastWait--;
-		if(old != state){
+		if (old != state) {
 			stateChanged();
 			old = state;
 		}
 		super.update();
 	}
-	
-	protected void stateChanged(){
+
+	protected void stateChanged() {
 		ais.get("free").setDisabled(state == NpcState.TRAPPED);
 	}
 
 	public void broadcastMessage() {
-		if(state == NpcState.TRAPPED){
+		if (state == NpcState.TRAPPED) {
 			String msg = formatChat() + "{l:villager.trapped" + (1 + rand.nextInt(2)) + "}";
 			world.broadcast(msg, position, 32);
 			Audio.playSound("npc/help", this, 1, 0.75f + rand.nextFloat() / 2);
 		}
 	}
-	
+
 	public NpcState getState() {
 		return state;
 	}
-	
-	public String formatChat(String msg){
-		return "<"+ firstName + " " + lastName + ">: " + msg;
+
+	public String formatChat(String msg) {
+		return "<" + firstName + " " + lastName + ">: " + msg;
 	}
-	
-	public String formatChat(){
+
+	public String formatChat() {
 		return formatChat("");
 	}
 

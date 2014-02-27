@@ -11,9 +11,7 @@ public class Movement {
 	Entity target;
 	Vector3d position;
 	double speed = 1;
-	
-	
-	
+
 	public boolean isPathfind() {
 		return pathfind;
 	}

@@ -32,7 +32,6 @@ public class BitOutputStream implements AutoCloseable, BitOutput {
 
 	private NBTOutputStream not;
 
-
 	/**
 	 * Create a new bit output stream based on an existing Java OutputSTream.
 	 * 
@@ -82,7 +81,6 @@ public class BitOutputStream implements AutoCloseable, BitOutput {
 	synchronized public void writeBit(long aBit) throws IOException {
 		if (iOs == null) throw new IOException("Already closed");
 
-
 		iBuffer |= aBit << iBitCount;
 		iBitCount++;
 
@@ -101,7 +99,7 @@ public class BitOutputStream implements AutoCloseable, BitOutput {
 			iOs.write((byte) iBuffer);
 			iBitCount = 0;
 			iBuffer = 0;
-			//debug++;
+			// debug++;
 		}
 	}
 
@@ -254,7 +252,7 @@ public class BitOutputStream implements AutoCloseable, BitOutput {
 		debug = 0;
 		return res;
 	}
-	
+
 	public int getBitCount() {
 		return iBitCount;
 	}

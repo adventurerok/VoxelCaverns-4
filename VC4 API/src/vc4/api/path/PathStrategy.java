@@ -5,13 +5,13 @@ import vc4.api.vector.Vector3d;
 public interface PathStrategy {
 	void clearCancelReason();
 
-    CancelReason getCancelReason();
+	CancelReason getCancelReason();
 
-    Vector3d getTargetAsVector();
+	Vector3d getTargetAsVector();
 
-    TargetType getTargetType();
+	TargetType getTargetType();
 
-    void stop();
+	void stop();
 
-    boolean update();
+	boolean update();
 }

@@ -34,8 +34,8 @@ public class BlockTexture {
 	public static int[] crops = new int[9];
 	public static int[] craftingTables = new int[5];
 	public static int digital[] = new int[10];
-	
-	public static void update(){
+
+	public static void update() {
 		AnimatedTexture tex = Resources.getAnimatedTexture("blocks");
 		grassTop = tex.getArrayIndex("grasstop");
 		grassSide = tex.getArrayIndex("grassside");
@@ -96,11 +96,11 @@ public class BlockTexture {
 		cactusTop = tex.getArrayIndex("cactustop");
 		cactusBottom = tex.getArrayIndex("cactusbottom");
 		vines = tex.getArrayIndex("vines");
-		for(int d = 0; d < 9; ++d){
+		for (int d = 0; d < 9; ++d) {
 			crops[d] = tex.getArrayIndex("weeds" + (d + 1));
 		}
 		tallGrass = tex.getArrayIndex("tallgrass");
-		for(int d = 0; d < 2; ++d){
+		for (int d = 0; d < 2; ++d) {
 			craftingTables[d] = tex.getArrayIndex("craftingtable" + (d + 1));
 		}
 		craftingTop = tex.getArrayIndex("brownwood");
@@ -152,7 +152,7 @@ public class BlockTexture {
 		gapRepeaterGateInput = tex.getArrayIndex("gaprepeatergateinput");
 		gapRepeaterGateOutput = tex.getArrayIndex("gaprepeatergateoutput");
 		gapRepeaterGateOther = tex.getArrayIndex("gaprepeatergateother");
-		for(int d = 0; d < 10; ++d){
+		for (int d = 0; d < 10; ++d) {
 			digital[d] = tex.getArrayIndex("digital" + d);
 		}
 		bitMonitor = tex.getArrayIndex("bitmonitor");

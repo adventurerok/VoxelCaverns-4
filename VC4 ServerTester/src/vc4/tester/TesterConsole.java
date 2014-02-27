@@ -32,7 +32,7 @@ import vc4.tester.cmd.CommandListener;
 public class TesterConsole extends ServerConsole implements MouseListener, WindowListener, KeyListener, Runnable {
 
 	private static String colorChart = "0123456789abcdefgnt";
-	
+
 	public HashMap<String, ExecutableCommand> commands = new HashMap<>();
 	public CommandHandler commandListener = new CommandListener();
 	public User user = new TestUser();
@@ -41,8 +41,8 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 	JFrame window;
 	JTextPane output;
 	JTextPane input;
-	
-	//ServerHandler serverHandler;
+
+	// ServerHandler serverHandler;
 
 	/**
 	 * @param args
@@ -53,12 +53,10 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 		GameLoader.load(new ConsoleHandler());
 		console.run();
 	}
-	
-	
+
 	public ClientHandler getClient() {
 		return client;
 	}
-	
 
 	/**
 	 * 
@@ -88,11 +86,11 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setTitle("VC4 Server Testing Utility");
 		ConsoleHandler.setConsole(this);
-		
+
 		commands.put("msg", new ExecutableCommand(new CommandInfo("msg").setUsage("<msg>").setDescription("Sends the server a message").setCommandUsage(new CommandUsage().setMinimumArgs(1)), commandListener));
 	}
-	
-	public Tag getClientDetails(){
+
+	public Tag getClientDetails() {
 		CompoundTag tag = new CompoundTag("client");
 		tag.setString("version", Version.VERSION);
 		tag.setString("name", "VC4 Server Debug/Testing Client");
@@ -100,8 +98,8 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 		tag.setString("java", System.getProperty("java.version"));
 		tag.setString("zone", Calendar.getInstance().getTimeZone().getID());
 		tag.setInt("dst", Calendar.getInstance().getTimeZone().getDSTSavings());
-		//tag.setString("region", System.getProperty("user.region"));
-		//tag.setString("lang", System.getProperty("user.language"));
+		// tag.setString("region", System.getProperty("user.region"));
+		// tag.setString("lang", System.getProperty("user.language"));
 		tag.setString("os", OS.getOs().name());
 		return tag;
 	}
@@ -185,18 +183,18 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 			input.setText("");
 		}
 	}
-	
-	public void processInput(String input){
+
+	public void processInput(String input) {
 		String[] parts = StringSplitter.splitString(input, false);
 		String cmd = parts[0];
 		String[] args = Arrays.copyOfRange(parts, 1, parts.length);
 		Command command = new Command(cmd, args, user);
 		ExecutableCommand e = commands.get(command.getCommand());
-		if(e == null){
+		if (e == null) {
 			user.message("{l:cmd.nocommand," + "NOT_IMPLEMENTED" + "}");
 			return;
 		}
-		if(!e.getInfo().getCommandUsage().check(command)) return;
+		if (!e.getInfo().getCommandUsage().check(command)) return;
 		e.getHandler().handleCommand(command);
 	}
 
@@ -337,54 +335,46 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 		client.start();
 	}
 
-
 	@Override
 	public void windowOpened(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
 		ServerMap.saveSuids();
 	}
 
-
 	@Override
 	public void windowClosed(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void windowIconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void windowDeiconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void windowActivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public World getWorld() {

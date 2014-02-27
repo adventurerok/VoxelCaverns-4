@@ -8,17 +8,17 @@ import vc4.api.server.Server;
 import vc4.api.server.User;
 
 public class ConsoleUser implements User {
-	
+
 	private static Server server;
-	
+
 	public static void setServer(Server server) {
 		ConsoleUser.server = server;
 	}
-	
+
 	public static ConsoleUser CONSOLE = new ConsoleUser();
 
-	static byte[] CONSOLE_UID = new byte[]{ 67, 79, 78, 83, 79, 76, 69, 32, 85, 83, 69, 82, 0, 0, 0, 0}; //CONSOLE USER
-	
+	static byte[] CONSOLE_UID = new byte[] { 67, 79, 78, 83, 79, 76, 69, 32, 85, 83, 69, 82, 0, 0, 0, 0 }; // CONSOLE USER
+
 	@Override
 	public byte[] getUid() {
 		return CONSOLE_UID;

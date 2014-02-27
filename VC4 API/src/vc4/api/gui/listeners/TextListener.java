@@ -5,7 +5,6 @@ package vc4.api.gui.listeners;
 
 import vc4.api.gui.TextBox;
 
-
 /**
  * @author Paul Durbaba
  * 

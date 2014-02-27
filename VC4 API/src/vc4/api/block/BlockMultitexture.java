@@ -11,20 +11,20 @@ import vc4.api.world.World;
 
 /**
  * @author paul
- *
+ * 
  */
 public class BlockMultitexture extends Block implements IBlockMultitexture {
 
 	protected int mtIndex;
-	
+
 	public BlockMultitexture(int uid, int texture, Material m) {
 		super(uid, texture, m);
-		
+
 	}
 
 	public BlockMultitexture(int uid, int texture, String material) {
 		super(uid, texture, material);
-		
+
 	}
 
 	/**
@@ -34,21 +34,22 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 	 */
 	public BlockMultitexture(short uid, int texture, Material m) {
 		super(uid, texture, m);
-		
+
 	}
-	
 
 	public BlockMultitexture(short uid, int texture, Material m, int mtIndex) {
 		super(uid, texture, m);
 		this.mtIndex = mtIndex;
 	}
-	
+
 	public BlockMultitexture(int uid, int texture, Material m, int mtIndex) {
 		super(uid, texture, m);
 		this.mtIndex = mtIndex;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#renderSideMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -56,7 +57,9 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 		return renderSide(world, x, y, z, side);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getColorMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -64,7 +67,9 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 		return Color.white;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getTextureIndexMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -72,7 +77,9 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 		return mtIndex;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getColorMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
@@ -80,7 +87,9 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 		return Color.white;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#getTextureIndexMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
@@ -88,7 +97,9 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 		return mtIndex;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.IBlockMultitexture#multitextureUsed(byte, int)
 	 */
 	@Override
@@ -98,7 +109,7 @@ public class BlockMultitexture extends Block implements IBlockMultitexture {
 
 	@Override
 	public void setOrientationMultitexture(World world, long x, long y, long z, int side, TextureCoords coords) {
-		
+
 	}
 
 	@Override

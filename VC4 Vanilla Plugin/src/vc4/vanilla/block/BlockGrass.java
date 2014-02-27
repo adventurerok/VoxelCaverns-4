@@ -20,14 +20,14 @@ import vc4.vanilla.Vanilla;
 
 /**
  * @author paul
- *
+ * 
  */
 public class BlockGrass extends BlockMultitexture {
 
 	public static Color grass = new Color(0x1C8F1C);
-	
+
 	public static int PLANT_CACTUS = Plant.getTypeId("cactus");
-	
+
 	/**
 	 * @param uid
 	 * @param texture
@@ -37,53 +37,57 @@ public class BlockGrass extends BlockMultitexture {
 		super(uid, BlockTexture.grassTop, m);
 		mineData = new MiningData().setRequired(ToolType.spade).setPowers(0, 1, 25).setTimes(0.5, 0.02, 0.25);
 	}
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.BlockMultitexture#getColorMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
 	public Color getColorMultitexture(World world, long x, long y, long z, int side) {
-		if(world.getBlockId(x, y + 1, z) == Vanilla.snow.uid) return Color.white;
+		if (world.getBlockId(x, y + 1, z) == Vanilla.snow.uid) return Color.white;
 		Biome bio = world.getBiome(x, z);
-		if(bio != null) return bio.grassColor;
+		if (bio != null) return bio.grassColor;
 		return grass;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.BlockMultitexture#getColorMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
 	public Color getColorMultitexture(ItemStack item, int side) {
 		return grass;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.BlockMultitexture#getTextureIndexMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
 	public int getTextureIndexMultitexture(World world, long x, long y, long z, int side) {
 		byte data = world.getBlockData(x, y, z);
-		if(side < 4 && world.getNearbyBlockId(x, y - 1, z, Direction.getDirection(side)) != uid){
-			if(data == 0)return BlockTexture.grassSide;
+		if (side < 4 && world.getNearbyBlockId(x, y - 1, z, Direction.getDirection(side)) != uid) {
+			if (data == 0) return BlockTexture.grassSide;
 			else return 178 + data;
-		}
-		else{
-			if(data == 0) return BlockTexture.grassTop;
+		} else {
+			if (data == 0) return BlockTexture.grassTop;
 			else return 175 + data;
 		}
 	}
-	
+
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
-		if(side == 4 && world.getBlockData(x, y, z) == 0){
-			if(world.getBlockId(x, y + 1, z) == Vanilla.snow.uid) return Color.white;
+		if (side == 4 && world.getBlockData(x, y, z) == 0) {
+			if (world.getBlockId(x, y + 1, z) == Vanilla.snow.uid) return Color.white;
 			int r = 0, g = 0, b = 0;
 			Color col;
-			for(int ox = -1; ox < 2; ++ox){
-				for(int oz = -1; oz < 2; ++oz){
+			for (int ox = -1; ox < 2; ++ox) {
+				for (int oz = -1; oz < 2; ++oz) {
 					Biome bio = world.getBiome(x + ox, z + oz);
-					if(bio != null) col = bio.grassColor;
+					if (bio != null) col = bio.grassColor;
 					else col = grass;
 					r += col.getRed();
 					g += col.getGreen();
@@ -91,96 +95,105 @@ public class BlockGrass extends BlockMultitexture {
 				}
 			}
 			return new Color(r / 9, g / 9, b / 9);
-		}
-		else return Color.white;
+		} else return Color.white;
 	}
-	
+
 	@Override
 	public Color getColor(ItemStack item, int side) {
-		if(side == 4 && item.getDamage() == 0) return grass;
+		if (side == 4 && item.getDamage() == 0) return grass;
 		else return Color.white;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.BlockMultitexture#getTextureIndexMultitexture(vc4.api.item.ItemStack, int)
 	 */
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
-		if(side < 4){
-			if(item.getDamage() == 0)return BlockTexture.grassSide;
+		if (side < 4) {
+			if (item.getDamage() == 0) return BlockTexture.grassSide;
 			else return 178 + item.getDamage();
-		}
-		else return 175 + item.getDamage();
+		} else return 175 + item.getDamage();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getTextureIndex(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
-		if((side == 4 || (side < 4 && world.getNearbyBlockId(x, y - 1, z, Direction.getDirection(side)) == uid)) && world.getBlockData(x, y, z) == 0) return BlockTexture.grassTop;
+		if ((side == 4 || (side < 4 && world.getNearbyBlockId(x, y - 1, z, Direction.getDirection(side)) == uid)) && world.getBlockData(x, y, z) == 0) return BlockTexture.grassTop;
 		else return BlockTexture.dirt;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getTextureIndex(vc4.api.item.ItemStack, int)
 	 */
 	@Override
 	public int getTextureIndex(ItemStack item, int side) {
-		if(side == 4 && item.getDamage() == 0) return BlockTexture.grassTop;
+		if (side == 4 && item.getDamage() == 0) return BlockTexture.grassTop;
 		else return BlockTexture.dirt;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.BlockMultitexture#renderSideMultitexture(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
 	public boolean renderSideMultitexture(World world, long x, long y, long z, int side) {
-		if(multitextureUsed(world.getBlockData(x, y, z), side)) return super.renderSideMultitexture(world, x, y, z, side);
+		if (multitextureUsed(world.getBlockData(x, y, z), side)) return super.renderSideMultitexture(world, x, y, z, side);
 		else return false;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.BlockMultitexture#multitextureUsed(byte, int)
 	 */
 	@Override
 	public boolean multitextureUsed(byte data, int side) {
-		if(side == 4) return data != 0;
+		if (side == 4) return data != 0;
 		return side < 4;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#canGrowPlant(vc4.api.block.Plant)
 	 */
 	@Override
 	public boolean canGrowPlant(Plant plant) {
 		return plant.getTypeId() != PLANT_CACTUS;
 	}
-	
-	
+
 	@Override
 	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
-		if(rand.nextInt(data + 1) == 0){
+		if (rand.nextInt(data + 1) == 0) {
 			long nx = x - 1 + rand.nextInt(3);
 			long nz = z - 1 + rand.nextInt(3);
 			long ny = y - 2 + rand.nextInt(5);
-			if(!world.getBlockType(nx, ny + 1, nz).isSolid(world, nx, ny, nz, 5)){
-				if(world.getBlockId(nx, ny, nz) == Vanilla.dirt.uid){
+			if (!world.getBlockType(nx, ny + 1, nz).isSolid(world, nx, ny, nz, 5)) {
+				if (world.getBlockId(nx, ny, nz) == Vanilla.dirt.uid) {
 					world.setBlockIdData(nx, ny, nz, Vanilla.grass.uid, (byte) 3);
-				} else if(world.getBlockId(nx, ny, nz) == Vanilla.grass.uid){
+				} else if (world.getBlockId(nx, ny, nz) == Vanilla.grass.uid) {
 					byte nd = world.getBlockData(nx, ny, nz);
-					if(nd > 0){
+					if (nd > 0) {
 						--nd;
 						world.setBlockData(nx, ny, nz, nd);
 					}
 				}
 			}
 		}
-		if(data > 0){
+		if (data > 0) {
 			--data;
 			world.setBlockData(x, y, z, data);
 		}
-		
+
 		return 0;
 	}
 

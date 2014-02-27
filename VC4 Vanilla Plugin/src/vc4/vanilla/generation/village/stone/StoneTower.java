@@ -14,64 +14,64 @@ public class StoneTower implements Building {
 	public void generate(World world, Door door, Village ville) {
 		Vector3l start = door.left;
 		start = start.move(3, door.dir.counterClockwise());
-		if(!ville.inBounds(start)) return;
+		if (!ville.inBounds(start)) return;
 		Vector3l end = door.right;
 		end = end.move(3, door.dir.clockwise());
 		end = end.move(7, door.dir);
-		if(!ville.inBounds(end)) return;
+		if (!ville.inBounds(end)) return;
 		long sx = Math.min(start.x, end.x);
 		long sz = Math.min(start.z, end.z);
 		long ex = Math.max(start.x, end.x);
 		long ez = Math.max(start.z, end.z);
 		RoomBB bb = new RoomBB(sx - 1, start.y, sz - 1, ex + 1, start.y + 22, ez + 1);
-		if(!ville.addRoom(bb)) return;
-		for(long x = sx; x <= ex; ++x){
-			for(long z = sz; z <= ez; ++z){
-				for(long y = start.y - 1; y < start.y + 4; ++y){
+		if (!ville.addRoom(bb)) return;
+		for (long x = sx; x <= ex; ++x) {
+			for (long z = sz; z <= ez; ++z) {
+				for (long y = start.y - 1; y < start.y + 4; ++y) {
 					boolean xWall = x == sx || x == ex;
 					boolean zWall = z == sz || z == ez;
-					if(y == start.y - 1 || y == start.y + 3){
-						if(xWall || zWall) ville.setBrickBlock(x, y, z);
-						else if(y == start.y + 3 && (x == sx + 3 || x == sx + 4) && (z == sz + 3 || z == sz + 4)) ville.setEmptyBlock(x, y, z);
+					if (y == start.y - 1 || y == start.y + 3) {
+						if (xWall || zWall) ville.setBrickBlock(x, y, z);
+						else if (y == start.y + 3 && (x == sx + 3 || x == sx + 4) && (z == sz + 3 || z == sz + 4)) ville.setEmptyBlock(x, y, z);
 						else ville.setCobbleBlock(x, y, z);
-					} else if(xWall || zWall){
-						if(xWall && zWall) ville.setBrickBlock(x, y, z);
-						else if(y == start.y + 1){
+					} else if (xWall || zWall) {
+						if (xWall && zWall) ville.setBrickBlock(x, y, z);
+						else if (y == start.y + 1) {
 							boolean nxWall = x == sx + 1 || x == ex - 1;
 							boolean nzWall = z == sz + 1 || z == ez - 1;
-							if(nxWall || nzWall) ville.setCobbleBlock(x, y, z);
+							if (nxWall || nzWall) ville.setCobbleBlock(x, y, z);
 							else ville.setGlassBlock(x, y, z);
 						} else ville.setCobbleBlock(x, y, z);
 					} else ville.setEmptyBlock(x, y, z);
 				}
 			}
 		}
-		for(long x = sx + 1; x < ex; ++x){
+		for (long x = sx + 1; x < ex; ++x) {
 			boolean xWall = x == sx + 1 || x == ex - 1;
 			boolean nxWall = x == sx + 2 || x == ex - 2;
-			for(long z = sz + 1; z < ez; ++z){
+			for (long z = sz + 1; z < ez; ++z) {
 				boolean zWall = z == sz + 1 || z == ez - 1;
 				boolean nzWall = z == sz + 2 || z == ez - 2;
-				if(!xWall && !zWall) continue;
-				for(long y = start.y + 4; y < start.y + 17; ++ y){
-					if(xWall && zWall) ville.setBrickBlock(x, y, z);
-					else if((y - start.y) % 4 == 0) ville.setBrickBlock(x, y, z);
-					else if((y - start.y + 2) % 4 == 0 && !nxWall && !nzWall) ville.setGlassBlock(x, y, z);
+				if (!xWall && !zWall) continue;
+				for (long y = start.y + 4; y < start.y + 17; ++y) {
+					if (xWall && zWall) ville.setBrickBlock(x, y, z);
+					else if ((y - start.y) % 4 == 0) ville.setBrickBlock(x, y, z);
+					else if ((y - start.y + 2) % 4 == 0 && !nxWall && !nzWall) ville.setGlassBlock(x, y, z);
 					else ville.setCobbleBlock(x, y, z);
 				}
 			}
 		}
-		for(long x = sx; x <= ex; ++x){
-			for(long z = sz; z <= ez; ++z){
-				for(long y = start.y + 17; y < start.y + 19; ++y){
+		for (long x = sx; x <= ex; ++x) {
+			for (long z = sz; z <= ez; ++z) {
+				for (long y = start.y + 17; y < start.y + 19; ++y) {
 					boolean xWall = x == sx || x == ex;
 					boolean zWall = z == sz || z == ez;
-					if(y == start.y + 17){
-						if(xWall || zWall) ville.setBrickBlock(x, y, z);
-						else if((x == sx + 3 || x == sx + 4) && (z == sz + 3 || z == sz + 4)) ville.setEmptyBlock(x, y, z);
+					if (y == start.y + 17) {
+						if (xWall || zWall) ville.setBrickBlock(x, y, z);
+						else if ((x == sx + 3 || x == sx + 4) && (z == sz + 3 || z == sz + 4)) ville.setEmptyBlock(x, y, z);
 						else ville.setCobbleBlock(x, y, z);
-					} else if(xWall || zWall){
-						if(xWall && zWall) ville.setBrickBlock(x, y, z);
+					} else if (xWall || zWall) {
+						if (xWall && zWall) ville.setBrickBlock(x, y, z);
 						else ville.setCobbleBlock(x, y, z);
 					} else ville.setEmptyBlock(x, y, z);
 				}
@@ -82,7 +82,7 @@ public class StoneTower implements Building {
 		Vector3l ladLeft = door.left.move(4, door.dir);
 		Vector3l ladRight = door.right.move(4, door.dir);
 		int ladDir = door.dir.opposite().id();
-		for(long y = start.y; y < start.y + 18; ++y){
+		for (long y = start.y; y < start.y + 18; ++y) {
 			ville.setCobbleBlock(supLeft.x, y, supLeft.z);
 			ville.setCobbleBlock(supRight.x, y, supRight.z);
 			world.setBlockIdData(ladLeft.x, y, ladLeft.z, Vanilla.ladder.uid, ladDir);
@@ -102,7 +102,7 @@ public class StoneTower implements Building {
 
 	@Override
 	public void generateExtra(World world, Door door, Village ville, long y) {
-		
+
 	}
 
 }

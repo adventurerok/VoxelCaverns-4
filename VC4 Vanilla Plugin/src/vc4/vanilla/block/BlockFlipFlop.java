@@ -13,35 +13,35 @@ public class BlockFlipFlop extends BlockLogicGate implements IBlockWrenchable {
 	public BlockFlipFlop(int uid) {
 		super(uid);
 	}
-	
+
 	@Override
 	public int getTextureIndexGate(World world, long x, long y, long z, int side) {
 		int data = world.getBlockData(x, y, z) & 7;
-		if(side == data) return BlockTexture.flipFlopInput;
+		if (side == data) return BlockTexture.flipFlopInput;
 		return BlockTexture.flipFlopOutput;
 	}
-	
+
 	@Override
 	public int getProvidingSignal(World world, long x, long y, long z, int side) {
 		byte dat = world.getBlockData(x, y, z);
-		if((dat & 8) == 0) return 0;
-		if((dat & 7) == side) return 0;
+		if ((dat & 8) == 0) return 0;
+		if ((dat & 7) == side) return 0;
 		return 15;
 	}
-	
+
 	@Override
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
 		super.place(world, x, y, z, player, item);
 		world.scheduleBlockUpdate(x, y, z, 1, 1);
 	}
-	
+
 	@Override
 	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {
 		byte data = world.getBlockData(x, y, z);
-		if(Direction.getDirection(data & 7) != dir) return;
+		if (Direction.getDirection(data & 7) != dir) return;
 		world.scheduleBlockUpdate(x, y, z, 1, 1);
 	}
-	
+
 	@Override
 	public int blockUpdate(World world, Random rand, long x, long y, long z, byte data, int buid) {
 		Direction dir = Direction.getDirection(data & 7);
@@ -49,9 +49,9 @@ public class BlockFlipFlop extends BlockLogicGate implements IBlockWrenchable {
 		long ay = y + dir.getY();
 		long az = z + dir.getZ();
 		boolean b = world.getBlockType(ax, ay, az).getProvidingSignal(world, ax, ay, az, dir.opposite().id()) > 0;
-		if(((data & 16) != 0) != b){
+		if (((data & 16) != 0) != b) {
 			int newDat = (data & 7) + (b ? 16 : 0);
-			if(((data & 16) == 0) && b) newDat += ((data & 8) == 0) ? 8 : 0;
+			if (((data & 16) == 0) && b) newDat += ((data & 8) == 0) ? 8 : 0;
 			else newDat += (data & 8);
 			world.setBlockData(x, y, z, newDat);
 		}
@@ -61,15 +61,14 @@ public class BlockFlipFlop extends BlockLogicGate implements IBlockWrenchable {
 	@Override
 	public void wrench(World world, long x, long y, long z, int side, int mouseButton) {
 		byte data = world.getBlockData(x, y, z);
-		if((data & 7) == side) return;
+		if ((data & 7) == side) return;
 		world.setBlockData(x, y, z, (data & 24) + side);
 		world.scheduleBlockUpdate(x, y, z, 1, 1);
 	}
-	
+
 	@Override
 	public int getTextureIndexMultitexture(ItemStack item, int side) {
 		return BlockTexture.flipFlopOutput;
 	}
-	
 
 }

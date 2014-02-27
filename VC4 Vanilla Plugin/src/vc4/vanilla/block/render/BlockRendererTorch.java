@@ -20,10 +20,10 @@ public class BlockRendererTorch implements BlockRenderer {
 		renderers[1].light(light, c.getWorld().hasSkyLight(x, y, z));
 		Color color = block.getColor(c.getWorld(), x, y, z, 0);
 		int tex = block.getTextureIndex(c.getWorld(), x, y, z, 0);
-		if(data == 0) renderTorchUpright(renderers[1], x, y, z, tex, color);
+		if (data == 0) renderTorchUpright(renderers[1], x, y, z, tex, color);
 		else renderTorchSlanting(renderers[1], x, y, z, tex, color, data - 1);
 	}
-	
+
 	public void renderTorchUpright(Renderer render, double x, double y, double z, int te, Color color) {
 		render.useQuadInputMode(true);
 		render.color(color);
@@ -82,7 +82,7 @@ public class BlockRendererTorch implements BlockRenderer {
 		render.tex(0.46875F, 0.9375F, te);
 		render.addVertex(x + 0.4375F, y, z + 0.5625F);
 	}
-	
+
 	public void renderTorchSlanting(Renderer render, double x, double y, double z, int te, Color color, int dir) {
 		y += 0.171875;
 		double xTop = 0;
@@ -102,7 +102,7 @@ public class BlockRendererTorch implements BlockRenderer {
 		}
 
 		render.useQuadInputMode(true);
-		//render.customAttrib(block.uid, data, 0, 0);
+		// render.customAttrib(block.uid, data, 0, 0);
 		render.color(color);
 		// Side 0
 		render.tex(0.4375F, 0.34375F, te);
@@ -169,7 +169,7 @@ public class BlockRendererTorch implements BlockRenderer {
 
 	@Override
 	public void renderBlockCracks(World world, long x, long y, long z, Renderer render, double amount) {
-		
+
 	}
 
 }

@@ -13,14 +13,12 @@ public class SoundCollection {
 	}
 
 	public void addSounds(SoundGroup sounds) {
-		if(this.sounds.containsKey(sounds.name)){
+		if (this.sounds.containsKey(sounds.name)) {
 			SoundGroup other = this.sounds.get(sounds.name);
 			other.merge(sounds);
 		}
 		this.sounds.put(sounds.name, sounds);
 	}
-
-
 
 	public SoundGroup getSounds(String name) {
 		return sounds.get(name);

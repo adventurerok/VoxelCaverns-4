@@ -7,21 +7,19 @@ import java.awt.Color;
 
 /**
  * @author paul
- *
+ * 
  */
 public class Line {
 
 	public float startX, endX, y;
 	public Color color;
-	
+
 	/**
 	 * 
 	 */
 	public Line() {
 	}
-	
-	
-	
+
 	public Line(float startX, float y, Color color) {
 		super();
 		this.startX = endX = startX;
@@ -29,9 +27,7 @@ public class Line {
 		this.color = color;
 	}
 
-
-
-	public void addLength(float f){
+	public void addLength(float f) {
 		endX += f;
 	}
 

@@ -52,18 +52,18 @@ public class BlockTorch extends Block {
 	@Override
 	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {
 		byte data = world.getBlockData(x, y, z);
-		if(data == 0){
-			if(dir.id() != 5) return;
+		if (data == 0) {
+			if (dir.id() != 5) return;
 			int bid = world.getBlockId(x, y - 1, z);
-			if(bid == Vanilla.glass.uid || world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)) return;
-			
+			if (bid == Vanilla.glass.uid || world.getBlockType(x, y - 1, z).isSolid(world, x, y - 1, z, 4)) return;
+
 		} else {
 			dir = Direction.getDirection(data - 1).opposite();
 			long ox = x + dir.getX();
 			long oz = z + dir.getZ();
-			if(world.getBlockType(ox, y, oz).isSolid(world, ox, y, oz, dir.opposite().id())) return;
+			if (world.getBlockType(ox, y, oz).isSolid(world, ox, y, oz, dir.opposite().id())) return;
 		}
-		
+
 		dropItems(world, x, y, z, null);
 		world.setBlockId(x, y, z, 0);
 	}

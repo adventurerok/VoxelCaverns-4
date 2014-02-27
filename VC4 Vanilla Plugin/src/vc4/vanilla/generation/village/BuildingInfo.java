@@ -8,15 +8,15 @@ public class BuildingInfo {
 	Vector3l pos;
 	int type;
 	int dir;
-	
+
 	public BuildingInfo(Vector3l pos, int type, int dir) {
 		super();
 		this.pos = pos;
 		this.type = type;
 		this.dir = dir;
 	}
-	
-	public Vector3l backPos(){
+
+	public Vector3l backPos() {
 		return pos.move(1, Direction.getOpposite(dir));
 	}
 
@@ -31,6 +31,5 @@ public class BuildingInfo {
 	public int getDir() {
 		return dir;
 	}
-	
-	
+
 }

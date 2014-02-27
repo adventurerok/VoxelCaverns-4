@@ -14,23 +14,20 @@ import vc4.api.math.MathUtils;
 import vc4.api.sound.Audio;
 import vc4.api.sound.Music;
 
-public class SoundManager extends Audio{
+public class SoundManager extends Audio {
 
 	protected static SoundSystem player;
 
 	protected static long soundId;
 	protected static long musicId;
 	protected static int fadeTime = 2048;
-	
+
 	static String musicSource;
 	static Music musicObject;
 	static String musicPath;
 
-
 	protected static SoundCollection sounds = new SoundCollection("sounds");
 	protected static SoundCollection music = new SoundCollection("music");
-	
-	
 
 	public static void init() {
 		try {
@@ -42,40 +39,39 @@ public class SoundManager extends Audio{
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-		//SFXLoader.loadGameSFX();
+		// SFXLoader.loadGameSFX();
 
 	}
 
 	public SoundManager() {
 		setAudio(this);
 	}
-	
+
 	public static void dispose() {
 		player.cleanup();
 	}
-	
-	public static void loadSound(String path) throws MalformedURLException{
+
+	public static void loadSound(String path) throws MalformedURLException {
 		SoundGroup sGroup = new SoundGroup(path, "sound");
 		sounds.addSounds(sGroup);
 	}
 
-	public static void loadMusic(String path) throws MalformedURLException{
+	public static void loadMusic(String path) throws MalformedURLException {
 		SoundGroup sGroup = new SoundGroup(path, "music");
 		music.addSounds(sGroup);
 	}
-	
-	
-	public static void playMusic(String name){
-		if(name == null){
-			if(musicSource != null) player.fadeOut(musicSource, null, null, fadeTime);
+
+	public static void playMusic(String name) {
+		if (name == null) {
+			if (musicSource != null) player.fadeOut(musicSource, null, null, fadeTime);
 			musicPath = musicSource = null;
 			musicObject = null;
 			return;
 		}
-		if(name.equals(musicPath)) return;
+		if (name.equals(musicPath)) return;
 		Sound sound = music.getRandomSound(name);
 		if (sound == null) return;
-		if(musicPath != null){
+		if (musicPath != null) {
 			player.fadeOutIn(musicSource, sound.location, sound.location.toString(), fadeTime, fadeTime);
 			musicPath = name;
 		} else {
@@ -86,14 +82,12 @@ public class SoundManager extends Audio{
 			player.play(musicSource);
 		}
 	}
-	
-	
 
 	public static void playSound(String name, float volume, float pitch) {
-		//if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
+		// if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
 
 		Sound sound = sounds.getRandomSound(name);
-		if (sound == null){
+		if (sound == null) {
 			Logger.getLogger("VC4").info("No sound found: " + name);
 			return;
 		}
@@ -103,16 +97,16 @@ public class SoundManager extends Audio{
 		player.newSource(false, source, sound.location, sound.location.toString(), false, 0, 0, 0, 0, 0);
 		player.setPitch(source, pitch);
 		float vol = volume;// * VoxelCaverns.getGameOptions().soundVolume;
-		if (volume > 1.0F) vol = 1;//VoxelCaverns.getGameOptions().soundVolume;
+		if (volume > 1.0F) vol = 1;// VoxelCaverns.getGameOptions().soundVolume;
 		player.setVolume(source, vol);
 		player.play(source);
 	}
 
 	public static void playSound(String name, double x, double y, double z, float volume, float pitch) {
-		//if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
+		// if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
 
 		Sound sound = sounds.getRandomSound(name);
-		if (sound == null){
+		if (sound == null) {
 			Logger.getLogger("VC4").info("No sound found: " + name);
 			return;
 		}
@@ -124,14 +118,14 @@ public class SoundManager extends Audio{
 		int i = SoundSystemConfig.ATTENUATION_LINEAR;
 		player.newSource(volume > 1.0F ? true : false, source, sound.location, sound.location.toString(), false, (float) x, (float) y, (float) z, i, rolloff);
 		player.setPitch(source, pitch);
-		float vol = volume; //* VoxelCaverns.getGameOptions().soundVolume;
-		if (volume > 1.0F) vol = 1;//VoxelCaverns.getGameOptions().soundVolume;
+		float vol = volume; // * VoxelCaverns.getGameOptions().soundVolume;
+		if (volume > 1.0F) vol = 1;// VoxelCaverns.getGameOptions().soundVolume;
 		player.setVolume(source, vol);
 		player.play(source);
 	}
 
 	public static void setListener(EntityLiving l) {
-		//if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
+		// if (VoxelCaverns.getGameOptions().soundVolume < 0.0001F) return;
 		double posX = l.position.x;
 		double posY = l.position.y;
 		double posZ = l.position.z;
@@ -146,38 +140,38 @@ public class SoundManager extends Audio{
 	@Override
 	public void aloadSound(String path) throws IOException {
 		loadSound(path);
-		
+
 	}
 
 	@Override
 	public void aloadMusic(String path) throws IOException {
 		loadMusic(path);
-		
+
 	}
 
 	@Override
 	public void aplayMusic(String name) {
 		playMusic(name);
-		
+
 	}
 
 	@Override
 	public void aplaySound(String name, float volume, float pitch) {
 		playSound(name, volume, pitch);
-		
+
 	}
 
 	@Override
 	public void aplaySound(String name, double x, double y, double z, float volume, float pitch) {
 		playSound(name, x, y, z, volume, pitch);
-		
+
 	}
-	
+
 	@Override
 	public void aplayMusic(Music music) {
-		if(musicObject != null && !music.getType().canOverride(musicObject.getType())) return;
-		if(music == null){
-			if(musicSource != null) player.stop(musicSource);
+		if (musicObject != null && !music.getType().canOverride(musicObject.getType())) return;
+		if (music == null) {
+			if (musicSource != null) player.stop(musicSource);
 			return;
 		}
 		playMusic(music.getPath());

@@ -6,11 +6,11 @@ public class PlantGrowth {
 
 	Plant plant;
 	int amount;
-	
+
 	public Plant getPlant() {
 		return plant;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -18,7 +18,7 @@ public class PlantGrowth {
 		result = prime * result + ((plant == null) ? 0 : plant.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public PlantGrowth clone() {
 		return new PlantGrowth(plant, amount);
@@ -39,12 +39,12 @@ public class PlantGrowth {
 	public int getAmount() {
 		return amount;
 	}
-	
+
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
-	
-	public void addAmount(int amount){
+
+	public void addAmount(int amount) {
 		this.amount += amount;
 	}
 

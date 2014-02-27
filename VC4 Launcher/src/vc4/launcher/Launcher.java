@@ -19,48 +19,47 @@ import vc4.launcher.util.*;
 public class Launcher {
 
 	private static Launcher singleton;
-	
+
 	private LauncherGui gui;
 	private Repo vc4;
 	private TaskSystem tasks = new TaskSystem();
 	private JTextArea consoleOut = new AutoTextArea();
-	
+
 	private ArrayList<Repo> repos = new ArrayList<>();
-	
+
 	public static Launcher getSingleton() {
 		return singleton;
 	}
-	
+
 	public Repo getVc4() {
 		return vc4;
 	}
-	
+
 	public JTextArea getConsoleOut() {
 		return consoleOut;
 	}
-	
-	
+
 	public Launcher(String[] args) {
-		//Must do first
+		// Must do first
 		PrintStream con = new PrintStream(new TextAreaOutputStream(consoleOut));
 		System.setOut(con);
 		System.setErr(con);
 		System.out.println("Redirected system output to console tab");
 		singleton = this;
 		tasks.start();
-		
-		//Do what the hell you want now
+
+		// Do what the hell you want now
 		boolean loder = false;
-		for(String s : args){
-			if(s.startsWith("loader:")){
+		for (String s : args) {
+			if (s.startsWith("loader:")) {
 				String loader = s.substring(7);
 				System.out.println("Found loader: " + loader);
 				loder = true;
-			} else if(s.equals("noloader")) loder = true;
+			} else if (s.equals("noloader")) loder = true;
 		}
-		if(!loder) System.out.println("No loader found, please redownload the launcher");
-		
-		//Download default repo
+		if (!loder) System.out.println("No loader found, please redownload the launcher");
+
+		// Download default repo
 		Repo rec = new Repo();
 		try {
 			rec.loadInfo(new URL("http://repo.voxelcaverns.org.uk"));
@@ -70,12 +69,12 @@ public class Launcher {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		try{
+		try {
 			loadRepos();
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for(Repo r : repos){
+		for (Repo r : repos) {
 			r.autoUpdate();
 		}
 		System.out.println("Creating GUI...");
@@ -93,56 +92,54 @@ public class Launcher {
 		gui.setVisible(true);
 		System.out.println("GUI created successfully");
 	}
-	
+
 	public LauncherGui getGui() {
 		return gui;
 	}
-	
+
 	public ArrayList<Repo> getRepos() {
 		return repos;
 	}
-
 
 	public Package getClientPackage() {
 		return vc4.getPackage("VoxelCaverns");
 	}
 
-	
-	public YamlMap getRepoMap(){
+	public YamlMap getRepoMap() {
 		YamlMap map = new YamlMap();
 		ArrayList<String> reps = new ArrayList<>();
-		for(Repo r : repos){
-			if(r == vc4) continue;
+		for (Repo r : repos) {
+			if (r == vc4) continue;
 			reps.add(r.getRepoRoot());
 		}
 		map.setList("repos", reps);
 		return map;
 	}
-	
-	public void saveRepos() throws IOException{
-		String path = DirectoryLocator.getPath() + "/launcher/repos.yml"; 
+
+	public void saveRepos() throws IOException {
+		String path = DirectoryLocator.getPath() + "/launcher/repos.yml";
 		YamlMap map = getRepoMap();
 		map.save(new FileOutputStream(path));
 	}
-	
-	public void loadRepos() throws IOException{
-		String path = DirectoryLocator.getPath() + "/launcher/repos.yml"; 
+
+	public void loadRepos() throws IOException {
+		String path = DirectoryLocator.getPath() + "/launcher/repos.yml";
 		YamlMap map = new YamlMap(new FileInputStream(path));
 		loadRepoMap(map);
 	}
 
 	public void loadRepoMap(YamlMap map) throws IOException {
 		Object[] lis = map.getList("repos");
-		for(Object o : lis){
+		for (Object o : lis) {
 			String s = o.toString();
 			Repo repo = new Repo();
 			repo.loadInfo(new URL(s));
 			repos.add(repo);
 		}
-		
+
 	}
-	
-	public void launch(){
+
+	public void launch() {
 		launchRunnable(getClientPackage().getRuns()[0]);
 	}
 
@@ -152,13 +149,14 @@ public class Launcher {
 		String separator = System.getProperty("file.separator");
 		String javaHome = System.getenv("JAVA_HOME");
 		System.out.println("JAVA_HOME env: " + javaHome);
-		if(javaHome == null || javaHome.isEmpty()) javaHome = System.getProperty("java.home");
-	    String path = javaHome + separator + "bin" + separator + "java";
-	    String[] launchOptions = new String[] { path, "-Xmx" + r.getXmx(), "-Xms" + r.getXms(), "-cp", run, r.getLaunch(), "heapset" };
-	    ProcessBuilder processBuilder = new ProcessBuilder(launchOptions);
-	    
-	    StringBuilder launchString = new StringBuilder();
-	    for(String s : launchOptions) launchString.append(s).append(' ');
+		if (javaHome == null || javaHome.isEmpty()) javaHome = System.getProperty("java.home");
+		String path = javaHome + separator + "bin" + separator + "java";
+		String[] launchOptions = new String[] { path, "-Xmx" + r.getXmx(), "-Xms" + r.getXms(), "-cp", run, r.getLaunch(), "heapset" };
+		ProcessBuilder processBuilder = new ProcessBuilder(launchOptions);
+
+		StringBuilder launchString = new StringBuilder();
+		for (String s : launchOptions)
+			launchString.append(s).append(' ');
 		try {
 			System.out.println(launchString);
 			Process proc = processBuilder.start();
@@ -168,9 +166,9 @@ public class Launcher {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public TaskSystem getTasks() {
 		return tasks;
 	}
-	
+
 }

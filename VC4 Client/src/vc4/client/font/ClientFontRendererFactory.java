@@ -8,24 +8,25 @@ import vc4.api.font.FontRendererFactory;
 
 /**
  * @author paul
- *
+ * 
  */
-public class ClientFontRendererFactory implements FontRendererFactory{
+public class ClientFontRendererFactory implements FontRendererFactory {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.font.FontRendererFactory#createFontRenderer(java.lang.String, float)
 	 */
 	@Override
 	public FontRenderer createFontRenderer(String font, float defaultSize) {
 		return new ClientFontRenderer(font, defaultSize);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public ClientFontRendererFactory() {
 		FontRenderer.setFactory(this);
 	}
-
 
 }

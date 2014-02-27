@@ -32,7 +32,7 @@ public class EShortArrayTag extends Tag {
 
 	@Override
 	public void setValue(Object o) {
-		if(o instanceof int[]) value = (int[]) o;
+		if (o instanceof int[]) value = (int[]) o;
 	}
 
 	@Override

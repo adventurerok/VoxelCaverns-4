@@ -8,24 +8,28 @@ import vc4.api.vector.Vector3l;
 
 /**
  * @author paul
- *
+ * 
  */
 public class ChunkPos {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		return (int) (((y & 1023) << 22) | ((x & 2047) << 11) | (z & 2047));
 	}
-	
-//	@Override
-//	public int hashCode() {
-//		return  (int) (x ^ y ^ z);
-//	}
 
-	/* (non-Javadoc)
+	// @Override
+	// public int hashCode() {
+	// return (int) (x ^ y ^ z);
+	// }
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -48,36 +52,36 @@ public class ChunkPos {
 		this.y = y;
 		this.z = z;
 	}
-	
-	public static ChunkPos create(long x, long y, long z){
+
+	public static ChunkPos create(long x, long y, long z) {
 		return new ChunkPos(x, y, z);
 	}
-	
-	public static ChunkPos createFromWorldPos(long x, long y, long z){
+
+	public static ChunkPos createFromWorldPos(long x, long y, long z) {
 		return new ChunkPos(x >> 5, y >> 5, z >> 5);
 	}
-	
-	public static ChunkPos createFromWorldPos(Vector3l pos){
+
+	public static ChunkPos createFromWorldPos(Vector3l pos) {
 		return new ChunkPos(pos.x >> 5, pos.y >> 5, pos.z >> 5);
 	}
-	
-	public long worldX(int cx){
+
+	public long worldX(int cx) {
 		return (x << 5) + cx;
 	}
-	
-	public long worldY(int cy){
+
+	public long worldY(int cy) {
 		return (y << 5) + cy;
 	}
-	
-	public long worldZ(int cz){
+
+	public long worldZ(int cz) {
 		return (z << 5) + cz;
 	}
-	
-	public Vector3l worldPos(int cx, int cy, int cz){
+
+	public Vector3l worldPos(int cx, int cy, int cz) {
 		return new Vector3l((x << 5) + cx, (y << 5) + cy, (z << 5) + cz);
 	}
-	
-	public Vector3l toVector3l(){
+
+	public Vector3l toVector3l() {
 		return new Vector3l(x, y, z);
 	}
 
@@ -85,7 +89,7 @@ public class ChunkPos {
 	 * @param loc
 	 */
 	public static ChunkPos createFromWorldVector(Vector3d loc) {
-		return createFromWorldPos((long)loc.x, (long)loc.y, (long)loc.z);
+		return createFromWorldPos((long) loc.x, (long) loc.y, (long) loc.z);
 	}
 
 	/**
@@ -96,23 +100,22 @@ public class ChunkPos {
 	public ChunkPos add(int x, int y, int z) {
 		return new ChunkPos(this.x + x, this.y + y, this.z + z);
 	}
-	
-	public ChunkPos add(ChunkPos other){
+
+	public ChunkPos add(ChunkPos other) {
 		return new ChunkPos(other.x + x, other.y + y, other.z + z);
 	}
-	
-	public ChunkPos subtract(ChunkPos other){
+
+	public ChunkPos subtract(ChunkPos other) {
 		return new ChunkPos(x - other.x, y - other.y, z - other.z);
 	}
-	
-	public double distanceSquared(Vector3d loc){
+
+	public double distanceSquared(Vector3d loc) {
 		Vector3d me = new Vector3d(worldX(16), worldY(16), worldZ(16));
 		return me.distanceSquared(loc);
 	}
 
-	public ChunkPos getCoordOfNearbyChunk(int cx, int cy, int cz){
+	public ChunkPos getCoordOfNearbyChunk(int cx, int cy, int cz) {
 		return createFromWorldPos((x << 5) + cx, (y << 5) + cy, (z << 5) + cz);
 	}
-	
 
 }

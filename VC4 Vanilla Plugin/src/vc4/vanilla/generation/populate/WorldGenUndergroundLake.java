@@ -17,16 +17,12 @@ public class WorldGenUndergroundLake implements WorldPopulator {
 
 	int waterId = Vanilla.water.uid;
 	int chance = 50;
-	
-	
 
 	public WorldGenUndergroundLake(int waterId, int chance) {
 		super();
 		this.waterId = waterId;
 		this.chance = chance;
 	}
-
-
 
 	/*
 	 * (non-Javadoc)
@@ -45,18 +41,18 @@ public class WorldGenUndergroundLake implements WorldPopulator {
 		int sizeSq = size * size;
 		int big = size + 2;
 		int height = 2;
-		if(rand.nextInt(6) == 0) height = 3;
+		if (rand.nextInt(6) == 0) height = 3;
 		for (long ax = cx - big; ax <= cx + big; ++ax) {
 			for (long az = cz - big; az <= cz + big; ++az) {
 				int sq = (int) ((cx - ax) * (cx - ax) + (cz - az) * (cz - az));
-				if(sq > sizeSq - 4 + rand.nextInt(8)) continue;
+				if (sq > sizeSq - 4 + rand.nextInt(8)) continue;
 				int nHeight = height;
-				if(sq > (sizeSq - 4 + rand.nextInt(8)) / 1.5){
+				if (sq > (sizeSq - 4 + rand.nextInt(8)) / 1.5) {
 					nHeight -= 1;
 				}
 				for (long ay = cy - nHeight; ay <= cy + nHeight; ++ay) {
-					if(ay <= cy){
-						if(world.getBlockId(ax, ay, az) != 0) world.setBlockId(ax, ay, az, waterId);
+					if (ay <= cy) {
+						if (world.getBlockId(ax, ay, az) != 0) world.setBlockId(ax, ay, az, waterId);
 					} else world.setBlockId(ax, ay, az, 0);
 				}
 			}

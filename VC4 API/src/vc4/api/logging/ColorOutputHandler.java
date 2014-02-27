@@ -12,15 +12,13 @@ import vc4.api.util.Colors;
 
 /**
  * @author paul
- *
+ * 
  */
-public abstract class ColorOutputHandler extends OutputHandler{
+public abstract class ColorOutputHandler extends OutputHandler {
 
-
-	
 	protected static EnumMap<Level, String> colors = new EnumMap<Level, String>(Level.class);
-	
-	static{
+
+	static {
 		colors.put(INFO, color(Color.white));
 		colors.put(SEVERE, color(Color.red));
 		colors.put(WARNING, color(Colors.orangeRed));
@@ -30,15 +28,13 @@ public abstract class ColorOutputHandler extends OutputHandler{
 		colors.put(FINER, color(Colors.deepSkyBlue));
 		colors.put(Level.FINEST, color(Colors.indigo));
 	}
-	
-	private static String color(Color c){
+
+	private static String color(Color c) {
 		return "{c:" + Integer.toString(c.getRGB() & 0xFFFFFF, 16) + "}";
 	}
-	
-	private static String color(String c){
+
+	private static String color(String c) {
 		return "{c:" + c + "}";
 	}
-	
-	
 
 }

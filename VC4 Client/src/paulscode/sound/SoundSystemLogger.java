@@ -1,6 +1,5 @@
 package paulscode.sound;
 
-
 import vc4.api.logging.Level;
 import vc4.api.logging.Logger;
 

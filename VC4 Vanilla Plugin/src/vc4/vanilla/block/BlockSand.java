@@ -8,7 +8,7 @@ import vc4.vanilla.BlockTexture;
 
 /**
  * @author paul
- *
+ * 
  */
 public class BlockSand extends Block {
 
@@ -19,9 +19,9 @@ public class BlockSand extends Block {
 	 */
 	public BlockSand(short uid) {
 		super(uid, BlockTexture.sand, Material.getMaterial("sand"));
-		
+
 	}
-	
+
 	@Override
 	public boolean canGrowPlant(Plant plant) {
 		return plant.getTypeId() == BlockGrass.PLANT_CACTUS;

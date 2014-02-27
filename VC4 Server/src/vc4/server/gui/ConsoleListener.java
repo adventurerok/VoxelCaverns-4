@@ -9,8 +9,7 @@ import java.awt.event.WindowListener;
 
 import vc4.server.Console;
 
-public class ConsoleListener implements WindowListener, MouseListener,
-		KeyListener {
+public class ConsoleListener implements WindowListener, MouseListener, KeyListener {
 
 	Console console;
 

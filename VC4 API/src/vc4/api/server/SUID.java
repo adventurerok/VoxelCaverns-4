@@ -10,7 +10,7 @@ public class SUID {
 		super();
 		this.suid = suid;
 	}
-	
+
 	public byte[] getSuid() {
 		return suid;
 	}
@@ -25,17 +25,12 @@ public class SUID {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		SUID other = (SUID) obj;
-		if (!Arrays.equals(suid, other.suid))
-			return false;
+		if (!Arrays.equals(suid, other.suid)) return false;
 		return true;
 	}
-	
-	
+
 }

@@ -17,37 +17,37 @@ public class BlockTable extends BlockMultitexture {
 		super(uid, 1, Material.getMaterial("wood"), BlockTexture.woodFront);
 		renderer = new BlockRendererTable();
 	}
-	
+
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return side == 4;
 	}
-	
+
 	@Override
 	protected String getModifiedName(ItemStack item) {
 		return "table." + WoodBlocks.getName(item.getDamage() & 15);
 	}
-	
+
 	@Override
 	public Color getColor(ItemStack current, int side) {
 		return BlockPlanks.backColors[current.getDamage() & 15];
 	}
-	
+
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
 		return BlockPlanks.backColors[world.getBlockData(x, y, z) & 15];
 	}
-	
+
 	@Override
 	public Color getColorMultitexture(ItemStack item, int side) {
 		return BlockPlanks.frontColors[item.getDamage() & 15];
 	}
-	
+
 	@Override
 	public Color getColorMultitexture(World world, long x, long y, long z, int side) {
 		return BlockPlanks.frontColors[world.getBlockData(x, y, z) & 15];
 	}
-	
+
 	@Override
 	public Collection<ItemStack> getCreativeItems() {
 		return WoodBlocks.genCreativeItems(uid);

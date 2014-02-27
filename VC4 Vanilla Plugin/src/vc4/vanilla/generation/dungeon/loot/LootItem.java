@@ -11,7 +11,7 @@ public class LootItem {
 	int max;
 	int number;
 	double chance = 0.46;
-	
+
 	public LootItem(ItemStack item, int min, int max, int number, double chance) {
 		super();
 		this.item = item;
@@ -28,20 +28,17 @@ public class LootItem {
 		this.max = max;
 		this.number = number;
 	}
-	
-	public ItemStack getRandomLoot(Random rand){
-		if(rand.nextDouble() > chance) return null;
+
+	public ItemStack getRandomLoot(Random rand) {
+		if (rand.nextDouble() > chance) return null;
 		ItemStack stack = item.clone();
 		int diff = max - min;
 		stack.setAmount(min + (diff > 0 ? rand.nextInt(max - min) : 0));
 		return stack;
 	}
-	
+
 	public int getNumber() {
 		return number;
 	}
-	
-	
-	
-	
+
 }

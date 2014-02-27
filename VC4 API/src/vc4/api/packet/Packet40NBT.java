@@ -8,16 +8,13 @@ import vc4.api.io.SwitchInputStream;
 import vc4.api.io.SwitchOutputStream;
 
 public class Packet40NBT extends Packet {
-	
+
 	public static final int ID = 40;
-	
+
 	/*
-	 * Type Index:
-	 * 	0	Client details
-	 * 	1	Server details
-	 *  2	Dictionary
+	 * Type Index: 0 Client details 1 Server details 2 Dictionary
 	 */
-	
+
 	public short type;
 	public Tag tag;
 
@@ -32,21 +29,21 @@ public class Packet40NBT extends Packet {
 		type = in.readShort();
 		tag = in.readVBT();
 	}
-	
+
 	public Tag getTag() {
 		return tag;
 	}
-	
+
 	public short getType() {
 		return type;
 	}
-	
-	public Packet40NBT setMessage(int type, Tag tag){
+
+	public Packet40NBT setMessage(int type, Tag tag) {
 		this.type = (short) type;
 		this.tag = tag;
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Type: " + type + "\n\tTag: " + tag.toString();

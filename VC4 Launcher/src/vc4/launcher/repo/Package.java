@@ -41,11 +41,11 @@ public class Package {
 	public String getUpdateStreamName(int id) {
 		return updateStreamsRev.get(id);
 	}
-	
+
 	public boolean isDisabled() {
 		return disabled;
 	}
-	
+
 	public Package setDisabled(boolean disabled) {
 		this.disabled = disabled;
 		try {
@@ -55,9 +55,9 @@ public class Package {
 		}
 		return this;
 	}
-	
-	public void disable(){
-		if(version == null) return;
+
+	public void disable() {
+		if (version == null) return;
 		for (int d = 0; d < installs.length; ++d)
 			Launcher.getSingleton().getTasks().addTask(new DisablePackageTask(this, d));
 		final Package pak = this;
@@ -72,9 +72,9 @@ public class Package {
 		};
 		Launcher.getSingleton().getTasks().addTask(new UpdateGuiTask(run));
 	}
-	
-	public void enable(){
-		if(version == null) return;
+
+	public void enable() {
+		if (version == null) return;
 		for (int d = 0; d < installs.length; ++d)
 			Launcher.getSingleton().getTasks().addTask(new EnablePackageTask(this, d));
 		final Package pak = this;
@@ -152,7 +152,7 @@ public class Package {
 	private String getInstalledText() {
 		if (isDownloaded()) {
 			String text = "Installed Version: " + version.toString();
-			if(isDisabled()) text = text + " (disabled)";
+			if (isDisabled()) text = text + " (disabled)";
 			return text;
 		} else return "This package is not installed";
 	}
@@ -206,7 +206,7 @@ public class Package {
 		Collections.sort(result);
 		Version backs[] = result.toArray(new Version[result.size()]);
 		Version fronts[] = new Version[backs.length];
-		for(int d = 0; d < backs.length; ++d){
+		for (int d = 0; d < backs.length; ++d) {
 			fronts[d] = backs[backs.length - 1 - d];
 		}
 		return fronts;
@@ -227,9 +227,9 @@ public class Package {
 		};
 		Launcher.getSingleton().getTasks().addTask(new UpdateGuiTask(run));
 	}
-	
-	public void remove(){
-		if(version == null) return;
+
+	public void remove() {
+		if (version == null) return;
 		for (int d = 0; d < installs.length; ++d)
 			Launcher.getSingleton().getTasks().addTask(new RemovePackageTask(this, d));
 		final Package pak = this;
@@ -353,7 +353,7 @@ public class Package {
 
 	public void setVersion(Version version) {
 		this.version = version;
-		if(version == null) disabled = false;
+		if (version == null) disabled = false;
 		try {
 			save();
 		} catch (IOException e) {

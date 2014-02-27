@@ -13,17 +13,17 @@ public class Adjustment {
 		this.sideways = sideways;
 		this.up = up;
 	}
-	
+
 	@Override
 	public Adjustment clone() {
 		return new Adjustment(forward, sideways, up);
 	}
-	
-	public Adjustment move(long forward, long sideways, long up){
+
+	public Adjustment move(long forward, long sideways, long up) {
 		return new Adjustment(this.forward + forward, this.sideways + sideways, this.up + up);
 	}
-	
-	public Vector3l adjust(Vector3l to, Direction dir){
+
+	public Vector3l adjust(Vector3l to, Direction dir) {
 		long x = to.x;
 		long y = to.y;
 		long z = to.z;
@@ -35,8 +35,8 @@ public class Adjustment {
 		y += up;
 		return new Vector3l(x, y, z);
 	}
-	
-	public Vector3d adjust(Vector3d to, Direction dir){
+
+	public Vector3d adjust(Vector3d to, Direction dir) {
 		double x = to.x;
 		double y = to.y;
 		double z = to.z;

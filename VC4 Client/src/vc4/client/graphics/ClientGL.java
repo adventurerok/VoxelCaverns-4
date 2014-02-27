@@ -20,14 +20,14 @@ import vc4.api.vector.*;
 public class ClientGL implements OpenGL {
 
 	int[] viewport = new int[4];
-	
+
 	/**
 	 * 
 	 */
 	public ClientGL() {
 		Graphics.setImplementation(this);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -58,7 +58,9 @@ public class ClientGL implements OpenGL {
 		Graphics.getClientShaderManager().bindShader(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#bindTexture(vc4.api.graphics.GLTexture, int)
 	 */
 	@Override
@@ -76,7 +78,9 @@ public class ClientGL implements OpenGL {
 		GL11.glBlendFunc(sfactor.getGlInt(), dfactor.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#blendFuncSeparate(vc4.api.graphics.GLBlendFunc, vc4.api.graphics.GLBlendFunc, vc4.api.graphics.GLBlendFunc, vc4.api.graphics.GLBlendFunc)
 	 */
 	@Override
@@ -84,7 +88,9 @@ public class ClientGL implements OpenGL {
 		GL14.glBlendFuncSeparate(srcRGB.getGlInt(), dstRGB.getGlInt(), srcAlpha.getGlInt(), dstAlpha.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#callList(int)
 	 */
 	@Override
@@ -106,7 +112,9 @@ public class ClientGL implements OpenGL {
 		GL11.glClear(clr);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#clearColor(float, float, float, float)
 	 */
 	@Override
@@ -134,7 +142,9 @@ public class ClientGL implements OpenGL {
 		GL11.glColor4ub(r, g, b, a);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#color(java.awt.Color)
 	 */
 	@Override
@@ -177,7 +187,9 @@ public class ClientGL implements OpenGL {
 		GL11.glColor3d(color.x, color.y, color.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#color(vc4.api.vector.Vector3f)
 	 */
 	@Override
@@ -195,7 +207,9 @@ public class ClientGL implements OpenGL {
 		GL11.glColor4d(color.x, color.y, color.z, color.w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#color(vc4.api.vector.Vector4f)
 	 */
 	@Override
@@ -218,7 +232,9 @@ public class ClientGL implements OpenGL {
 		GL11.glCullFace(face.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#deleteLists(int, int)
 	 */
 	@Override
@@ -236,7 +252,9 @@ public class ClientGL implements OpenGL {
 		GL11.glDepthFunc(func.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#depthMask(boolean)
 	 */
 	@Override
@@ -254,7 +272,9 @@ public class ClientGL implements OpenGL {
 		GL11.glDisable(flag.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#disableVertexArrribArray(int)
 	 */
 	@Override
@@ -262,7 +282,9 @@ public class ClientGL implements OpenGL {
 		GL20.glDisableVertexAttribArray(index);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#drawArrays(vc4.api.graphics.GLPrimative, int, int)
 	 */
 	@Override
@@ -280,7 +302,9 @@ public class ClientGL implements OpenGL {
 		GL11.glEnable(flag.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#enableVertexArrribArray(int)
 	 */
 	@Override
@@ -298,7 +322,9 @@ public class ClientGL implements OpenGL {
 		GL11.glEnd();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#endList()
 	 */
 	@Override
@@ -306,7 +332,9 @@ public class ClientGL implements OpenGL {
 		GL11.glEndList();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#generateMipmap(vc4.api.graphics.GLTexture)
 	 */
 	@Override
@@ -314,7 +342,9 @@ public class ClientGL implements OpenGL {
 		GL30.glGenerateMipmap(target.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#genLists(int)
 	 */
 	@Override
@@ -322,7 +352,9 @@ public class ClientGL implements OpenGL {
 		return GL11.glGenLists(range);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#glGenTextures()
 	 */
 	@Override
@@ -340,7 +372,9 @@ public class ClientGL implements OpenGL {
 		GL11.glInitNames();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#lineWidth(float)
 	 */
 	@Override
@@ -393,7 +427,9 @@ public class ClientGL implements OpenGL {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#newList(int, vc4.api.graphics.GLCompileFunc)
 	 */
 	@Override
@@ -478,7 +514,9 @@ public class ClientGL implements OpenGL {
 		GL11.glPolygonOffset(factor, units);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#popMatrix()
 	 */
 	@Override
@@ -491,7 +529,9 @@ public class ClientGL implements OpenGL {
 		GL11.glPopName();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#pushMatrix()
 	 */
 	@Override
@@ -529,7 +569,9 @@ public class ClientGL implements OpenGL {
 		GL11.glRotated(angle, ang.x, ang.y, ang.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#rotate(float, float, float, float)
 	 */
 	@Override
@@ -567,7 +609,9 @@ public class ClientGL implements OpenGL {
 		GL11.glScalef(x, y, 0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#scale(float, float, float)
 	 */
 	@Override
@@ -614,7 +658,7 @@ public class ClientGL implements OpenGL {
 	public void selectBuffer(IntBuffer buffer) {
 		GL11.glSelectBuffer(buffer);
 	}
-	
+
 	@Override
 	public void shaderUniform1f(String var, float x) {
 		Graphics.getClientShaderManager().shaderUniform1f(var, x);
@@ -665,9 +709,8 @@ public class ClientGL implements OpenGL {
 		Graphics.getClientShaderManager().shaderUniform3i(var, vec);
 	}
 
-
 	@Override
-	public void shaderUniform4f(String var, float x, float y, float z, float w){
+	public void shaderUniform4f(String var, float x, float y, float z, float w) {
 		Graphics.getClientShaderManager().shaderUniform4f(var, x, y, z, w);
 	}
 
@@ -694,13 +737,13 @@ public class ClientGL implements OpenGL {
 	@Override
 	public void texCoord(double s, double t) {
 		GL11.glTexCoord2d(s, t);
-		
+
 	}
 
 	@Override
 	public void texCoord(double s, double t, double r) {
 		GL11.glTexCoord3d(s, t, r);
-		
+
 	}
 
 	@Override
@@ -753,7 +796,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexCoord2d(tex.x, tex.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texCoord(vc4.api.vector.Vector2f)
 	 */
 	@Override
@@ -766,7 +811,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexCoord3d(tex.x, tex.y, tex.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texCoord(vc4.api.vector.Vector3f)
 	 */
 	@Override
@@ -779,7 +826,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexCoord4d(tex.x, tex.y, tex.z, tex.w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texCoord(vc4.api.vector.Vector4f)
 	 */
 	@Override
@@ -787,23 +836,29 @@ public class ClientGL implements OpenGL {
 		GL11.glTexCoord4f(tex.x, tex.y, tex.z, tex.w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#glTexImage2D(vc4.api.graphics.GLTexture, int, vc4.api.graphics.GLInternalFormat, int, int, boolean, vc4.api.graphics.GLFormat, vc4.api.graphics.GLType, java.nio.ByteBuffer)
 	 */
 	@Override
 	public void texImage2D(GLTexture target, int level, GLInternalFormat internalFormat, int width, int height, boolean border, GLFormat format, GLType type, ByteBuffer data) {
-		GL11.glTexImage2D(target.getGlInt(), level, internalFormat.getGlInt(), width, height, border ? 1: 0, format.getGlInt(), type.getGlInt(), data);
+		GL11.glTexImage2D(target.getGlInt(), level, internalFormat.getGlInt(), width, height, border ? 1 : 0, format.getGlInt(), type.getGlInt(), data);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texImage3D(vc4.api.graphics.GLTexture, int, vc4.api.graphics.GLInternalFormat, int, int, int, boolean, vc4.api.graphics.GLFormat, vc4.api.graphics.GLType, java.nio.ByteBuffer)
 	 */
 	@Override
 	public void texImage3D(GLTexture target, int level, GLInternalFormat internalFormat, int width, int height, int depth, boolean border, GLFormat format, GLType type, ByteBuffer data) {
-		GL12.glTexImage3D(target.getGlInt(), level, internalFormat.getGlInt(), width, height, depth, border ? 1: 0, format.getGlInt(), type.getGlInt(), data);
+		GL12.glTexImage3D(target.getGlInt(), level, internalFormat.getGlInt(), width, height, depth, border ? 1 : 0, format.getGlInt(), type.getGlInt(), data);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterGenerateMipmap(vc4.api.graphics.GLTexture, boolean)
 	 */
 	@Override
@@ -811,7 +866,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL14.GL_GENERATE_MIPMAP, mipmap ? 1 : 0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterMagFilter(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTextureFilter)
 	 */
 	@Override
@@ -819,7 +876,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL11.GL_TEXTURE_MAG_FILTER, filter.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterMinFilter(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTextureFilter, vc4.api.graphics.GLTextureFilter)
 	 */
 	@Override
@@ -827,7 +886,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL11.GL_TEXTURE_MIN_FILTER, filter.getGlMipmapInt(mipmap));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterWrapR(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTexWrap)
 	 */
 	@Override
@@ -835,7 +896,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL12.GL_TEXTURE_WRAP_R, wrap.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterWrapS(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTexWrap)
 	 */
 	@Override
@@ -843,7 +906,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL11.GL_TEXTURE_WRAP_S, wrap.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterWrapST(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTexWrap)
 	 */
 	@Override
@@ -852,7 +917,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL11.GL_TEXTURE_WRAP_T, wrap.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterWrapSTR(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTexWrap)
 	 */
 	@Override
@@ -862,7 +929,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL12.GL_TEXTURE_WRAP_R, wrap.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterWrapSTR(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTexWrap, vc4.api.graphics.GLTexWrap)
 	 */
 	@Override
@@ -872,7 +941,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTexParameteri(target.getGlInt(), GL12.GL_TEXTURE_WRAP_R, wrapr.getGlInt());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#texParameterWrapT(vc4.api.graphics.GLTexture, vc4.api.graphics.GLTexWrap)
 	 */
 	@Override
@@ -883,7 +954,7 @@ public class ClientGL implements OpenGL {
 	@Override
 	public void texSubImage3D(GLTexture target, int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, GLFormat format, GLType type, ByteBuffer data) {
 		GL12.glTexSubImage3D(target.getGlInt(), level, xOffset, yOffset, zOffset, width, height, depth, format.getGlInt(), type.getGlInt(), data);
-		
+
 	}
 
 	@Override
@@ -891,7 +962,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTranslated(x, y, 0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#translate(double, double, double)
 	 */
 	@Override
@@ -904,7 +977,9 @@ public class ClientGL implements OpenGL {
 		GL11.glTranslatef(x, y, 0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#translate(float, float, float)
 	 */
 	@Override
@@ -955,7 +1030,7 @@ public class ClientGL implements OpenGL {
 	@Override
 	public void vertex(double x, double y, double z) {
 		GL11.glVertex3d(x, y, z);
-		
+
 	}
 
 	/*
@@ -998,7 +1073,9 @@ public class ClientGL implements OpenGL {
 		GL11.glVertex3i(x, y, z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#vertex(vc4.api.vector.Vector2f)
 	 */
 	@Override
@@ -1006,7 +1083,9 @@ public class ClientGL implements OpenGL {
 		GL11.glVertex2f(vertex.x, vertex.y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#vertex(vc4.api.vector.Vector3f)
 	 */
 	@Override
@@ -1014,7 +1093,9 @@ public class ClientGL implements OpenGL {
 		GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#vertexAttribPointer(int, int, boolean, int, java.nio.FloatBuffer)
 	 */
 	@Override
@@ -1022,7 +1103,9 @@ public class ClientGL implements OpenGL {
 		GL20.glVertexAttribPointer(index, size, normalized, stride, buffer);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.graphics.OpenGL#vertexWithTexture(float, float, float, float, float, float)
 	 */
 	@Override

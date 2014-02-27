@@ -7,7 +7,7 @@ import java.io.IOException;
 
 /**
  * @author paul
- *
+ * 
  */
 public interface AnimatedTextureLoader {
 

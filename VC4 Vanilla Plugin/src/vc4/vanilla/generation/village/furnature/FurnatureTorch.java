@@ -8,7 +8,7 @@ import vc4.vanilla.generation.village.Village;
 public class FurnatureTorch extends Furnature {
 
 	int bid, dir;
-	
+
 	public FurnatureTorch(Adjustment pos, int bid, int dir) {
 		super(pos);
 		this.bid = bid;
@@ -17,7 +17,7 @@ public class FurnatureTorch extends Furnature {
 
 	@Override
 	public void place(Village ville, Vector3l start, Direction dir) {
-		if(this.dir == 0){
+		if (this.dir == 0) {
 			ville.getWorld().setBlockId(start.x, start.y, start.z, bid);
 			return;
 		}

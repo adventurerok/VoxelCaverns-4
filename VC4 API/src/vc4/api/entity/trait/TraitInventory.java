@@ -9,7 +9,7 @@ import vc4.api.entity.Entity;
 public class TraitInventory extends Trait {
 
 	ContainerItems inventory;
-	
+
 	public TraitInventory(Entity entity) {
 		super(entity);
 		inventory = new ContainerItems(44);
@@ -18,7 +18,7 @@ public class TraitInventory extends Trait {
 	@Override
 	public void update() {
 		// TASK Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -30,14 +30,14 @@ public class TraitInventory extends Trait {
 	public boolean persistent() {
 		return true;
 	}
-	
+
 	@Override
 	public void loadSaveCompound(CompoundTag tag) {
 		super.loadSaveCompound(tag);
 		CompoundTag inv = tag.getCompoundTag("inv");
 		inventory = (ContainerItems) Container.readContainer(entity.world, inv);
 	}
-	
+
 	@Override
 	public CompoundTag getSaveCompound() {
 		CompoundTag tag = super.getSaveCompound();
@@ -46,6 +46,5 @@ public class TraitInventory extends Trait {
 		tag.addTag(inv);
 		return tag;
 	}
-	
 
 }

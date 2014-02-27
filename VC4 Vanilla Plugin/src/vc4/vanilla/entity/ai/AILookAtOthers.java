@@ -11,12 +11,12 @@ public class AILookAtOthers extends AI {
 	EntityLiving target;
 	double max;
 	int start;
-	
+
 	public AILookAtOthers(EntityLiving owner, double maxRange) {
 		super(owner);
 		max = maxRange * maxRange;
 	}
-	
+
 	@Override
 	public int conflictId() {
 		return 1;
@@ -27,18 +27,18 @@ public class AILookAtOthers extends AI {
 		double shortest = max;
 		EntityLiving close = null;
 		List<Entity> titys = owner.world.getEntitiesInBoundsExcluding(owner.chunk, owner.bounds.expand(15, 15, 15), owner);
-		for(int d = 0; d < titys.size(); ++d){
+		for (int d = 0; d < titys.size(); ++d) {
 			Entity ett = titys.get(d);
-			if(!(ett instanceof EntityLiving)) continue;
+			if (!(ett instanceof EntityLiving)) continue;
 			EntityLiving tar = (EntityLiving) ett;
 			double ds = tar.position.distanceSquared(owner.position);
-			if(ds < shortest){
+			if (ds < shortest) {
 				shortest = ds;
 				close = tar;
 			}
 		}
 		target = close;
-		if(close != null){
+		if (close != null) {
 			start = 180 + target.rand.nextInt(750);
 		}
 		return close != null;
@@ -46,13 +46,13 @@ public class AILookAtOthers extends AI {
 
 	@Override
 	public void start() {
-		
+
 	}
 
 	@Override
 	public boolean update() {
 		--start;
-		if(start < 1) return false;
+		if (start < 1) return false;
 		owner.lookAtEntity(target);
 		return true;
 	}

@@ -13,9 +13,7 @@ public class Path {
 	double c;
 	double n;
 	double d;
-	
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -43,60 +41,61 @@ public class Path {
 	public Vector2l getStart() {
 		return start;
 	}
-	
+
 	public Vector2l getEnd() {
 		return end;
 	}
-	
-	public void generate(World world){
-		if(Double.isNaN(m)){
-			for(long z = start.y - 1; z <= end.y + 1; ++z){
+
+	public void generate(World world) {
+		if (Double.isNaN(m)) {
+			for (long z = start.y - 1; z <= end.y + 1; ++z) {
 				long x = start.x;
-				try{
-					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int)(x & 31), (int)(z & 31));
+				try {
+					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int) (x & 31), (int) (z & 31));
 					world.setBlockId(x, y, z, Vanilla.gravel.uid);
-					if(z != start.y - 1 && z != end.y + 1){
+					if (z != start.y - 1 && z != end.y + 1) {
 						world.setBlockId(x + 1, y, z, Vanilla.gravel.uid);
 						world.setBlockId(x - 1, y, z, Vanilla.gravel.uid);
 					}
-				} catch(Exception e){}
+				} catch (Exception e) {
+				}
 			}
-		} else if(Math.abs(m) <= 1){
-			for(long x = start.x - 1; x <= end.x + 1; ++x){
+		} else if (Math.abs(m) <= 1) {
+			for (long x = start.x - 1; x <= end.x + 1; ++x) {
 				long z = MathUtils.round(m * x + c);
-				try{
-					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int)(x & 31), (int)(z & 31));
+				try {
+					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int) (x & 31), (int) (z & 31));
 					world.setBlockId(x, y, z, Vanilla.gravel.uid);
-					if(x != start.x - 1 && x != end.x + 1){
+					if (x != start.x - 1 && x != end.x + 1) {
 						world.setBlockId(x, y, z + 1, Vanilla.gravel.uid);
 						world.setBlockId(x, y, z - 1, Vanilla.gravel.uid);
 					}
-				} catch(Exception e){}
+				} catch (Exception e) {
+				}
 			}
 		} else {
-			
-			for(long z = start.y - 1; z <= end.y + 1; ++z){
+
+			for (long z = start.y - 1; z <= end.y + 1; ++z) {
 				long x = MathUtils.round(n * z + d);
-				try{
-					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int)(x & 31), (int)(z & 31));
+				try {
+					long y = world.getMapData(x >> 5, z >> 5).getGenHeight((int) (x & 31), (int) (z & 31));
 					world.setBlockId(x, y, z, Vanilla.gravel.uid);
-					if(z != start.y - 1 && z != end.y + 1){
+					if (z != start.y - 1 && z != end.y + 1) {
 						world.setBlockId(x + 1, y, z, Vanilla.gravel.uid);
 						world.setBlockId(x - 1, y, z, Vanilla.gravel.uid);
 					}
-				} catch(NullPointerException e){}
+				} catch (NullPointerException e) {
+				}
 			}
 		}
 	}
 
-
-
 	public Path(Vector2l start, Vector2l end) {
 		super();
-		if(end.x - start.x == 0) m = Double.NaN;
-		else m = (end.y - start.y) / (double)(end.x - start.x);
+		if (end.x - start.x == 0) m = Double.NaN;
+		else m = (end.y - start.y) / (double) (end.x - start.x);
 		c = start.y - m * start.x;
-		if(m == m && m != 0) n = 1d / m;
+		if (m == m && m != 0) n = 1d / m;
 		else n = Double.NaN;
 		d = start.x - n * start.y;
 		this.start = new Vector2l(Math.min(start.x, end.x), Math.min(start.y, end.y));

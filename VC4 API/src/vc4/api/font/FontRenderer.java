@@ -7,28 +7,32 @@ import vc4.api.vector.Vector2f;
 
 /**
  * @author paul
- *
+ * 
  */
 public abstract class FontRenderer {
 
 	private static FontRendererFactory factory;
-	
+
 	/**
-	 * @param factory the factory to set
+	 * @param factory
+	 *            the factory to set
 	 */
 	public static void setFactory(FontRendererFactory factory) {
 		FontRenderer.factory = factory;
 	}
-	
-	public static FontRenderer createFontRenderer(String font, float defaultSize){
+
+	public static FontRenderer createFontRenderer(String font, float defaultSize) {
 		return factory.createFontRenderer(font, defaultSize);
 	}
-	
+
 	public abstract Vector2f measureString(String text, float size);
-	
+
 	public abstract float renderString(float x, float y, String text);
+
 	public abstract float renderString(float x, float y, String text, float size);
+
 	public abstract void resetStyles();
+
 	public abstract void setAlpha(float alpha);
 
 }

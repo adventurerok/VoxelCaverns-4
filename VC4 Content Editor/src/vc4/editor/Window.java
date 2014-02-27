@@ -15,15 +15,12 @@ public class Window {
 	private String _title;
 	private int _width, _height;
 	private boolean _closeRequested = false;
-	
 
 	AnimatedTexture test;
-	
+
 	Renderer tr;
 
 	int texindex = 0;
-
-	
 
 	/*
 	 * (non-Javadoc)
@@ -69,21 +66,18 @@ public class Window {
 		}
 	}
 
-
 	protected void draw() {
-		
-	}
 
+	}
 
 	protected void update() {
-		
+
 	}
 
-	
 	protected void load() {
 		gl.enable(GLFlag.BLEND);
 		gl.blendFunc(GLBlendFunc.SRC_ALPHA, GLBlendFunc.ONE_MINUS_SRC_ALPHA);
-		
+
 		gl.depthFunc(GLCompareFunc.LEQUAL);
 		gl.enable(GLFlag.ALPHA_TEST);
 		gl.alphaFunc(GLCompareFunc.GREATER, 0.35F);
@@ -99,7 +93,6 @@ public class Window {
 		_width = Display.getWidth();
 		_height = Display.getHeight();
 		enterRenderMode(RenderType.GAME);
-		
 
 	}
 
@@ -109,7 +102,7 @@ public class Window {
 	 * @see vc4.api.client.ClientWindow#unload()
 	 */
 	protected void unload() {
-		
+
 	}
 
 	/*
@@ -176,26 +169,21 @@ public class Window {
 		return old;
 	}
 
-
 	public int getHeight() {
 		return _height;
 	}
-
 
 	public void close() {
 		_closeRequested = true;
 	}
 
-
 	public boolean isCloseRequested() {
 		return _closeRequested;
 	}
 
-
 	public boolean isCreated() {
 		return Display.isCreated();
 	}
-
 
 	public void enterRenderMode(RenderType mode) {
 		gl.matrixMode(GLMatrixMode.PROJECTION);
@@ -208,11 +196,9 @@ public class Window {
 		gl.loadIdentity();
 		gl.viewport(0, 0, _width, _height);
 	}
-	
-
 
 	public float getAspectRatio() {
-		return _width / (float)_height;
+		return _width / (float) _height;
 	}
 
 }

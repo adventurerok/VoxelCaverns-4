@@ -6,12 +6,12 @@ import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.vanilla.block.BlockOre;
 
-public class ItemAlloy extends Item{
-	
+public class ItemAlloy extends Item {
+
 	public static Color[] alloyColors = new Color[64];
 	public static String[] alloyNames = new String[64];
-	
-	static{
+
+	static {
 		registerAlloy(0, "bronze", BlockOre.oreColors[1], BlockOre.oreColors[2]);
 		registerAlloy(1, "coppad", BlockOre.oreColors[1], BlockOre.oreColors[4]);
 		registerAlloy(2, "silvad", BlockOre.oreColors[6], BlockOre.oreColors[4]);
@@ -19,17 +19,17 @@ public class ItemAlloy extends Item{
 		registerAlloy(4, "invar", BlockOre.oreColors[3], BlockOre.oreColors[16]);
 		registerAlloy(5, "mithad", BlockOre.oreColors[7], BlockOre.oreColors[4]);
 		registerAlloy(6, "hellad", BlockOre.oreColors[9], BlockOre.oreColors[4]);
-		
+
 	}
-	
+
 	@Override
 	public String getModifiedItemName(ItemStack stack) {
 		return typeName + "." + alloyNames[stack.getDamage()];
 	}
-	
-	public static void registerAlloy(int id, String name, Color...mix){
+
+	public static void registerAlloy(int id, String name, Color... mix) {
 		int r = 0, g = 0, b = 0, a = 0;
-		for(Color c : mix){
+		for (Color c : mix) {
 			r += c.getRed();
 			g += c.getGreen();
 			b += c.getBlue();
@@ -45,11 +45,10 @@ public class ItemAlloy extends Item{
 	}
 
 	String typeName;
-	
+
 	public ItemAlloy(int id, int textureIndex, String name) {
 		super(id, textureIndex);
 		typeName = name;
 	}
-
 
 }

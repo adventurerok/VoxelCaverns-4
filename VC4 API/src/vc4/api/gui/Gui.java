@@ -32,10 +32,10 @@ public abstract class Gui extends Component implements MouseListener {
 	public Gui() {
 		addMouseListener(this);
 	}
-	
+
 	@Override
 	public Component getHovering(Rectangle rect) {
-		if(innerGui.getBounds().intersects(rect)) return innerGui.getHovering(rect);
+		if (innerGui.getBounds().intersects(rect)) return innerGui.getHovering(rect);
 		return this;
 	}
 
@@ -63,7 +63,7 @@ public abstract class Gui extends Component implements MouseListener {
 	public void draw() {
 		if (!isVisible()) return;
 		GuiBorder bord = getBorder(Input.getClientMouse().getX(), Input.getClientMouse().getY());
-		if(Client.getGame().getHoveringComponent() != this) bord = null;
+		if (Client.getGame().getHoveringComponent() != this) bord = null;
 		if (gl == null) gl = Graphics.getOpenGL();
 		ColorScheme scheme = Client.getGame().getColorScheme(Client.getGame().getColorSchemeSetting().toString());
 		gl.unbindShader();
@@ -81,7 +81,7 @@ public abstract class Gui extends Component implements MouseListener {
 			gl.vertex(innerGui.getX(), innerGui.getY() + innerGui.getHeight());
 		}
 		gl.end();
-		if(bord != null){
+		if (bord != null) {
 			gl.begin(GLPrimative.LINE_LOOP);
 			gl.color(scheme.outlineNormal);
 			gl.vertex(getX(), getY());
@@ -97,7 +97,7 @@ public abstract class Gui extends Component implements MouseListener {
 		gl.vertex(innerGui.getX() + innerGui.getWidth(), innerGui.getY() + innerGui.getHeight());
 		gl.vertex(innerGui.getX(), innerGui.getY() + innerGui.getHeight());
 		gl.end();
-		if(bord != null){
+		if (bord != null) {
 			gl.begin(GLPrimative.QUADS);
 			gl.color(Color.red);
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 2, getY());
@@ -176,7 +176,7 @@ public abstract class Gui extends Component implements MouseListener {
 			setBounds(new Rectangle(nx, ny, nw, nh));
 			resized();
 		} else mousePressed = false;
-		if(isVisible() && Client.getGame().getHoveringComponent() == this){
+		if (isVisible() && Client.getGame().getHoveringComponent() == this) {
 			GuiBorder bord = getBorder(Input.getClientMouse().getX(), Input.getClientMouse().getY());
 			if (checkClose(Input.getClientMouse().getX(), Input.getClientMouse().getY())) bord = null;
 			if (checkDefault(Input.getClientMouse().getX(), Input.getClientMouse().getY())) bord = null;
@@ -281,7 +281,6 @@ public abstract class Gui extends Component implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
 
 	}
 }

@@ -3,15 +3,13 @@ package vc4.api.util;
 import java.awt.Color;
 
 /**
- * A class full of extra colors, from the C# api
- * Useful for C# developers
- * Created in C# using reflection on the Color class
+ * A class full of extra colors, from the C# api Useful for C# developers Created in C# using reflection on the Color class
+ * 
  * @author paul
- *
+ * 
  */
 public class Colors {
 
-	
 	public static Color aliceBlue = new Color(0xF0F8FF);
 	public static Color antiqueWhite = new Color(0xFAEBD7);
 	public static Color aqua = new Color(0x00FFFF);

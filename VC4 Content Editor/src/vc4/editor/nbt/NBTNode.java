@@ -12,9 +12,9 @@ public class NBTNode extends DefaultMutableTreeNode {
 	 * 
 	 */
 	private static final long serialVersionUID = 7951144350739450797L;
-	
+
 	private Tag tag;
-	
+
 	public Tag getTag() {
 		return tag;
 	}
@@ -22,31 +22,31 @@ public class NBTNode extends DefaultMutableTreeNode {
 	public NBTNode(Tag tag) {
 		super(getString(tag));
 		this.tag = tag;
-		if(NBTUtils.getTypeCode(tag.getClass()) == NBTConstants.TYPE_COMPOUND){
+		if (NBTUtils.getTypeCode(tag.getClass()) == NBTConstants.TYPE_COMPOUND) {
 			calculateChildren();
-		} else if(NBTUtils.getTypeCode(tag.getClass()) == NBTConstants.TYPE_LIST){
+		} else if (NBTUtils.getTypeCode(tag.getClass()) == NBTConstants.TYPE_LIST) {
 			calculateList();
 		}
 	}
 
 	private void calculateList() {
 		ListTag list = (ListTag) tag;
-		for(Tag t : list.getValue()){
+		for (Tag t : list.getValue()) {
 			add(new NBTNode(t));
 		}
-		
+
 	}
 
 	@Override
 	public Object getUserObject() {
 		return tag.getValue();
 	}
-	
+
 	@Override
 	public void setUserObject(Object userObject) {
-		try{
+		try {
 			tag.setValue(Double.parseDouble(userObject.toString()));
-		} catch(Exception e){
+		} catch (Exception e) {
 			tag.setValue(userObject);
 		}
 		super.setUserObject(getString(tag));
@@ -54,10 +54,10 @@ public class NBTNode extends DefaultMutableTreeNode {
 
 	private void calculateChildren() {
 		CompoundTag cm = (CompoundTag) tag;
-		for(Entry<String, Tag> o : cm.getValue().entrySet()){
+		for (Entry<String, Tag> o : cm.getValue().entrySet()) {
 			add(calculateTag(o.getValue()));
 		}
-		
+
 	}
 
 	private NBTNode calculateTag(Tag value) {
@@ -65,7 +65,7 @@ public class NBTNode extends DefaultMutableTreeNode {
 	}
 
 	private static String getString(Tag tag) {
-		switch(NBTUtils.getTypeCode(tag.getClass())){
+		switch (NBTUtils.getTypeCode(tag.getClass())) {
 			case NBTConstants.TYPE_BOOLEAN:
 			case NBTConstants.TYPE_BYTE:
 			case NBTConstants.TYPE_DOUBLE:
@@ -78,16 +78,16 @@ public class NBTNode extends DefaultMutableTreeNode {
 			case NBTConstants.TYPE_NIBBLE:
 			case NBTConstants.TYPE_SHORT:
 			case NBTConstants.TYPE_STRING:
-				if(tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + tag.getValue();
+				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + tag.getValue();
 				else return tag.getValue().toString();
 			case NBTConstants.TYPE_COMPOUND:
-				if(tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((CompoundTag)tag).getValue().size() + " entries";
-				else return ((CompoundTag)tag).getValue().size() + " entries";
+				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((CompoundTag) tag).getValue().size() + " entries";
+				else return ((CompoundTag) tag).getValue().size() + " entries";
 			case NBTConstants.TYPE_LIST:
-				if(tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((ListTag)tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((ListTag)tag).getType());
-				else return ((ListTag)tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((ListTag)tag).getType());
+				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((ListTag) tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((ListTag) tag).getType());
+				else return ((ListTag) tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((ListTag) tag).getType());
 			default:
-				if(tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + NBTUtils.getTypeName(tag.getClass());
+				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + NBTUtils.getTypeName(tag.getClass());
 				else return NBTUtils.getTypeName(tag.getClass());
 		}
 	}
@@ -97,12 +97,12 @@ public class NBTNode extends DefaultMutableTreeNode {
 	}
 
 	public void addTag(Tag t) {
-		if(tag instanceof CompoundTag){
-			((CompoundTag)tag).addTag(t);
+		if (tag instanceof CompoundTag) {
+			((CompoundTag) tag).addTag(t);
 			add(new NBTNode(t));
-		} else if(tag instanceof ListTag){
+		} else if (tag instanceof ListTag) {
 			ListTag l = (ListTag) tag;
-			if(!l.getType().isInstance(t)) return;
+			if (!l.getType().isInstance(t)) return;
 			l.addTag(t);
 			NBTEditor.getSingleton().getTreeModel().insertNodeInto(new NBTNode(t), this, getChildCount());
 		}
@@ -110,24 +110,22 @@ public class NBTNode extends DefaultMutableTreeNode {
 	}
 
 	public void removeNode(NBTNode node) {
-		if(tag instanceof CompoundTag){
-			((CompoundTag)tag).remove(node.getTag().getName());
-		} else if(tag instanceof ListTag){
+		if (tag instanceof CompoundTag) {
+			((CompoundTag) tag).remove(node.getTag().getName());
+		} else if (tag instanceof ListTag) {
 			ListTag l = (ListTag) tag;
 			l.getValue().remove(node.getTag());
 		}
 		NBTEditor.getSingleton().getTreeModel().removeNodeFromParent(node);
 		super.setUserObject(getString(tag));
-		
+
 	}
 
 	public void setName(String name) {
 		tag.setName(name);
 		super.setUserObject(getString(tag));
 		NBTEditor.getSingleton().getTreeModel().nodeChanged(this);
-		
+
 	}
-	
-	
 
 }

@@ -16,15 +16,15 @@ public class OverlayRenderer extends Component {
 			toRender.remove(0).draw();
 		}
 	}
-	
 
-	 /* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.gui.Component#isClickable()
 	 */
 	@Override
 	public boolean isClickable() {
 		return false;
 	}
-	
-	
+
 }

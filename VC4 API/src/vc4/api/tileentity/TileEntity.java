@@ -18,22 +18,21 @@ public abstract class TileEntity {
 	public World world;
 	public boolean remove = false;
 
-private static HashMap<String, Constructor<? extends TileEntity>> types = new HashMap<>();
-	
-	
-	public static void registerEntity(String name, Class<? extends TileEntity> clz){
+	private static HashMap<String, Constructor<? extends TileEntity>> types = new HashMap<>();
+
+	public static void registerEntity(String name, Class<? extends TileEntity> clz) {
 		try {
 			types.put(name, clz.getConstructor(World.class));
 		} catch (NoSuchMethodException | SecurityException e) {
 			Logger.getLogger(Entity.class).warning("TileEntity class does not have correct constructor", e);
 		}
 	}
-	
-	public static Constructor<? extends TileEntity> getTileEntityType(String name){
+
+	public static Constructor<? extends TileEntity> getTileEntityType(String name) {
 		return types.get(name);
 	}
-	
-	public static TileEntity loadTileEntity(Chunk chunk, CompoundTag tag){
+
+	public static TileEntity loadTileEntity(Chunk chunk, CompoundTag tag) {
 		short id = tag.getShort("id");
 		String name = chunk.getWorld().getTileEntityName(id);
 		Constructor<? extends TileEntity> clz = getTileEntityType(name);
@@ -51,149 +50,135 @@ private static HashMap<String, Constructor<? extends TileEntity>> types = new Ha
 		}
 		return null;
 	}
-	
-	public boolean persistent(){
+
+	public boolean persistent() {
 		return !remove;
 	}
 
-	public TileEntity(World world, Vector3l pos){
+	public TileEntity(World world, Vector3l pos) {
 		this.world = world;
 		position = pos;
 	}
-	
-	
+
 	public TileEntity(World world) {
 		super();
 		this.world = world;
 	}
 
-	public void addToWorld(){
+	public void addToWorld() {
 		world.setTileEntity(position.x, position.y, position.z, this);
 	}
 
-	public void moveTileEntity(Vector3l n){
+	public void moveTileEntity(Vector3l n) {
 		world.setTileEntity(position.x, position.y, position.z, null);
 		world.setTileEntity(n.x, n.y, n.z, this);
 		position = n;
 	}
-	
-	public Chunk getChunk(){
+
+	public Chunk getChunk() {
 		return world.getChunk(ChunkPos.createFromWorldPos(position));
 	}
-	
-	public Vector3i getPositionInChunk(){
-		return new Vector3i((int)(position.x & 31), (int)(position.y & 31), (int)(position.z & 31));
+
+	public Vector3i getPositionInChunk() {
+		return new Vector3i((int) (position.x & 31), (int) (position.y & 31), (int) (position.z & 31));
 	}
 
-	public short getId(){
+	public short getId() {
 		return world.getRegisteredTileEntity(getName());
 	}
-	
+
 	public abstract String getName();
 
-	public void updateTick(){
+	public void updateTick() {
 
 	}
-	public void draw(){
+
+	public void draw() {
 
 	}
-	
-	public void setChunkRedraw(){
+
+	public void setChunkRedraw() {
 		world.setDirty(position.x, position.y, position.z);
 	}
 
-
-	
-	static{
-//		registerEntity((short) 1, TileEntityChest.class);
-//		registerEntity((short) 2, TileEntityFurnace.class);
+	static {
+		// registerEntity((short) 1, TileEntityChest.class);
+		// registerEntity((short) 2, TileEntityFurnace.class);
 	}
 
-	static class Entry<K, V>
-	implements Map.Entry<K, V>
-	{
+	static class Entry<K, V> implements Map.Entry<K, V> {
 		final K key;
 		V value;
 
-		Entry(K key, V value)
-		{
+		Entry(K key, V value) {
 			this.value = value;
 			this.key = key;
 		}
 
 		@Override
-		public final K getKey()
-		{
+		public final K getKey() {
 			return this.key;
 		}
 
 		@Override
-		public final V getValue()
-		{
+		public final V getValue() {
 			return this.value;
 		}
 
 		@Override
-		public final V setValue(V paramV)
-		{
+		public final V setValue(V paramV) {
 			V localObject = this.value;
 			this.value = paramV;
 			return localObject;
 		}
 
 		@Override
-		public final boolean equals(Object paramObject)
-		{
-			if (!(paramObject instanceof Map.Entry))
-				return false;
+		public final boolean equals(Object paramObject) {
+			if (!(paramObject instanceof Map.Entry)) return false;
 			@SuppressWarnings("rawtypes")
-			Map.Entry localEntry = (Map.Entry)paramObject;
+			Map.Entry localEntry = (Map.Entry) paramObject;
 			Object localObject1 = getKey();
 			Object localObject2 = localEntry.getKey();
-			if ((localObject1 == localObject2) || ((localObject1 != null) && (localObject1.equals(localObject2))))
-			{
+			if ((localObject1 == localObject2) || ((localObject1 != null) && (localObject1.equals(localObject2)))) {
 				Object localObject3 = getValue();
 				Object localObject4 = localEntry.getValue();
-				if ((localObject3 == localObject4) || ((localObject3 != null) && (localObject3.equals(localObject4))))
-					return true;
+				if ((localObject3 == localObject4) || ((localObject3 != null) && (localObject3.equals(localObject4)))) return true;
 			}
 			return false;
 		}
 
 		@Override
-		public final int hashCode()
-		{
+		public final int hashCode() {
 			return (((this.key == null) ? 0 : this.key.hashCode()) ^ ((this.value == null) ? 0 : this.value.hashCode()));
 		}
 
 		@Override
-		public final String toString()
-		{
+		public final String toString() {
 			return getKey() + "=" + getValue();
 		}
 
-		void recordAccess(HashMap<K, V> paramHashMap)
-		{
+		void recordAccess(HashMap<K, V> paramHashMap) {
 		}
 
-		void recordRemoval(HashMap<K, V> paramHashMap)
-		{
+		void recordRemoval(HashMap<K, V> paramHashMap) {
 		}
 	}
-	
-	public static void initClass(){}
-	
-	public void setUnsavedChanges(){
-		try{
+
+	public static void initClass() {
+	}
+
+	public void setUnsavedChanges() {
+		try {
 			getChunk().setModified(true);
-		} catch(Exception e){}
+		} catch (Exception e) {
+		}
 	}
-	
-	public void loadSaveCompound(CompoundTag tag){
-		
+
+	public void loadSaveCompound(CompoundTag tag) {
+
 	}
-	
-	public CompoundTag getSaveCompound(){
+
+	public CompoundTag getSaveCompound() {
 		CompoundTag root = new CompoundTag("root");
 		root.setShort("id", getId());
 		CompoundTag pos = new CompoundTag("pos");

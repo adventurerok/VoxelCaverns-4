@@ -3,10 +3,9 @@
  */
 package vc4.api.vector;
 
-
 /**
  * @author paul
- *
+ * 
  */
 public class Vector4l implements Vector4<Vector4l> {
 
@@ -14,7 +13,7 @@ public class Vector4l implements Vector4<Vector4l> {
 	public long y;
 	public long z;
 	public long w;
-	
+
 	public Vector4l(long x, long y, long z, long w) {
 		super();
 		this.x = x;
@@ -23,7 +22,9 @@ public class Vector4l implements Vector4<Vector4l> {
 		this.w = w;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)
 	 */
 	@Override
@@ -31,7 +32,9 @@ public class Vector4l implements Vector4<Vector4l> {
 		return new Vector4l(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#multiply(java.lang.Object)
 	 */
 	@Override
@@ -39,7 +42,9 @@ public class Vector4l implements Vector4<Vector4l> {
 		return new Vector4l(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#subtract(java.lang.Object)
 	 */
 	@Override
@@ -47,7 +52,9 @@ public class Vector4l implements Vector4<Vector4l> {
 		return new Vector4l(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#divide(java.lang.Object)
 	 */
 	@Override
@@ -55,7 +62,9 @@ public class Vector4l implements Vector4<Vector4l> {
 		return new Vector4l(x / vec.x, y / vec.y, z / vec.z, w / vec.w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#abs()
 	 */
 	@Override
@@ -63,15 +72,19 @@ public class Vector4l implements Vector4<Vector4l> {
 		return new Vector4l(Math.abs(x), Math.abs(y), Math.abs(z), Math.abs(w));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#negate()
 	 */
 	@Override
 	public Vector4l negate() {
 		return new Vector4l(-x, -y, -z, -w);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
@@ -79,7 +92,9 @@ public class Vector4l implements Vector4<Vector4l> {
 		return new Vector4l(x, y, z, w);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distanceSquared(java.lang.Object)
 	 */
 	@Override
@@ -88,11 +103,13 @@ public class Vector4l implements Vector4<Vector4l> {
 		long ny = y - vec.y;
 		long nz = z - vec.z;
 		long nw = w - vec.w;
-		
+
 		return nx * nx + ny * ny + nz * nz + nw * nw;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distance(java.lang.Object)
 	 */
 	@Override
@@ -100,17 +117,16 @@ public class Vector4l implements Vector4<Vector4l> {
 		return Math.sqrt(distanceSquared(vec));
 	}
 
-
-	
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector4#toVector4f()
 	 */
 	@Override
 	public Vector4f toVector4f() {
 		return new Vector4f(x, y, z, w);
 	}
-	
+
 	@Override
 	public Vector4l toVector4l() {
 		return clone();
@@ -118,7 +134,7 @@ public class Vector4l implements Vector4<Vector4l> {
 
 	@Override
 	public Vector4i toVector4i() {
-		return new Vector4i((int)x, (int)y, (int)z,(int) w);
+		return new Vector4i((int) x, (int) y, (int) z, (int) w);
 	}
 
 	@Override

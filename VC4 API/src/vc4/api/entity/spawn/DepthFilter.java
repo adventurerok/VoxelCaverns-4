@@ -5,9 +5,7 @@ import java.util.Random;
 import vc4.api.world.World;
 
 public class DepthFilter implements SpawnFilter {
-	
-	
-	
+
 	long maxY, minY;
 
 	@Override

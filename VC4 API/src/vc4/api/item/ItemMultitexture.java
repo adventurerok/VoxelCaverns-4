@@ -6,18 +6,14 @@ public class ItemMultitexture extends Item implements IItemMultitexture {
 
 	protected int mtIndex;
 	protected Color mtColor = Color.white;
-	
+
 	public ItemMultitexture(int id) {
 		super(id);
 	}
-	
-	
 
 	public ItemMultitexture(int id, int textureIndex) {
 		super(id, textureIndex);
 	}
-
-
 
 	@Override
 	public int getMultitextureTextureIndex(ItemStack item) {

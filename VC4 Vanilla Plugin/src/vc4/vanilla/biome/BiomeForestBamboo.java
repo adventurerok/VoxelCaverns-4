@@ -13,17 +13,16 @@ public class BiomeForestBamboo extends BiomeHilly {
 		super(id, name, type, mapColor);
 		// TASK Auto-generated constructor stub
 	}
-	
+
 	@Override
 	public void placeBiomeBlock(GeneratorOutput out, Random rand, int cx, int cy, int cz, long diff, long y) {
-		if(diff == -1){
+		if (diff == -1) {
 			out.setBlockId(cx, cy, cz, Vanilla.reeds.uid);
 			out.setBlockData(cx, cy, cz, 2);
-		} else if (diff == 0){
-			if((y << 5) + cy < -1) out.setBlockId(cx, cy, cz, fillerBlock);
+		} else if (diff == 0) {
+			if ((y << 5) + cy < -1) out.setBlockId(cx, cy, cz, fillerBlock);
 			else out.setBlockId(cx, cy, cz, topBlock);
-		}
-		else if(diff < 5) out.setBlockId(cx, cy, cz, fillerBlock);
+		} else if (diff < 5) out.setBlockId(cx, cy, cz, fillerBlock);
 		else out.setBlockId(cx, cy, cz, bottomBlock);
 	}
 

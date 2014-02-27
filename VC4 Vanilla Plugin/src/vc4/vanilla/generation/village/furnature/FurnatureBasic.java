@@ -9,7 +9,7 @@ public class FurnatureBasic extends Furnature {
 
 	int bid;
 	int data;
-	
+
 	@Override
 	public void place(Village ville, Vector3l start, Direction dir) {
 		start = pos.adjust(start, dir);

@@ -5,7 +5,7 @@ import java.util.Random;
 import vc4.api.world.World;
 
 public class SkylightFilter implements SpawnFilter {
-	
+
 	boolean light;
 
 	@Override

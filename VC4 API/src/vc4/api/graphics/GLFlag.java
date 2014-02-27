@@ -5,7 +5,7 @@ package vc4.api.graphics;
 
 /**
  * @author paul
- *
+ * 
  */
 public enum GLFlag {
 
@@ -22,14 +22,14 @@ public enum GLFlag {
 	TEXTURE_2D(3553),
 	TEXTURE_3D(32879),
 	SCISSOR_TEST(3089);
-	
+
 	private int glnum;
-	
+
 	private GLFlag(int glnum) {
 		this.glnum = glnum;
 	}
-	
-	public int getGlInt(){
+
+	public int getGlInt() {
 		return glnum;
 	}
 }

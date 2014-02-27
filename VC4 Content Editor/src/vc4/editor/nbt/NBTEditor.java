@@ -25,7 +25,7 @@ public class NBTEditor extends JFrame {
 			else if (e.getActionCommand().equals("saveas")) save();
 			else if (e.getActionCommand().equals("open")) load();
 			else if (e.getActionCommand().equals("new")) clear();
-			else if(e.getActionCommand().equals("reload")) load(file);
+			else if (e.getActionCommand().equals("reload")) load(file);
 			else if (e.getActionCommand().equals("delete")) {
 				if (nbtTree.getSelectionPath() == null || !(nbtTree.getSelectionPath().getLastPathComponent() instanceof NBTNode)) return;
 				if (nbtTree.getSelectionPath().getPathCount() <= 1) return;
@@ -53,9 +53,9 @@ public class NBTEditor extends JFrame {
 			if (itm.getActionCommand().equals("gzip")) {
 				gzip = itm.isSelected();
 			} else if (itm.getActionCommand().equals("mc")) {
-				if(mcCheck.isSelected() && hasExtras()){
+				if (mcCheck.isSelected() && hasExtras()) {
 					int res = JOptionPane.showConfirmDialog(null, "All VC-Extra tags will be deleted", "Your Document contains VC-Extras", JOptionPane.OK_CANCEL_OPTION);
-					if(res == JOptionPane.CANCEL_OPTION){
+					if (res == JOptionPane.CANCEL_OPTION) {
 						minecraft = false;
 						mcCheck.setSelected(false);
 						return;
@@ -67,6 +67,7 @@ public class NBTEditor extends JFrame {
 		}
 
 	}
+
 	private class NBTListener implements ActionListener {
 
 		@Override
@@ -176,22 +177,24 @@ public class NBTEditor extends JFrame {
 	 */
 	private static NBTEditor singleton;
 	private static final long serialVersionUID = 7396838719143219232L;
+
 	public static NBTEditor getSingleton() {
 		return singleton;
 	}
+
 	public static void main(String[] args) {
-		try{
+		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
 		NBTEditor e = new NBTEditor();
-		for(int d = 0; d < args.length; ++d){
+		for (int d = 0; d < args.length; ++d) {
 			String s = args[d].toLowerCase();
-			if(s.equals("-d")) e.exitOnClose = false;
-			else if(s.equals("-o")){
-				if(args.length > d + 1){
+			if (s.equals("-d")) e.exitOnClose = false;
+			else if (s.equals("-o")) {
+				if (args.length > d + 1) {
 					String file = args[d + 1];
 					e.file = new File(file);
 					e.load(e.file);
@@ -201,6 +204,7 @@ public class NBTEditor extends JFrame {
 		}
 		e.setVisible(true);
 	}
+
 	private CompoundTag root = new CompoundTag("root");
 	private NBTNode rootNode;
 	private NBTTree nbtTree;
@@ -252,15 +256,15 @@ public class NBTEditor extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if(changes){
+				if (changes) {
 					int i = JOptionPane.showConfirmDialog(null, "You will lose these changes if you press no", "Your document contains unsaved changes", JOptionPane.YES_NO_CANCEL_OPTION);
-					if(i == JOptionPane.CANCEL_OPTION) return;
-					else if(i == JOptionPane.YES_OPTION){
-						if(!save(file)) return;
+					if (i == JOptionPane.CANCEL_OPTION) return;
+					else if (i == JOptionPane.YES_OPTION) {
+						if (!save(file)) return;
 					}
 				}
 				dispose();
-				if(exitOnClose){
+				if (exitOnClose) {
 					System.exit(0);
 				}
 			}
@@ -313,7 +317,7 @@ public class NBTEditor extends JFrame {
 		rename.setActionCommand("rename");
 		rename.addActionListener(new MenuListener());
 		rename.setAccelerator(KeyStroke.getKeyStroke("control R"));
-		//name.setIcon(new ImageIcon(NBTNode.class.getClassLoader().getResource("vc4/resources/icons/edit_rename.png")));
+		// name.setIcon(new ImageIcon(NBTNode.class.getClassLoader().getResource("vc4/resources/icons/edit_rename.png")));
 		edit.add(rename);
 		JMenuItem value = new JMenuItem("Change Value");
 		value.setActionCommand("changevalue");
@@ -392,13 +396,13 @@ public class NBTEditor extends JFrame {
 
 	}
 
-	private boolean checkCompoundTagForExtras(CompoundTag tag){
-		for(Tag t : tag.getValue().values()){
-			if(NBTUtils.getTypeCode(t.getClass()) > 11) return true;
-			if(t instanceof CompoundTag){
-				if(checkCompoundTagForExtras((CompoundTag) t)) return true;
-			} else if(t instanceof ListTag){
-				if(NBTUtils.getTypeCode(((ListTag)t).getType()) > 11) return true;
+	private boolean checkCompoundTagForExtras(CompoundTag tag) {
+		for (Tag t : tag.getValue().values()) {
+			if (NBTUtils.getTypeCode(t.getClass()) > 11) return true;
+			if (t instanceof CompoundTag) {
+				if (checkCompoundTagForExtras((CompoundTag) t)) return true;
+			} else if (t instanceof ListTag) {
+				if (NBTUtils.getTypeCode(((ListTag) t).getType()) > 11) return true;
 			}
 		}
 		return false;
@@ -414,13 +418,13 @@ public class NBTEditor extends JFrame {
 		changes = false;
 	}
 
-	public void editNode(NBTNode node){
+	public void editNode(NBTNode node) {
 		if (NBTUtils.getTypeCode(node.getTag().getClass()) == NBTConstants.TYPE_COMPOUND || NBTUtils.getTypeCode(node.getTag().getClass()) == NBTConstants.TYPE_LIST) return;
 		if (NBTUtils.getTypeName(node.getTag().getClass()).contains("Array")) return;
-		if(NBTUtils.getTypeCode(node.getTag().getClass()) == NBTConstants.TYPE_BOOLEAN){
-			int i = JOptionPane.showOptionDialog(null, "New value", "Editing boolean tag", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{"True", "False", "Cancel"}, "False");
-			if(i == 0) node.setUserObject(true);
-			else if(i == 1) node.setUserObject(false);
+		if (NBTUtils.getTypeCode(node.getTag().getClass()) == NBTConstants.TYPE_BOOLEAN) {
+			int i = JOptionPane.showOptionDialog(null, "New value", "Editing boolean tag", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[] { "True", "False", "Cancel" }, "False");
+			if (i == 0) node.setUserObject(true);
+			else if (i == 1) node.setUserObject(false);
 			else return;
 		} else {
 			String result = JOptionPane.showInputDialog(null, "New value");
@@ -438,7 +442,7 @@ public class NBTEditor extends JFrame {
 	public DefaultTreeModel getTreeModel() {
 		return ((DefaultTreeModel) nbtTree.getModel());
 	}
-	
+
 	public boolean hasExtras() {
 		return checkCompoundTagForExtras(root);
 	}
@@ -450,7 +454,7 @@ public class NBTEditor extends JFrame {
 		d.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		nbtTree.setSelectionModel(d);
 		nbtTree.addTreeSelectionListener(new TreeSelectionListener() {
-			
+
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				rename.setEnabled(!selectedListItem());
@@ -470,7 +474,7 @@ public class NBTEditor extends JFrame {
 	}
 
 	private void load(File f) {
-		if(f == null) return;
+		if (f == null) return;
 		try {
 			NBTInputStream in = new NBTInputStream(new FileInputStream(f));
 			root = (CompoundTag) in.readTag();
@@ -529,7 +533,7 @@ public class NBTEditor extends JFrame {
 		for (AbstractButton b : vcExtras) {
 			b.setEnabled(!minecraft);
 		}
-		if(minecraft) removeExtras();
+		if (minecraft) removeExtras();
 	}
 
 	protected void nodeClick(int selRow, DefaultMutableTreeNode lastPathComponent) {
@@ -539,26 +543,26 @@ public class NBTEditor extends JFrame {
 
 	}
 
-	public void removeExtras(){
+	public void removeExtras() {
 		removeExtras(rootNode);
 	}
 
 	private void removeExtras(NBTNode node) {
 		ArrayList<NBTNode> toRemove = new ArrayList<>();
-		for(int d = 0; d < node.getChildCount(); ++d){
+		for (int d = 0; d < node.getChildCount(); ++d) {
 			NBTNode kid = (NBTNode) node.getChildAt(d);
-			if(NBTUtils.getTypeCode(kid.getTag().getClass()) > 11) toRemove.add(kid);
-			if(kid.getTag() instanceof CompoundTag){
+			if (NBTUtils.getTypeCode(kid.getTag().getClass()) > 11) toRemove.add(kid);
+			if (kid.getTag() instanceof CompoundTag) {
 				removeExtras(kid);
-			} else if(kid.getTag() instanceof ListTag){
-				if(NBTUtils.getTypeCode(((ListTag)kid.getTag()).getType()) > 11) toRemove.add(kid);
+			} else if (kid.getTag() instanceof ListTag) {
+				if (NBTUtils.getTypeCode(((ListTag) kid.getTag()).getType()) > 11) toRemove.add(kid);
 			}
 		}
-		for(NBTNode s : toRemove){
+		for (NBTNode s : toRemove) {
 			node.removeNode(s);
 		}
 	}
-	
+
 	private boolean save() {
 		chooser.setPreferredSize(new Dimension(800, 600));
 		if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -568,11 +572,9 @@ public class NBTEditor extends JFrame {
 		}
 		return false;
 	}
-	
+
 	private boolean save(File f) {
-		if(f == null){
-			return save();
-		}
+		if (f == null) { return save(); }
 		if (!minecraft) {
 			NBTOutputStream out;
 			try {
@@ -610,8 +612,8 @@ public class NBTEditor extends JFrame {
 		if (node.getTag() instanceof ListTag) return true;
 		return false;
 	}
-	
-	public boolean selectedListItem(){
+
+	public boolean selectedListItem() {
 		TreePath selPath = nbtTree.getSelectionPath();
 		if (selPath == null) return false;
 		if (!(selPath.getLastPathComponent() instanceof NBTNode)) return false;

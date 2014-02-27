@@ -31,19 +31,19 @@ public class InstallVersionTask implements Task {
 			if (pack.getVersion() != null && version.getIntVersion() == pack.getVersion().getIntVersion()) {
 				progress.setPercent(100);
 				progress.setDelete(true);
-				if(install == pack.getInstalls().length - 1) pack.setVersion(version);
+				if (install == pack.getInstalls().length - 1) pack.setVersion(version);
 				return;
 			}
 			Install instal = pack.getInstalls()[install];
 			if (!instal.canInstall(version)) {
 				progress.setPercent(100);
 				progress.setDelete(true);
-				if(install == pack.getInstalls().length - 1) pack.setVersion(version);
+				if (install == pack.getInstalls().length - 1) pack.setVersion(version);
 				return;
 			}
-			//System.out.println("Installing package: " + pack.getName() + ", version: " + version.getVersion());
+			// System.out.println("Installing package: " + pack.getName() + ", version: " + version.getVersion());
 			String installPath = DirectoryLocator.getPath() + instal.getEnd();
-			if(pack.isDisabled()) installPath = installPath + ".disabled";
+			if (pack.isDisabled()) installPath = installPath + ".disabled";
 			progress.setPercent(33);
 			String downloadPath = pack.getPackageRoot() + version.getPath() + instal.getStart();
 			if (instal.getType() == InstallType.UNZIP) {
@@ -90,7 +90,7 @@ public class InstallVersionTask implements Task {
 				progress.setPercent(90);
 				new File(tempPath).delete();
 				progress.setPercent(100);
-			} else if(instal.getType() == InstallType.COPY){
+			} else if (instal.getType() == InstallType.COPY) {
 				progress.setText("Downloading: " + instal.getEnd());
 				progress.setPercent(50);
 				URL download = new URL(downloadPath);
@@ -102,7 +102,7 @@ public class InstallVersionTask implements Task {
 
 				progress.setPercent(100);
 			}
-			if(install == pack.getInstalls().length - 1){
+			if (install == pack.getInstalls().length - 1) {
 				pack.setVersion(version);
 				System.out.println("Installed package: " + pack.getName());
 			}

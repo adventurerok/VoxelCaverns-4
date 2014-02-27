@@ -22,7 +22,7 @@ public class GuiArmour extends Gui {
 	public Vector2i getDefaultSize() {
 		return new Vector2i(2 * SIDES_WIDTH + 354, TOP_WIDTH + SIDES_WIDTH + 354);
 	}
-	
+
 	@Override
 	public Rectangle getDefaultBounds() {
 		Vector2i size = getDefaultSize();

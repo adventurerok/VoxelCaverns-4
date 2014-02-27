@@ -56,7 +56,7 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 			int tex = block.getTextureIndex(world, x, y, z, 5) + addToTex;
 			if (isPipe && (sides[5] || onlySide == 4)) tex -= 1;
 			color = block.getColor(world, x, y, z, 5);
-			//renderer.customAttrib(block.uid, data, 5, 5);
+			// renderer.customAttrib(block.uid, data, 5, 5);
 			for (int df = 0; df < 2; ++df) {
 				coords = TextureCoords.pipeTex_0(tex, max, mix, miz, maz);
 				renderer.color(color);
@@ -78,7 +78,7 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 			int tex = block.getTextureIndex(world, x, y, z, 4) + addToTex;
 			if (isPipe && (sides[4] || onlySide == 5)) tex -= 1;
 			color = block.getColor(world, x, y, z, 4);
-			//renderer.customAttrib(block.uid, data, 5, 5);
+			// renderer.customAttrib(block.uid, data, 5, 5);
 			for (int df = 0; df < 2; ++df) {
 				coords = TextureCoords.pipeTex_0(tex, max, mix, maz, miz);
 				renderer.color(color);
@@ -100,7 +100,7 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 			int tex = block.getTextureIndex(world, x, y, z, 0) + addToTex;
 			if (isPipe && (sides[0] || onlySide == 2)) tex -= 1;
 			color = block.getColor(world, x, y, z, 0);
-			//renderer.customAttrib(block.uid, data, 5, 5);
+			// renderer.customAttrib(block.uid, data, 5, 5);
 			for (int df = 0; df < 2; ++df) {
 				coords = TextureCoords.pipeTex_0(tex, may, miy, miz, maz);
 				renderer.color(color);
@@ -122,7 +122,7 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 			int tex = block.getTextureIndex(world, x, y, z, 1) + addToTex;
 			if (isPipe && (sides[1] || onlySide == 3)) tex -= 1;
 			color = block.getColor(world, x, y, z, 1);
-			//renderer.customAttrib(block.uid, data, 5, 5);
+			// renderer.customAttrib(block.uid, data, 5, 5);
 			for (int df = 0; df < 2; ++df) {
 				coords = TextureCoords.pipeTex_1(tex, max, mix, may, miy);
 				renderer.color(color);
@@ -144,7 +144,7 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 			int tex = block.getTextureIndex(world, x, y, z, 2) + addToTex;
 			if (isPipe && (sides[2] || onlySide == 0)) tex -= 1;
 			color = block.getColor(world, x, y, z, 2);
-			//renderer.customAttrib(block.uid, data, 5, 5);
+			// renderer.customAttrib(block.uid, data, 5, 5);
 			for (int df = 0; df < 2; ++df) {
 				coords = TextureCoords.pipeTex_0(tex, may, miy, maz, miz);
 				renderer.color(color);
@@ -166,7 +166,7 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 			int tex = block.getTextureIndex(world, x, y, z, 3) + addToTex;
 			if (isPipe && (sides[3] || onlySide == 1)) tex -= 1;
 			color = block.getColor(world, x, y, z, 3);
-			//renderer.customAttrib(block.uid, data, 5, 5);
+			// renderer.customAttrib(block.uid, data, 5, 5);
 			for (int df = 0; df < 2; ++df) {
 				coords = TextureCoords.pipeTex_1(tex, mix, max, may, miy);
 				renderer.color(color);

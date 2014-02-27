@@ -12,9 +12,9 @@ public class CommandListener implements CommandHandler {
 
 	@Override
 	public void handleCommand(Command command) {
-		if(command.getCommand().equals("msg")){
+		if (command.getCommand().equals("msg")) {
 			try {
-				((TesterConsole)TesterConsole.getConsole()).getClient().sendPacket(new Packet30MessageString(command.getArgsAsString(0)));
+				((TesterConsole) TesterConsole.getConsole()).getClient().sendPacket(new Packet30MessageString(command.getArgsAsString(0)));
 			} catch (IOException e) {
 				Logger.getLogger(CommandListener.class).warning("Exception occured", e);
 			}

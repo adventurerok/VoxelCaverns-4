@@ -10,7 +10,7 @@ public class AIChasePlayer extends AI {
 	EntityPlayer target;
 	double max;
 	double speed;
-	
+
 	Movement move;
 
 	public AIChasePlayer(EntityLiving owner, double maxRange, double speed) {
@@ -49,15 +49,15 @@ public class AIChasePlayer extends AI {
 		move = new Movement(target, speed, false);
 		owner.getMoveHandler().setExecuting(move);
 	}
-	
+
 	@Override
-	public void stop(){
-		if(owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().clearExecuting();
+	public void stop() {
+		if (owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().clearExecuting();
 	}
 
 	@Override
 	public boolean update() {
-		if(!owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().setExecuting(move);
+		if (!owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().setExecuting(move);
 		double ds = target.position.distanceSquared(owner.position);
 		if (ds > max) {
 			target = null;
@@ -67,6 +67,5 @@ public class AIChasePlayer extends AI {
 
 		return true;
 	}
-
 
 }

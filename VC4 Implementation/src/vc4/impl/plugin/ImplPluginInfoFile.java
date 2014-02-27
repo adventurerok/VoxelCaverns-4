@@ -13,15 +13,16 @@ import vc4.api.yaml.YamlMap;
 
 /**
  * @author paul
- *
+ * 
  */
-public class ImplPluginInfoFile implements PluginInfoFile{
+public class ImplPluginInfoFile implements PluginInfoFile {
 
 	private String name, version, description, mainClass, resources;
 	private Object[] developers;
 	private int intVersion;
 	private YamlMap doc;
 	private URL jarUrl;
+
 	/**
 	 * @return the developers
 	 */
@@ -29,12 +30,12 @@ public class ImplPluginInfoFile implements PluginInfoFile{
 	public Object[] getDevelopers() {
 		return developers;
 	}
-	
+
 	@Override
 	public URL getJarUrl() {
 		return jarUrl;
 	}
-	
+
 	/**
 	 * @return the name
 	 */
@@ -42,6 +43,7 @@ public class ImplPluginInfoFile implements PluginInfoFile{
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @return the version
 	 */
@@ -49,6 +51,7 @@ public class ImplPluginInfoFile implements PluginInfoFile{
 	public String getVersion() {
 		return version;
 	}
+
 	/**
 	 * @return the description
 	 */
@@ -56,6 +59,7 @@ public class ImplPluginInfoFile implements PluginInfoFile{
 	public String getDescription() {
 		return description;
 	}
+
 	/**
 	 * @return the intVersion
 	 */
@@ -63,43 +67,49 @@ public class ImplPluginInfoFile implements PluginInfoFile{
 	public int getIntVersion() {
 		return intVersion;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.plugin.PluginInfoFile#getYamlDocument()
 	 */
 	@Override
 	public YamlMap getYamlDocument() {
 		return null;
 	}
-	
-	public ImplPluginInfoFile(InputStream in, URL jar){
+
+	public ImplPluginInfoFile(InputStream in, URL jar) {
 		this.jarUrl = jar;
 		doc = new YamlMap(in);
-		if(!doc.hasKey("name") || !doc.hasKey("version") || !doc.hasKey("intversion") || !doc.hasKey("developers") || !doc.hasKey("main")){
-			throw new InvalidInfoFileException("Plugin info file missing one or more essential keys (name, version, intversion, developers, main)");
-		}
+		if (!doc.hasKey("name") || !doc.hasKey("version") || !doc.hasKey("intversion") || !doc.hasKey("developers") || !doc.hasKey("main")) { throw new InvalidInfoFileException("Plugin info file missing one or more essential keys (name, version, intversion, developers, main)"); }
 		name = doc.getString("name");
 		version = doc.getString("version");
 		developers = doc.getList("developers");
 		mainClass = doc.getString("main");
-		try{
+		try {
 			intVersion = doc.getInt("intversion");
-		} catch(Exception e){
+		} catch (Exception e) {
 			throw new InvalidInfoFileException("intversion must be a 32-bit signed integer");
 		}
-		if(doc.hasKey("description")) description = doc.getString("description");
-		if(doc.hasKey("resources")) resources = doc.getString("resources").replace(".", "/");
+		if (doc.hasKey("description")) description = doc.getString("description");
+		if (doc.hasKey("resources")) resources = doc.getString("resources").replace(".", "/");
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.plugin.PluginInfoFile#getMainClass()
 	 */
 	@Override
 	public String getMainClass() {
 		return mainClass;
 	}
+
 	@Override
 	public String getResourcePath() {
 		return resources;
 	}
+
 	@Override
 	public URL getResourceURL() {
 		try {
@@ -108,7 +118,5 @@ public class ImplPluginInfoFile implements PluginInfoFile{
 			return null;
 		}
 	}
-	
-	
 
 }

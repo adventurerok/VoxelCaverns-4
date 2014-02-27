@@ -8,17 +8,19 @@ import vc4.api.util.Direction;
 
 /**
  * @author paul
- *
+ * 
  */
 public class Vector3d implements Vector3<Vector3d> {
 
 	public double x, y, z;
-	
+
 	public Vector3d() {
 		// TASK Auto-generated constructor stub
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#add(java.lang.Object)
 	 */
 	public Vector3d(double x, double y, double z) {
@@ -27,8 +29,8 @@ public class Vector3d implements Vector3<Vector3d> {
 		this.y = y;
 		this.z = z;
 	}
-	
-	public Vector3d adjust(Vector3d adj, Direction dir){
+
+	public Vector3d adjust(Vector3d adj, Direction dir) {
 		Vector3d res = clone();
 		res.x += dir.getX() * adj.x;
 		res.z += dir.getZ() * adj.x;
@@ -43,12 +45,14 @@ public class Vector3d implements Vector3<Vector3d> {
 	public Vector3d add(Vector3d vec) {
 		return new Vector3d(x + vec.x, y + vec.y, z + vec.z);
 	}
-	
+
 	public Vector3d add(double ax, double ay, double az) {
 		return new Vector3d(x + ax, y + ay, z + az);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#multiply(java.lang.Object)
 	 */
 	@Override
@@ -56,7 +60,9 @@ public class Vector3d implements Vector3<Vector3d> {
 		return new Vector3d(x * vec.x, y * vec.y, z * vec.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#subtract(java.lang.Object)
 	 */
 	@Override
@@ -64,20 +70,24 @@ public class Vector3d implements Vector3<Vector3d> {
 		return new Vector3d(x - vec.x, y - vec.y, z - vec.z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#divide(java.lang.Object)
 	 */
 	@Override
 	public Vector3d divide(Vector3d vec) {
 		return new Vector3d(x / vec.x, y / vec.y, z / vec.z);
 	}
-	
+
 	@Override
-	public Vector3d clone(){
+	public Vector3d clone() {
 		return new Vector3d(x, y, z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#abs()
 	 */
 	@Override
@@ -85,7 +95,9 @@ public class Vector3d implements Vector3<Vector3d> {
 		return new Vector3d(Math.abs(x), Math.abs(y), Math.abs(z));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#negate()
 	 */
 	@Override
@@ -93,7 +105,9 @@ public class Vector3d implements Vector3<Vector3d> {
 		return new Vector3d(-x, -y, -z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distanceSquared(java.lang.Object)
 	 */
 	@Override
@@ -101,11 +115,13 @@ public class Vector3d implements Vector3<Vector3d> {
 		double nx = x - vec.x;
 		double ny = y - vec.y;
 		double nz = z - vec.z;
-		
+
 		return nx * nx + ny * ny + nz * nz;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector#distance(java.lang.Object)
 	 */
 	@Override
@@ -113,7 +129,9 @@ public class Vector3d implements Vector3<Vector3d> {
 		return Math.sqrt(distanceSquared(vec));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -126,7 +144,9 @@ public class Vector3d implements Vector3<Vector3d> {
 		return (int) result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -141,15 +161,19 @@ public class Vector3d implements Vector3<Vector3d> {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3f()
 	 */
 	@Override
 	public Vector3f toVector3f() {
-		return new Vector3f((float)x, (float)y, (float)z);
+		return new Vector3f((float) x, (float) y, (float) z);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3d()
 	 */
 	@Override
@@ -157,7 +181,9 @@ public class Vector3d implements Vector3<Vector3d> {
 		return clone();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3l()
 	 */
 	@Override
@@ -165,27 +191,25 @@ public class Vector3d implements Vector3<Vector3d> {
 		return new Vector3l(MathUtils.floor(x), MathUtils.floor(y), MathUtils.floor(z));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.vector.Vector3#toVector3i()
 	 */
 	@Override
 	public Vector3i toVector3i() {
-		return new Vector3i((int)MathUtils.floor(x), (int)MathUtils.floor(y), (int)MathUtils.floor(z));
+		return new Vector3i((int) MathUtils.floor(x), (int) MathUtils.floor(y), (int) MathUtils.floor(z));
 	}
 
-	
 	public Vector3d getXIntermediate(Vector3d end, double side) {
 		double xDist = end.x - x;
 		double yDist = end.y - y;
 		double zDist = end.z - z;
 
-		if (xDist * xDist < 1.0000000116860974E-007D)
-			return null;
+		if (xDist * xDist < 1.0000000116860974E-007D) return null;
 		double inter = (side - x) / xDist;
-		if (inter < 0.0D || inter > 1.0D)
-			return null;
-		else
-			return new Vector3d(x + xDist * inter, y + yDist * inter, z + zDist * inter);
+		if (inter < 0.0D || inter > 1.0D) return null;
+		else return new Vector3d(x + xDist * inter, y + yDist * inter, z + zDist * inter);
 	}
 
 	public Vector3d getYIntermediate(Vector3d end, double side) {
@@ -193,13 +217,10 @@ public class Vector3d implements Vector3<Vector3d> {
 		double yDist = end.y - y;
 		double zDist = end.z - z;
 
-		if (yDist * yDist < 1.0000000116860974E-007D)
-			return null;
+		if (yDist * yDist < 1.0000000116860974E-007D) return null;
 		double inter = (side - y) / yDist;
-		if (inter < 0.0D || inter > 1.0D)
-			return null;
-		else
-			return new Vector3d(x + xDist * inter, y + yDist * inter, z + zDist * inter);
+		if (inter < 0.0D || inter > 1.0D) return null;
+		else return new Vector3d(x + xDist * inter, y + yDist * inter, z + zDist * inter);
 	}
 
 	public Vector3d getZIntermediate(Vector3d end, double side) {
@@ -207,29 +228,26 @@ public class Vector3d implements Vector3<Vector3d> {
 		double yDist = end.y - y;
 		double zDist = end.z - z;
 
-		if (zDist * zDist < 1.0000000116860974E-007D)
-			return null;
+		if (zDist * zDist < 1.0000000116860974E-007D) return null;
 		double inter = (side - z) / zDist;
-		if (inter < 0.0D || inter > 1.0D)
-			return null;
-		else
-			return new Vector3d(x + xDist * inter, y + yDist * inter, z + zDist * inter);
+		if (inter < 0.0D || inter > 1.0D) return null;
+		else return new Vector3d(x + xDist * inter, y + yDist * inter, z + zDist * inter);
 	}
-	
+
 	public double floatDistanceTo(Vector3d other) {
 		double nx = other.x - x;
 		double ny = other.y - y;
 		double nz = other.z - z;
 		return (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
 	}
-	
+
 	public double floatDistanceSquared(Vector3d other) {
 		double nx = other.x - x;
 		double ny = other.y - y;
 		double nz = other.z - z;
 		return (float) nx * nx + ny * ny + nz * nz;
 	}
-	
+
 	public Vector3d cross(Vector3d in) {
 		return new Vector3d(y * in.z - z * in.y, z * in.x - x * in.z, x * in.y - y * in.x);
 
@@ -264,9 +282,8 @@ public class Vector3d implements Vector3<Vector3d> {
 	public double horizontalDistanceSquared(Vector3d vec) {
 		double nx = x - vec.x;
 		double nz = z - vec.z;
-		
-		return nx * nx + nz * nz; 
+
+		return nx * nx + nz * nz;
 	}
-	
 
 }

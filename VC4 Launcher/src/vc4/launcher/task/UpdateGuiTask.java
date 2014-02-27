@@ -5,9 +5,7 @@ import javax.swing.SwingUtilities;
 public class UpdateGuiTask implements Task {
 
 	Runnable updateGui;
-	
-	
-	
+
 	public UpdateGuiTask(Runnable updateGui) {
 		super();
 		this.updateGui = updateGui;

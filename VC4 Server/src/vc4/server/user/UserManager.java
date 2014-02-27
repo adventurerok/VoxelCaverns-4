@@ -19,94 +19,93 @@ import vc4.api.yaml.YamlMap;
 import vc4.impl.permissions.ImplPermissionGroup;
 
 public class UserManager {
-	
+
 	private static Random rand = new Random();
 
 	private static HashMap<String, UserGroup> groups = new HashMap<>();
 	private static HashMap<SUID, UserInfo> userInfo = new HashMap<>();
 	private static HashMap<String, UserInfo> userNames = new HashMap<>();
 	private static boolean loaded = false;
-	
-	public static UserGroup getGroup(String name){
+
+	public static UserGroup getGroup(String name) {
 		return groups.get(name);
 	}
-	
-	public static void load(){
+
+	public static void load() {
 		loadUsers();
-		//loadNames();
+		// loadNames();
 	}
-	
-	public static UserInfo getUserInfo(SUID user){
+
+	public static UserInfo getUserInfo(SUID user) {
 		return userInfo.get(user);
 	}
-	
-	public static UserInfo getUserInfo(String name){
+
+	public static UserInfo getUserInfo(String name) {
 		return userNames.get(name);
 	}
-	
-	public static void setUserName(String name, UserInfo info){
-		if(info == null){
+
+	public static void setUserName(String name, UserInfo info) {
+		if (info == null) {
 			userNames.remove(name);
 			return;
 		}
 		userNames.put(name, info);
 	}
-	
-	public static String generateChatName(String chars, int startNum){
+
+	public static String generateChatName(String chars, int startNum) {
 		int tries = 0;
-		while(true){
+		while (true) {
 			String test = chars + (startNum == 0 ? "" : startNum);
-			if(!userNames.containsKey(test)) return test;
+			if (!userNames.containsKey(test)) return test;
 			++startNum;
 			++tries;
-			if((tries % 5 == 0)) startNum += rand.nextInt(250);
+			if ((tries % 5 == 0)) startNum += rand.nextInt(250);
 		}
 	}
-	
-	public static boolean hasChatName(String name){
+
+	public static boolean hasChatName(String name) {
 		return !userNames.containsKey(name);
 	}
-	
-	public static boolean hasChatName(String chars, int startNum){
+
+	public static boolean hasChatName(String chars, int startNum) {
 		String test = chars + (startNum == 0 ? "" : startNum);
 		return hasChatName(test);
 	}
-	
-	public static UserInfo getOrCreateUserInfo(SUID user){
+
+	public static UserInfo getOrCreateUserInfo(SUID user) {
 		UserInfo u = userInfo.get(user);
-		if(u == null) u = new UserInfo(generateChatName("generic", 1));
+		if (u == null) u = new UserInfo(generateChatName("generic", 1));
 		userInfo.put(user, u);
 		userNames.put(u.getChatName(), u);
 		return u;
 	}
-	
-	public static void removeChatName(String name){
+
+	public static void removeChatName(String name) {
 		userNames.remove(name);
 	}
-	
-	
-//	private static void loadNames() {
-//		String path = DirectoryLocator.getPath() + "/server/names.txt";
-//		File file = new File(path);
-//		if(!file.exists()){
-//			file.getParentFile().mkdirs();
-//			return;
-//		}
-//		try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//			String line;
-//			while((line = reader.readLine()) != null){
-//				line = line.trim();
-//				chatNames.add(line);
-//			}
-//		} catch (IOException e) {
-//			Logger.getLogger(UserManager.class).warning("Exception", e);
-//		}
-//	}
 
-	private static void loadUsers(){
+	// private static void loadNames() {
+	// String path = DirectoryLocator.getPath() + "/server/names.txt";
+	// File file = new File(path);
+	// if(!file.exists()){
+	// file.getParentFile().mkdirs();
+	// return;
+	// }
+	// try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+	// String line;
+	// while((line = reader.readLine()) != null){
+	// line = line.trim();
+	// chatNames.add(line);
+	// }
+	// } catch (IOException e) {
+	// Logger.getLogger(UserManager.class).warning("Exception", e);
+	// }
+	// }
+
+	private static void loadUsers() {
 		String path = DirectoryLocator.getPath() + "/server/users.yml";
 		File file = new File(path);
-		if(!file.exists()){
+		if (!file.exists()) {
 			file.getParentFile().mkdirs();
 			createDefault();
 			return;
@@ -124,58 +123,58 @@ public class UserManager {
 		Logger.getLogger("VC4").info("No /server/users.yml file found, creating");
 		groups.put("default", new UserGroup("default", "", new ImplPermissionGroup()));
 		loaded = true;
-		
+
 	}
-	
-	public static void saveUsers(){
-		if(!loaded) return;
+
+	public static void saveUsers() {
+		if (!loaded) return;
 		YamlMap map = new YamlMap();
 		map.setSubMap("groups", getGroupMap());
 		map.setSubMap("users", getUserMap());
 		String path = DirectoryLocator.getPath() + "/server/users.yml";
 		File file = new File(path);
-		if(!file.exists()) file.getParentFile().mkdirs();
-		try(OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file))){
+		if (!file.exists()) file.getParentFile().mkdirs();
+		try (OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file))) {
 			map.dump(w);
 		} catch (IOException e) {
 			Logger.getLogger(UserManager.class).warning("Exception", e);
 		}
 	}
-	
-	private static YamlMap getUserMap(){
+
+	private static YamlMap getUserMap() {
 		YamlMap res = new YamlMap();
-		for(Entry<SUID, UserInfo> e : userInfo.entrySet()){
+		for (Entry<SUID, UserInfo> e : userInfo.entrySet()) {
 			res.setSubMap(SuidUtils.getSuidHex(e.getKey().getSuid()), e.getValue().toYaml());
 		}
 		return res;
 	}
-	
-	private static YamlMap getGroupMap(){
+
+	private static YamlMap getGroupMap() {
 		YamlMap res = new YamlMap();
-		for(Entry<String, UserGroup> e : groups.entrySet()){
+		for (Entry<String, UserGroup> e : groups.entrySet()) {
 			res.setSubMap(e.getKey(), e.getValue().toYaml());
 		}
 		return res;
 	}
 
 	private static void loadUsers(YamlMap map) {
-		if(map.hasKey("groups")){
+		if (map.hasKey("groups")) {
 			YamlMap groupMap = map.getSubMap("groups");
-			for( Entry<Object, Object> e : groupMap.getBaseMap().entrySet()){
-				if(!(e.getValue() instanceof Map)) continue;
+			for (Entry<Object, Object> e : groupMap.getBaseMap().entrySet()) {
+				if (!(e.getValue() instanceof Map)) continue;
 				String name = e.getKey().toString();
 				Logger.getLogger("VC4").fine("Found group: " + name);
 				groups.put(name.trim(), new UserGroup(name, groupMap.getSubMap(name)));
 			}
 		}
-		if(!groups.containsKey("default")){
+		if (!groups.containsKey("default")) {
 			Logger.getLogger("VC4").warning("No \"default\" group settings found");
 			groups.put("default", new UserGroup("default", "", new ImplPermissionGroup()));
 		}
-		if(map.hasKey("users")){
+		if (map.hasKey("users")) {
 			YamlMap userMap = map.getSubMap("users");
-			for( Entry<Object, Object> e : userMap.getBaseMap().entrySet()){
-				if(!(e.getValue() instanceof Map)) continue;
+			for (Entry<Object, Object> e : userMap.getBaseMap().entrySet()) {
+				if (!(e.getValue() instanceof Map)) continue;
 				String name = e.getKey().toString();
 				UserInfo info = new UserInfo(userMap.getSubMap(name));
 				userInfo.put(new SUID(SuidUtils.parseSuid(name.trim())), info);

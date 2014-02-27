@@ -106,7 +106,7 @@ public class PlayerController extends FPCamera {
 			Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
 		}
 		Mouse.setGrabbed(!paused);
-		
+
 		vc4.api.input.Keyboard keys = Input.getClientKeyboard();
 
 		double divisor = 50;
@@ -120,36 +120,36 @@ public class PlayerController extends FPCamera {
 		// we times the movementSpeed with dt this is a time scale
 		// so if its a slow frame u move more then a fast frame
 		// so on a slow computer you move just as fast as on a fast computer
-		if (keys.isKeyDown(Key.W)){
+		if (keys.isKeyDown(Key.W)) {
 			forward += delta / divisor;
 			walkTime += delta;
-			if(timeSinceForward < 200){
+			if (timeSinceForward < 200) {
 				player.setMovement(MovementStyle.SPRINT);
 			}
-		}
-		else if(keys.keyReleased(Key.W)){
-			if(walkTime < 200) timeSinceForward = 0;
+		} else if (keys.keyReleased(Key.W)) {
+			if (walkTime < 200) timeSinceForward = 0;
 			walkTime = 0;
 			if (!keys.isKeyDown(Key.LSHIFT)) player.setMovement(MovementStyle.WALK);
 		}
-		if(keys.keyPressed(Key.N)){
+		if (keys.keyPressed(Key.N)) {
 			player.setFlying(player.getFlying().next());
 		}
-		
+
 		if (keys.isKeyDown(Key.S)) forward -= delta / divisor;
 		if (keys.isKeyDown(Key.A)) sideways -= delta / divisor;
 		if (keys.isKeyDown(Key.D)) sideways += delta / divisor;
-		if (keys.isKeyDown(Key.SPACE)){
+		if (keys.isKeyDown(Key.SPACE)) {
 			player.jump();
-			if(spe) for(int d = 0; d < 4; ++d) player.jump();
+			if (spe) for (int d = 0; d < 4; ++d)
+				player.jump();
 		}
-		if (keys.isKeyDown(Key.LSHIFT)){
+		if (keys.isKeyDown(Key.LSHIFT)) {
 			player.sneak();
-			if(spe) for(int d = 0; d < 4; ++d) player.sneak();
-		}
-		else if(keys.keyReleased(Key.LSHIFT) && player.getMovement() == MovementStyle.SNEAK) player.setMovement(MovementStyle.WALK);
+			if (spe) for (int d = 0; d < 4; ++d)
+				player.sneak();
+		} else if (keys.keyReleased(Key.LSHIFT) && player.getMovement() == MovementStyle.SNEAK) player.setMovement(MovementStyle.WALK);
 		player.walk(forward, sideways);
-		if(timeSinceForward < 1000) timeSinceForward += delta;
+		if (timeSinceForward < 1000) timeSinceForward += delta;
 	}
 
 	@Override

@@ -22,9 +22,9 @@ public class TextSettingsPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -7522149954435101073L;
-	
+
 	private JTextArea text;
-	
+
 	public TextSettingsPanel(final URL url) {
 		text = new JTextArea();
 		text.setEditable(false);
@@ -34,7 +34,7 @@ public class TextSettingsPanel extends JPanel {
 		setLayout(new BorderLayout());
 		add(new JScrollPane(text));
 		Task task = new Task() {
-			
+
 			@Override
 			public void run(Progress progress) {
 				progress.setText("Opening text file");
@@ -42,17 +42,17 @@ public class TextSettingsPanel extends JPanel {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 					final StringBuilder builder = new StringBuilder();
 					String s = null;
-					while((s = reader.readLine()) != null){
+					while ((s = reader.readLine()) != null) {
 						builder.append(s).append("\n");
 					}
 					progress.setPercent(50);
 					progress.setText("Updating Gui");
 					Runnable run = new Runnable() {
-						
+
 						@Override
 						public void run() {
 							text.setText(builder.toString());
-							
+
 						}
 					};
 					progress.setPercent(100);
@@ -61,7 +61,7 @@ public class TextSettingsPanel extends JPanel {
 				} catch (IOException e) {
 				}
 			}
-			
+
 			@Override
 			public boolean canRun() {
 				return true;

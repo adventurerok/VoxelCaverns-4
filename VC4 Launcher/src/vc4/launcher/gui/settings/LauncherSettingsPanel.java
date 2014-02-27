@@ -9,11 +9,10 @@ public class LauncherSettingsPanel extends JPanel {
 	public LauncherSettingsPanel() {
 		setLayout(new GridLayout(0, 2, 0, 0));
 		setPreferredSize(new Dimension(300, 50));
-		
-		
-//		JComboBox<UpdateStreamType> comboBox = new JComboBox<>();
-//		comboBox.setModel(new DefaultComboBoxModel<UpdateStreamType>(UpdateStreamType.values()));
-//		add(comboBox);
+
+		// JComboBox<UpdateStreamType> comboBox = new JComboBox<>();
+		// comboBox.setModel(new DefaultComboBoxModel<UpdateStreamType>(UpdateStreamType.values()));
+		// add(comboBox);
 	}
 
 	/**

@@ -75,9 +75,8 @@ public class Game extends Component implements ClientGame {
 	private ClientResources resources;
 	private long previousTenTicks = 0;
 	private Fustrum fustrum = new Fustrum();
-	
+
 	private boolean showGui = true;
-	
 
 	/**
 	 * @return the paused
@@ -86,14 +85,14 @@ public class Game extends Component implements ClientGame {
 	public boolean isPaused() {
 		return player.isPaused();
 	}
-	
+
 	@Override
-	public void addCursor(Cursor cursor){
+	public void addCursor(Cursor cursor) {
 		cursors.put(cursor.getName(), cursor);
 	}
-	
+
 	@Override
-	public Cursor getCursor(String name){
+	public Cursor getCursor(String name) {
 		return cursors.get(name);
 	}
 
@@ -122,12 +121,12 @@ public class Game extends Component implements ClientGame {
 
 	private ImplWorld world;
 	private FPCamera camera;
-	
+
 	private Cursor cursor;
 	private Server server;
 
 	ChatBox chatBox;
-	
+
 	@Override
 	public Component getHoveringComponent() {
 		return _currentc;
@@ -137,7 +136,7 @@ public class Game extends Component implements ClientGame {
 	public World getWorld() {
 		return world;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -145,7 +144,7 @@ public class Game extends Component implements ClientGame {
 		Client.setGame(this);
 		this.window = window;
 	}
-	
+
 	public void setCursor(Cursor cursor) {
 		this.cursor = cursor;
 	}
@@ -166,16 +165,16 @@ public class Game extends Component implements ClientGame {
 			getWindow().enterRenderMode(RenderType.GAME);
 			calculateFustrum();
 			camera.rotate();
-			if(gameState == GameState.SINGLEPLAYER) world.drawBackground(player);
+			if (gameState == GameState.SINGLEPLAYER) world.drawBackground(player);
 			camera.translate();
 			world.draw(camera.getPosition());
-			if(gameState == GameState.SINGLEPLAYER) player.drawCube();
+			if (gameState == GameState.SINGLEPLAYER) player.drawCube();
 		}
 		gl.disable(GLFlag.DEPTH_TEST);
 		getWindow().enterRenderMode(RenderType.GUI);
-		if(gameState == GameState.SINGLEPLAYER){
+		if (gameState == GameState.SINGLEPLAYER) {
 			Vector3l pos = player.getEyePos().toVector3l();
-			if(world.getBlockType(pos.x, pos.y, pos.z) instanceof BlockFluid){
+			if (world.getBlockType(pos.x, pos.y, pos.z) instanceof BlockFluid) {
 				Color col = world.getBlockType(pos.x, pos.y, pos.z).getColor(world, pos.x, pos.y, pos.z, 4);
 				gl.begin(GLPrimative.QUADS);
 				gl.color(col.getRed() / 255f, col.getGreen() / 255f, col.getBlue() / 255f, col.getAlpha() / 255f);
@@ -204,8 +203,8 @@ public class Game extends Component implements ClientGame {
 			gl.vertex(w, h + 128);
 			gl.end();
 		}
-		if(showGui) super.draw();
-		if(showGui && !Mouse.isGrabbed()){
+		if (showGui) super.draw();
+		if (showGui && !Mouse.isGrabbed()) {
 			Color col = Color.green;
 			Graphics.getClientShaderManager().bindShader("texture");
 			Resources.getAnimatedTexture("cursor").bind();
@@ -228,23 +227,22 @@ public class Game extends Component implements ClientGame {
 			Graphics.getClientShaderManager().unbindShader();
 		}
 	}
-	
-	public Vector3f getClearColor(){
-		if(gameState == GameState.SINGLEPLAYER){
+
+	public Vector3f getClearColor() {
+		if (gameState == GameState.SINGLEPLAYER) {
 			float sky = world.getSkyLight();
 			Biome b = world.getBiome(MathUtils.floor(player.position.x), MathUtils.floor(player.position.z));
-			if(b == null) return new Vector3f(0, 0, 0);
-			if(sky < 0.0001f) return new Vector3f(b.nightColor);
-			if(sky > 0.9999f) return new Vector3f(b.dayColor);
-			if(sky == 0.5f) return new Vector3f(b.dawnColor);
-			if(sky < 0.5f){
+			if (b == null) return new Vector3f(0, 0, 0);
+			if (sky < 0.0001f) return new Vector3f(b.nightColor);
+			if (sky > 0.9999f) return new Vector3f(b.dayColor);
+			if (sky == 0.5f) return new Vector3f(b.dawnColor);
+			if (sky < 0.5f) {
 				return new Vector3f(ColorUtils.differColors(b.nightColor, b.dawnColor, sky * 2));
 			} else {
 				return new Vector3f(ColorUtils.differColors(b.dawnColor, b.dayColor, (sky * 2) - 1));
 			}
 		} else return new Vector3f(0.4f, 0.8f, 1f);
 	}
-	
 
 	/*
 	 * (non-Javadoc)
@@ -287,7 +285,7 @@ public class Game extends Component implements ClientGame {
 			if (_currentc != null) _currentc.fireMouseEvent("clicked", 0, x, y);
 		}
 		if (mouseSet.buttonPressed(1)) {
-			if (_currentc != null){
+			if (_currentc != null) {
 				_currentc.bringToFront();
 				_currentc.fireMouseEvent("pressed", 1, x, y);
 			}
@@ -306,7 +304,7 @@ public class Game extends Component implements ClientGame {
 			String oldArea = player.getArea();
 			player.setArea("{l:area.wilderness}");
 			SoundManager.setListener(player);
-			if(!textFocus){
+			if (!textFocus) {
 				if (Input.getClientKeyboard().keyPressed(Key.ESCAPE)) setPaused(!isPaused());
 				camera.handleInput(delta);
 			}
@@ -316,40 +314,40 @@ public class Game extends Component implements ClientGame {
 				if (mouseSet.getCurrent().leftButtonPressed()) player.leftMouseDown(delta);
 				if (mouseSet.getCurrent().rightButtomPressed()) player.rightMouseDown(delta);
 			}
-			if(!textFocus) player.updateInput();
+			if (!textFocus) player.updateInput();
 			world.update(delta, camera.getPosition());
 			Audio.playMusic(world.getMusic(player));
-			if(!textFocus){
+			if (!textFocus) {
 				Keyboard keys = Input.getClientKeyboard();
-				if(keys.keyPressed(Key.C)) ingameGui.toggleVisibility("crafting");
-				if(keys.keyPressed(Key.X)) ingameGui.toggleVisibility("armour");
-				if(keys.keyPressed(Key.Z)) ingameGui.toggleVisibility("game");
+				if (keys.keyPressed(Key.C)) ingameGui.toggleVisibility("crafting");
+				if (keys.keyPressed(Key.X)) ingameGui.toggleVisibility("armour");
+				if (keys.keyPressed(Key.Z)) ingameGui.toggleVisibility("game");
 			}
-			if(oldTime != world.getTime() && oldArea != player.getArea()){
+			if (oldTime != world.getTime() && oldArea != player.getArea()) {
 				printChatLine("{l:area.enter} " + player.getArea());
 			}
 		}
-		if(!textFocus){
-			if(Input.getClientKeyboard().keyPressed(Key.F6)){
+		if (!textFocus) {
+			if (Input.getClientKeyboard().keyPressed(Key.F6)) {
 				JOptionPane.showMessageDialog(null, "Hovering: " + _currentc.toString());
 			}
 			if (Input.getClientKeyboard().keyReleased(Key.F2)) {
 				takeScreenshot();
 			}
-			if(gameState == GameState.SINGLEPLAYER && Input.getClientKeyboard().isKeyDown(Key.F7)){
+			if (gameState == GameState.SINGLEPLAYER && Input.getClientKeyboard().isKeyDown(Key.F7)) {
 				long amt = 20;
-				if(Input.getClientKeyboard().isKeyDown(Key.CONTROL)) amt *= -1;
-				if(Input.getClientKeyboard().isKeyDown(Key.BACKSLASH)) amt *= 5;
+				if (Input.getClientKeyboard().isKeyDown(Key.CONTROL)) amt *= -1;
+				if (Input.getClientKeyboard().isKeyDown(Key.BACKSLASH)) amt *= 5;
 				world.addTime(amt);
 			}
-			if(Input.getClientKeyboard().keyPressed(Key.F1)) showGui ^= true;
-			if(Input.getClientKeyboard().keyPressed(Key.RETURN)) ingameGui.setChatFocus();
+			if (Input.getClientKeyboard().keyPressed(Key.F1)) showGui ^= true;
+			if (Input.getClientKeyboard().keyPressed(Key.RETURN)) ingameGui.setChatFocus();
 		}
 		long time = System.nanoTime() - _lastFrame;
 		_lastFrame = System.nanoTime();
 		if (time > 0) delta = time / 1000000D;
 	}
-	
+
 	@Override
 	public boolean guiVisible() {
 		return showGui;
@@ -447,7 +445,7 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void unload() {
-		if(world != null && server == null) {
+		if (world != null && server == null) {
 			world.savePlayer(player);
 			world.unload();
 		}
@@ -540,7 +538,7 @@ public class Game extends Component implements ClientGame {
 				GameState n = GameState.valueOf(where.toUpperCase());
 				if (n == null) return;
 				gameState = n;
-				if(n == GameState.SINGLEPLAYER){
+				if (n == GameState.SINGLEPLAYER) {
 					world = new ImplWorld("World");
 					world.loadWorld();
 					try {
@@ -555,7 +553,7 @@ public class Game extends Component implements ClientGame {
 			} catch (Exception e) {
 				return;
 			}
-		} else if(action.startsWith("connect:")){
+		} else if (action.startsWith("connect:")) {
 			gameState = GameState.MULTIPLAYER;
 			String ip = action.substring(8);
 			try {
@@ -886,9 +884,9 @@ public class Game extends Component implements ClientGame {
 	public ColorScheme getCurrentColorScheme() {
 		return getColorScheme(getColorSchemeSetting().getString());
 	}
-	
+
 	@Override
-	public CompoundTag getClientDetails(){
+	public CompoundTag getClientDetails() {
 		CompoundTag tag = new CompoundTag("client");
 		tag.setString("version", Version.VERSION);
 		tag.setString("name", "VC4 Server Debug/Testing Client");
@@ -896,8 +894,8 @@ public class Game extends Component implements ClientGame {
 		tag.setString("java", System.getProperty("java.version"));
 		tag.setString("zone", Calendar.getInstance().getTimeZone().getID());
 		tag.setInt("dst", Calendar.getInstance().getTimeZone().getDSTSavings());
-		//tag.setString("region", System.getProperty("user.region"));
-		//tag.setString("lang", System.getProperty("user.language"));
+		// tag.setString("region", System.getProperty("user.region"));
+		// tag.setString("lang", System.getProperty("user.language"));
 		tag.setString("os", OS.getOs().name());
 		return tag;
 	}

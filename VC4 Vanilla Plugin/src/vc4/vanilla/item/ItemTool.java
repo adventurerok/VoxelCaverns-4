@@ -14,7 +14,6 @@ public class ItemTool extends ItemMultitexture {
 	Color handle;
 	Color metal;
 
-
 	public ItemTool(int id, ToolType type, ToolMaterial material) {
 		super(id);
 		maxStack = 1;
@@ -67,7 +66,7 @@ public class ItemTool extends ItemMultitexture {
 	public Color getMultitextureColor(ItemStack item) {
 		return metal;
 	}
-	
+
 	@Override
 	public String getModifiedItemName(ItemStack stack) {
 		return tool.getType().getName() + "." + tool.getMaterial().getName();

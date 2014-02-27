@@ -8,10 +8,7 @@ public class ClientCursor implements Cursor {
 
 	float x, y;
 	String name;
-	
-	
-	
-	
+
 	public ClientCursor(String name, float x, float y) {
 		super();
 		this.name = name;
@@ -56,7 +53,7 @@ public class ClientCursor implements Cursor {
 
 	@Override
 	public void bind() {
-		((Game)Window.getClientWindow().getGame()).setCursor(this);
+		((Game) Window.getClientWindow().getGame()).setCursor(this);
 	}
 
 }

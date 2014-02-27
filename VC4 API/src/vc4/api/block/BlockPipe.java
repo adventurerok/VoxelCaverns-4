@@ -19,5 +19,4 @@ public class BlockPipe extends Block implements IBlockJoinable {
 		return 0.3125F;
 	}
 
-
 }

@@ -14,8 +14,8 @@ import vc4.vanilla.generation.dungeon.RoomBB;
 public class DungeonRoomLibrary extends DungeonRoom {
 
 	private static ArrayList<Adjustment> shelves = new ArrayList<>();
-	
-	static{
+
+	static {
 		genShelveRow(1, -4);
 		genShelveRow(3, -4);
 		genShelveRow(8, -4);
@@ -31,43 +31,43 @@ public class DungeonRoomLibrary extends DungeonRoom {
 		genShelvesForward(2, 5);
 		genShelvesForward(7, 5);
 	}
-	
-	private static void genShelveRow(long forward, long sideways){
+
+	private static void genShelveRow(long forward, long sideways) {
 		shelves.add(new Adjustment(forward, sideways, 0));
 		shelves.add(new Adjustment(forward, sideways + 1, 0));
 		shelves.add(new Adjustment(forward, sideways + 2, 0));
 		shelves.add(new Adjustment(forward, sideways + 3, 0));
 	}
-	
-	private static void genShelvesForward(long forward, long sideways){
+
+	private static void genShelvesForward(long forward, long sideways) {
 		shelves.add(new Adjustment(forward, sideways, 0));
 		shelves.add(new Adjustment(forward + 1, sideways, 0));
 		shelves.add(new Adjustment(forward + 2, sideways, 0));
 	}
-	
+
 	@Override
 	public Collection<Door> generate(World world, Door door, Dungeon dungeon) {
 		ArrayList<Door> result = new ArrayList<>();
 		Vector3l start = door.left;
 		start = start.move(5, door.dir.counterClockwise());
-		if(!dungeon.inBounds(start)) return result;
+		if (!dungeon.inBounds(start)) return result;
 		Vector3l end = door.right;
 		end = end.move(5, door.dir.clockwise());
 		end = end.move(11, door.dir);
-		if(!dungeon.inBounds(end)) return result;
+		if (!dungeon.inBounds(end)) return result;
 		long sx = Math.min(start.x, end.x);
 		long sz = Math.min(start.z, end.z);
 		long ex = Math.max(start.x, end.x);
 		long ez = Math.max(start.z, end.z);
 		RoomBB bb = new RoomBB(sx + 1, start.y, sz + 1, ex - 1, start.y + 3, ez - 1);
-		if(!dungeon.addRoom(bb)) return result;
-		for(long x = sx; x <= ex; ++x){
-			for(long z = sz; z <= ez; ++z){
-				for(long y = start.y - 1; y < start.y + 5; ++y){
-					if(y == start.y - 1 || y == start.y + 4){
+		if (!dungeon.addRoom(bb)) return result;
+		for (long x = sx; x <= ex; ++x) {
+			for (long z = sz; z <= ez; ++z) {
+				for (long y = start.y - 1; y < start.y + 5; ++y) {
+					if (y == start.y - 1 || y == start.y + 4) {
 						dungeon.setDungeonBlock(x, y, z);
-					} else if(x == sx || x == ex || z == sz || z == ez){
-						if((x == sx + 5 || x == sx + 6 || z == sz + 5 || z == sz + 6 ) && y < start.y + 2 && y > start.y - 1){
+					} else if (x == sx || x == ex || z == sz || z == ez) {
+						if ((x == sx + 5 || x == sx + 6 || z == sz + 5 || z == sz + 6) && y < start.y + 2 && y > start.y - 1) {
 							dungeon.setEmptyBlock(x, y, z);
 							continue;
 						}
@@ -77,14 +77,13 @@ public class DungeonRoomLibrary extends DungeonRoom {
 			}
 		}
 		byte bookshelfData = (byte) dungeon.getRand().nextInt(7);
-		for(Adjustment j : shelves){
+		for (Adjustment j : shelves) {
 			Vector3l pos = j.adjust(door.left, door.dir);
-			for(int ny = 0; ny < 4; ++ny){
-				//if(world.getBlockId(pos.x, pos.y + ny, pos.z) == 0) continue;
-				if(ny < 3){
+			for (int ny = 0; ny < 4; ++ny) {
+				// if(world.getBlockId(pos.x, pos.y + ny, pos.z) == 0) continue;
+				if (ny < 3) {
 					world.setBlockIdData(pos.x, pos.y + ny, pos.z, dungeon.getRand().nextInt(75) == 0 ? Vanilla.bookshelfEnchanted.uid : Vanilla.bookshelf.uid, bookshelfData);
-				}
-				else world.setBlockIdData(pos.x, pos.y + ny, pos.z, Vanilla.planks.uid, bookshelfData);
+				} else world.setBlockIdData(pos.x, pos.y + ny, pos.z, Vanilla.planks.uid, bookshelfData);
 			}
 		}
 		result.add(door.clone().setNewRoomDir(door.dir.opposite()));

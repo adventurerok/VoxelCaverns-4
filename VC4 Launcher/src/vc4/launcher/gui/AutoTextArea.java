@@ -8,7 +8,7 @@ public class AutoTextArea extends JTextArea {
 	 * 
 	 */
 	private static final long serialVersionUID = -6956598734412974461L;
-	
+
 	private int length = 0;
 
 	public AutoTextArea() {
@@ -28,13 +28,13 @@ public class AutoTextArea extends JTextArea {
 		super(text);
 		this.length += text.length();
 	}
-	
+
 	@Override
 	public void setText(String t) {
 		super.setText(t);
 		this.length = t.length();
 	}
-	
+
 	@Override
 	public void append(String str) {
 		super.append(str);

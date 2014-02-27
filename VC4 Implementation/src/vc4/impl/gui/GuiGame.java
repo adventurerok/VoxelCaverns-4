@@ -21,7 +21,7 @@ public class GuiGame extends Gui {
 	public Vector2i getDefaultSize() {
 		return new Vector2i(2 * SIDES_WIDTH + 480, TOP_WIDTH + SIDES_WIDTH + 360);
 	}
-	
+
 	@Override
 	public Rectangle getDefaultBounds() {
 		return new Rectangle(100, 100, 480, 360);

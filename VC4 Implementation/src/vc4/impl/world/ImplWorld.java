@@ -113,7 +113,7 @@ public class ImplWorld implements World {
 
 	private ZoomGenerator biomeLookup;
 	private boolean multiplayer = false;
-	
+
 	private ConcurrentLinkedDeque<ImplChunk> chunksToAdd = new ConcurrentLinkedDeque<>();
 
 	/**
@@ -122,7 +122,7 @@ public class ImplWorld implements World {
 	public ImplWorld(String saveName) {
 		this.saveName = saveName;
 	}
-	
+
 	public ImplWorld(boolean server) {
 		multiplayer = server;
 	}
@@ -266,9 +266,9 @@ public class ImplWorld implements World {
 	public void removePlayer(EntityPlayer player) {
 		players.remove(player);
 	}
-	
-	public void addChunk(Chunk chunk){
-		chunksToAdd.add((ImplChunk)chunk);
+
+	public void addChunk(Chunk chunk) {
+		chunksToAdd.add((ImplChunk) chunk);
 	}
 
 	public void draw(Vector3d pos) {
@@ -314,7 +314,7 @@ public class ImplWorld implements World {
 			if (toCompile.size() <= d) continue;
 			BlockStoreDist ds = toCompile.get(d);
 			ds.s.compileRenderData();
-			//render.add(ds);
+			// render.add(ds);
 		}
 		ArrayList<BlockStoreDist> tRender = new ArrayList<>();
 		Fustrum fust = Client.getGame().getViewFustrum();
@@ -329,13 +329,13 @@ public class ImplWorld implements World {
 		render = tRender;
 		Collections.sort(render);
 		for (BlockStoreDist d : render) {
-			if(d.s.oldData[0] != null && d.s.oldData[0].isCompiled()) d.s.oldData[0].render();
-			else if(d.s.currentData[0] != null && d.s.currentData[0].isCompiled()) d.s.currentData[0].render();
+			if (d.s.oldData[0] != null && d.s.oldData[0].isCompiled()) d.s.oldData[0].render();
+			else if (d.s.currentData[0] != null && d.s.currentData[0].isCompiled()) d.s.currentData[0].render();
 		}
 		gl.disable(GLFlag.CULL_FACE);
 		for (BlockStoreDist d : render) {
-			if(d.s.oldData[1] != null && d.s.oldData[1].isCompiled()) d.s.oldData[1].render();
-			else if(d.s.currentData[1] != null && d.s.currentData[1].isCompiled()) d.s.currentData[1].render();
+			if (d.s.oldData[1] != null && d.s.oldData[1].isCompiled()) d.s.oldData[1].render();
+			else if (d.s.currentData[1] != null && d.s.currentData[1].isCompiled()) d.s.currentData[1].render();
 		}
 		gl.disableVertexAttribArray(6);
 		for (ImplChunk c : chunks.values()) {
@@ -352,8 +352,8 @@ public class ImplWorld implements World {
 		gl.depthFunc(GLCompareFunc.LEQUAL);
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, Resources.getAnimatedTexture("blocks").getTexture());
 		for (BlockStoreDist d : render) {
-			if(d.s.oldData[2] != null && d.s.oldData[2].isCompiled()) d.s.oldData[2].render();
-			else if(d.s.currentData[2] != null && d.s.currentData[2].isCompiled()) d.s.currentData[2].render();
+			if (d.s.oldData[2] != null && d.s.oldData[2].isCompiled()) d.s.oldData[2].render();
+			else if (d.s.currentData[2] != null && d.s.currentData[2].isCompiled()) d.s.currentData[2].render();
 		}
 		gl.disableVertexAttribArray(6);
 		gl.disable(GLFlag.CULL_FACE);
@@ -456,7 +456,7 @@ public class ImplWorld implements World {
 
 	@Override
 	public AABB[] getAABBsInBounds(Chunk chunk, AABB bounds, Entity exclude) {
-		if(chunk == null) return getAABBsInBounds(bounds, exclude);
+		if (chunk == null) return getAABBsInBounds(bounds, exclude);
 		List<AABB> list = getBlockCollisionInBounds(bounds);
 		if (list == null) list = new ArrayList<AABB>();
 		List<Entity> entities = getEntitiesInBoundsExcluding(chunk, bounds, exclude);
@@ -469,7 +469,7 @@ public class ImplWorld implements World {
 			list.remove(null);
 		return list.toArray(new AABB[list.size()]);
 	}
-	
+
 	@Override
 	public AABB[] getAABBsInBounds(AABB bounds, Entity exclude) {
 		List<AABB> list = getBlockCollisionInBounds(bounds);
@@ -578,7 +578,7 @@ public class ImplWorld implements World {
 	@Override
 	public List<Entity> getEntitiesInBoundsExcluding(Chunk chunk, AABB bounds, Entity exclude) {
 		if (bounds == null) return null;
-		if(chunk == null) return getEntitiesInBoundsExcluding(bounds, exclude);
+		if (chunk == null) return getEntitiesInBoundsExcluding(bounds, exclude);
 		List<Entity> list = new ArrayList<>();
 		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
 		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
@@ -591,7 +591,7 @@ public class ImplWorld implements World {
 		for (x = minX; x <= maxX; ++x) {
 			for (y = minY; y <= maxY; ++y) {
 				for (z = minZ; z <= maxZ; ++z) {
-					if(x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					if (x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
 					else c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
@@ -607,7 +607,7 @@ public class ImplWorld implements World {
 
 		return list;
 	}
-	
+
 	@Override
 	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
 		if (bounds == null) return null;
@@ -675,7 +675,7 @@ public class ImplWorld implements World {
 	public List<Entity> getEntitiesInBounds(Chunk chunk, AABB bounds) {
 		if (bounds == null) return null;
 
-		if(chunk == null) return getEntitiesInBounds(bounds);
+		if (chunk == null) return getEntitiesInBounds(bounds);
 		List<Entity> list = new ArrayList<>();
 		long minX = MathUtils.floor(bounds.minX - 1d) >> 5;
 		long minY = MathUtils.floor(bounds.minY - 1d) >> 5;
@@ -690,7 +690,7 @@ public class ImplWorld implements World {
 		for (long x = minX; x <= maxX; ++x) {
 			for (y = minY; y <= maxY; ++y) {
 				for (z = minZ; z <= maxZ; ++z) {
-					if(x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					if (x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
 					else c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
@@ -706,7 +706,7 @@ public class ImplWorld implements World {
 
 		return list;
 	}
-	
+
 	@Override
 	public List<Entity> getEntitiesInBounds(AABB bounds) {
 		if (bounds == null) return null;
@@ -863,7 +863,7 @@ public class ImplWorld implements World {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void infiniteWorld(Vector3d...loc) {
+	public void infiniteWorld(Vector3d... loc) {
 		Profiler.start("generation");
 		Profiler.start("remove");
 		ArrayList<ImplChunk> toRemove = new ArrayList<>();
@@ -873,12 +873,13 @@ public class ImplWorld implements World {
 		boolean unload = true;
 		for (ImplChunk c : chunks.values()) {
 			unload = true;
-			for(li = 0; li < loc.length; ++li){
+			for (li = 0; li < loc.length; ++li) {
 				if (c.distanceSquared(loc[li]) <= RENDER_DISTANCE_SQUARED) {
 					unload = false;
+					break;
 				}
 			}
-			if(unload) {
+			if (unload) {
 				c.setUnloading(true);
 				c.removeGraphics();
 				toRemove.add(c);
@@ -887,55 +888,64 @@ public class ImplWorld implements World {
 			}
 		}
 		chunks.values().removeAll(toRemove);
-		Profiler.stopStart("load");
 		ImplChunk cnk;
-		ImplMapData dta;
-		GeneratorThread.locations = Arrays.copyOf(loc, loc.length);
-		for (int d = 0; d < genThreads.length; ++d) {
-			while ((dta = genThreads[d].newData.poll()) != null) {
-				if (heights.get(dta.getPosition()) != null) continue;
-				heights.put(dta.getPosition(), dta);
+		if (!multiplayer) {
+			Profiler.stopStart("load");
+			ImplMapData dta;
+			GeneratorThread.locations = Arrays.copyOf(loc, loc.length);
+			for (int d = 0; d < genThreads.length; ++d) {
+				while ((dta = genThreads[d].newData.poll()) != null) {
+					if (heights.get(dta.getPosition()) != null) continue;
+					heights.put(dta.getPosition(), dta);
+				}
+			}
+			for (int d = 0; d < genThreads.length; ++d) {
+				while ((cnk = genThreads[d].generated.poll()) != null) {
+					if (chunks.get(cnk.pos) != null) continue;
+					chunks.put(cnk.pos, cnk);
+				}
 			}
 		}
-		for (int d = 0; d < genThreads.length; ++d) {
-			while ((cnk = genThreads[d].generated.poll()) != null) {
-				if (chunks.get(cnk.pos) != null) continue;
-				chunks.put(cnk.pos, cnk);
-			}
-		}
-		while((cnk = chunksToAdd.poll()) != null){
+		while ((cnk = chunksToAdd.poll()) != null) {
 			if (chunks.get(cnk.pos) != null) continue;
 			chunks.put(cnk.pos, cnk);
 		}
-		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
-		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
+		if (!multiplayer) {
+			GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
+			GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
+		}
 		Profiler.stopStart("killmapdata");
 		ArrayList<MapData> deadData = new ArrayList<>();
 		for (ImplMapData d : heights.values()) {
 			unload = true;
-			for(li = 0; li < loc.length; ++li){
-				if (d.distanceSquared(loc[li]) <= RENDER_RANGE_SQUARED) unload = false;
+			for (li = 0; li < loc.length; ++li) {
+				if (d.distanceSquared(loc[li]) <= RENDER_RANGE_SQUARED) {
+					unload = false;
+					break;
+				}
 			}
-			if(unload){
+			if (unload) {
 				deadData.add(d);
 			}
 		}
 		heights.values().removeAll(deadData);
-		Profiler.stopStart("populate");
-		for (ImplChunk c : chunks.values()) {
-			if (!c.isPopulated() && c.isSurrounded()) {
-				toPopulate.add(c);
+		if (!multiplayer) {
+			Profiler.stopStart("populate");
+			for (ImplChunk c : chunks.values()) {
+				if (!c.isPopulated() && c.isSurrounded()) {
+					toPopulate.add(c);
+				}
 			}
-		}
-		Collections.sort(toPopulate, new ComparatorClosestChunk(loc));
-		for (int d = 0; d < 4; ++d) {
-			if (toPopulate.size() <= d) break;
-			ChunkPos pop = toPopulate.get(d).pos;
-			boolean plt = populate(pop.x, pop.y, pop.z);
-			if (plt) {
-				saveChunk(toPopulate.get(d));
+			Collections.sort(toPopulate, new ComparatorClosestChunk(loc));
+			for (int d = 0; d < 4; ++d) {
+				if (toPopulate.size() <= d) break;
+				ChunkPos pop = toPopulate.get(d).pos;
+				boolean plt = populate(pop.x, pop.y, pop.z);
+				if (plt) {
+					saveChunk(toPopulate.get(d));
+				}
+				toPopulate.get(d).setPopulated(plt);
 			}
-			toPopulate.get(d).setPopulated(plt);
 		}
 		Profiler.stopStart("light");
 		for (ImplChunk c : chunks.values()) {
@@ -1311,7 +1321,7 @@ public class ImplWorld implements World {
 
 	}
 
-	public void update(double delta, Vector3d...loc) {
+	public void update(double delta, Vector3d... loc) {
 		tickTime += delta;
 		int amt = 0;
 		while (tickTime >= WORLD_SECOND && amt < 2) {
@@ -1326,9 +1336,10 @@ public class ImplWorld implements World {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void updateTick(Vector3d...loc) {
+	public void updateTick(Vector3d... loc) {
 		skyLight = calculateSkyLight();
-		if(multiplayer) return;
+		infiniteWorld(loc);
+		if (multiplayer) return;
 		SpawnControl.updateTick(this);
 		for (EntityPlayer plr : players) {
 			plr.addTickSinceUpdate();
@@ -1340,7 +1351,6 @@ public class ImplWorld implements World {
 			}
 		}
 		Profiler.clear();
-		infiniteWorld(loc);
 		Profiler.start("update");
 		Random rand = new XORShiftRandom(System.nanoTime());
 		HashMap<ChunkPos, ImplChunk> cnk = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
@@ -1652,7 +1662,7 @@ public class ImplWorld implements World {
 
 	@Override
 	public Chunk loadChunk(ChunkPos pos) {
-		if(chunks.containsKey(pos)) return chunks.get(pos);
+		if (chunks.containsKey(pos)) return chunks.get(pos);
 		ImplChunk c = null;
 		try {
 			c = (ImplChunk) getSaveFormat().readChunk(this, pos.x, pos.y, pos.z);
@@ -1711,7 +1721,7 @@ public class ImplWorld implements World {
 	@Override
 	public List<Entity> getCollidableEntitiesInBounds(Chunk chunk, AABB bounds) {
 		if (bounds == null) return null;
-		if(chunk == null) return getCollidableEntitiesInBounds(bounds);
+		if (chunk == null) return getCollidableEntitiesInBounds(bounds);
 		List<Entity> list = new ArrayList<>();
 		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
 		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
@@ -1726,7 +1736,7 @@ public class ImplWorld implements World {
 		for (long x = minX; x <= maxX; ++x) {
 			for (y = minY; y <= maxY; ++y) {
 				for (z = minZ; z <= maxZ; ++z) {
-					if(x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					if (x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
 					else c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
@@ -1742,7 +1752,7 @@ public class ImplWorld implements World {
 
 		return list;
 	}
-	
+
 	@Override
 	public List<Entity> getCollidableEntitiesInBounds(AABB bounds) {
 		if (bounds == null) return null;

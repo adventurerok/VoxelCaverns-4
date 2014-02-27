@@ -11,25 +11,23 @@ public class OpenContainer {
 	public Vector3l pos;
 	public TileEntityContainer entity;
 	public boolean valid = true;
-	
+
 	public OpenContainer(World world, Vector3l pos) {
 		this.pos = pos;
 		TileEntity e = world.getTileEntity(pos.x, pos.y, pos.z);
-		if(e == null || !(e instanceof TileEntityContainer)){
+		if (e == null || !(e instanceof TileEntityContainer)) {
 			valid = false;
 			return;
 		}
 		entity = (TileEntityContainer) e;
-		
+
 	}
-	
-	public OpenContainer(TileEntityContainer c){
+
+	public OpenContainer(TileEntityContainer c) {
 		entity = c;
 		pos = c.position;
 	}
-	
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -50,23 +48,23 @@ public class OpenContainer {
 		return true;
 	}
 
-	public boolean update(Entity player){
-		if(!valid) return false;
+	public boolean update(Entity player) {
+		if (!valid) return false;
 		World world = player.getWorld();
-		if(entity == null || world.getTileEntity(pos.x, pos.y, pos.z) != entity) return valid = false;
+		if (entity == null || world.getTileEntity(pos.x, pos.y, pos.z) != entity) return valid = false;
 		Vector3l p = player.getBlockPos();
-		if(p.distanceSquared(pos) > 49) return valid = false;
+		if (p.distanceSquared(pos) > 49) return valid = false;
 		return true;
 	}
-	
+
 	public TileEntity getEntity() {
 		return entity;
 	}
-	
+
 	public Vector3l getPos() {
 		return pos;
 	}
-	
+
 	public boolean isValid() {
 		return valid;
 	}

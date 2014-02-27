@@ -21,13 +21,11 @@ public class ItemSpawnWand extends Item {
 		super(id);
 		textureIndex = ItemTexture.toolHandle;
 	}
-	
-	
-	
+
 	@Override
 	public void onRightClick(EntityPlayer player, ItemStack item) {
-		if(player.getRays() == null || player.getRays().isEntity) return;
-		if(player.getCoolDown() > 0.01) return;
+		if (player.getRays() == null || player.getRays().isEntity) return;
+		if (player.getCoolDown() > 0.01) return;
 		Vector3d pos = player.getRays().getBlockPos().move(1, Direction.getDirection(player.getRays().side)).toVector3d().add(0.5, 1.5, 0.5);
 		Constructor<? extends Entity> cons = Entity.getEntityType(player.getWorld().getEntityName(item.getDamage()));
 		try {
@@ -39,12 +37,11 @@ public class ItemSpawnWand extends Item {
 		}
 		player.setCoolDown(150);
 	}
-	
-	
+
 	@Override
 	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> res = new ArrayList<>();
-		for(String s : Entity.getEntityNames()){
+		for (String s : Entity.getEntityNames()) {
 			int dmg = VoxelCaverns.getCurrentWorld().getRegisteredEntity(s);
 			res.add(new ItemStack(id, dmg, 1));
 		}

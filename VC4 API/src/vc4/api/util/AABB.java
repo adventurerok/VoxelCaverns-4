@@ -4,9 +4,7 @@ import java.util.List;
 
 import vc4.api.vector.Vector3d;
 
-
 public class AABB {
-
 
 	public double minX;
 	public double minY;
@@ -15,25 +13,20 @@ public class AABB {
 	public double maxY;
 	public double maxZ;
 
-	public static AABB getBoundingBox(double mix, double max,
-			double miy, double may, double miz, double maz) {
+	public static AABB getBoundingBox(double mix, double max, double miy, double may, double miz, double maz) {
 		return new AABB(mix, miy, miz, max, may, maz);
 	}
-	
 
-	public static List<AABB> addAABBsToList(List<AABB> list, AABB...aabbs){
-		if(aabbs == null || list == null) return list;
-		for(int dofor = 0; dofor < aabbs.length; ++dofor){
-			if(aabbs[dofor] == null) continue;
+	public static List<AABB> addAABBsToList(List<AABB> list, AABB... aabbs) {
+		if (aabbs == null || list == null) return list;
+		for (int dofor = 0; dofor < aabbs.length; ++dofor) {
+			if (aabbs[dofor] == null) continue;
 			list.add(aabbs[dofor]);
 		}
 		return list;
 	}
 
-	
-
-	private AABB(double minX, double minY, double minZ, double maxX,
-			double maxY, double maxZ) {
+	private AABB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		this.minX = minX;
 		this.minY = minY;
 		this.minZ = minZ;
@@ -61,49 +54,35 @@ public class AABB {
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
-	
-	public double averageX(){
+
+	public double averageX() {
 		return (minX + maxX) / 2;
 	}
-	public double averageY(){
+
+	public double averageY() {
 		return (minY + maxY) / 2;
 	}
-	public double averageZ(){
+
+	public double averageZ() {
 		return (minZ + maxZ) / 2;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		AABB other = (AABB) obj;
-		if (Double.doubleToLongBits(maxX) != Double
-				.doubleToLongBits(other.maxX))
-			return false;
-		if (Double.doubleToLongBits(maxY) != Double
-				.doubleToLongBits(other.maxY))
-			return false;
-		if (Double.doubleToLongBits(maxZ) != Double
-				.doubleToLongBits(other.maxZ))
-			return false;
-		if (Double.doubleToLongBits(minX) != Double
-				.doubleToLongBits(other.minX))
-			return false;
-		if (Double.doubleToLongBits(minY) != Double
-				.doubleToLongBits(other.minY))
-			return false;
-		if (Double.doubleToLongBits(minZ) != Double
-				.doubleToLongBits(other.minZ))
-			return false;
+		if (Double.doubleToLongBits(maxX) != Double.doubleToLongBits(other.maxX)) return false;
+		if (Double.doubleToLongBits(maxY) != Double.doubleToLongBits(other.maxY)) return false;
+		if (Double.doubleToLongBits(maxZ) != Double.doubleToLongBits(other.maxZ)) return false;
+		if (Double.doubleToLongBits(minX) != Double.doubleToLongBits(other.minX)) return false;
+		if (Double.doubleToLongBits(minY) != Double.doubleToLongBits(other.minY)) return false;
+		if (Double.doubleToLongBits(minZ) != Double.doubleToLongBits(other.minZ)) return false;
 		return true;
 	}
 
-	public AABB setBounds(double minX, double minY, double minZ,
-			double maxX, double maxY, double maxZ) {
+	public AABB setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		this.minX = minX;
 		this.minY = minY;
 		this.minZ = minZ;
@@ -131,8 +110,7 @@ public class AABB {
 		return getBoundingBox(mix, max, miy, may, miz, maz);
 	}
 
-
-	public AABB add(double x, double y, double z){
+	public AABB add(double x, double y, double z) {
 		minX += x;
 		maxX += x;
 		minY += y;
@@ -141,9 +119,7 @@ public class AABB {
 		maxZ += z;
 		return this;
 	}
-	
-	
-	
+
 	public AABB expand(double x, double y, double z) {
 		double nlx = minX - x;
 		double nly = minY - y;
@@ -157,15 +133,12 @@ public class AABB {
 	public AABB getOffsetBoundingBox(double x, double y, double z) {
 		return getBoundingBox(minX + x, maxX + x, minY + y, maxY + y, minZ + z, maxZ + z);
 	}
-	public double calculateXOffset(AABB aabb, double x) {
-		if (aabb.maxY <= minY || aabb.minY >= maxY) {
-			return x;
-		}
 
-		if (aabb.maxZ <= minZ || aabb.minZ >= maxZ) {
-			return x;
-		}
-		
+	public double calculateXOffset(AABB aabb, double x) {
+		if (aabb.maxY <= minY || aabb.minY >= maxY) { return x; }
+
+		if (aabb.maxZ <= minZ || aabb.minZ >= maxZ) { return x; }
+
 		if (x > 0.0D && aabb.maxX <= minX) {
 			double d = minX - aabb.maxX;
 
@@ -181,20 +154,15 @@ public class AABB {
 				x = d1;
 			}
 		}
-		
 
 		return x;
 	}
 
 	public double calculateYOffset(AABB aabb, double y) {
-		if (aabb.maxX <= minX || aabb.minX >= maxX) {
-			return y;
-		}
+		if (aabb.maxX <= minX || aabb.minX >= maxX) { return y; }
 
-		if (aabb.maxZ <= minZ || aabb.minZ >= maxZ) {
-			return y;
-		}
-		
+		if (aabb.maxZ <= minZ || aabb.minZ >= maxZ) { return y; }
+
 		if (y > 0.0D && aabb.maxY <= minY) {
 			double d = minY - aabb.maxY;
 
@@ -210,20 +178,15 @@ public class AABB {
 				y = d1;
 			}
 		}
-		
 
 		return y;
 	}
 
 	public double calculateZOffset(AABB aabb, double z) {
-		if (aabb.maxX <= minX || aabb.minX >= maxX) {
-			return z;
-		}
+		if (aabb.maxX <= minX || aabb.minX >= maxX) { return z; }
 
-		if (aabb.maxY <= minY || aabb.minY >= maxY) {
-			return z;
-		}
-		
+		if (aabb.maxY <= minY || aabb.minY >= maxY) { return z; }
+
 		if (z > 0.0D && aabb.maxZ <= minZ) {
 			double zDist = minZ - aabb.maxZ;
 
@@ -239,33 +202,22 @@ public class AABB {
 				z = zDist2;
 			}
 		}
-		
 
 		return z;
 	}
 
 	public boolean intersectsWith(AABB aabb) {
-		if(aabb == null) return false;
-		if (aabb.maxX <= minX || aabb.minX >= maxX) {
-			return false;
-		}
+		if (aabb == null) return false;
+		if (aabb.maxX <= minX || aabb.minX >= maxX) { return false; }
 
-		if (aabb.maxY <= minY || aabb.minY >= maxY) {
-			return false;
-		}
+		if (aabb.maxY <= minY || aabb.minY >= maxY) { return false; }
 
 		return aabb.maxZ > minZ && aabb.minZ < maxZ;
 	}
 
-	
-
 	public boolean isVecInside(Vector3d vec) {
-		if (vec.x <= minX || vec.x >= maxX) {
-			return false;
-		}
-		if (vec.y <= minY || vec.y >= maxY) {
-			return false;
-		}
+		if (vec.x <= minX || vec.x >= maxX) { return false; }
+		if (vec.y <= minY || vec.y >= maxY) { return false; }
 		return vec.z > minZ && vec.z < maxZ;
 	}
 
@@ -413,8 +365,7 @@ public class AABB {
 		if (vec == null) {
 			return false;
 		} else {
-			return vec.y >= minY && vec.y <= maxY && vec.z >= minZ
-					&& vec.z <= maxZ;
+			return vec.y >= minY && vec.y <= maxY && vec.z >= minZ && vec.z <= maxZ;
 		}
 	}
 
@@ -422,8 +373,7 @@ public class AABB {
 		if (vec == null) {
 			return false;
 		} else {
-			return vec.x >= minX && vec.x <= maxX && vec.z >= minZ
-					&& vec.z <= maxZ;
+			return vec.x >= minX && vec.x <= maxX && vec.z >= minZ && vec.z <= maxZ;
 		}
 	}
 
@@ -431,8 +381,7 @@ public class AABB {
 		if (vec == null) {
 			return false;
 		} else {
-			return vec.x >= minX && vec.x <= maxX && vec.y >= minY
-					&& vec.y <= maxY;
+			return vec.x >= minX && vec.x <= maxX && vec.y >= minY && vec.y <= maxY;
 		}
 	}
 
@@ -447,10 +396,7 @@ public class AABB {
 
 	@Override
 	public String toString() {
-		return (new StringBuilder()).append("AABB[").append(minX).append(", ")
-				.append(minY).append(", ").append(minZ).append(" -> ")
-				.append(maxX).append(", ").append(maxY).append(", ")
-				.append(maxZ).append("]").toString();
+		return (new StringBuilder()).append("AABB[").append(minX).append(", ").append(minY).append(", ").append(minZ).append(" -> ").append(maxX).append(", ").append(maxY).append(", ").append(maxZ).append("]").toString();
 	}
 
 	public AABB correctMinMax() {
@@ -470,27 +416,27 @@ public class AABB {
 		Vector3d maxY = start.getYIntermediate(end, this.maxY);
 		Vector3d minZ = start.getZIntermediate(end, this.minZ);
 		Vector3d maxZ = start.getZIntermediate(end, this.maxZ);
-		if(!isVecInYZ(minX)) minX = null;
-		if(!isVecInYZ(maxX)) maxX = null;
-		if(!isVecInXZ(minY)) minY = null;
-		if(!isVecInXZ(maxY)) maxY = null;
-		if(!isVecInXY(minZ)) minZ = null;
-		if(!isVecInXY(maxZ)) maxZ = null;
+		if (!isVecInYZ(minX)) minX = null;
+		if (!isVecInYZ(maxX)) maxX = null;
+		if (!isVecInXZ(minY)) minY = null;
+		if (!isVecInXZ(maxY)) maxY = null;
+		if (!isVecInXY(minZ)) minZ = null;
+		if (!isVecInXY(maxZ)) maxZ = null;
 		Vector3d using = null;
-		if(minX != null && (using == null || start.floatDistanceSquared(minX) < start.floatDistanceSquared(using))) using = minX;
-		if(maxX != null && (using == null || start.floatDistanceSquared(maxX) < start.floatDistanceSquared(using))) using = maxX;
-		if(minY != null && (using == null || start.floatDistanceSquared(minY) < start.floatDistanceSquared(using))) using = minY;
-		if(maxY != null && (using == null || start.floatDistanceSquared(maxY) < start.floatDistanceSquared(using))) using = maxY;
-		if(minZ != null && (using == null || start.floatDistanceSquared(minZ) < start.floatDistanceSquared(using))) using = minZ;
-		if(maxZ != null && (using == null || start.floatDistanceSquared(maxZ) < start.floatDistanceSquared(using))) using = maxZ;
-		if(using == null) return null;
+		if (minX != null && (using == null || start.floatDistanceSquared(minX) < start.floatDistanceSquared(using))) using = minX;
+		if (maxX != null && (using == null || start.floatDistanceSquared(maxX) < start.floatDistanceSquared(using))) using = maxX;
+		if (minY != null && (using == null || start.floatDistanceSquared(minY) < start.floatDistanceSquared(using))) using = minY;
+		if (maxY != null && (using == null || start.floatDistanceSquared(maxY) < start.floatDistanceSquared(using))) using = maxY;
+		if (minZ != null && (using == null || start.floatDistanceSquared(minZ) < start.floatDistanceSquared(using))) using = minZ;
+		if (maxZ != null && (using == null || start.floatDistanceSquared(maxZ) < start.floatDistanceSquared(using))) using = maxZ;
+		if (using == null) return null;
 		byte b = -1;
-		if(using == minX)  b = 2;
-		if(using == maxX)b = 0;
-		if(using == minY)b = 5;
-		if(using == maxY)b = 4;
-		if(using == minZ)b = 3;
-		if(using == maxZ)b = 1;
+		if (using == minX) b = 2;
+		if (using == maxX) b = 0;
+		if (using == minY) b = 5;
+		if (using == maxY) b = 4;
+		if (using == minZ) b = 3;
+		if (using == maxZ) b = 1;
 		minX = null;
 		maxX = null;
 		minY = null;
@@ -509,37 +455,31 @@ public class AABB {
 		maxZ *= scale;
 		return this;
 	}
-	
+
 	public Vector3d getVertexP(Vector3d normal) {
 
 		Vector3d res = new Vector3d(minX, minY, minZ);
 
-		if (normal.x > 0)
-			res.x += maxX - minX;
+		if (normal.x > 0) res.x += maxX - minX;
 
-		if (normal.y > 0)
-			res.y += maxY - minY;
+		if (normal.y > 0) res.y += maxY - minY;
 
-		if (normal.z > 0)
-			res.z += maxZ - minZ;
+		if (normal.z > 0) res.z += maxZ - minZ;
 
-		return(res);
+		return (res);
 	}
 
 	public Vector3d getVertexN(Vector3d normal) {
 
 		Vector3d res = new Vector3d(minX, minY, minZ);
 
-		if (normal.x < 0)
-			res.x += maxX - minX;
+		if (normal.x < 0) res.x += maxX - minX;
 
-		if (normal.y < 0)
-			res.y += maxY - minY;
+		if (normal.y < 0) res.y += maxY - minY;
 
-		if (normal.z < 0)
-			res.z += maxZ - minZ;
+		if (normal.z < 0) res.z += maxZ - minZ;
 
-		return(res);
+		return (res);
 	}
-	
+
 }

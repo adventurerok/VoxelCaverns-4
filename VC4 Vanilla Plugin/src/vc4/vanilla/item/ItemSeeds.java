@@ -17,14 +17,14 @@ public class ItemSeeds extends Item {
 	public ItemSeeds(int id) {
 		super(id, ItemTexture.seeds);
 	}
-	
+
 	@Override
 	public String getModifiedItemName(ItemStack stack) {
-		if(stack.getDamage() == 0) return "seeds.wheat";
-		else if(stack.getDamage() == 1) return "seeds.barley";
+		if (stack.getDamage() == 0) return "seeds.wheat";
+		else if (stack.getDamage() == 1) return "seeds.barley";
 		else return "seeds";
 	}
-	
+
 	@Override
 	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> res = new ArrayList<>();
@@ -32,20 +32,19 @@ public class ItemSeeds extends Item {
 		res.add(new ItemStack(id, 1, 1));
 		return res;
 	}
-	
+
 	@Override
 	public Color getColor(ItemStack item) {
 		return ItemCrop.colors[item.getDamage()];
 	}
-	
-	
+
 	@Override
 	public void onRightClick(EntityPlayer player, ItemStack item) {
-		if(player.getCoolDown() > 0.1) return;
+		if (player.getCoolDown() > 0.1) return;
 		RayTraceResult rays = player.getRays();
-		if(player.getWorld().getBlockId(rays.x, rays.y, rays.z) == Vanilla.stakes.uid){
-			if(item.getDamage() == 0) Vanilla.wheat.place(player.getWorld(), rays.x, rays.y, rays.z, player, item);
-			else if(item.getDamage() == 1) Vanilla.barley.place(player.getWorld(), rays.x, rays.y, rays.z, player, item);
+		if (player.getWorld().getBlockId(rays.x, rays.y, rays.z) == Vanilla.stakes.uid) {
+			if (item.getDamage() == 0) Vanilla.wheat.place(player.getWorld(), rays.x, rays.y, rays.z, player, item);
+			else if (item.getDamage() == 1) Vanilla.barley.place(player.getWorld(), rays.x, rays.y, rays.z, player, item);
 			player.getWorld().setBlockData(rays.x, rays.y, rays.z, 16);
 		}
 		Direction d = Direction.getDirection(rays.side);
@@ -53,9 +52,9 @@ public class ItemSeeds extends Item {
 		long y = rays.y + d.getY();
 		long z = rays.z + d.getZ();
 		player.setCoolDown(200);
-		if(rays == null || rays.isEntity) return;
-		if(item.getDamage() == 0 && player.getWorld().getBlockType(x, y, z).replacableBy(player.getWorld(), x, y, z, Vanilla.wheat.uid, (byte)0)) Vanilla.wheat.place(player.getWorld(), x, y, z, player, item);
-		else if(item.getDamage() == 1 && player.getWorld().getBlockType(x, y, z).replacableBy(player.getWorld(), x, y, z, Vanilla.barley.uid, (byte)0)) Vanilla.barley.place(player.getWorld(), x, y, z, player, item);
+		if (rays == null || rays.isEntity) return;
+		if (item.getDamage() == 0 && player.getWorld().getBlockType(x, y, z).replacableBy(player.getWorld(), x, y, z, Vanilla.wheat.uid, (byte) 0)) Vanilla.wheat.place(player.getWorld(), x, y, z, player, item);
+		else if (item.getDamage() == 1 && player.getWorld().getBlockType(x, y, z).replacableBy(player.getWorld(), x, y, z, Vanilla.barley.uid, (byte) 0)) Vanilla.barley.place(player.getWorld(), x, y, z, player, item);
 	}
 
 }

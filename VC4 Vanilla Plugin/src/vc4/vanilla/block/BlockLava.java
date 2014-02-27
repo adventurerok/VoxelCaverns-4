@@ -14,7 +14,7 @@ import vc4.vanilla.BlockTexture;
 
 /**
  * @author paul
- *
+ * 
  */
 public class BlockLava extends BlockFluid {
 
@@ -25,35 +25,39 @@ public class BlockLava extends BlockFluid {
 	 */
 	public BlockLava(int uid) {
 		super(uid, BlockTexture.fluid, "lava");
-		
+
 	}
-	
+
 	@Override
 	public boolean canStandIn() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean canStandOn() {
 		return false;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getColor(vc4.api.item.ItemStack, int)
 	 */
 	@Override
 	public Color getColor(ItemStack current, int side) {
 		return Color.red;
 	}
-	
+
 	@Override
 	public void onEntityTickInside(World world, long x, long y, long z, Entity entity) {
 		entity.damage(2, DamageSource.liquid("lava"));
 		entity.addFireTicks(150);
 		super.onEntityTickInside(world, x, y, z, entity);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getColor(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override

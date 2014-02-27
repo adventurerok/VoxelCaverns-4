@@ -6,9 +6,9 @@ import vc4.api.io.SwitchInputStream;
 import vc4.api.io.SwitchOutputStream;
 
 public class Packet42SettingDouble extends Packet {
-	
+
 	public static final int ID = 42;
-	
+
 	int setting;
 	double change;
 
@@ -26,9 +26,7 @@ public class Packet42SettingDouble extends Packet {
 
 	public Packet42SettingDouble() {
 	}
-	
-	
-	
+
 	public Packet42SettingDouble(int setting, double change) {
 		super();
 		this.setting = setting;

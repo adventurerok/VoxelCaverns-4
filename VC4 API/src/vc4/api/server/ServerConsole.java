@@ -5,22 +5,22 @@ package vc4.api.server;
 
 import vc4.api.world.World;
 
-
 /**
  * @author paul
- *
+ * 
  */
-public abstract class ServerConsole{
+public abstract class ServerConsole {
 
 	private static ServerConsole console;
-	
+
 	/**
-	 * @param console the console to set
+	 * @param console
+	 *            the console to set
 	 */
 	public static void setConsole(ServerConsole console) {
 		ServerConsole.console = console;
 	}
-	
+
 	/**
 	 * @return the console
 	 */
@@ -38,9 +38,7 @@ public abstract class ServerConsole{
 	 */
 	public void writeLine(String line) {
 	}
-	
-	public abstract World getWorld(); 
 
-	
+	public abstract World getWorld();
 
 }

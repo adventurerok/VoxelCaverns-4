@@ -9,21 +9,19 @@ import vc4.api.font.Font;
 
 /**
  * @author paul
- *
+ * 
  */
 public class Background {
 
 	public float startX, endX, startY, endY;
 	public Color color;
-	
+
 	/**
 	 * 
 	 */
 	public Background() {
 	}
-	
-	
-	
+
 	public Background(float startX, float startY, float endY, Color color) {
 		super();
 		this.startX = endX = startX;
@@ -41,7 +39,7 @@ public class Background {
 		this.color = color;
 	}
 
-	public void addLength(float f){
+	public void addLength(float f) {
 		endX += f;
 	}
 

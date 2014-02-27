@@ -12,22 +12,22 @@ import vc4.vanilla.block.render.BlockRendererLogicGate;
 public class BlockLogicGate extends BlockMultitexture implements IBlockLogicGate {
 
 	AABB bounds = AABB.getBoundingBox(0.25, 0.75, 0.25, 0.75, 0.25, 0.75);
-	
+
 	public BlockLogicGate(int uid) {
 		super(uid, BlockTexture.wire, "wire");
 		renderer = new BlockRendererLogicGate();
 		blockOpacity[uid] = 1;
 		blockLight[uid] = 10;
 	}
-	
+
 	@Override
 	public boolean render3d(byte data) {
 		return false;
 	}
-	
+
 	@Override
 	public ItemStack[] getItemDrops(World world, long x, long y, long z, ItemStack mined) {
-		return new ItemStack[]{new ItemStack(uid, 0, 1)};
+		return new ItemStack[] { new ItemStack(uid, 0, 1) };
 	}
 
 	@Override
@@ -38,29 +38,29 @@ public class BlockLogicGate extends BlockMultitexture implements IBlockLogicGate
 		z += dir.getZ();
 		return world.getBlockType(x, y, z).takesSignalInput(world, x, y, z, dir.opposite().id());
 	}
-	
+
 	@Override
 	public boolean takesSignalInput(World world, long x, long y, long z, int side) {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return false;
 	}
-	
+
 	Color max = new Color(99, 0, 255);
-	
+
 	@Override
 	public Color getColor(ItemStack current, int side) {
 		return Colors.gray;
 	}
-	
+
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
 		return Colors.gray;
 	}
-	
+
 	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
 		boolean sides[] = PipeUtils.getPipeAttachedSides(world, x, y, z);
@@ -94,34 +94,34 @@ public class BlockLogicGate extends BlockMultitexture implements IBlockLogicGate
 
 		return result;
 	}
-	
+
 	@Override
 	public int getProvidingSignal(World world, long x, long y, long z, int side) {
 		return 0;
 	}
-	
+
 	@Override
 	public AABB getRayTraceSize(World world, long x, long y, long z) {
-//		boolean sides[] = PipeUtils.getPipeAttachedSides(world, x, y, z);
-//		if (sides == null) return null;
-//		double bot = 0.25;
-//		double top = 1 - bot;
-//		if (BooleanUtils.areAllFalse(sides)) { return bounds; }
-//		AABB result = bounds.clone();
-//		if (sides[0] || sides[2]) {
-//			result.minX = sides[2] ? 0 : bot;
-//			result.maxX = sides[0] ? 1 : top;
-//		}
-//		if (sides[1] || sides[3]) {
-//			result.minZ = sides[3] ? 0 : bot;
-//			result.maxZ = sides[1] ? 1 : top;
-//		}
-//		if (sides[4] || sides[5]) {
-//			result.minY = sides[5] ? 0 : bot;
-//			result.maxY = sides[4] ? 1 : top;
-//		}
-//
-//		return result;
+		// boolean sides[] = PipeUtils.getPipeAttachedSides(world, x, y, z);
+		// if (sides == null) return null;
+		// double bot = 0.25;
+		// double top = 1 - bot;
+		// if (BooleanUtils.areAllFalse(sides)) { return bounds; }
+		// AABB result = bounds.clone();
+		// if (sides[0] || sides[2]) {
+		// result.minX = sides[2] ? 0 : bot;
+		// result.maxX = sides[0] ? 1 : top;
+		// }
+		// if (sides[1] || sides[3]) {
+		// result.minZ = sides[3] ? 0 : bot;
+		// result.maxZ = sides[1] ? 1 : top;
+		// }
+		// if (sides[4] || sides[5]) {
+		// result.minY = sides[5] ? 0 : bot;
+		// result.maxY = sides[4] ? 1 : top;
+		// }
+		//
+		// return result;
 		return bounds;
 	}
 
@@ -154,17 +154,17 @@ public class BlockLogicGate extends BlockMultitexture implements IBlockLogicGate
 	public Color getColorGate(ItemStack item, int side) {
 		return Color.white;
 	}
-	
+
 	@Override
 	public boolean updatesRandomly() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean renderSideMultitexture(World world, long x, long y, long z, int side) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean multitextureUsed(byte data, int side) {
 		return true;

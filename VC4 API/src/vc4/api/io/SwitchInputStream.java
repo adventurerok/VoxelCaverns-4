@@ -8,26 +8,27 @@ import org.jnbt.NBTInputStream;
 import org.jnbt.Tag;
 
 public class SwitchInputStream extends InputStream implements DataInput {
-	
+
 	InputStream in;
 	boolean inInflateMode;
 	byte data[];
 	int index = 0;
 	int length;
-	
+
 	int ch1, ch2, ch3, ch4;
 
 	public SwitchInputStream(InputStream in) {
 		this.in = in;
 	}
-	
-	public boolean inInflateMode(){
-		if(!inInflateMode) return false;
-		if(index >= data.length) return false;
+
+	public boolean inInflateMode() {
+		if (!inInflateMode) return false;
+		if (index >= data.length) return false;
 		return true;
 	}
-	
-	public void readDeflated() throws IOException{
+
+	public void readDeflated() throws IOException {
+		index = 0;
 		int amt = readInt();
 		int uncompressed = readInt();
 		byte comp[] = new byte[amt];
@@ -44,8 +45,9 @@ public class SwitchInputStream extends InputStream implements DataInput {
 		}
 		inInflateMode = true;
 	}
-	
+
 	public byte[] readDeflatedBytes() throws IOException {
+		index = 0;
 		int amt = readInt();
 		int uncompressed = readInt();
 		byte comp[] = new byte[amt];
@@ -62,40 +64,40 @@ public class SwitchInputStream extends InputStream implements DataInput {
 		}
 		return data;
 	}
-	
+
 	@Override
 	public int read() throws IOException {
-		if(!inInflateMode) return in.read();
+		if (!inInflateMode) return in.read();
 		else {
-			if(index == data.length){
+			if (index == data.length) {
 				inInflateMode = false;
 				return in.read();
 			}
 			return data[index++];
 		}
 	}
-	
+
 	@SuppressWarnings("resource")
 	public Tag readVBT() throws IOException {
 		return new NBTInputStream(getBitInput()).readTag();
 	}
-	
-	public BitInput getBitInput(){
+
+	public BitInput getBitInput() {
 		return new SwitchBitInput(this);
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		in.close();
 		data = null;
 	}
-	
-	private static class SwitchBitInput implements BitInput{
-		
+
+	private static class SwitchBitInput implements BitInput {
+
 		SwitchInputStream in;
 		private int iBuffer;
 		private int iNextBit = 8;
-		
+
 		public SwitchBitInput(SwitchInputStream in) {
 			this.in = in;
 		}
@@ -104,7 +106,7 @@ public class SwitchInputStream extends InputStream implements DataInput {
 		public int readBits(int num) throws IOException {
 			int value = 0;
 			for (int i = num - 1; i >= 0; i--)
-			//for (int i = 0; i < aNumberOfBits; i--)
+			// for (int i = 0; i < aNumberOfBits; i--)
 			{
 				value |= (readBit() << i);
 			}
@@ -115,7 +117,7 @@ public class SwitchInputStream extends InputStream implements DataInput {
 		public long readLongBits(int num) throws IOException {
 			long value = 0;
 			for (int i = num - 1; i >= 0; i--)
-			//for (int i = 0; i < aNumberOfBits; i--)
+			// for (int i = 0; i < aNumberOfBits; i--)
 			{
 				value |= (readLongBit() << i);
 			}
@@ -124,23 +126,21 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 		@Override
 		public int readBit() throws IOException {
-			if (iNextBit == 8)
-			{
+			if (iNextBit == 8) {
 				iBuffer = in.read();
-				if (iBuffer == -1)
-					throw new EOFException();
-	 
+				if (iBuffer == -1) throw new EOFException();
+
 				iNextBit = 0;
 			}
-			
+
 			int bit = iBuffer & (1 << iNextBit);
 			iNextBit++;
-	 
+
 			bit = (bit == 0) ? 0 : 1;
-	 
+
 			return bit;
 		}
-		
+
 		@Override
 		@SuppressWarnings("resource")
 		public Tag readVBT() throws IOException {
@@ -149,21 +149,19 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 		@Override
 		public long readLongBit() throws IOException {
-			if (iNextBit == 8)
-			{
+			if (iNextBit == 8) {
 				iBuffer = in.read();
-	 
-				if (iBuffer == -1)
-					throw new EOFException();
-	 
+
+				if (iBuffer == -1) throw new EOFException();
+
 				iNextBit = 0;
 			}
-	 
+
 			int bit = iBuffer & (1 << iNextBit);
 			iNextBit++;
-	 
+
 			bit = (bit == 0) ? 0 : 1;
-	 
+
 			return bit;
 		}
 
@@ -171,7 +169,6 @@ public class SwitchInputStream extends InputStream implements DataInput {
 		public byte readByte() throws IOException {
 			return (byte) readBits(8);
 		}
-		
 
 		@Override
 		public short readShort() throws IOException {
@@ -202,9 +199,9 @@ public class SwitchInputStream extends InputStream implements DataInput {
 		public String readString() throws IOException {
 			StringBuilder builder = new StringBuilder();
 			int i = readBits((short) 32);
-			for(int dofor = 0; dofor < i; ++dofor){
+			for (int dofor = 0; dofor < i; ++dofor) {
 				int ca = readBits((short) BitUtils.CHARACTER_BITS);
-				char c = (char)ca;
+				char c = (char) ca;
 				builder.append(c);
 			}
 			return builder.toString();
@@ -212,7 +209,8 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 		@Override
 		public void readBytes(byte[] bytes) throws IOException {
-			for(int d = 0; d < bytes.length; ++d) bytes[d] = (byte) readBits(8);
+			for (int d = 0; d < bytes.length; ++d)
+				bytes[d] = (byte) readBits(8);
 		}
 
 		@Override
@@ -223,20 +221,19 @@ public class SwitchInputStream extends InputStream implements DataInput {
 		@Override
 		public void finish() throws IOException {
 		}
-		
+
 		@Override
 		public void close() throws IOException {
 			in.close();
 		}
-		
-		
+
 	}
-	
+
 	public String readString() throws IOException {
 		int len = readInt();
 		StringBuilder b = new StringBuilder();
-		for(int d = 0; d < len; ++d){
-			b.append((char)readShort());
+		for (int d = 0; d < len; ++d) {
+			b.append((char) readShort());
 		}
 		return b.toString();
 	}
@@ -248,26 +245,24 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 	@Override
 	public void readFully(byte[] b, int off, int len) throws IOException {
-		 if (len < 0)
-	            throw new IndexOutOfBoundsException();
-	        int n = 0;
-	        while (n < len) {
-	            int count = read(b, off + n, len - n);
-	            if (count < 0)
-	                throw new EOFException();
-	            n += count;
-	        }
+		if (len < 0) throw new IndexOutOfBoundsException();
+		int n = 0;
+		while (n < len) {
+			int count = read(b, off + n, len - n);
+			if (count < 0) throw new EOFException();
+			n += count;
+		}
 	}
 
 	@Override
 	public int skipBytes(int n) throws IOException {
 		int skipped = 0;
-		if(inInflateMode){
+		if (inInflateMode) {
 			int oldIndex = index;
 			index += n;
 			n -= data.length - oldIndex;
 			skipped += data.length - oldIndex;
-			if(index < data.length) return n;
+			if (index < data.length) return n;
 		}
 		return (int) (skipped + in.skip(n));
 	}
@@ -275,14 +270,13 @@ public class SwitchInputStream extends InputStream implements DataInput {
 	@Override
 	public boolean readBoolean() throws IOException {
 		int ch = read();
-        if (ch < 0)
-            throw new EOFException();
-        return (ch != 0);
+		if (ch < 0) throw new EOFException();
+		return (ch != 0);
 	}
 
 	@Override
 	public byte readByte() throws IOException {
-		return (byte)read();
+		return (byte) read();
 	}
 
 	@Override
@@ -302,33 +296,26 @@ public class SwitchInputStream extends InputStream implements DataInput {
 
 	@Override
 	public char readChar() throws IOException {
-		return (char)readShort();
+		return (char) readShort();
 	}
 
 	@Override
 	public int readInt() throws IOException {
 		ch1 = read();
-        ch2 = read();
-        ch3 = read();
-        ch4 = read();
-        if ((ch1 | ch2 | ch3 | ch4) < 0)
-            throw new EOFException();
-        return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
+		ch2 = read();
+		ch3 = read();
+		ch4 = read();
+		if ((ch1 | ch2 | ch3 | ch4) < 0) throw new EOFException();
+		return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
 	}
-	
+
 	private byte readBuffer[] = new byte[8];
 
 	@Override
 	public long readLong() throws IOException {
 		readFully(readBuffer, 0, 8);
-        return (((long)readBuffer[0] << 56) +
-                ((long)(readBuffer[1] & 255) << 48) +
-                ((long)(readBuffer[2] & 255) << 40) +
-                ((long)(readBuffer[3] & 255) << 32) +
-                ((long)(readBuffer[4] & 255) << 24) +
-                ((readBuffer[5] & 255) << 16) +
-                ((readBuffer[6] & 255) <<  8) +
-                ((readBuffer[7] & 255) <<  0));
+		return (((long) readBuffer[0] << 56) + ((long) (readBuffer[1] & 255) << 48) + ((long) (readBuffer[2] & 255) << 40) + ((long) (readBuffer[3] & 255) << 32) + ((long) (readBuffer[4] & 255) << 24) + ((readBuffer[5] & 255) << 16)
+				+ ((readBuffer[6] & 255) << 8) + ((readBuffer[7] & 255) << 0));
 	}
 
 	@Override
@@ -350,6 +337,5 @@ public class SwitchInputStream extends InputStream implements DataInput {
 	public String readUTF() throws IOException {
 		throw new UnsupportedOperationException("Make a request on github or somethin");
 	}
-	
 
 }

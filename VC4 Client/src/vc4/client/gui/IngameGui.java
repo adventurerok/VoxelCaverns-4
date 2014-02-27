@@ -80,11 +80,11 @@ public class IngameGui extends Component {
 		gameGui.setVisible(false);
 		gameGui.setBounds(gameGui.getDefaultBounds());
 		add(gameGui);
-		chatInput = new TextBox(){
-			
+		chatInput = new TextBox() {
+
 			@Override
-			public void draw(){
-				if(hasFocus()){
+			public void draw() {
+				if (hasFocus()) {
 					gl.unbindShader();
 					gl.begin(GLPrimative.QUADS);
 					gl.color(0, 0, 0, 1);
@@ -96,7 +96,7 @@ public class IngameGui extends Component {
 				}
 				super.draw();
 			}
-			
+
 		};
 		chatInput.setResizer(new ResizerComplex(new PartConstant(5), new PartSubY(13), new PartSubX(0), new PartSubY(2)));
 		chatInput.addListener(new TextListener() {
@@ -104,14 +104,14 @@ public class IngameGui extends Component {
 			@Override
 			public void textRecieved(TextBox box, String input) {
 				if (input == null || input.isEmpty()) return;
-				if(Client.getGame().getGameState() == GameState.SINGLEPLAYER){
+				if (Client.getGame().getGameState() == GameState.SINGLEPLAYER) {
 					String[] parts = StringSplitter.splitString(input, false);
 					String cmd = parts[0];
 					String[] args = Arrays.copyOfRange(parts, 1, parts.length);
 					Command command = new Command(cmd, args, ClientUser.CLIENT_USER);
 					CommandExecutor.executeCommand(command);
-				} else if(Client.getGame().getGameState() == GameState.MULTIPLAYER){
-					if(input.startsWith("!")){
+				} else if (Client.getGame().getGameState() == GameState.MULTIPLAYER) {
+					if (input.startsWith("!")) {
 						input = input.substring(1);
 						String[] parts = StringSplitter.splitString(input, false);
 						String cmd = parts[0];
@@ -244,8 +244,8 @@ public class IngameGui extends Component {
 		}
 		overlay.draw();
 	}
-	
-	public void onWorldLoad(){
+
+	public void onWorldLoad() {
 		creativeGui.reloadItems();
 	}
 

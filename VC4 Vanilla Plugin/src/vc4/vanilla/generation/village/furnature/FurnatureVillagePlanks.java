@@ -8,7 +8,7 @@ import vc4.vanilla.generation.village.Village;
 public class FurnatureVillagePlanks extends Furnature {
 
 	int bid;
-	
+
 	@Override
 	public void place(Village ville, Vector3l start, Direction dir) {
 		start = pos.adjust(start, dir);

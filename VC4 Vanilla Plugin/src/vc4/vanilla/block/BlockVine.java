@@ -21,12 +21,12 @@ public class BlockVine extends Block {
 		renderer = new BlockRendererFace();
 		mineData = new MiningData().setRequired(ToolType.axe).setTimes(0.5, 0.03, 0.25).setPowers(0, 1, 25);
 	}
-	
+
 	@Override
 	public boolean canStandIn() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean canStandOn() {
 		return false;
@@ -39,21 +39,21 @@ public class BlockVine extends Block {
 
 	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
-//		byte data = world.getBlockData(x, y, z);
-//		switch (data & 3) {
-//			case 1:
-//				return new AABB[] { AABB.getBoundingBox(0.0F, 1.0F, 0.0f, 1.0F, 1.0F - 0.125, 1.0F) };
-//			case 3:
-//				return new AABB[] { AABB.getBoundingBox(0.0F, 1.0f, 0.0f, 1.0f, 0.0f, 0.125f) };
-//			case 0:
-//				return new AABB[] { AABB.getBoundingBox(1.0F - 0.125, 1.0f, 0.0F, 1.0F, 0.0F, 1.0F) };
-//			case 2:
-//				return new AABB[] { AABB.getBoundingBox(0.0F, 0.125F, 0.0F, 1f, 0f, 1.0F) };
-//		}
+		// byte data = world.getBlockData(x, y, z);
+		// switch (data & 3) {
+		// case 1:
+		// return new AABB[] { AABB.getBoundingBox(0.0F, 1.0F, 0.0f, 1.0F, 1.0F - 0.125, 1.0F) };
+		// case 3:
+		// return new AABB[] { AABB.getBoundingBox(0.0F, 1.0f, 0.0f, 1.0f, 0.0f, 0.125f) };
+		// case 0:
+		// return new AABB[] { AABB.getBoundingBox(1.0F - 0.125, 1.0f, 0.0F, 1.0F, 0.0F, 1.0F) };
+		// case 2:
+		// return new AABB[] { AABB.getBoundingBox(0.0F, 0.125F, 0.0F, 1f, 0f, 1.0F) };
+		// }
 
 		return null;
 	}
-	
+
 	@Override
 	public boolean render3d(byte data) {
 		return false;
@@ -64,13 +64,13 @@ public class BlockVine extends Block {
 		byte data = world.getBlockData(x, y, z);
 		int num = 0;
 		int last = -1;
-		for(int d = 0; d < 4; ++d){
-			if(((data >> d) & 1) != 0){
+		for (int d = 0; d < 4; ++d) {
+			if (((data >> d) & 1) != 0) {
 				++num;
 				last = d;
 			}
 		}
-		if(num > 1) return square;
+		if (num > 1) return square;
 		switch (last) {
 			case 1:
 				return AABB.getBoundingBox(0.0F, 1.0F, 0.0f, 1.0F, 1.0F - 0.125, 1.0F);
@@ -92,13 +92,13 @@ public class BlockVine extends Block {
 		byte data = world.getBlockData(x, y, z);
 		int num = 0;
 		int last = -1;
-		for(int d = 0; d < 4; ++d){
-			if(((data >> d) & 1) != 0){
+		for (int d = 0; d < 4; ++d) {
+			if (((data >> d) & 1) != 0) {
 				++num;
 				last = d;
 			}
 		}
-		if(num > 1) return square;
+		if (num > 1) return square;
 		switch (last) {
 			case 1:
 				return AABB.getBoundingBox(0.0F, 1.0F, 0.0f, 1.0F, 1.0F - 0.125, 1.0F);
@@ -125,11 +125,11 @@ public class BlockVine extends Block {
 		if (ret) return;
 		int dat = 0;
 		for (int d = 0; d < 4; ++d) {
-			if (checkNearby(world, x, y, z, d)){
+			if (checkNearby(world, x, y, z, d)) {
 				dat |= 1 << d;
 			}
 		}
-		if(world.getBlockId(x, y + 1, z) == uid){
+		if (world.getBlockId(x, y + 1, z) == uid) {
 			dat |= world.getBlockData(x, y + 1, z);
 		}
 		world.setBlockIdData(x, y, z, uid, dat);
@@ -138,16 +138,14 @@ public class BlockVine extends Block {
 
 	@Override
 	public boolean renderSide(World world, long x, long y, long z, int side) {
-		if(side == 5) return false;
-		if (side > 3) {
-			return checkNearby(world, x, y, z, side);
-		}
+		if (side == 5) return false;
+		if (side > 3) { return checkNearby(world, x, y, z, side); }
 		int data = world.getBlockData(x, y, z);
 		if (((data >> side) & 1) != 0) return true;
 		return false;
 	}
-	
-	public boolean checkNearby(World world, long x, long y, long z, int side){
+
+	public boolean checkNearby(World world, long x, long y, long z, int side) {
 		Block b = world.getNearbyBlockType(x, y, z, Direction.getDirection(side));
 		return b.uid == Vanilla.leaf.uid || b.isSolid(world, x, y, z, Direction.getOpposite(side).id());
 	}
@@ -159,20 +157,20 @@ public class BlockVine extends Block {
 		for (int d = 0; d < 4 && ret == true; ++d) {
 			if (checkNearby(world, x, y, z, d)) ret = false;
 		}
-		if (ret){
+		if (ret) {
 			world.setBlockId(x, y, z, 0);
 			return;
 		}
 		int dat = 0;
 		for (int d = 0; d < 4; ++d) {
-			if (checkNearby(world, x, y, z, d)){
+			if (checkNearby(world, x, y, z, d)) {
 				dat |= 1 << d;
 			}
 		}
-		if(world.getBlockId(x, y + 1, z) == uid){
+		if (world.getBlockId(x, y + 1, z) == uid) {
 			dat |= world.getBlockData(x, y + 1, z);
 		}
-		if(dat != world.getBlockData(x, y, z)) world.setBlockData(x, y, z, dat);
+		if (dat != world.getBlockData(x, y, z)) world.setBlockData(x, y, z, dat);
 	}
 
 	@Override
@@ -191,12 +189,12 @@ public class BlockVine extends Block {
 		if (bio != null) return bio.plantColor;
 		else return BlockTallGrass.grass;
 	}
-	
+
 	@Override
 	public boolean replacableBy(World world, long x, long y, long z, int bid, byte data) {
 		return bid != uid && bid != 0;
 	}
-	
+
 	@Override
 	public boolean canBeReplaced(int id, byte data) {
 		return id != uid && id != 0;

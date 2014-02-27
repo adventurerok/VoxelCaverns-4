@@ -27,7 +27,7 @@ public abstract class FPCamera {
 	public FPCamera() {
 		// TASK Auto-generated constructor stub
 	}
-	
+
 	// Constructor that takes the starting x, y, z location of the camera
 	public FPCamera(double x, double y, double z) {
 		// instantiate position Vector3f to the x y z params.
@@ -60,8 +60,8 @@ public abstract class FPCamera {
 
 		double dx = 0.0f;
 		double dy = 0.0f;
-		
-		//MouseSet mice = Client.getGame().getMouseSet();
+
+		// MouseSet mice = Client.getGame().getMouseSet();
 
 		boolean paused = Client.getGame().isPaused();
 		if (Display.isActive() && !paused) {
@@ -79,7 +79,7 @@ public abstract class FPCamera {
 		}
 		Mouse.setGrabbed(!paused);
 
-		if(Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH)) delta *= 5;
+		if (Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH)) delta *= 5;
 
 		// when passing in the distance to move
 		// we times the movementSpeed with dt this is a time scale
@@ -103,13 +103,13 @@ public abstract class FPCamera {
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			position.y -= movementSpeed * (delta / 15);
-			if(Keyboard.isKeyDown(Keyboard.KEY_T)){
+			if (Keyboard.isKeyDown(Keyboard.KEY_T)) {
 				position.y = -15;
 			}
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 			position.y += movementSpeed * (delta / 15);
-			if(Keyboard.isKeyDown(Keyboard.KEY_T)){
+			if (Keyboard.isKeyDown(Keyboard.KEY_T)) {
 				position.y = 5950;
 			}
 		}
@@ -134,7 +134,7 @@ public abstract class FPCamera {
 	 */
 	public void translate() {
 	}
-	
+
 	public abstract Vector3d getLook();
 
 }

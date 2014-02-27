@@ -17,8 +17,8 @@ public class StoneHouse implements Building {
 
 	private static ArrayList<Furnature> furniture = new ArrayList<>();
 	private static Village lastVille;
-	
-	public static void loadFurnature(Village ville){
+
+	public static void loadFurnature(Village ville) {
 		furniture.clear();
 		furniture.add(new FurnatureWood(new Adjustment(6, 3, 0), Vanilla.table.uid));
 		furniture.add(new FurnatureChair(new Adjustment(5, 3, 0), Vanilla.chair.uid, 2));
@@ -29,44 +29,44 @@ public class StoneHouse implements Building {
 		furniture.add(new FurnatureTorch(new Adjustment(5, 3, 2), Vanilla.torch.uid, 4));
 		lastVille = ville;
 	}
-	
+
 	@Override
 	public void generate(World world, Door door, Village ville) {
-		if(ville != lastVille) loadFurnature(ville);
+		if (ville != lastVille) loadFurnature(ville);
 		Vector3l start = door.left;
 		start = start.move(3, door.dir.counterClockwise());
-		if(!ville.inBounds(start)) return;
+		if (!ville.inBounds(start)) return;
 		Vector3l end = door.right;
 		end = end.move(3, door.dir.clockwise());
 		end = end.move(7, door.dir);
-		if(!ville.inBounds(end)) return;
+		if (!ville.inBounds(end)) return;
 		long sx = Math.min(start.x, end.x);
 		long sz = Math.min(start.z, end.z);
 		long ex = Math.max(start.x, end.x);
 		long ez = Math.max(start.z, end.z);
 		RoomBB bb = new RoomBB(sx - 1, start.y, sz - 1, ex + 1, start.y + 3, ez + 1);
-		if(!ville.addRoom(bb)) return;
-		for(long x = sx; x <= ex; ++x){
-			for(long z = sz; z <= ez; ++z){
-				for(long y = start.y - 1; y < start.y + 4; ++y){
+		if (!ville.addRoom(bb)) return;
+		for (long x = sx; x <= ex; ++x) {
+			for (long z = sz; z <= ez; ++z) {
+				for (long y = start.y - 1; y < start.y + 4; ++y) {
 					boolean xWall = x == sx || x == ex;
 					boolean zWall = z == sz || z == ez;
-					if(y == start.y - 1 || y == start.y + 3){
-						if(xWall || zWall) ville.setBrickBlock(x, y, z);
+					if (y == start.y - 1 || y == start.y + 3) {
+						if (xWall || zWall) ville.setBrickBlock(x, y, z);
 						else ville.setCobbleBlock(x, y, z);
-					} else if(xWall || zWall){
-						if(xWall && zWall) ville.setBrickBlock(x, y, z);
-						else if(y == start.y + 1){
+					} else if (xWall || zWall) {
+						if (xWall && zWall) ville.setBrickBlock(x, y, z);
+						else if (y == start.y + 1) {
 							boolean nxWall = x == sx + 1 || x == ex - 1;
 							boolean nzWall = z == sz + 1 || z == ez - 1;
-							if(nxWall || nzWall) ville.setCobbleBlock(x, y, z);
+							if (nxWall || nzWall) ville.setCobbleBlock(x, y, z);
 							else ville.setGlassBlock(x, y, z);
 						} else ville.setCobbleBlock(x, y, z);
 					} else ville.setEmptyBlock(x, y, z);
 				}
 			}
 		}
-		for(Furnature f : furniture){
+		for (Furnature f : furniture) {
 			f.place(ville, door.left, door.dir);
 		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
@@ -93,18 +93,17 @@ public class StoneHouse implements Building {
 	public void generateExtra(World world, Door door, Village ville, long y) {
 		Vector3l start = door.left;
 		start = start.move(3, door.dir.counterClockwise());
-		if(!ville.inBounds(start)) return;
+		if (!ville.inBounds(start)) return;
 		Vector3l end = door.right;
 		end = end.move(3, door.dir.clockwise());
 		end = end.move(7, door.dir);
-		if(!ville.inBounds(end)) return;
+		if (!ville.inBounds(end)) return;
 		long sx = Math.min(start.x, end.x);
 		long sz = Math.min(start.z, end.z);
 		long ex = Math.max(start.x, end.x);
 		long ez = Math.max(start.z, end.z);
 		RoomBB bb = new RoomBB(sx - 1, start.y, sz - 1, ex + 1, start.y + 3, ez + 1);
-		if(!ville.addRoom(bb)) return;
+		if (!ville.addRoom(bb)) return;
 	}
-	
 
 }

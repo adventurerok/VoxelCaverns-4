@@ -7,7 +7,7 @@ import vc4.api.sound.Music;
 public class UnderBiome {
 
 	private static UnderBiome[] biomesList = new UnderBiome[256];
-	
+
 	public Color mapColor;
 	public int id;
 	public int stoneBlockId;
@@ -16,11 +16,11 @@ public class UnderBiome {
 	public int cavesAmount = 7;
 	public String name;
 	public Music music = null;
-	
+
 	public static UnderBiome[] getBiomesList() {
 		return biomesList.clone();
 	}
-	
+
 	public UnderBiome(int id, String name, Color mapColor) {
 		super();
 		this.mapColor = mapColor;
@@ -28,12 +28,11 @@ public class UnderBiome {
 		this.id = id;
 		biomesList[id] = this;
 	}
-	
 
 	public Color getMapColor() {
 		return mapColor;
 	}
-	
+
 	public UnderBiome setStoneBlock(int stoneBlockId, int data) {
 		this.stoneBlockId = stoneBlockId;
 		this.stoneBlockData = (byte) data;
@@ -43,9 +42,9 @@ public class UnderBiome {
 	public int getId() {
 		return id;
 	}
-	
-	public UnderBiome setCaveData(int chance, int amount){
-		if(chance < 55) chance = 55;
+
+	public UnderBiome setCaveData(int chance, int amount) {
+		if (chance < 55) chance = 55;
 		this.cavesChance = chance;
 		this.cavesAmount = amount;
 		return this;
@@ -54,27 +53,21 @@ public class UnderBiome {
 	public String getName() {
 		return name;
 	}
-	
+
 	public Music getMusic() {
 		return music;
 	}
 
-	public static UnderBiome byId(int id){
+	public static UnderBiome byId(int id) {
 		return biomesList[id];
 	}
-	
 
-	
-	private UnderBiome(){
-		
+	private UnderBiome() {
+
 	}
-	
-	public static UnderBiome createFake(){
+
+	public static UnderBiome createFake() {
 		return new UnderBiome();
 	}
-	
-	
 
-	
-	
 }

@@ -21,12 +21,11 @@ import vc4.api.graphics.texture.*;
 import vc4.api.logging.Logger;
 import vc4.impl.plugin.PluginManager;
 
-
 /**
  * @author paul
  * 
  */
-public class ClientSheetTextureLoader implements SheetTextureLoader{
+public class ClientSheetTextureLoader implements SheetTextureLoader {
 
 	private static HashMap<String, LoadableTexture> registeredTextures;
 	private static OpenGL gl;
@@ -64,21 +63,21 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			// loop through files in classpath
 		} else {
 			File folder = new File(URLDecoder.decode(packageURL.getFile(), "UTF-8"));
-	        File[] contenuti = folder.listFiles();
-	        //if(contenuti == null) return names;
-	        String entryName;
-	        for(File actual: contenuti){
-	            entryName = actual.getName();
-	            if(!entryName.endsWith(".png")) continue;
-	            names.add(actual.toURI().toURL());
-	        }
+			File[] contenuti = folder.listFiles();
+			// if(contenuti == null) return names;
+			String entryName;
+			for (File actual : contenuti) {
+				entryName = actual.getName();
+				if (!entryName.endsWith(".png")) continue;
+				names.add(actual.toURI().toURL());
+			}
 		}
 		return names;
 	}
-	
-	private static ArrayList<URL> getImageURLs(){
+
+	private static ArrayList<URL> getImageURLs() {
 		ArrayList<URL> result = new ArrayList<>();
-		for(URL url : PluginManager.getResourceURLs()){
+		for (URL url : PluginManager.getResourceURLs()) {
 			try {
 				URL mod = new URL(url.toString() + "/sheettexture/");
 				result.addAll(getImageUrlsElsewhere(mod));
@@ -88,7 +87,7 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 		}
 		return result;
 	}
-	
+
 	private static ArrayList<URL> getImageUrlsElsewhere(URL baseURL) throws IOException {
 		URL packageURL;
 		ArrayList<URL> names = new ArrayList<URL>();
@@ -104,7 +103,7 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
 			String packName = jarFileName.substring(jarFileName.indexOf("!") + 2);
 			jarFileName = jarFileName.substring(5, jarFileName.indexOf("!"));
-			
+
 			try (JarFile jf = new JarFile(jarFileName)) {
 				jarEntries = jf.entries();
 				while (jarEntries.hasMoreElements()) {
@@ -122,18 +121,18 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			// loop through files in classpath
 		} else {
 			File folder = new File(URLDecoder.decode(packageURL.getFile(), "UTF-8"));
-	        File[] contenuti = folder.listFiles();
-	        if(contenuti == null) return names;
-	        String entryName;
-	        for(File actual: contenuti){
-	            entryName = actual.getName();
-	            if(!entryName.endsWith(".png")) continue;
-	            names.add(actual.toURI().toURL());
-	        }
+			File[] contenuti = folder.listFiles();
+			if (contenuti == null) return names;
+			String entryName;
+			for (File actual : contenuti) {
+				entryName = actual.getName();
+				if (!entryName.endsWith(".png")) continue;
+				names.add(actual.toURI().toURL());
+			}
 		}
 		return names;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -150,14 +149,14 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 	@Override
 	public SheetTexture loadTexture(String path) throws IOException {
 		path = path.replace(".", "/");
-		if(path.contains("/")){
+		if (path.contains("/")) {
 			String pack = path.substring(0, path.lastIndexOf("/"));
 			HashMap<String, LoadableTexture> loadPoss = getLoadableTextures(getImageUrlsInPackage(pack));
 			String name = path.substring(path.lastIndexOf("/") + 1);
 			LoadableTexture l = loadPoss.get(name);
 			return l.load();
 		} else {
-			if(registeredTextures == null){
+			if (registeredTextures == null) {
 				registeredTextures = getLoadableTextures(getImageURLs());
 			}
 			String name = path.substring(path.lastIndexOf("/") + 1);
@@ -199,7 +198,7 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 		ArrayList<LoadableSheetImage> imgs = getLoadableImages(urls);
 		for (LoadableSheetImage l : imgs) {
 			LoadableTexture t = result.get(l.texName);
-			if (t == null){
+			if (t == null) {
 				t = new LoadableTexture(1);
 				t.name = l.texName;
 				t.addFile(l);
@@ -207,13 +206,12 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			} else {
 				t.addFile(l);
 			}
-			
-			
+
 		}
 		return result;
 	}
 
-	private static class LoadableSheetImage implements Comparable<LoadableSheetImage>{
+	private static class LoadableSheetImage implements Comparable<LoadableSheetImage> {
 
 		URL url;
 		int numSprites;
@@ -234,14 +232,16 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return url.openStream();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
 		 */
 		@Override
 		public int compareTo(LoadableSheetImage o) {
-			if(o.frameNumber < frameNumber) return 1;
-			else if(o.frameNumber > frameNumber) return -1;
-			if(o.arrayIndex < arrayIndex) return 1;
+			if (o.frameNumber < frameNumber) return 1;
+			else if (o.frameNumber > frameNumber) return -1;
+			if (o.arrayIndex < arrayIndex) return 1;
 			else return -1;
 		}
 
@@ -266,22 +266,22 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			if (file.frameNumber >= numFrames) {
 				numFrames = file.frameNumber + 1;
 			}
-			if(size >= files.length) files = Arrays.copyOf(files, files.length + 1);
+			if (size >= files.length) files = Arrays.copyOf(files, files.length + 1);
 			files[size] = file;
 			++size;
 		}
-		
-		public SheetTexture load() throws IOException{
+
+		public SheetTexture load() throws IOException {
 			return loadWithModded(new ArrayList<SheetTextureAddition>());
 		}
 
 		/**
 		 * @param extra
 		 * @return The loaded texture
-		 * @throws IOException 
+		 * @throws IOException
 		 */
 		public SheetTexture loadWithModded(List<SheetTextureAddition> extra) throws IOException {
-			for(int d = 0; d < extra.size(); ++d){
+			for (int d = 0; d < extra.size(); ++d) {
 				SheetTextureAddition t = extra.get(d);
 				addFile(new LoadableSheetImage(t.url, t.sprites, arraySize, 0, name));
 			}
@@ -293,9 +293,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			texture.arraysize = arraySize;
 			texture.frames = new int[numFrames];
 			int finalArraySize = 0;
-			for(int frame = 0; frame < numFrames; ++frame){
+			for (int frame = 0; frame < numFrames; ++frame) {
 				ByteBuffer texData = null;
-				for(int ai = 0; ai < arraySize; ++ai){
+				for (int ai = 0; ai < arraySize; ++ai) {
 					int arraypos = frame * arraySize + ai;
 					InputStream in = files[arraypos].getInputStream();
 					BufferedImage b = ImageIO.read(in);
@@ -304,19 +304,19 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 					rootSprites = (int) (Math.sqrt(sprites) + 0.001D);
 					texture.width = b.getWidth() / rootSprites;
 					texture.height = b.getHeight() / rootSprites;
-					if(texData == null){
+					if (texData == null) {
 						texData = BufferUtils.createByteBuffer(b.getWidth() * b.getHeight() * arraySize * 4);
 					}
 					int[] pixels = new int[b.getWidth() * b.getHeight()];
 					b.getRGB(0, 0, b.getWidth(), b.getHeight(), pixels, 0, b.getWidth());
-					for(int sy = 0; sy < rootSprites; ++sy){
+					for (int sy = 0; sy < rootSprites; ++sy) {
 						int ny = texture.height * sy;
-						for(int sx = 0; sx < rootSprites; ++sx){
+						for (int sx = 0; sx < rootSprites; ++sx) {
 							int nx = texture.width * sx;
 							for (int y = ny; y < ny + texture.height; y++) {
 								for (int x = nx; x < nx + texture.width; x++) {
 									int pixel = pixels[y * b.getWidth() + x];
-									if(((pixel >> 24) & 0xFF) < 2){
+									if (((pixel >> 24) & 0xFF) < 2) {
 										texData.put((byte) 255);
 										texData.put((byte) 255);
 										texData.put((byte) 255);
@@ -340,27 +340,29 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 				gl.texImage3D(GLTexture.TEX_2D_ARRAY, 0, GLInternalFormat.RGBA8, texture.width, texture.height, finalArraySize, false, GLFormat.RGBA, GLType.UNSIGNED_BYTE, texData);
 				texture.setMipmap(false);
 				texture.setSmooth(false);
-				
+
 				gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
-				
+
 				texture.frames[frame] = texid;
 			}
 			return texture;
 		}
-		
+
 	}
-	
-	protected static class TextureImpl implements SheetTexture{
+
+	protected static class TextureImpl implements SheetTexture {
 
 		int numFrames;
 		int frames[];
 		int arraysize;
 		int width, height;
 		boolean smooth = true, mipmap = true;
-		
+
 		GLTexture type = GLTexture.TEX_2D_ARRAY;
-		
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getTexture(int)
 		 */
 		@Override
@@ -368,7 +370,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return frames[frame];
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getTextureCurrentFrame()
 		 */
 		@Override
@@ -376,7 +380,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return frames[getCurrentFrame()];
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getCurrentFrame()
 		 */
 		@Override
@@ -387,7 +393,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return frame;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getWidth()
 		 */
 		@Override
@@ -395,7 +403,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return width;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getHeight()
 		 */
 		@Override
@@ -403,7 +413,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return height;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getFrameTime()
 		 */
 		@Override
@@ -411,7 +423,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return 100;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getArraySize()
 		 */
 		@Override
@@ -419,7 +433,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return arraysize;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getType()
 		 */
 		@Override
@@ -427,7 +443,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return type;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#getNumberOfFrames()
 		 */
 		@Override
@@ -435,7 +453,9 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			return numFrames;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see game.vc3d.texture.Texture#setSmooth(boolean)
 		 */
 		@Override
@@ -443,25 +463,27 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			this.smooth = smooth;
 			magMinChanged();
 		}
-		
-		private void magMinChanged(){
-			for(int d = 0; d < numFrames; ++d){
+
+		private void magMinChanged() {
+			for (int d = 0; d < numFrames; ++d) {
 				gl.bindTexture(GLTexture.TEX_2D_ARRAY, frames[d]);
 				GLTextureFilter f;
 				GLTextureFilter mip = null;
-				if(smooth){
+				if (smooth) {
 					f = GLTextureFilter.LINEAR;
 				} else {
 					f = GLTextureFilter.NEAREST;
 				}
-				if(mipmap) mip = f;
+				if (mipmap) mip = f;
 				gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, f, mip);
 				gl.texParameterMagFilter(GLTexture.TEX_2D_ARRAY, f);
-				
+
 			}
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see game.vc3d.texture.Texture#setMipmap(boolean)
 		 */
 		@Override
@@ -470,51 +492,52 @@ public class ClientSheetTextureLoader implements SheetTextureLoader{
 			magMinChanged();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see vc4.api.graphics.texture.Texture#bind()
 		 */
 		@Override
 		public void bind() {
 			Graphics.getOpenGL().bindTexture(getType(), getTexture());
 		}
-		
+
 	}
 
-//	/* (non-Javadoc)
-//	 * @see game.vc3d.texture.TextureLoader#loadTexture(java.net.URL)
-//	 */
-//	@Override
-//	public SheetTexture loadTexture(URL url) throws IOException {
-//		String urlDir = url.toString();
-//		urlDir = urlDir.substring(0, urlDir.lastIndexOf("/"));
-//		HashMap<String, LoadableTexture> t = registeredTextures.get(urlDir);
-//		if(t == null){
-//			registeredTextures.put(urlDir, getLoadableTextures(getImageUrlsElsewhere(new URL(urlDir))));
-//			t = registeredTextures.get(urlDir);
-//		}
-//		String name = url.toString();
-//		name = name.substring(name.lastIndexOf("/") + 1);
-//		LoadableTexture l = t.get(name);
-//		
-//		
-//		return l.load();
-//	}
+	// /* (non-Javadoc)
+	// * @see game.vc3d.texture.TextureLoader#loadTexture(java.net.URL)
+	// */
+	// @Override
+	// public SheetTexture loadTexture(URL url) throws IOException {
+	// String urlDir = url.toString();
+	// urlDir = urlDir.substring(0, urlDir.lastIndexOf("/"));
+	// HashMap<String, LoadableTexture> t = registeredTextures.get(urlDir);
+	// if(t == null){
+	// registeredTextures.put(urlDir, getLoadableTextures(getImageUrlsElsewhere(new URL(urlDir))));
+	// t = registeredTextures.get(urlDir);
+	// }
+	// String name = url.toString();
+	// name = name.substring(name.lastIndexOf("/") + 1);
+	// LoadableTexture l = t.get(name);
+	//
+	//
+	// return l.load();
+	// }
 
 	/**
 	 * @param string
 	 * @param extra
 	 * @return The loaded texture
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public SheetTexture loadTextureWithModded(String path, List<SheetTextureAddition> extra) throws IOException {
 		path = path.replace(".", "/");
-		if(registeredTextures == null){
+		if (registeredTextures == null) {
 			registeredTextures = getLoadableTextures(getImageURLs());
 		}
 		String name = path.substring(path.lastIndexOf("/") + 1);
 		LoadableTexture l = registeredTextures.get(name);
-		
-		
+
 		return l.loadWithModded(extra);
 	}
 

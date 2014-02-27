@@ -11,16 +11,16 @@ public class AIAttackPlayer extends AI {
 	double speed;
 	int dmg;
 	int lastAttack = 0;
-	
+
 	Movement move;
-	
+
 	public AIAttackPlayer(EntityLiving owner, double range, double speed, int dmg) {
 		super(owner);
 		max = range * range;
 		this.speed = speed;
 		this.dmg = dmg;
 	}
-	
+
 	@Override
 	public int priority() {
 		return 300;
@@ -30,14 +30,14 @@ public class AIAttackPlayer extends AI {
 	public int conflictId() {
 		return 1;
 	}
-	
+
 	@Override
 	public boolean shouldStart() {
 		double shortest = max;
 		EntityPlayer close = null;
-		for(EntityPlayer p : owner.world.getPlayers()){
+		for (EntityPlayer p : owner.world.getPlayers()) {
 			double ds = p.position.distanceSquared(owner.position);
-			if(ds < shortest){
+			if (ds < shortest) {
 				shortest = ds;
 				close = p;
 			}
@@ -51,26 +51,26 @@ public class AIAttackPlayer extends AI {
 		move = new Movement(target, speed, false);
 		owner.getMoveHandler().setExecuting(move);
 	}
-	
+
 	@Override
-	public void stop(){
-		if(owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().clearExecuting();
+	public void stop() {
+		if (owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().clearExecuting();
 	}
 
 	@Override
 	public boolean update() {
-		if(!owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().setExecuting(move);
+		if (!owner.getMoveHandler().isExecuting(move)) owner.getMoveHandler().setExecuting(move);
 		double ds = target.position.distanceSquared(owner.position);
-		if(ds > max){
+		if (ds > max) {
 			target = null;
 			return false;
 		}
 		owner.lookTargetEntity(target);
-		if(ds < 0.75 && lastAttack == 0){
+		if (ds < 0.75 && lastAttack == 0) {
 			target.damage(dmg, DamageSource.melee(owner, null));
 			lastAttack = 15;
 		}
-		if(lastAttack > 0) lastAttack--;
+		if (lastAttack > 0) lastAttack--;
 		return true;
 	}
 

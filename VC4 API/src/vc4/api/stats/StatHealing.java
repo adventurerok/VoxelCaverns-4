@@ -7,10 +7,10 @@ public class StatHealing implements Stat {
 	boolean negative;
 	int amount;
 	int max;
-	
+
 	@Override
 	public String displayStat(String name) {
-		if(negative) return Localization.getLocalization("stat." + name + "-", amount, max);
+		if (negative) return Localization.getLocalization("stat." + name + "-", amount, max);
 		else return Localization.getLocalization("stat." + name + "+", amount, max);
 	}
 
@@ -37,8 +37,6 @@ public class StatHealing implements Stat {
 	public Integer getValue() {
 		return amount;
 	}
-	
-	
 
 	public boolean isNegative() {
 		return negative;
@@ -54,7 +52,7 @@ public class StatHealing implements Stat {
 
 	@Override
 	public Object[] getValues() {
-		return new Object[]{amount, negative, max};
+		return new Object[] { amount, negative, max };
 	}
 
 }

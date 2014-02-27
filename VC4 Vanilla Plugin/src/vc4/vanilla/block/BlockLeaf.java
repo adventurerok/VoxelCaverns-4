@@ -15,7 +15,7 @@ import vc4.vanilla.util.WoodBlocks;
 
 /**
  * @author paul
- *
+ * 
  */
 public class BlockLeaf extends Block {
 
@@ -26,14 +26,14 @@ public class BlockLeaf extends Block {
 	 */
 	public BlockLeaf(short uid, Material m) {
 		super(uid, 0, m);
-		
+
 	}
-	
+
 	@Override
 	protected String getModifiedName(ItemStack item) {
 		return "leaf." + WoodBlocks.getName(item.getData() & 15);
 	}
-	
+
 	@Override
 	public boolean renderSide(World world, long x, long y, long z, int side) {
 		Direction d = Direction.getDirection(side);
@@ -44,30 +44,36 @@ public class BlockLeaf extends Block {
 		if ((near instanceof BlockLeaf && (side < 4 ? side / 2 == 0 : side % 2 == 0)) || near.isSolid(world, ox, oy, oz, d.opposite().id())) return false;
 		return true;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getRendererToUse(byte, int)
 	 */
 	@Override
 	public int getRendererToUse(byte data, int side) {
 		return 1;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getCreativeItems()
 	 */
 	@Override
 	public Collection<ItemStack> getCreativeItems() {
 		return WoodBlocks.genCreativeItems(uid);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getTextureIndex(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
 		int data = world.getBlockData(x, y, z) & 15;
-		switch(data){
+		switch (data) {
 			case 0:
 				return BlockTexture.oakLeaves;
 			case 1:
@@ -87,13 +93,15 @@ public class BlockLeaf extends Block {
 		}
 		return BlockTexture.oakLeaves;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getTextureIndex(vc4.api.item.ItemStack, int)
 	 */
 	@Override
 	public int getTextureIndex(ItemStack item, int side) {
-		switch(item.getData()){
+		switch (item.getData()) {
 			case 0:
 				return BlockTexture.oakLeaves;
 			case 1:
@@ -111,8 +119,10 @@ public class BlockLeaf extends Block {
 		}
 		return BlockTexture.oakLeaves;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#isSolid(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override

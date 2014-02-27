@@ -19,20 +19,20 @@ import vc4.api.yaml.ThreadYaml;
 import vc4.impl.plugin.PluginManager;
 
 public class ImplResources extends Resources {
-	
+
 	private HashMap<String, AnimatedTexture> animatedTextures = new HashMap<>();
 	private HashMap<String, SheetTexture> sheetTextures = new HashMap<>();
 	private HashMap<String, Font> fonts = new HashMap<>();
 	private HashMap<String, Model> models = new HashMap<>();
-	
+
 	public HashMap<String, AnimatedTexture> getAnimatedTextures() {
 		return animatedTextures;
 	}
-	
+
 	public HashMap<String, SheetTexture> getSheetTextures() {
 		return sheetTextures;
 	}
-	
+
 	public HashMap<String, Font> getFonts() {
 		return fonts;
 	}
@@ -40,7 +40,7 @@ public class ImplResources extends Resources {
 	public ImplResources() {
 		_res = this;
 	}
-	
+
 	@Override
 	public AnimatedTexture agetAnimatedTexture(String name) {
 		return animatedTextures.get(name);
@@ -55,9 +55,9 @@ public class ImplResources extends Resources {
 	public Font agetFont(String name) {
 		return fonts.get(name);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void load() throws IOException{
+	public void load() throws IOException {
 		ArrayList<String> lSheetTextures = new ArrayList<String>();
 		ArrayList<String> lSounds = new ArrayList<>();
 		ArrayList<String> lMusic = new ArrayList<>();
@@ -67,10 +67,10 @@ public class ImplResources extends Resources {
 		ArrayList<String> lModels = new ArrayList<String>();
 		ArrayList<Entry<String, ArrayList<String>>> lGuis = new ArrayList<Entry<String, ArrayList<String>>>();
 		Yaml yaml = ThreadYaml.getYamlForThread();
-		for(URL url : PluginManager.getResourceURLs()){
-			try{
+		for (URL url : PluginManager.getResourceURLs()) {
+			try {
 				String refConstruct = url.toString();
-				if(!refConstruct.endsWith("/")) refConstruct = refConstruct + "/";
+				if (!refConstruct.endsWith("/")) refConstruct = refConstruct + "/";
 				refConstruct = refConstruct + "resources.yml";
 				URL ref = new URL(refConstruct);
 				LinkedHashMap<String, Object> doc = (LinkedHashMap<String, Object>) yaml.load(ref.openStream());
@@ -86,14 +86,15 @@ public class ImplResources extends Resources {
 						values.add(o.toString());
 					}
 					if (e.getKey().equals("sheettexture")) lSheetTextures.addAll(values);
-					else if(e.getKey().equals("animatedtexture")) lAnimatedTextures.addAll(values);
+					else if (e.getKey().equals("animatedtexture")) lAnimatedTextures.addAll(values);
 					else if (e.getKey().equals("shader")) lShaders.addAll(values);
 					else if (e.getKey().equals("font")) lFonts.addAll(values);
 					else if (e.getKey().equals("music")) lMusic.addAll(values);
 					else if (e.getKey().equals("sound")) lSounds.addAll(values);
 					else if (e.getKey().equals("model")) lModels.addAll(values);
 				}
-			} catch(IOException e){}
+			} catch (IOException e) {
+			}
 		}
 		SheetTextureLoader l = Graphics.getSheetLoader();
 		for (String s : lSheetTextures) {
@@ -129,15 +130,15 @@ public class ImplResources extends Resources {
 			}
 
 		}
-		for(String s : lModels){
+		for (String s : lModels) {
 			Logger.getLogger("VC4").fine("Loading model: " + s);
 			models.put(s, Model.loadModel(s));
 		}
-		for(String s : lSounds){
+		for (String s : lSounds) {
 			Logger.getLogger("VC4").fine("Loading sound: " + s);
 			Audio.loadSound(s);
 		}
-		for(String s : lMusic){
+		for (String s : lMusic) {
 			Logger.getLogger("VC4").fine("Loading music: " + s);
 			Audio.loadMusic(s);
 		}
@@ -148,7 +149,8 @@ public class ImplResources extends Resources {
 		loadGui(lGuis);
 	}
 
-	protected void loadGui(ArrayList<Entry<String, ArrayList<String>>> lGuis) {}
+	protected void loadGui(ArrayList<Entry<String, ArrayList<String>>> lGuis) {
+	}
 
 	@Override
 	public List<URL> agetResourceURLs() {
@@ -159,6 +161,5 @@ public class ImplResources extends Resources {
 	public Model agetModel(String name) {
 		return models.get(name);
 	}
-	
 
 }

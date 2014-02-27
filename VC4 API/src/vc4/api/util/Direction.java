@@ -5,20 +5,14 @@ package vc4.api.util;
 
 /**
  * @author paul
- *
+ * 
  */
 public enum Direction {
 
-	NORTH(0, 2, 1, 0, 0),
-	EAST(1, 3, 0, 0, 1),
-	SOUTH(2, 0, -1, 0, 0),
-	WEST(3, 1, 0, 0, -1),
-	UP(4, 5, 0, 1, 0),
-	DOWN(5, 4, 0, -1, 0),
-	NORTHEAST(6, 8, 1, 0, 1), //optional
-	SOUTHEAST(7, 9, -1, 0, 1), //optional
-	SOUTHWEST(8, 6, -1, 0, -1), //optional
-	NORTHWEST(9, 7, 1, 0, -1), //optional
+	NORTH(0, 2, 1, 0, 0), EAST(1, 3, 0, 0, 1), SOUTH(2, 0, -1, 0, 0), WEST(3, 1, 0, 0, -1), UP(4, 5, 0, 1, 0), DOWN(5, 4, 0, -1, 0), NORTHEAST(6, 8, 1, 0, 1), // optional
+	SOUTHEAST(7, 9, -1, 0, 1), // optional
+	SOUTHWEST(8, 6, -1, 0, -1), // optional
+	NORTHWEST(9, 7, 1, 0, -1), // optional
 	CUSTOM0(10, -1, 0, 0, 0),
 	CUSTOM1(11, -1, 0, 0, 0),
 	CUSTOM2(12, -1, 0, 0, 0),
@@ -29,11 +23,11 @@ public enum Direction {
 	CUSTOM7(17, -1, 0, 0, 0),
 	CUSTOM8(18, -1, 0, 0, 0),
 	CUSTOM9(19, -1, 0, 0, 0);
-	
+
 	private static Direction[] dirs;
 	private int id, opposite, x, y, z;
-	
-	static{
+
+	static {
 		dirs = new Direction[20];
 		dirs[0] = NORTH;
 		dirs[1] = EAST;
@@ -56,8 +50,8 @@ public enum Direction {
 		dirs[18] = CUSTOM8;
 		dirs[19] = CUSTOM9;
 	}
-	
-	public static Direction getDirection(int id){
+
+	public static Direction getDirection(int id) {
 		return dirs[id];
 	}
 
@@ -68,24 +62,24 @@ public enum Direction {
 		this.y = y;
 		this.z = z;
 	}
-	
-	public Direction counterClockwise(){
+
+	public Direction counterClockwise() {
 		return getDirection((id - 1) & 3);
 	}
-	
-	public Direction clockwise(){
+
+	public Direction clockwise() {
 		return getDirection((id + 1) & 3);
 	}
-	
-	public boolean isNorthSouth(){
+
+	public boolean isNorthSouth() {
 		return this.id == 0 || this.id == 2;
 	}
-	
-	public boolean isEastWest(){
+
+	public boolean isEastWest() {
 		return this.id == 1 || this.id == 3;
 	}
-	
-	public boolean isUpDown(){
+
+	public boolean isUpDown() {
 		return this.id == 4 || this.id == 5;
 	}
 
@@ -109,10 +103,9 @@ public enum Direction {
 	public int getY() {
 		return y;
 	}
-	
-	
-	public Direction opposite(){
-		if(opposite == -1) return null;
+
+	public Direction opposite() {
+		if (opposite == -1) return null;
 		return dirs[opposite];
 	}
 
@@ -122,21 +115,21 @@ public enum Direction {
 	public int getZ() {
 		return z;
 	}
-	
-	public void setCustom(int x, int y, int z){
-		if(id < 10) return;
+
+	public void setCustom(int x, int y, int z) {
+		if (id < 10) return;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	
-	public void clearCustom(){
-		if(id < 10) return;
+
+	public void clearCustom() {
+		if (id < 10) return;
 		x = y = z = 0;
 	}
-	
-	public void addDirectionToCustom(Direction dir){
-		if(id < 10) return;
+
+	public void addDirectionToCustom(Direction dir) {
+		if (id < 10) return;
 		x += dir.x;
 		y += dir.y;
 		z += dir.z;
@@ -148,10 +141,9 @@ public enum Direction {
 	public static Direction getDiagonal(int side) {
 		return getDirection(side + 6);
 	}
-	
-	public static Direction getOpposite(int dir){
+
+	public static Direction getOpposite(int dir) {
 		return getDirection(dir).opposite();
 	}
-	
-	
+
 }

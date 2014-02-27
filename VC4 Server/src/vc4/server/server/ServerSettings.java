@@ -14,22 +14,22 @@ import vc4.api.yaml.YamlMap;
 
 public class ServerSettings {
 
-	public static byte[] usid; //Unique Server ID
-	
+	public static byte[] usid; // Unique Server ID
+
 	public static byte[] getUsid() {
 		return usid;
 	}
-	
-	public static void load(){
+
+	public static void load() {
 		String path = DirectoryLocator.getPath() + "/server/server.yml";
 		File file = new File(path);
-		if(!file.exists()) {
+		if (!file.exists()) {
 			createDefault();
 			return;
 		}
 		try {
 			YamlMap map = new YamlMap(new FileInputStream(file));
-			if(map.getBaseMap() == null){ 
+			if (map.getBaseMap() == null) {
 				createDefault();
 				return;
 			} else load(map);
@@ -38,12 +38,12 @@ public class ServerSettings {
 		}
 		Logger.getLogger("VC4").info("Server USID: " + SuidUtils.getSuidHex(usid));
 	}
-	
-	public static void save(){
+
+	public static void save() {
 		String path = DirectoryLocator.getPath() + "/server/server.yml";
 		File file = new File(path);
-		if(!file.exists()) file.getParentFile().mkdirs();
-		try(OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file))){
+		if (!file.exists()) file.getParentFile().mkdirs();
+		try (OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file))) {
 			getSaveMap().dump(w);
 		} catch (IOException e) {
 			Logger.getLogger(ServerSettings.class).warning("Exception", e);
@@ -51,11 +51,11 @@ public class ServerSettings {
 	}
 
 	private static void load(YamlMap map) {
-		if(map.hasKey("usid")) usid = SuidUtils.parseSuid(map.getString("usid"));
+		if (map.hasKey("usid")) usid = SuidUtils.parseSuid(map.getString("usid"));
 		else usid = SuidUtils.generateRandomSuid();
 	}
-	
-	private static YamlMap getSaveMap(){
+
+	private static YamlMap getSaveMap() {
 		YamlMap save = new YamlMap();
 		save.setString("usid", SuidUtils.getSuidHex(usid));
 		return save;
@@ -67,5 +67,5 @@ public class ServerSettings {
 		save();
 		Logger.getLogger("VC4").info("Server USID: " + SuidUtils.getSuidHex(usid));
 	}
-	
+
 }

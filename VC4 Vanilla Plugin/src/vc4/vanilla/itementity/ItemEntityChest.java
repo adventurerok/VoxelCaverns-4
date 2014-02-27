@@ -10,54 +10,53 @@ import vc4.vanilla.block.BlockPlanks;
 
 public class ItemEntityChest extends ItemEntity {
 
-	
 	private static Color gold = new Color(255, 226, 102);
 	private static Color adamantite = new Color(60, 93, 60);
 	public byte type = 0, subtype = 0;
-	
+
 	public ItemEntityChest() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public ItemEntityChest(byte type, byte subtype) {
 		super();
 		this.type = type;
 		this.subtype = subtype;
 	}
 
-	
-	public String getTypeName(){
-		switch(type){
-		case 0:
-			return "wood";
-		case 1:
-			return "gold";
-		case 2:
-			return "adamantite";
+	public String getTypeName() {
+		switch (type) {
+			case 0:
+				return "wood";
+			case 1:
+				return "gold";
+			case 2:
+				return "adamantite";
 		}
 		return "empty";
 	}
-	
-	public Color getColor(){
-		switch(type){
-		case 0:
-			return BlockPlanks.backColors[subtype];
-		case 1:
-			return gold;
-		case 2:
-			return adamantite;
+
+	public Color getColor() {
+		switch (type) {
+			case 0:
+				return BlockPlanks.backColors[subtype];
+			case 1:
+				return gold;
+			case 2:
+				return adamantite;
 		}
-		
+
 		return Color.white;
 	}
-
 
 	@Override
 	public ItemEntity clone() {
 		return new ItemEntityChest(type, subtype);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -69,31 +68,27 @@ public class ItemEntityChest extends ItemEntity {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		ItemEntityChest other = (ItemEntityChest) obj;
-		if (subtype != other.subtype)
-			return false;
-		if (type != other.type)
-			return false;
+		if (subtype != other.subtype) return false;
+		if (type != other.type) return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean canCombine(ItemEntity entity) {
 		return equals(entity);
 	}
 
-	
 	@Override
 	public CompoundTag getSaveCompound(World world) {
 		CompoundTag tag = super.getSaveCompound(world);
@@ -113,7 +108,5 @@ public class ItemEntityChest extends ItemEntity {
 	public String getName() {
 		return "vanilla.chest";
 	}
-	
-	
 
 }

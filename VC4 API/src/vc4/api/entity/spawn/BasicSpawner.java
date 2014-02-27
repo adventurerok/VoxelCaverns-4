@@ -9,9 +9,9 @@ import vc4.api.logging.Logger;
 import vc4.api.world.World;
 
 public class BasicSpawner implements Spawner {
-	
+
 	Constructor<? extends Entity> constructor;
-	
+
 	public BasicSpawner(Class<? extends Entity> clz) {
 		try {
 			constructor = clz.getConstructor(World.class);

@@ -11,7 +11,7 @@ import vc4.vanilla.generation.dungeon.Dungeon;
 
 /**
  * @author paul
- *
+ * 
  */
 public abstract class DungeonRoom {
 

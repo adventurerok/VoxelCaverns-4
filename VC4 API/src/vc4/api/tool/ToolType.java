@@ -4,14 +4,14 @@ public class ToolType {
 
 	private int id;
 	private String name;
-	
+
 	private static int nextId = 0;
-	
+
 	public static final ToolType pickaxe = new ToolType("pick");
 	public static final ToolType axe = new ToolType("hatchet");
 	public static final ToolType spade = new ToolType("shovel");
 	public static final ToolType hoe = new ToolType("hoe");
-	
+
 	public ToolType(String name) {
 		super();
 		this.id = nextId++;
@@ -27,7 +27,7 @@ public class ToolType {
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -49,5 +49,5 @@ public class ToolType {
 		if (id != other.id) return false;
 		return true;
 	}
-	
+
 }

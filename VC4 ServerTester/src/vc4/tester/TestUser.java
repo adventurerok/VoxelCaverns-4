@@ -10,7 +10,7 @@ public class TestUser implements User {
 
 	@Override
 	public byte[] getUid() {
-		return new byte[]{0};
+		return new byte[] { 0 };
 	}
 
 	@Override
@@ -42,13 +42,13 @@ public class TestUser implements User {
 	@Override
 	public void setPermission(String permission, int change) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPermission(String permission, boolean change) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -76,12 +76,12 @@ public class TestUser implements User {
 
 	@Override
 	public void setGroup(Group g) {
-		
+
 	}
 
 	@Override
 	public void sendPacket(Packet p) {
-		
+
 	}
 
 	@Override

@@ -53,16 +53,16 @@ import vc4.vanilla.underbiome.UnderBiome;
 
 /**
  * @author paul
- *
+ * 
  */
 public class Vanilla extends Plugin {
 
 	static Dictionary trades = new Dictionary();
 	static Dictionary underBiomes = new Dictionary();
-	
+
 	public static Color[] woolColors = new Color[64];
-	
-	//Blocks
+
+	// Blocks
 	public static Block grass, dirt, logV, logX, logZ, leaf, brick, mossBrick;
 	public static Block sand, glass, ore, hellrock, lava, oreHell, water, obsidian;
 	public static Block planks, planksHalf, bookshelf, planksStairs0, planksStairs4;
@@ -75,12 +75,12 @@ public class Vanilla extends Plugin {
 	public static Block flipFlop, gapRepeaterGate, button, bitMonitor;
 	public static Block redWire, blueWire, greenWire, yellowWire;
 	public static Block wool0, wool1, present;
-	
-	//Items
+
+	// Items
 	public static Item food, spawnStick, stick, metalBar, alloyBar, crop, seeds;
 	public static Item fertilizer, cure, wrench;
-	
-	//Plants
+
+	// Plants
 	public static Plant plantTreeOak;
 	public static Plant plantTreeBirch;
 	public static Plant plantTreeWillow;
@@ -104,8 +104,8 @@ public class Vanilla extends Plugin {
 	public static Plant plantReedWater;
 	public static Plant plantSugarcane;
 	public static Plant plantBamboo;
-	
-	//Tools
+
+	// Tools
 	public static ToolMaterial materialWood = new ToolMaterial("wood", 32, 1);
 	public static ToolMaterial materialStone = new ToolMaterial("stone", 64, 2.5);
 	public static ToolMaterial materialCopper = new ToolMaterial("copper", 128, 6.25);
@@ -121,21 +121,20 @@ public class Vanilla extends Plugin {
 	public static ToolMaterial materialAdamantite = new ToolMaterial("adamantite", 4096, 500);
 	public static ToolMaterial materialUnholy = new ToolMaterial("unholy", 5120, 750);
 	public static ToolMaterial materialSacred = new ToolMaterial("sacred", 5120, 750);
-	
-	
-	//Music
+
+	// Music
 	public static Music musicOverworld = new Music("First_Day", MusicType.BIOME);
 	public static Music musicDesert = new Music("Desert_Theme", MusicType.BIOME);
 	public static Music musicHell = new Music("A_Night_Out", MusicType.BIOME);
 	public static Music musicSky = new Music("Ocean_Theme", MusicType.BIOME);
-	
-	//Biomes
+
+	// Biomes
 	public static BiomeHeightModel hills = new BiomeHeightModel(75, 25, 80, 10);
 	public static BiomeHeightModel oceans = new BiomeHeightModel(-38, -80, 1, -100);
 	public static BiomeHeightModel trenchs = new BiomeHeightModel(-70, -125, -10, -140);
 	public static BiomeHeightModel mountains = new BiomeHeightModel(125, 55, 140, 20);
 	public static BiomeHeightModel swampy = new BiomeHeightModel(2, -1, 4, -3);
-	
+
 	public static Biome biomeOcean;
 	public static Biome biomeOceanTrench;
 	public static BiomeHilly biomePlains;
@@ -163,150 +162,132 @@ public class Vanilla extends Plugin {
 	public static Biome biomeForestBirchH;
 	public static BiomeHilly biomeForestBamboo;
 	public static Biome biomeForestBambooH;
-	
+
 	public static UnderBiome underStone;
 	public static UnderBiome underCobbleCaverns;
-	
-	//Crafting
+
+	// Crafting
 	public static short craftingHammer, craftingSaw, craftingTable, craftingFurnace;
 	public static short craftingEnchantedBook;
-	
-	//Trades
+
+	// Trades
 	public static Trade tradeBlades, tradeArmor, tradePotions, tradeHealing, tradePickaxes;
 	public static Trade tradeGuard;
-	
+
 	public static ArrayList<ArrayList<Integer>> biomes;
 	public static IntList underBiomesList;
 	public static ZoomGenerator underBiomesGen;
-	
-	
-	private static ToolMaterial[] materials = new ToolMaterial[]{
-		materialWood,
-		materialStone,
-		materialCopper,
-		materialBronze,
-		materialIron,
-		materialKradonium,
-		materialSilver,
-		materialGold,
-		materialMithril,
-		materialTitanium,
-		materialHellish,
-		materialPlatinum,
-		materialAdamantite,
-		materialUnholy,
-		materialSacred
-	};
-	
-	private static ToolType[] types = new ToolType[]{
-		ToolType.pickaxe,
-		ToolType.spade,
-		ToolType.axe,
-		ToolType.hoe
-	};
-	
-	
-	/* (non-Javadoc)
+
+	private static ToolMaterial[] materials = new ToolMaterial[] { materialWood, materialStone, materialCopper, materialBronze, materialIron, materialKradonium, materialSilver, materialGold, materialMithril, materialTitanium,
+			materialHellish, materialPlatinum, materialAdamantite, materialUnholy, materialSacred };
+
+	private static ToolType[] types = new ToolType[] { ToolType.pickaxe, ToolType.spade, ToolType.axe, ToolType.hoe };
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.plugin.Plugin#onEnable()
 	 */
 	@Override
 	public void onEnable() {
 		loadWoolColors();
-		//normal
+		// normal
 		plantTreeOak = new Plant("tree", "oak", "normal").setData((byte) 0);
 		plantTreeBirch = new Plant("tree", "birch", "normal").setData((byte) 1);
 		plantTreeWillow = new Plant("tree", "willow", "normal").setData((byte) 2);
 		plantTreeRedwood = new Plant("tree", "redwood", "normal").setData((byte) 5);
 		plantTreeKapok = new Plant("tree", "kapok", "normal").setData((byte) 6);
 		plantTreeCypress = new Plant("tree", "cypress", "normal").setData((byte) 7);
-		
-		//big
+
+		// big
 		plantTreeKapokBig = new Plant("tree", "kapok", "big").setData((byte) 6);
-		
-		//stump
+
+		// stump
 		plantStumpCypress = new Plant("tree", "cypress", "stump").setData((byte) 7);
-		
-		//bush
+
+		// bush
 		plantBushOak = new Plant("tree", "oak", "bush").setData((byte) 0);
 		plantBushBirch = new Plant("tree", "birch", "bush").setData((byte) 1);
 		plantBushWillow = new Plant("tree", "willow", "bush").setData((byte) 2);
 		plantBushRedwood = new Plant("tree", "redwood", "bush").setData((byte) 5);
 		plantBushKapok = new Plant("tree", "kapok", "bush").setData((byte) 6);
 		plantBushCypress = new Plant("tree", "cypress", "bush").setData((byte) 7);
-		
+
 		plantCactus = new Plant("cactus", "desert", "normal");
-		
-		//grass
+
+		// grass
 		plantGrassTall = new Plant("grass", "weed", "normal");
 		plantGrassWheat = new Plant("grass", "wheat", "crop");
 		plantGrassBarley = new Plant("grass", "barley", "crop");
-		
-		//?canes?
+
+		// ?canes?
 		plantReedWater = new Plant("reed", "water", "normal");
 		plantSugarcane = new Plant("cane", "sugar", "crop");
 		plantBamboo = new Plant("bamboo", "bamboo", "crop");
-		
+
 		WorldGenerator gen = new OverworldGenerator();
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
 		GeneratorList.registerGenerator("sky", new SkylandGenerator());
-		
-		//normal
+
+		// normal
 		GeneratorList.registerPlantGen(plantTreeOak, new TreeGenBasic());
 		GeneratorList.registerPlantGen(plantTreeBirch, new TreeGenBasic());
 		GeneratorList.registerPlantGen(plantTreeWillow, new TreeGenWillow());
 		GeneratorList.registerPlantGen(plantTreeRedwood, new TreeGenRedwood());
 		GeneratorList.registerPlantGen(plantTreeKapok, new TreeGenBasic());
 		GeneratorList.registerPlantGen(plantTreeCypress, new TreeGenCypress());
-		
-		//big
+
+		// big
 		GeneratorList.registerPlantGen(plantTreeKapokBig, new TreeGenKapok());
-		
-		//stump
+
+		// stump
 		GeneratorList.registerPlantGen(plantStumpCypress, new TreeGenCypress());
-		
-		//bush
+
+		// bush
 		GeneratorList.registerPlantGen(plantBushOak, new TreeGenBush());
 		GeneratorList.registerPlantGen(plantBushBirch, new TreeGenBush());
 		GeneratorList.registerPlantGen(plantBushWillow, new TreeGenBush());
 		GeneratorList.registerPlantGen(plantBushRedwood, new TreeGenBush());
 		GeneratorList.registerPlantGen(plantBushCypress, new TreeGenBush());
-		
+
 		GeneratorList.registerPlantGen(plantCactus, new PlantGenCactus());
 		GeneratorList.registerPlantGen(plantReedWater, new PlantGenReeds());
 		GeneratorList.registerPlantGen(plantSugarcane, new PlantGenCane((byte) 1));
 		GeneratorList.registerPlantGen(plantBamboo, new PlantGenCane((byte) 2));
-		
+
 		GuiOpenContainer.addContainerGui("chest", GuiChest.class);
-		
+
 		Names.load();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.plugin.Plugin#onDisable()
 	 */
 	@Override
 	public void onDisable() {
-		
+
 	}
-	
+
 	public void loadWoolColors() {
 		BufferedImage buf = null;
 		try {
 			buf = ImageIO.read(Vanilla.class.getResourceAsStream("resources/images/64color.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 		}
-		if(buf != null){
-			for(int x = 0; x < 8; ++x){
-				for(int y = 0; y < 8; ++y){
+		if (buf != null) {
+			for (int x = 0; x < 8; ++x) {
+				for (int y = 0; y < 8; ++y) {
 					woolColors[y * 8 + x] = new Color(buf.getRGB(x, y));
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void loadCraftingItems(World world) {
 		craftingSaw = world.getRegisteredCrafting("vanilla.saw");
@@ -320,13 +301,13 @@ public class Vanilla extends Plugin {
 		CraftingManager.setToolIcon(craftingEnchantedBook, "enchantedbook");
 		CraftingManager.setToolIcon(craftingFurnace, "furnace");
 	}
-	
+
 	@Override
 	public void loadEntities(World world) {
 		Entity.registerEntity("vanilla.villager", EntityNpc.class);
 		Entity.registerEntity("vanilla.zombie", EntityZombie.class);
 	}
-	
+
 	@Override
 	public void loadAreas(World world) {
 		Area.registerArea("vanilla.village", AreaVillage.class);
@@ -334,18 +315,19 @@ public class Vanilla extends Plugin {
 
 	@Override
 	public void preWorldLoad(World world) {
-		if(VoxelCaverns.hasGraphics()){
+		if (VoxelCaverns.hasGraphics()) {
 			BlockTexture.update();
 			ItemTexture.update();
 		}
 		biomes = new ArrayList<>();
-		for(int d = 0; d < BiomeType.getNumberOfTypes(); ++d) biomes.add(new ArrayList<Integer>());
+		for (int d = 0; d < BiomeType.getNumberOfTypes(); ++d)
+			biomes.add(new ArrayList<Integer>());
 		try {
 			loadDict(underBiomes = new Dictionary(), DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/underbiomes.dictionary");
 		} catch (FileNotFoundException e) {
 		}
 	}
-	
+
 	@Override
 	public void loadBlocks(World world) {
 		grass = new BlockGrass(world.getRegisteredBlock("vanilla.grass"), Material.getMaterial("grass")).setName("grass");
@@ -417,7 +399,7 @@ public class Vanilla extends Plugin {
 		wool1 = new BlockWool(world.getRegisteredBlock("vanilla.wool.1"), 1).setMineData(new MiningData().setPowers(0, 1, 25).setTimes(0.5, 0.2, 0.05)).setName("wool");
 		present = new BlockPresent(world.getRegisteredBlock("vanilla.present")).setName("present");
 	}
-	
+
 	@Override
 	public void loadItems(World world) {
 		generateToolItems(world);
@@ -431,13 +413,13 @@ public class Vanilla extends Plugin {
 		cure = new ItemPlantHelp(world.getRegisteredItem("vanilla.cure"), 1).setName("plantcure");
 		wrench = new ItemWrench(world.getRegisteredItem("vanilla.wrench")).setName("wrench");
 	}
-	
+
 	@Override
 	public void loadItemEntities(World world) {
 		ItemEntity.registerEntity("vanilla.chest", ItemEntityChest.class);
 	}
-	
-	public void loadTrades(World world){
+
+	public void loadTrades(World world) {
 		tradeBlades = new Trade("blades").addToList();
 		tradeArmor = new Trade("armor").addToList();
 		tradeHealing = new Trade("healing").addToList();
@@ -445,12 +427,10 @@ public class Vanilla extends Plugin {
 		tradePickaxes = new Trade("pickaxes").addToList();
 		tradeGuard = new Trade("guard");
 	}
-	
-	
-	
+
 	@Override
 	public void loadBiomes(World world) {
-		//Definitions
+		// Definitions
 		biomeOcean = new BiomeOcean(world.getRegisteredBiome("vanilla.ocean")).setHeights(oceans);
 		biomePlains = new BiomePlains(world.getRegisteredBiome("vanilla.plains"), "plains", BiomeType.normal, Color.green, 256, wheat.uid, 2, barley.uid);
 		biomeDesert = new BiomeDesert(world.getRegisteredBiome("vanilla.desert"), "desert", BiomeType.hot, Color.yellow);
@@ -478,9 +458,8 @@ public class Vanilla extends Plugin {
 		biomePlainsBarley = new BiomePlains(world.getRegisteredBiome("vanilla.plains.barley"), "plains/barley", BiomeType.normal, Color.green, 16, barley.uid, 5, wheat.uid);
 		biomePlainsWheatH = new BiomePlains(world.getRegisteredBiome("vanilla.plains.wheat.hills"), "plains/wheat/hills", BiomeType.normal, Color.green, 16, wheat.uid, 5, barley.uid).setHeights(hills);
 		biomePlainsBarleyH = new BiomePlains(world.getRegisteredBiome("vanilla.plains.barley.hills"), "plains/barley/hills", BiomeType.normal, Color.green, 16, barley.uid, 5, wheat.uid).setHeights(hills);
-		
-		
-		//Set-up
+
+		// Set-up
 		biomeOcean.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeOcean.addPlant(new PlantGrowth(plantTreeWillow, 5));
 		biomeOcean.addPlant(new PlantGrowth(plantReedWater, 30));
@@ -488,7 +467,7 @@ public class Vanilla extends Plugin {
 		biomeOceanTrench.addPlant(new PlantGrowth(plantReedWater, 30));
 		biomeOceanTrench.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeOceanTrench.music = musicSky;
-		
+
 		biomeDesert.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesertH.setBiomeBlocks(sand.uid, sand.uid, sand.uid);
 		biomeDesert.music = musicDesert;
@@ -499,7 +478,7 @@ public class Vanilla extends Plugin {
 		biomeDesertOasis.setBiomeBlocks(grass.uid, dirt.uid, sand.uid);
 		biomeDesertOasis.addPlant(new PlantGrowth(plantTreeOak, 3));
 		biomeDesert.setHills(biomeDesertH.id);
-		
+
 		biomePlains.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlains.setIcingBlock(weeds.uid);
 		biomePlainsH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
@@ -515,7 +494,7 @@ public class Vanilla extends Plugin {
 		biomePlainsBarleyH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlainsBarleyH.setIcingBlock(weeds.uid);
 		biomePlainsBarley.setHills(biomePlainsBarleyH.id);
-		
+
 		biomeForest.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeForest.addPlant(new PlantGrowth(plantTreeOak, 18));
 		biomeForest.addPlant(new PlantGrowth(plantTreeBirch, 12));
@@ -523,19 +502,19 @@ public class Vanilla extends Plugin {
 		biomeForestH.addPlant(new PlantGrowth(plantTreeOak, 18));
 		biomeForestH.addPlant(new PlantGrowth(plantTreeBirch, 12));
 		biomeForest.setHills(biomeForestH.id);
-		
+
 		biomeForestBirch.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeForestBirch.addPlant(new PlantGrowth(plantTreeBirch, 30));
 		biomeForestBirchH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeForestBirchH.addPlant(new PlantGrowth(plantTreeBirch, 30));
 		biomeForestBirch.setHills(biomeForestBirchH.id);
-		
+
 		biomePlainsS.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlainsS.setIcingBlock(snow.uid);
 		biomePlainsSH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomePlainsSH.setIcingBlock(snow.uid);
 		biomePlainsS.setHills(biomePlainsSH.id);
-		
+
 		biomeForestRedwoodS.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeForestRedwoodS.setIcingBlock(snow.uid);
 		biomeForestRedwoodS.addPlant(new PlantGrowth(plantTreeRedwood, 10));
@@ -543,22 +522,22 @@ public class Vanilla extends Plugin {
 		biomeForestRedwoodSH.setIcingBlock(snow.uid);
 		biomeForestRedwoodSH.addPlant(new PlantGrowth(plantTreeRedwood, 10));
 		biomeForestRedwoodS.setHills(biomeForestRedwoodSH.id);
-		
+
 		biomeVolcanic.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
 		biomeVolcanic.music = musicHell;
 		biomeVolcanicH.setBiomeBlocks(obsidian.uid, obsidian.uid, obsidian.uid);
 		biomeVolcanicH.music = musicHell;
 		biomeVolcanic.setHills(biomeVolcanicH.id);
-		
+
 		biomeRockyH.setBiomeBlocks(Block.stone.uid, Block.stone.uid, Block.stone.uid);
 		biomeRockyH.setHeights(mountains);
-		
+
 		biomeSwamp.setIcingBlock(weeds.uid);
 		biomeSwamp.addPlant(new PlantGrowth(plantTreeCypress, 9));
 		biomeSwamp.addPlant(new PlantGrowth(plantStumpCypress, 9));
 		biomeSwamp.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeSwamp.setColors(new Color(0x354C2D), new Color(75, 132, 99, 164), new Color(0x2E3D22));
-		
+
 		biomeJungle.setIcingBlock(weeds.uid);
 		biomeJungleH.setIcingBlock(weeds.uid);
 		biomeJungle.addPlant(new PlantGrowth(plantSugarcane, 8));
@@ -576,29 +555,29 @@ public class Vanilla extends Plugin {
 		biomeJungle.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));
 		biomeJungleH.setColors(new Color(0x2FA81C), new Color(0, 156, 254, 128), new Color(0x2EBB06));
 		biomeJungle.setHills(biomeJungleH.id);
-		
+
 		biomeForestBamboo.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeForestBambooH.setBiomeBlocks(grass.uid, dirt.uid, dirt.uid);
 		biomeForestBamboo.addPlant(new PlantGrowth(plantBamboo, 150));
 		biomeForestBambooH.addPlant(new PlantGrowth(plantBamboo, 150));
 		biomeForestBamboo.setHills(biomeForestBambooH.id);
-		
+
 		loadUnderBiomes(world);
 	}
-	
-	public void loadUnderBiomes(World world){
+
+	public void loadUnderBiomes(World world) {
 		underStone = new UnderBiome(underBiomes.get("vanilla.stone"), "stone", Color.black).setStoneBlock(Block.stone.uid, 0);
 		underCobbleCaverns = new UnderBiome(underBiomes.get("vanilla.cobblecaverns"), "cobblecaverns", Color.green).setStoneBlock(Vanilla.brick.uid, 15).setCaveData(90, 10);
-		
-		
+
 		underBiomesList = new IntList();
-		for(int d = 0; d < 10; ++d) underBiomesList.add(underStone.id);
+		for (int d = 0; d < 10; ++d)
+			underBiomesList.add(underStone.id);
 		underBiomesList.add(underCobbleCaverns.id);
 	}
-	
-	public void loadBiomesList(){
+
+	public void loadBiomesList() {
 		addBiomeToGenerator(BiomeType.ocean, biomeOcean.id, 10);
-		
+
 		addBiomeToGenerator(BiomeType.normal, biomePlains.id, 8);
 		addBiomeToGenerator(BiomeType.normal, biomePlainsWheat.id, 1);
 		addBiomeToGenerator(BiomeType.normal, biomePlainsBarley.id, 1);
@@ -606,36 +585,37 @@ public class Vanilla extends Plugin {
 		addBiomeToGenerator(BiomeType.normal, biomeForestBirch.id, 5);
 		addBiomeToGenerator(BiomeType.normal, biomeSwamp.id, 10);
 		addBiomeToGenerator(BiomeType.normal, biomeForestBamboo.id, 5);
-		
+
 		addBiomeToGenerator(BiomeType.cold, biomePlainsS.id, 10);
 		addBiomeToGenerator(BiomeType.cold, biomeForestRedwoodS.id, 10);
-		
+
 		addBiomeToGenerator(BiomeType.hot, biomeDesert.id, 10);
 		addBiomeToGenerator(BiomeType.hot, biomeVolcanic.id, 5);
 		addBiomeToGenerator(BiomeType.hot, biomeRockyH.id, 5);
 		addBiomeToGenerator(BiomeType.hot, biomeJungle.id, 10);
 	}
-	
-	public void addBiomeToGenerator(BiomeType type, int biomeid, int amount){
+
+	public void addBiomeToGenerator(BiomeType type, int biomeid, int amount) {
 		ArrayList<Integer> bios = biomes.get(type.getId());
-		for(int d = 0; d < amount; ++d) bios.add(biomeid);
+		for (int d = 0; d < amount; ++d)
+			bios.add(biomeid);
 	}
-	
+
 	@Override
 	public void loadTileEntities(World world) {
 		TileEntity.registerEntity("vanilla.chest", TileEntityChest.class);
 	}
-	
+
 	@Override
 	public void loadContainers(World world) {
 		Container.registerContainer("vanilla.chest", ContainerChest.class);
 	}
-	
+
 	@Override
 	public void loadCraftingRecipes(World world) {
 		CraftingManager.addRecipes(new RecipesBlocks());
 	}
-	
+
 	@Override
 	public void onWorldLoad(World world) {
 		spawnStick = new ItemSpawnWand(world.getRegisteredItem("vanilla.spawnwand"));
@@ -649,7 +629,7 @@ public class Vanilla extends Plugin {
 		SpawnControl.addSpawnEntry(new SpawnEntry(100, new BasicSpawner(EntityZombie.class), new AndFilter(new LightFilter(7, 0), new SkylightFilter(false), new HumanoidFilter())));
 		loadBiomesList();
 	}
-	
+
 	@Override
 	public void onWorldSave(World world) {
 		try {
@@ -661,38 +641,38 @@ public class Vanilla extends Plugin {
 		} catch (FileNotFoundException e) {
 		}
 	}
-	
-	private void loadDict(Dictionary dict, String path) throws FileNotFoundException{
+
+	private void loadDict(Dictionary dict, String path) throws FileNotFoundException {
 		File file = new File(path);
-		if(!file.exists()) return;
+		if (!file.exists()) return;
 		dict.load(new FileInputStream(file));
 	}
-	
+
 	public ArrayList<ArrayList<Integer>> getBiomes() {
 		return biomes;
 	}
-	
-	public void generateToolItems(World world){
-		for(int d = 0; d < types.length; ++d){
-			for(int f = 0; f < materials.length; ++f){
+
+	public void generateToolItems(World world) {
+		for (int d = 0; d < types.length; ++d) {
+			for (int f = 0; f < materials.length; ++f) {
 				String name = "vanilla." + types[d].getName() + "." + materials[f].getName();
-				if(types[d] != ToolType.hoe) new ItemTool(world.getRegisteredItem(name), types[d], materials[f]);
+				if (types[d] != ToolType.hoe) new ItemTool(world.getRegisteredItem(name), types[d], materials[f]);
 				else new ItemHoe(world.getRegisteredItem(name), materials[f]);
 			}
 		}
 	}
-	
-	public static int getRegisteredTrade(String name){
+
+	public static int getRegisteredTrade(String name) {
 		return trades.get(name);
 	}
-	
-	public static String getTradeName(int id){
+
+	public static String getTradeName(int id) {
 		return trades.getName(id);
 	}
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{"vn", "vanilla", "v"};
+		return new String[] { "vn", "vanilla", "v" };
 	}
 
 }

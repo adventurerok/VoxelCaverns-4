@@ -9,35 +9,41 @@ import vc4.api.logging.*;
 
 /**
  * @author paul
- *
+ * 
  */
 public class ImplLogger extends Logger {
 
 	protected String name;
-	
+
 	Vector<Handler> handlers = new Vector<Handler>();
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.logging.Logger#log(vc4.api.logging.Level, java.lang.Object)
 	 */
 	@Override
 	public void log(Level level, Object message) {
-		for(int d = 0; d< handlers.size(); ++d){
+		for (int d = 0; d < handlers.size(); ++d) {
 			handlers.get(d).handleLog(this, level, message);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.logging.Logger#log(vc4.api.logging.Level, java.lang.Object, java.lang.Throwable)
 	 */
 	@Override
 	public void log(Level level, Object message, Throwable throwable) {
-		for(int d = 0; d< handlers.size(); ++d){
+		for (int d = 0; d < handlers.size(); ++d) {
 			handlers.get(d).handleLog(this, level, message, throwable);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.logging.Logger#addHandler(vc4.api.logging.Handler)
 	 */
 	@Override
@@ -45,7 +51,9 @@ public class ImplLogger extends Logger {
 		handlers.add(handler);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.logging.Logger#removeHandler(vc4.api.logging.Handler)
 	 */
 	@Override
@@ -53,7 +61,9 @@ public class ImplLogger extends Logger {
 		handlers.remove(handler);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.logging.Logger#getHandlers()
 	 */
 	@Override
@@ -61,13 +71,14 @@ public class ImplLogger extends Logger {
 		return handlers;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.logging.Logger#getName()
 	 */
 	@Override
 	public String getName() {
 		return name;
 	}
-
 
 }

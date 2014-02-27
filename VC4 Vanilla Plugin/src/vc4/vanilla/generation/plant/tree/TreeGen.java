@@ -10,33 +10,28 @@ import vc4.api.world.MapData;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 
-public abstract class TreeGen implements PlantGenerator{
+public abstract class TreeGen implements PlantGenerator {
 
 	public static int DEAD_VARIANT = Plant.getPlantData("tree").getVariantId("dead");
 	public static int STUMP_VARIANT = Plant.getPlantData("tree").getVariantId("stump");
 	public static int NORMAL_VARIANT = Plant.getPlantData("tree").getVariantId("normal");
 	public static int BIG_VARIANT = Plant.getPlantData("tree").getVariantId("big");
-	
+
 	protected World world;
 	public Random rand;
-	
-	
-	
+
 	public TreeGen() {
 		// TASK Auto-generated constructor stub
 	}
-	
-	
-	
+
 	public TreeGen(World world, Random rand) {
 		super();
 		this.world = world;
 		this.rand = rand;
 	}
 
-	
-	public void setBlockVine(long x, long y, long z){
-		if(!world.getBlockType(x, y, z).replacableBy(world, x, y, z, getVineBlockId(), (byte)0)) return;
+	public void setBlockVine(long x, long y, long z) {
+		if (!world.getBlockType(x, y, z).replacableBy(world, x, y, z, getVineBlockId(), (byte) 0)) return;
 		boolean ret = true;
 		if (world.getBlockId(x, y + 1, z) == getVineBlockId()) ret = false;
 		for (int d = 0; d < 4 && ret == true; ++d) {
@@ -45,97 +40,103 @@ public abstract class TreeGen implements PlantGenerator{
 		if (ret) return;
 		int dat = 0;
 		for (int d = 0; d < 4; ++d) {
-			if (vineCheckNearby(world, x, y, z, d)){
+			if (vineCheckNearby(world, x, y, z, d)) {
 				dat |= 1 << d;
 			}
 		}
-		if(world.getBlockId(x, y + 1, z) == getVineBlockId()){
+		if (world.getBlockId(x, y + 1, z) == getVineBlockId()) {
 			dat |= world.getBlockData(x, y + 1, z);
 		}
 		world.setBlockIdData(x, y, z, getVineBlockId(), dat);
 	}
-	
-	private boolean vineCheckNearby(World world, long x, long y, long z, int side){
+
+	private boolean vineCheckNearby(World world, long x, long y, long z, int side) {
 		Block b = world.getNearbyBlockType(x, y, z, Direction.getDirection(side));
 		return b.uid == Vanilla.leaf.uid || b.isSolid(world, x, y, z, Direction.getOpposite(side).id());
 	}
-	
-	public int getVineBlockId(){
+
+	public int getVineBlockId() {
 		return Vanilla.vines.uid;
 	}
 
-	
 	public TreeGen setWorld(World world) {
 		this.world = world;
 		return this;
 	}
 
 	public abstract boolean generate(long x, long y, long z, Plant plant);
-	
+
 	@Override
 	public void growPlant(World world, MapData data, long x, long y, long z, Random rand, Plant plant) {
-		if(y < 0) return;
+		if (y < 0) return;
 		int cx = rand.nextInt(32);
 		int cz = rand.nextInt(32);
 		long height = data.getGenHeight(cx, cz);
-		if(height >> 5 != y) return;
+		if (height >> 5 != y) return;
 		this.world = world;
 		this.rand = rand;
 		generate((x << 5) + cx, height + 1, (z << 5) + cz, plant);
 	}
-	
+
 	@Override
 	public void onWorldLoad(World world) {
 	}
-	
-	protected void setBlockAsLeaf(long x, long y, long z, byte meta){
+
+	protected void setBlockAsLeaf(long x, long y, long z, byte meta) {
 		int i = world.getBlockId(x, y, z);
-		if(i == 0 || Block.byId(i).replacableBy(world, x, y, z, Vanilla.leaf.uid, meta)){
+		if (i == 0 || Block.byId(i).replacableBy(world, x, y, z, Vanilla.leaf.uid, meta)) {
 			world.setBlockIdDataNoNotify(x, y, z, Vanilla.leaf.uid, meta + 16);
 		}
 	}
-	protected void setBlockAsLeafWithChance(long x, long y, long z, byte meta, int pc){
-		if(rand.nextInt(100) < pc) setBlockAsLeaf(x, y, z, meta);
+
+	protected void setBlockAsLeafWithChance(long x, long y, long z, byte meta, int pc) {
+		if (rand.nextInt(100) < pc) setBlockAsLeaf(x, y, z, meta);
 	}
-	
-	protected void setBlockAsWood(long x, long y, long z, byte meta){
+
+	protected void setBlockAsWood(long x, long y, long z, byte meta) {
 		internalWoodSet(x, y, z, Vanilla.logV.uid, meta);
 	}
-	protected void setBlockAsWoodX(long x, long y, long z, byte meta){
+
+	protected void setBlockAsWoodX(long x, long y, long z, byte meta) {
 		internalWoodSet(x, y, z, Vanilla.logX.uid, meta);
 	}
-	protected void setBlockAsWoodZ(long x, long y, long z, byte meta){
+
+	protected void setBlockAsWoodZ(long x, long y, long z, byte meta) {
 		internalWoodSet(x, y, z, Vanilla.logZ.uid, meta);
 	}
-	protected void fillBlocksWithWood(long minX, long minY, long minZ, long maxX, long maxY, long maxZ, byte meta){
+
+	protected void fillBlocksWithWood(long minX, long minY, long minZ, long maxX, long maxY, long maxZ, byte meta) {
 		long sx = Math.min(minX, maxX);
 		long sy = Math.min(minY, maxY);
 		long sz = Math.min(minZ, maxZ);
 		long ex = Math.max(minX, maxX) + 1;
 		long ey = Math.max(minY, maxY) + 1;
 		long ez = Math.max(minZ, maxZ) + 1;
-		for(long nx = sx; nx < ex; ++nx){
-			for(long ny = sy; ny < ey; ++ny){
-				for(long nz = sz; nz < ez; ++nz){
+		for (long nx = sx; nx < ex; ++nx) {
+			for (long ny = sy; ny < ey; ++ny) {
+				for (long nz = sz; nz < ez; ++nz) {
 					internalWoodSet(nx, ny, nz, Vanilla.logV.uid, meta);
 				}
 			}
 		}
 	}
-	private void internalWoodSet(long x, long y, long z, short id, byte meta){
+
+	private void internalWoodSet(long x, long y, long z, short id, byte meta) {
 		Block i = world.getBlockType(x, y, z);
-		if(i.uid == Vanilla.leaf.uid || i.replacableBy(world, x, y, z, id, meta)){
+		if (i.uid == Vanilla.leaf.uid || i.replacableBy(world, x, y, z, id, meta)) {
 			world.setBlockIdDataNoNotify(x, y, z, id, meta + 16);
 		}
 	}
-	protected void setBlockAsWoodRelative(long x, long y, long z, int side, byte meta){
+
+	protected void setBlockAsWoodRelative(long x, long y, long z, int side, byte meta) {
 		Direction dir = Direction.getDirection(side);
 		x += dir.getX();
 		y += dir.getY();
 		z += dir.getZ();
 		setBlockAsWood(x, y, z, meta);
 	}
-	protected void setBlockAsLeafRelative(long x, long y, long z, int side, byte meta){
+
+	protected void setBlockAsLeafRelative(long x, long y, long z, int side, byte meta) {
 		Direction dir = Direction.getDirection(side);
 		x += dir.getX();
 		y += dir.getY();

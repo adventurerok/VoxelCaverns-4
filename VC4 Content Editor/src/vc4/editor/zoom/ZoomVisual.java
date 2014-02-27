@@ -17,8 +17,8 @@ import vc4.editor.util.TestWorld;
 
 public class ZoomVisual {
 
-	 private static long seed = new Random().nextLong();
-//	private static long seed = 1919273631L;
+	private static long seed = new Random().nextLong();
+	// private static long seed = 1919273631L;
 	private static int width = 16;
 	// private static int minus = width / 2;
 	private static int minus = -8;
@@ -47,16 +47,16 @@ public class ZoomVisual {
 		int neq = 0;
 
 		for (int i = 0; i < length; i++)
-			if (a[i] != a2[i]){
+			if (a[i] != a2[i]) {
 				neq++;
-				//System.out.println("Not equal at index: " + i);
+				// System.out.println("Not equal at index: " + i);
 			}
 
 		return (100 - (neq / (double) a.length) * 100) + "% (" + neq + " errors)";
 	}
 
 	public static void displayImage(int[] img, String save) {
-		//img = biomesToPixels(img);
+		// img = biomesToPixels(img);
 		img = heightsToPixels(img);
 		BufferedImage image = new BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_RGB);
 		WritableRaster raster = (WritableRaster) image.getData();
@@ -103,19 +103,19 @@ public class ZoomVisual {
 	private static int[] doZoomFunc(int x, int z) {
 		ZoomGenerator par = new HeightGenSeed(world);
 		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1/2f);
+		par = new HeightGenDisplace(world, par, 1 / 2f);
 		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1/4f);
+		par = new HeightGenDisplace(world, par, 1 / 4f);
 		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1/8f);
+		par = new HeightGenDisplace(world, par, 1 / 8f);
 		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1/16f);
+		par = new HeightGenDisplace(world, par, 1 / 16f);
 		par = new HeightGenZoom(world, par);
 		par = new HeightGenZoom(world, par);
 		par = new BiomeGenZoom(world, par);
 		long start = System.nanoTime();
 		int[] result = par.generate(x * size, z * size, size);
-		
+
 		long time = (System.nanoTime() - start) / 1000000;
 		System.out.println("Took " + time + " ms");
 		return result;
@@ -140,7 +140,7 @@ public class ZoomVisual {
 		}
 		return out;
 	}
-	
+
 	public static int[] heightsToPixels(int[] result) {
 		int[] out = new int[result.length * 3];
 		for (int d = 0; d < result.length; ++d) {

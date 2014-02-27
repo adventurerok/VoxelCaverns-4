@@ -5,7 +5,7 @@ import vc4.launcher.util.YamlMap;
 public class Runnable {
 
 	String name, launch, path, xmx, xms;
-	
+
 	public Runnable(YamlMap map) {
 		name = map.getString("name");
 		launch = map.getString("launch");

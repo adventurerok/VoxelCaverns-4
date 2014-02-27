@@ -12,10 +12,9 @@ import vc4.api.item.ItemStack;
 import vc4.api.world.World;
 import vc4.vanilla.BlockTexture;
 
-
 /**
  * @author paul
- *
+ * 
  */
 public class BlockBrick extends Block {
 
@@ -26,10 +25,12 @@ public class BlockBrick extends Block {
 	 */
 	public BlockBrick(short uid) {
 		super(uid, 31, Material.getMaterial("brick"));
-		
+
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getTextureIndex(vc4.api.world.World, long, long, long, int)
 	 */
 	@Override
@@ -55,22 +56,26 @@ public class BlockBrick extends Block {
 
 		return BlockTexture.brick;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getCreativeItems()
 	 */
 	@Override
 	public Collection<ItemStack> getCreativeItems() {
 		ArrayList<ItemStack> result = new ArrayList<>(8);
-		for(int d = 0; d < 6; ++d){
+		for (int d = 0; d < 6; ++d) {
 			result.add(new ItemStack(uid, d, 1));
 		}
 		result.add(new ItemStack(uid, 14, 1));
 		result.add(new ItemStack(uid, 15, 1));
 		return result;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see vc4.api.block.Block#getTextureIndex(vc4.api.item.ItemStack, int)
 	 */
 	@Override
@@ -96,7 +101,7 @@ public class BlockBrick extends Block {
 
 		return BlockTexture.brick;
 	}
-	
+
 	@Override
 	protected String getModifiedName(ItemStack item) {
 		switch (item.getDamage()) {

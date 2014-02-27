@@ -18,7 +18,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	 * 
 	 */
 	private static final long serialVersionUID = -1914854850244654107L;
-	//private static IContainerGui containerGui;
+	// private static IContainerGui containerGui;
 	protected boolean isOpen = false;
 	protected ItemStack[] slots;
 	protected boolean modified;
@@ -38,19 +38,19 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			Logger.getLogger(Container.class).warning("Exception occured", e);
 		}
 	}
-	
+
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
-	
+
 	public boolean isModified() {
 		return modified;
 	}
 
 	protected Container() {
 	}
-	
-	public String getGuiName(){
+
+	public String getGuiName() {
 		return null;
 	}
 
@@ -71,8 +71,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 
 	@Override
 	public ItemStack addItemStack(ItemStack stack) {
-		if (stack == null || !stack.exists())
-			return null;
+		if (stack == null || !stack.exists()) return null;
 		stack = stack.clone();
 		for (int dofor = 0; dofor < slots.length; dofor++) {
 			if (stack.equals(slots[dofor])) {
@@ -95,10 +94,9 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		setModified(true);
 		return stack;
 	}
-	
+
 	public ItemStack addItemStack(ItemStack stack, int min, int max) {
-		if (stack == null || !stack.exists())
-			return null;
+		if (stack == null || !stack.exists()) return null;
 		stack = stack.clone();
 		for (int dofor = min; dofor < max; dofor++) {
 			if (stack.equals(slots[dofor])) {
@@ -140,7 +138,6 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 
 	public abstract String getName();
 
-
 	@Override
 	public ItemStack getItem(int slot) {
 		try {
@@ -161,9 +158,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	@Override
 	public int indexOf(ItemStack object) {
 		for (int dofor = 0; dofor < slots.length; dofor++) {
-			if (slots[dofor].equals(object)) {
-				return dofor;
-			}
+			if (slots[dofor].equals(object)) { return dofor; }
 		}
 		return -1;
 	}
@@ -187,11 +182,9 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		isOpen = true;
 	}
 
-
 	protected void readExtraData(World world, CompoundTag tag) {
 
 	}
-
 
 	public void setAllItems(ItemStack... items) {
 		if (items.length == slots.length) {
@@ -221,8 +214,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	@Override
 	public void setItems(int beginIndex, ItemStack... stacks) {
 		for (int dofor = 0; dofor < stacks.length; dofor++) {
-			if (beginIndex + dofor >= getSize())
-				return;
+			if (beginIndex + dofor >= getSize()) return;
 			slots[beginIndex + dofor] = stacks[dofor];
 		}
 		setModified(true);
@@ -238,18 +230,16 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		return "game.voxelcaverns.data.containers.Container: " + getGuiName();
 	}
 
-
 	protected void writeExtraData(World world, CompoundTag tag) {
 
 	}
-
 
 	public void writeContainer(World world, CompoundTag tag) {
 		tag.addTag(new ShortTag("id", world.getRegisteredContainer(getName())));
 		tag.setInt("size", getSize());
 		ListTag lis = new ListTag("items", CompoundTag.class);
-		for(int d = 0; d < getSize(); ++d){
-			if(getItem(d) == null || !getItem(d).exists()) continue;
+		for (int d = 0; d < getSize(); ++d) {
+			if (getItem(d) == null || !getItem(d).exists()) continue;
 			CompoundTag i = new CompoundTag("item");
 			ItemStack.write(world, getItem(d), i);
 			i.setInt("slot", d);
@@ -270,7 +260,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 			Container c = ccons.newInstance();
 			c.slots = new ItemStack[tag.getInt("size")];
 			ListTag lis = tag.getListTag("items");
-			while(lis.hasNext()){
+			while (lis.hasNext()) {
 				CompoundTag t = (CompoundTag) lis.getNextTag();
 				ItemStack i = ItemStack.read(world, t);
 				c.slots[t.getInt("slot")] = i;
@@ -291,18 +281,18 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		}
 		return null;
 	}
-	
-	public ItemStack leftClick(int slot, ItemStack heldItem){
+
+	public ItemStack leftClick(int slot, ItemStack heldItem) {
 		if (getItem(slot) == null) {
 			if (heldItem != null) {
 				setItem(slot, heldItem.clone());
 				heldItem = null;
 			}
 		} else {
-//			if(SingleplayerUtils.getKeyboard().isKeyDown(Keys.CONTROL)){
-//				setItem(slot, containerGui.controlClick(getItem(slot), slot));
-//				return heldItem;
-//			}
+			// if(SingleplayerUtils.getKeyboard().isKeyDown(Keys.CONTROL)){
+			// setItem(slot, containerGui.controlClick(getItem(slot), slot));
+			// return heldItem;
+			// }
 			if (heldItem != null) {
 				heldItem = getItem(slot).combineItemStack(heldItem);
 			} else {
@@ -314,8 +304,8 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		setModified(true);
 		return heldItem;
 	}
-	
-	public ItemStack rightClick(int slot, ItemStack heldItem){
+
+	public ItemStack rightClick(int slot, ItemStack heldItem) {
 		if (getItem(slot) == null) {
 			if (heldItem != null) {
 				setItem(slot, heldItem.clone());
@@ -342,12 +332,12 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		setModified(true);
 		return heldItem;
 	}
-	
-//	/**
-//	 * @param containerGui the containerGui to set
-//	 */
-//	public static void setContainerGui(IContainerGui containerGui) {
-//		Container.containerGui = containerGui;
-//	}
+
+	// /**
+	// * @param containerGui the containerGui to set
+	// */
+	// public static void setContainerGui(IContainerGui containerGui) {
+	// Container.containerGui = containerGui;
+	// }
 
 }

@@ -18,38 +18,36 @@ public class Repo {
 	private String name;
 	private boolean canDisable = true;
 	private List<String> textFiles = new ArrayList<>();
-	
+
 	public ArrayList<Package> getPackages() {
 		return packages;
 	}
-	
+
 	public List<String> getTextFiles() {
 		return textFiles;
 	}
-	
-	public Package getPackage(String name){
+
+	public Package getPackage(String name) {
 		return namedPackages.get(name);
 	}
-	
+
 	public void setCanDisable(boolean canDisable) {
 		this.canDisable = canDisable;
 	}
-	
+
 	public boolean canDisable() {
 		return canDisable;
 	}
-	
-	public void refresh(){
-		for(Package p : packages){
-			try{
+
+	public void refresh() {
+		for (Package p : packages) {
+			try {
 				p.refresh();
-			} catch(IOException e){
+			} catch (IOException e) {
 			}
 		}
 	}
-	
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -70,8 +68,8 @@ public class Repo {
 		return true;
 	}
 
-	public boolean loadInfo(URL url){
-		try{
+	public boolean loadInfo(URL url) {
+		try {
 			System.out.println("Loading repo info for: " + url.toString());
 			String s = url.toString();
 			if (!s.endsWith("/")) s = s + "/";
@@ -82,19 +80,19 @@ public class Repo {
 			load(map);
 			System.out.println("Loaded repo info for: " + url.toString());
 			return true;
-		} catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("Failed to download repo info for: " + url.toString());
 			return false;
 		}
 	}
-	
-	public void autoUpdate(){
+
+	public void autoUpdate() {
 		System.out.println("Checking for updates in repo: " + name);
-		for(Package p : packages){
+		for (Package p : packages) {
 			p.autoUpdate();
 		}
 	}
-	
+
 	public String getRepoRoot() {
 		return repoRoot;
 	}
@@ -105,7 +103,7 @@ public class Repo {
 		name = info.getString("name");
 		YamlMap packages = map.getSubMap("packages");
 		Iterator<YamlMap> it = packages.getSubMapsIterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			YamlMap m = it.next();
 			String folder = m.getString("folder");
 			Package p = new Package();
@@ -114,22 +112,22 @@ public class Repo {
 			namedPackages.put(p.getName(), p);
 			this.packages.add(p);
 		}
-		if(map.hasKey("text")){
+		if (map.hasKey("text")) {
 			textFiles = (List<String>) map.getJavaList("text");
 		}
-		
+
 	}
-	
-	public URL getUrl(String file){
+
+	public URL getUrl(String file) {
 		try {
 			return new URL(repoRoot + file);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Invalid file");
-		} 
+		}
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 }

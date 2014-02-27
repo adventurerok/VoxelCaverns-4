@@ -10,11 +10,11 @@ public class UnloadThread extends Thread {
 
 	public static ImplWorld world;
 	public static ConcurrentLinkedQueue<ImplChunk> toSave = new ConcurrentLinkedQueue<>();
-	
+
 	@Override
 	public void run() {
 		Chunk c;
-		while((c = toSave.poll()) != null){
+		while ((c = toSave.poll()) != null) {
 			try {
 				world.getSaveFormat().writeChunk(c);
 			} catch (IOException e) {

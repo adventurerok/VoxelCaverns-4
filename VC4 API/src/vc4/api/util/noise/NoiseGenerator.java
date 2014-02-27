@@ -37,36 +37,29 @@ public abstract class NoiseGenerator {
 		return noise(x, y, 0.0D);
 	}
 
-	public abstract double noise(double paramDouble1, double paramDouble2,
-			double paramDouble3);
+	public abstract double noise(double paramDouble1, double paramDouble2, double paramDouble3);
 
-	public double noise(double x, int octaves, double frequency,
-			double amplitude) {
+	public double noise(double x, int octaves, double frequency, double amplitude) {
 		return noise(x, 0.0D, 0.0D, octaves, frequency, amplitude);
 	}
 
-	public double noise(double x, int octaves, double frequency,
-			double amplitude, boolean normalized) {
+	public double noise(double x, int octaves, double frequency, double amplitude, boolean normalized) {
 		return noise(x, 0.0D, 0.0D, octaves, frequency, amplitude, normalized);
 	}
 
-	public double noise(double x, double y, int octaves, double frequency,
-			double amplitude) {
+	public double noise(double x, double y, int octaves, double frequency, double amplitude) {
 		return noise(x, y, 0.0D, octaves, frequency, amplitude);
 	}
 
-	public double noise(double x, double y, int octaves, double frequency,
-			double amplitude, boolean normalized) {
+	public double noise(double x, double y, int octaves, double frequency, double amplitude, boolean normalized) {
 		return noise(x, y, 0.0D, octaves, frequency, amplitude, normalized);
 	}
 
-	public double noise(double x, double y, double z, int octaves,
-			double frequency, double amplitude) {
+	public double noise(double x, double y, double z, int octaves, double frequency, double amplitude) {
 		return noise(x, y, z, octaves, frequency, amplitude, false);
 	}
 
-	public double noise(double x, double y, double z, int octaves,
-			double frequency, double amplitude, boolean normalized) {
+	public double noise(double x, double y, double z, int octaves, double frequency, double amplitude, boolean normalized) {
 		double result = 0.0D;
 		double amp = 1.0D;
 		double freq = 1.0D;

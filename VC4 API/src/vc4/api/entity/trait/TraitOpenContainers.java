@@ -9,21 +9,21 @@ import vc4.api.tileentity.TileEntityContainer;
 public class TraitOpenContainers extends Trait {
 
 	ArrayList<OpenContainer> containers = new ArrayList<>();
-	
+
 	public TraitOpenContainers(Entity entity) {
 		super(entity);
 		// TASK Auto-generated constructor stub
 	}
-	
+
 	public ArrayList<OpenContainer> getContainers() {
 		return containers;
 	}
-	
+
 	@Override
 	public void update() {
 		ArrayList<OpenContainer> news = new ArrayList<>();
-		for(OpenContainer c : containers){
-			if(c.update(entity)) news.add(c);
+		for (OpenContainer c : containers) {
+			if (c.update(entity)) news.add(c);
 		}
 		containers = news;
 
@@ -33,8 +33,8 @@ public class TraitOpenContainers extends Trait {
 	public String name() {
 		return "opencontainers";
 	}
-	
-	public void open(TileEntityContainer cont){
+
+	public void open(TileEntityContainer cont) {
 		containers.add(new OpenContainer(cont));
 	}
 

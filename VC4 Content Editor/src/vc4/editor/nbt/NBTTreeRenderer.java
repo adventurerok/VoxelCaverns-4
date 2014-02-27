@@ -15,9 +15,9 @@ public class NBTTreeRenderer extends DefaultTreeCellRenderer {
 	 * 
 	 */
 	private static final long serialVersionUID = 6132129731738086370L;
-	
+
 	private ImageIcon[] icons = new ImageIcon[256];
-	
+
 	public NBTTreeRenderer() {
 		Arrays.fill(icons, new ImageIcon(NBTNode.class.getClassLoader().getResource("vc4/resources/icons/nbt_unknown.png")));
 		icons[1] = new ImageIcon(NBTNode.class.getClassLoader().getResource("vc4/resources/icons/nbt_byte.png"));
@@ -41,15 +41,15 @@ public class NBTTreeRenderer extends DefaultTreeCellRenderer {
 		icons[19] = new ImageIcon(NBTNode.class.getClassLoader().getResource("vc4/resources/icons/nbt_eshort_array.png"));
 		icons[20] = new ImageIcon(NBTNode.class.getClassLoader().getResource("vc4/resources/icons/nbt_eint_array.png"));
 	}
-	
-	public ImageIcon geticon(int id){
+
+	public ImageIcon geticon(int id) {
 		return icons[id];
 	}
-	
+
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-		if(value instanceof NBTNode){
+		if (value instanceof NBTNode) {
 			NBTNode node = (NBTNode) value;
 			setIcon(icons[NBTUtils.getTypeCode(node.getTag().getClass())]);
 		}

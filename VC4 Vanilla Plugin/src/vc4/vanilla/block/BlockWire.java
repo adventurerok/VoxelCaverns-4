@@ -15,28 +15,28 @@ public class BlockWire extends Block implements IBlockJoinable {
 
 	Color max = new Color(99, 0, 255);
 	Color min = new Color(22, 0, 64);
-	
+
 	public BlockWire(int uid) {
 		super(uid, BlockTexture.wire, "wire");
 		renderer = new BlockRendererJoinable();
 		blockOpacity[uid] = 1;
 	}
-	
+
 	@Override
 	public ItemStack[] getItemDrops(World world, long x, long y, long z, ItemStack mined) {
-		return new ItemStack[]{new ItemStack(uid, 0, 1)};
+		return new ItemStack[] { new ItemStack(uid, 0, 1) };
 	}
-	
+
 	@Override
 	public int getProvidingSignal(World world, long x, long y, long z, int side) {
 		return world.getBlockData(x, y, z);
 	}
-	
+
 	@Override
 	public boolean render3d(byte data) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return false;
@@ -55,12 +55,12 @@ public class BlockWire extends Block implements IBlockJoinable {
 	public float getDistanceSideToBlock(byte data) {
 		return 0.375f;
 	}
-	
+
 	@Override
 	public boolean takesSignalInput(World world, long x, long y, long z, int side) {
 		return true;
 	}
-	
+
 	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
 		boolean sides[] = PipeUtils.getPipeAttachedSides(world, x, y, z);
@@ -94,25 +94,25 @@ public class BlockWire extends Block implements IBlockJoinable {
 
 		return result;
 	}
-	
+
 	@Override
 	public Color getColor(World world, long x, long y, long z, int side) {
 		float amount = world.getBlockData(x, y, z) / 15F;
 		return ColorUtils.differColors(min, max, amount);
 	}
-	
+
 	@Override
 	public Color getColor(ItemStack current, int side) {
 		return max;
 	}
-	
+
 	@Override
 	public void place(World world, long x, long y, long z, EntityPlayer player, ItemStack item) {
 		super.place(world, x, y, z, player, item);
 		updateSignal(world, x, y, z);
 	}
-	
-	public void updateSignal(World world, long x, long y, long z){
+
+	public void updateSignal(World world, long x, long y, long z) {
 		byte l_0 = (byte) (getSignalLevelAt(world, x + 1, y, z, 2) - 1);
 		byte l_1 = (byte) (getSignalLevelAt(world, x, y, z + 1, 3) - 1);
 		byte l_2 = (byte) (getSignalLevelAt(world, x - 1, y, z, 0) - 1);
@@ -120,28 +120,27 @@ public class BlockWire extends Block implements IBlockJoinable {
 		byte l_4 = (byte) (getSignalLevelAt(world, x, y + 1, z, 5) - 1);
 		byte l_5 = (byte) (getSignalLevelAt(world, x, y - 1, z, 4) - 1);
 		byte power = 0;
-		if(l_0 > power) power = l_0;
-		if(l_1 > power) power = l_1;
-		if(l_2 > power) power = l_2;
-		if(l_3 > power) power = l_3;
-		if(l_4 > power) power = l_4;
-		if(l_5 > power) power = l_5;
-		if(power != world.getBlockData(x, y, z)){
+		if (l_0 > power) power = l_0;
+		if (l_1 > power) power = l_1;
+		if (l_2 > power) power = l_2;
+		if (l_3 > power) power = l_3;
+		if (l_4 > power) power = l_4;
+		if (l_5 > power) power = l_5;
+		if (power != world.getBlockData(x, y, z)) {
 			world.setBlockData(x, y, z, power);
 		}
 	}
-	
+
 	@Override
 	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {
 		updateSignal(world, x, y, z);
 	}
-	
+
 	byte getSignalLevelAt(World world, long x, long y, long z, int side) {
-		if(world.getBlockType(x, y, z) instanceof BlockWire) return world.getBlockData(x, y, z);
+		if (world.getBlockType(x, y, z) instanceof BlockWire) return world.getBlockData(x, y, z);
 		return (byte) (world.getBlockType(x, y, z).getProvidingSignal(world, x, y, z, side) + 1);
 	}
-	
-	
+
 	@Override
 	public AABB getRayTraceSize(World world, long x, long y, long z) {
 		boolean sides[] = PipeUtils.getPipeAttachedSides(world, x, y, z);

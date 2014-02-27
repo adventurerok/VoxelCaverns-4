@@ -815,7 +815,7 @@ public class MidiChannel implements MetaEventListener {
 	 * @param action
 	 *            GET or SET.
 	 * @param value
-	 *            New value if action == SET, or 
+	 *            New value if action == SET, or
 	 * @return True while a MIDI file is in the process of loading.
 	 */
 	private synchronized boolean loading(boolean action, boolean value) {

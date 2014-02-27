@@ -17,7 +17,7 @@ import vc4.launcher.Launcher;
 import vc4.launcher.gui.tab.*;
 
 public class LauncherGui extends JFrame {
-	
+
 	public LauncherGui() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(640, 480);
@@ -31,30 +31,30 @@ public class LauncherGui extends JFrame {
 		panel.setPreferredSize(new Dimension(10, 50));
 		getContentPane().add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setPreferredSize(new Dimension(100, 10));
 		panel.add(panel_1, BorderLayout.EAST);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
-		
+
 		JButton playButton = new JButton("Play");
 		playButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Launcher.getSingleton().launch();
-				
+
 			}
 		});
 		panel_1.add(playButton);
-		
+
 		_progressBar = new JProgressBar();
 		_progressBar.setStringPainted(true);
 		_progressBar.setString("No Job");
 		_progressBar.setValue(100);
 		panel.add(_progressBar, BorderLayout.CENTER);
 	}
-	
+
 	public JProgressBar getProgressBar() {
 		return _progressBar;
 	}

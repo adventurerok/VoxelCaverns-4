@@ -27,14 +27,14 @@ public abstract class EntityLiving extends Entity {
 	public MovementStyle movement = MovementStyle.WALK;
 	public FlyingStyle flying = FlyingStyle.WALK;
 	public boolean looking = false;
-	
+
 	public byte resistanceTime = 20;
 	public int resistedDamage = 100000;
 	public int healing = 25;
 
 	public double walkSwing = 0;
 	public double walkSwingSin = 0;
-	
+
 	MovementHandler moveHandler;
 
 	protected HashMap<String, AI> ais = new HashMap<>();
@@ -44,9 +44,9 @@ public abstract class EntityLiving extends Entity {
 		moveHandler = new MovementHandler(this);
 		if (font == null && VoxelCaverns.hasGraphics()) font = FontRenderer.createFontRenderer("unispaced_24", 0.15f);
 	}
-	
-	public void dropItem(ItemStack drop){
-		if(drop == null || !drop.exists()) return;
+
+	public void dropItem(ItemStack drop) {
+		if (drop == null || !drop.exists()) return;
 		Vector3d epos = new Vector3d(bounds.averageX(), getEyeHeight(), bounds.averageZ());
 		EntityItem i = new EntityItem(world);
 		i.setPosition(epos);
@@ -75,8 +75,8 @@ public abstract class EntityLiving extends Entity {
 		lookPitch = -newPitch;
 		lookYaw = newYaw;
 	}
-	
-	public void throwItem(ItemStack item){
+
+	public void throwItem(ItemStack item) {
 		if (item == null || !item.exists()) return;
 		double pitch = lookPitch();
 		double yaw = lookYaw();
@@ -92,7 +92,7 @@ public abstract class EntityLiving extends Entity {
 		drop.motionZ += power * Math.cos(Math.toRadians(yaw));
 		drop.addToWorld();
 	}
-	
+
 	public void targetEntity(Entity entity) {
 		double xDif = entity.position.x - position.x;
 		double zDif = entity.position.z - position.z;
@@ -111,7 +111,7 @@ public abstract class EntityLiving extends Entity {
 		movePitch = -newPitch;
 		moveYaw = newYaw;
 	}
-	
+
 	public void lookTargetEntity(Entity entity) {
 		double xDif = entity.position.x - position.x;
 		double zDif = entity.position.z - position.z;
@@ -130,7 +130,7 @@ public abstract class EntityLiving extends Entity {
 		movePitch = lookPitch = -newPitch;
 		moveYaw = lookYaw = newYaw;
 	}
-	
+
 	public void lookAtVector(Vector3d vector) {
 		double xDif = vector.x - position.x;
 		double zDif = vector.z - position.z;
@@ -141,15 +141,15 @@ public abstract class EntityLiving extends Entity {
 		lookPitch = -newPitch;
 		lookYaw = newYaw;
 	}
-	
-	public double lookPitch(){
+
+	public double lookPitch() {
 		return looking ? lookPitch : movePitch;
 	}
-	
-	public double lookYaw(){
+
+	public double lookYaw() {
 		return looking ? lookYaw : moveYaw;
 	}
-	
+
 	public void lookTargetVector(Vector3d vector) {
 		double xDif = vector.x - position.x;
 		double zDif = vector.z - position.z;
@@ -160,7 +160,7 @@ public abstract class EntityLiving extends Entity {
 		lookPitch = movePitch = -newPitch;
 		lookYaw = moveYaw = newYaw;
 	}
-	
+
 	public void targetVector(Vector3d vector) {
 		double xDif = vector.x - position.x;
 		double zDif = vector.z - position.z;
@@ -197,7 +197,7 @@ public abstract class EntityLiving extends Entity {
 		flying = FlyingStyle.values()[tag.getByte("flying")];
 		fallDistance = tag.getDouble("falling");
 	}
-	
+
 	public MovementHandler getMoveHandler() {
 		return moveHandler;
 	}
@@ -323,7 +323,6 @@ public abstract class EntityLiving extends Entity {
 		gl.unbindShader();
 	}
 
-
 	@Override
 	public void damage(int amount, DamageSource source) {
 		amount = reduceDamage(source, amount);
@@ -384,37 +383,36 @@ public abstract class EntityLiving extends Entity {
 			if (!i.isRunning()) {
 				for (AI j : ais.values()) {
 					if (i == j) continue;
-					if(!j.isRunning() || j.isDisabled()) continue;
+					if (!j.isRunning() || j.isDisabled()) continue;
 					int cf = i.conflictId() & j.conflictId();
 					if (cf == 0) continue;
-					if(j.priority() >= i.priority()) continue outside;
+					if (j.priority() >= i.priority()) continue outside;
 
 				}
 				if (!i.shouldStart()) continue;
 				for (AI j : ais.values()) {
 					if (i == j) continue;
-					if(!j.isRunning() || j.isDisabled()) continue;
+					if (!j.isRunning() || j.isDisabled()) continue;
 					int cf = i.conflictId() & j.conflictId();
 					if (cf == 0) continue;
-					if (i.priority() > j.priority()){
+					if (i.priority() > j.priority()) {
 						j.stop();
 						j.setRunning(false);
-					}
-					else continue outside;
+					} else continue outside;
 
 				}
 				i.setRunning(true);
 				i.start();
 			} else {
-				if(!i.update()){
+				if (!i.update()) {
 					i.stop();
 					i.setRunning(false);
 				}
 			}
 		}
 	}
-	
-	public void preMove(){
+
+	public void preMove() {
 		moveHandler.update();
 		motionX *= 0.6;
 		motionZ *= 0.6;

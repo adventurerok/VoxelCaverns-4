@@ -6,15 +6,13 @@ public class StatDouble implements Stat {
 
 	double value;
 	int decimals = 2;
-	
-	
-	
+
 	public StatDouble(double value, int decimals) {
 		super();
 		this.value = value;
 		this.decimals = decimals;
 	}
-	
+
 	public void setValue(double value) {
 		this.value = value;
 	}
@@ -31,7 +29,7 @@ public class StatDouble implements Stat {
 
 	@Override
 	public Object[] getValues() {
-		return new Object[]{value};
+		return new Object[] { value };
 	}
 
 }

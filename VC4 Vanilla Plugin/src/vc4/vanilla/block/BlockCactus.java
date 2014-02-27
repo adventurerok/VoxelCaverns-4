@@ -11,7 +11,7 @@ public class BlockCactus extends Block {
 
 	AABB bounds;
 	AABB top;
-	
+
 	public BlockCactus(int uid) {
 		super(uid, 0, "cactus");
 		double l = 0.0625D;
@@ -19,55 +19,55 @@ public class BlockCactus extends Block {
 		bounds = AABB.getBoundingBox(l, m, 0, 1, l, m);
 		top = AABB.getBoundingBox(l, m, 0, 1 - 0.015265, l, m);
 	}
-	
+
 	@Override
 	public boolean canStandOn() {
 		return false;
 	}
-	
+
 	@Override
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
-		if(world.getBlockId(x, y + 1, z) != uid) return new AABB[]{top};
-		return new AABB[]{bounds};
+		if (world.getBlockId(x, y + 1, z) != uid) return new AABB[] { top };
+		return new AABB[] { bounds };
 	}
-	
+
 	@Override
 	public AABB getRenderSize(World world, long x, long y, long z) {
 		return bounds;
 	}
-	
+
 	@Override
 	public AABB getRenderSize(ItemStack item) {
 		return bounds;
 	}
-	
+
 	@Override
 	public AABB getRayTraceSize(World world, long x, long y, long z) {
 		return bounds;
 	}
-	
+
 	@Override
 	public int getTextureIndex(ItemStack item, int side) {
-		if(side < 4) return BlockTexture.cactusSide;
-		if(side == 4) return BlockTexture.cactusTop;
+		if (side < 4) return BlockTexture.cactusSide;
+		if (side == 4) return BlockTexture.cactusTop;
 		else return BlockTexture.cactusBottom;
 	}
-	
+
 	@Override
 	public int getTextureIndex(World world, long x, long y, long z, int side) {
-		if(side < 4) return BlockTexture.cactusSide;
-		if(side == 4) return BlockTexture.cactusTop;
+		if (side < 4) return BlockTexture.cactusSide;
+		if (side == 4) return BlockTexture.cactusTop;
 		else return BlockTexture.cactusBottom;
 	}
-	
+
 	@Override
 	public boolean isSolid(World world, long x, long y, long z, int side) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean renderSide(World world, long x, long y, long z, int side) {
-		if(side < 4) return true;
+		if (side < 4) return true;
 		boolean sol = world.getNearbyBlockType(x, y, z, Direction.getDirection(side)).isSolid(world, x, y, z, Direction.getDirection(side).opposite().id());
 		boolean cact = world.getNearbyBlockId(x, y, z, Direction.getDirection(side)) == uid;
 		return !sol && !cact;

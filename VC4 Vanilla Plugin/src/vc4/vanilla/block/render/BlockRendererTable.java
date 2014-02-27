@@ -11,21 +11,24 @@ import vc4.api.world.*;
 
 public class BlockRendererTable extends BlockRendererDefault {
 
-	AABB top = AABB.getBoundingBox(0, 1, 15/16d, 1, 0, 1);
-	AABB[] legs = new AABB[]{AABB.getBoundingBox(0, 1/16d, 0, 15/16d, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 15/16d, 0, 1/16d), AABB.getBoundingBox(15/16d, 1d, 0, 15/16d, 15/16d, 1d), AABB.getBoundingBox(0, 1/16d, 0, 15/16d, 15/16d, 1d)};
+	AABB top = AABB.getBoundingBox(0, 1, 15 / 16d, 1, 0, 1);
+	AABB[] legs = new AABB[] { AABB.getBoundingBox(0, 1 / 16d, 0, 15 / 16d, 0, 1 / 16d), AABB.getBoundingBox(15 / 16d, 1d, 0, 15 / 16d, 0, 1 / 16d), AABB.getBoundingBox(15 / 16d, 1d, 0, 15 / 16d, 15 / 16d, 1d),
+			AABB.getBoundingBox(0, 1 / 16d, 0, 15 / 16d, 15 / 16d, 1d) };
+
 	@Override
 	public void renderBlock(Chunk c, MapData m, int cx, int cy, int cz, Block block, byte data, Renderer[] renderers) {
 		long x = c.getChunkPos().worldX(cx);
 		long y = c.getChunkPos().worldY(cy);
 		long z = c.getChunkPos().worldZ(cz);
 		Vector3f light = c.getWorld().getGenerator().getLightColor(c.getWorld(), m, x, y, z, cx, cz, c.getBlockLight(cx, cy, cz));
-		for(int d = 0; d < renderers.length; ++d) renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
+		for (int d = 0; d < renderers.length; ++d)
+			renderers[d].light(light.x, light.y, light.z, y >= m.getHeight(cx, cz));
 		for (int d = 0; d < 6; ++d) {
 			renderBlockFace(c.getWorld(), x, y, z, block, renderers[block.getRendererToUse(data, d)], top, d);
 		}
-		for(int a = 0; a < 4; ++a){
+		for (int a = 0; a < 4; ++a) {
 			for (int d = 0; d < 6; ++d) {
-				if(d == 4) continue;
+				if (d == 4) continue;
 				renderBlockFace(c.getWorld(), x, y, z, block, renderers[block.getRendererToUse(data, d)], legs[a], d);
 			}
 		}
@@ -34,9 +37,9 @@ public class BlockRendererTable extends BlockRendererDefault {
 		for (int d = 0; d < 6; ++d) {
 			renderBlockFace(c.getWorld(), x, y, z, mt, renderers[block.getRendererToUse(data, d)], top, d);
 		}
-		for(int a = 0; a < 4; ++a){
+		for (int a = 0; a < 4; ++a) {
 			for (int d = 0; d < 6; ++d) {
-				if(d == 4) continue;
+				if (d == 4) continue;
 				renderBlockFace(c.getWorld(), x, y, z, mt, renderers[block.getRendererToUse(data, d)], legs[a], d);
 			}
 		}
@@ -52,13 +55,13 @@ public class BlockRendererTable extends BlockRendererDefault {
 	@Override
 	public void renderBlockCracks(World world, long x, long y, long z, Renderer render, double amount) {
 		Block block = world.getBlockType(x, y, z);
-		if(block == null) return;
+		if (block == null) return;
 		for (int d = 0; d < 6; ++d) {
 			renderBlockFaceCracks(world, x, y, z, block, render, top, d, amount);
 		}
-		for(int a = 0; a < 4; ++a){
+		for (int a = 0; a < 4; ++a) {
 			for (int d = 0; d < 6; ++d) {
-				if(d == 4) continue;
+				if (d == 4) continue;
 				renderBlockFaceCracks(world, x, y, z, block, render, legs[a], d, amount);
 			}
 		}
