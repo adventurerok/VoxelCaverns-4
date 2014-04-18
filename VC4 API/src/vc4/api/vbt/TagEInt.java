@@ -1,14 +1,14 @@
-package org.jnbt;
+package vc4.api.vbt;
 
-public class EIntTag extends Tag {
+public class TagEInt extends Tag {
 
 	private long value;
 
-	public EIntTag(String name) {
+	public TagEInt(String name) {
 		super(name);
 	}
 
-	public EIntTag(String name, long value) {
+	public TagEInt(String name, long value) {
 		super(name);
 		this.value = value;
 	}

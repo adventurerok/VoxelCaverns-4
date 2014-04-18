@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,19 +20,19 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_Short</code> tag.
+ * The <code>TAG_Byte_Array</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class ShortTag extends Tag {
+public final class TagByteArray extends Tag {
 
 	/**
 	 * The value.
 	 */
-	private short value;
+	private byte[] value;
 
-	public ShortTag(String name) {
+	public TagByteArray(String name) {
 		super(name);
 	}
 
@@ -44,29 +44,38 @@ public final class ShortTag extends Tag {
 	 * @param value
 	 *            The value.
 	 */
-	public ShortTag(String name, short value) {
+	public TagByteArray(String name, byte[] value) {
 		super(name);
 		this.value = value;
 	}
 
 	@Override
-	public Short getValue() {
+	public byte[] getValue() {
 		return value;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof Number) value = ((Number) o).shortValue();
+		if (o instanceof byte[]) value = (byte[]) o;
+
 	}
 
 	@Override
 	public String toString() {
+		StringBuilder hex = new StringBuilder();
+		for (byte b : value) {
+			String hexDigits = Integer.toHexString(b).toUpperCase();
+			if (hexDigits.length() == 1) {
+				hex.append("0");
+			}
+			hex.append(hexDigits).append(" ");
+		}
 		String name = getName();
 		String append = "";
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_Short" + append + ": " + value;
+		return "TAG_Byte_Array" + append + ": " + hex.toString();
 	}
 
 }

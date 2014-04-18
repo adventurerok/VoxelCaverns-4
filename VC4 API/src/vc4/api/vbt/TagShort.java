@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,21 +20,20 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_String</code> tag.
+ * The <code>TAG_Short</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class StringTag extends Tag {
+public final class TagShort extends Tag {
 
 	/**
 	 * The value.
 	 */
-	private String value;
+	private short value;
 
-	public StringTag(String name) {
+	public TagShort(String name) {
 		super(name);
-		value = "";
 	}
 
 	/**
@@ -45,23 +44,19 @@ public final class StringTag extends Tag {
 	 * @param value
 	 *            The value.
 	 */
-	public StringTag(String name, String value) {
+	public TagShort(String name, short value) {
 		super(name);
 		this.value = value;
 	}
 
 	@Override
-	public String getValue() {
+	public Short getValue() {
 		return value;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		value = o.toString();
-	}
-
-	public void setValue(String value) {
-		this.value = value;
+		if (o instanceof Number) value = ((Number) o).shortValue();
 	}
 
 	@Override
@@ -71,7 +66,7 @@ public final class StringTag extends Tag {
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_String" + append + ": " + value;
+		return "TAG_Short" + append + ": " + value;
 	}
 
 }

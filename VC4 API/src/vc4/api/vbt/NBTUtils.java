@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -44,47 +44,47 @@ public final class NBTUtils {
 	public static Class<? extends Tag> getTypeClass(int type) {
 		switch (type) {
 			case NBTConstants.TYPE_END:
-				return EndTag.class;
+				return TagEnd.class;
 			case NBTConstants.TYPE_BYTE:
-				return ByteTag.class;
+				return TagByte.class;
 			case NBTConstants.TYPE_SHORT:
-				return ShortTag.class;
+				return TagShort.class;
 			case NBTConstants.TYPE_INT:
-				return IntTag.class;
+				return TagInt.class;
 			case NBTConstants.TYPE_LONG:
-				return LongTag.class;
+				return TagLong.class;
 			case NBTConstants.TYPE_FLOAT:
-				return FloatTag.class;
+				return TagFloat.class;
 			case NBTConstants.TYPE_DOUBLE:
-				return DoubleTag.class;
+				return TagDouble.class;
 			case NBTConstants.TYPE_BYTE_ARRAY:
-				return ByteArrayTag.class;
+				return TagByteArray.class;
 			case NBTConstants.TYPE_STRING:
-				return StringTag.class;
+				return TagString.class;
 			case NBTConstants.TYPE_LIST:
-				return ListTag.class;
+				return TagList.class;
 			case NBTConstants.TYPE_COMPOUND:
-				return CompoundTag.class;
+				return TagCompound.class;
 			case NBTConstants.TYPE_BOOLEAN:
-				return BooleanTag.class;
+				return TagBoolean.class;
 			case NBTConstants.TYPE_NIBBLE:
-				return NibbleTag.class;
+				return TagNibble.class;
 			case NBTConstants.TYPE_EBYTE:
-				return EByteTag.class;
+				return TagEByte.class;
 			case NBTConstants.TYPE_ESHORT:
-				return EShortTag.class;
+				return TagEShort.class;
 			case NBTConstants.TYPE_EINT:
-				return EIntTag.class;
+				return TagEInt.class;
 			case NBTConstants.TYPE_SHORT_ARRAY:
-				return ShortArrayTag.class;
+				return TagShortArray.class;
 			case NBTConstants.TYPE_INT_ARRAY:
-				return IntArrayTag.class;
+				return TagIntArray.class;
 			case NBTConstants.TYPE_LONG_ARRAY:
-				return LongArrayTag.class;
+				return TagLongArray.class;
 			case NBTConstants.TYPE_ESHORT_ARRAY:
-				return EShortArrayTag.class;
+				return TagEShortArray.class;
 			case NBTConstants.TYPE_EINT_ARRAY:
-				return EIntArrayTag.class;
+				return TagEIntArray.class;
 			default:
 				throw new IllegalArgumentException("Invalid tag type : " + type + ".");
 		}
@@ -100,47 +100,47 @@ public final class NBTUtils {
 	 *             if the tag class is invalid.
 	 */
 	public static int getTypeCode(Class<? extends Tag> clazz) {
-		if (clazz.equals(ByteArrayTag.class)) {
+		if (clazz.equals(TagByteArray.class)) {
 			return NBTConstants.TYPE_BYTE_ARRAY;
-		} else if (clazz.equals(ByteTag.class)) {
+		} else if (clazz.equals(TagByte.class)) {
 			return NBTConstants.TYPE_BYTE;
-		} else if (clazz.equals(CompoundTag.class)) {
+		} else if (clazz.equals(TagCompound.class)) {
 			return NBTConstants.TYPE_COMPOUND;
-		} else if (clazz.equals(DoubleTag.class)) {
+		} else if (clazz.equals(TagDouble.class)) {
 			return NBTConstants.TYPE_DOUBLE;
-		} else if (clazz.equals(EndTag.class)) {
+		} else if (clazz.equals(TagEnd.class)) {
 			return NBTConstants.TYPE_END;
-		} else if (clazz.equals(FloatTag.class)) {
+		} else if (clazz.equals(TagFloat.class)) {
 			return NBTConstants.TYPE_FLOAT;
-		} else if (clazz.equals(IntTag.class)) {
+		} else if (clazz.equals(TagInt.class)) {
 			return NBTConstants.TYPE_INT;
-		} else if (clazz.equals(ListTag.class)) {
+		} else if (clazz.equals(TagList.class)) {
 			return NBTConstants.TYPE_LIST;
-		} else if (clazz.equals(LongTag.class)) {
+		} else if (clazz.equals(TagLong.class)) {
 			return NBTConstants.TYPE_LONG;
-		} else if (clazz.equals(ShortTag.class)) {
+		} else if (clazz.equals(TagShort.class)) {
 			return NBTConstants.TYPE_SHORT;
-		} else if (clazz.equals(StringTag.class)) {
+		} else if (clazz.equals(TagString.class)) {
 			return NBTConstants.TYPE_STRING;
-		} else if (clazz.equals(BooleanTag.class)) {
+		} else if (clazz.equals(TagBoolean.class)) {
 			return NBTConstants.TYPE_BOOLEAN;
-		} else if (clazz.equals(NibbleTag.class)) {
+		} else if (clazz.equals(TagNibble.class)) {
 			return NBTConstants.TYPE_NIBBLE;
-		} else if (clazz.equals(EByteTag.class)) {
+		} else if (clazz.equals(TagEByte.class)) {
 			return NBTConstants.TYPE_EBYTE;
-		} else if (clazz.equals(EShortTag.class)) {
+		} else if (clazz.equals(TagEShort.class)) {
 			return NBTConstants.TYPE_ESHORT;
-		} else if (clazz.equals(EIntTag.class)) {
+		} else if (clazz.equals(TagEInt.class)) {
 			return NBTConstants.TYPE_EINT;
-		} else if (clazz.equals(ShortArrayTag.class)) {
+		} else if (clazz.equals(TagShortArray.class)) {
 			return NBTConstants.TYPE_SHORT_ARRAY;
-		} else if (clazz.equals(IntArrayTag.class)) {
+		} else if (clazz.equals(TagIntArray.class)) {
 			return NBTConstants.TYPE_INT_ARRAY;
-		} else if (clazz.equals(LongArrayTag.class)) {
+		} else if (clazz.equals(TagLongArray.class)) {
 			return NBTConstants.TYPE_LONG_ARRAY;
-		} else if (clazz.equals(EShortArrayTag.class)) {
+		} else if (clazz.equals(TagEShortArray.class)) {
 			return NBTConstants.TYPE_ESHORT_ARRAY;
-		} else if (clazz.equals(EIntArrayTag.class)) {
+		} else if (clazz.equals(TagEIntArray.class)) {
 			return NBTConstants.TYPE_EINT_ARRAY;
 		} else {
 			throw new IllegalArgumentException("Invalid tag classs (" + clazz.getName() + ").");
@@ -155,47 +155,47 @@ public final class NBTUtils {
 	 * @return The type name.
 	 */
 	public static String getTypeName(Class<? extends Tag> clazz) {
-		if (clazz.equals(ByteArrayTag.class)) {
+		if (clazz.equals(TagByteArray.class)) {
 			return "TAG_Byte_Array";
-		} else if (clazz.equals(ByteTag.class)) {
+		} else if (clazz.equals(TagByte.class)) {
 			return "TAG_Byte";
-		} else if (clazz.equals(CompoundTag.class)) {
+		} else if (clazz.equals(TagCompound.class)) {
 			return "TAG_Compound";
-		} else if (clazz.equals(DoubleTag.class)) {
+		} else if (clazz.equals(TagDouble.class)) {
 			return "TAG_Double";
-		} else if (clazz.equals(EndTag.class)) {
+		} else if (clazz.equals(TagEnd.class)) {
 			return "TAG_End";
-		} else if (clazz.equals(FloatTag.class)) {
+		} else if (clazz.equals(TagFloat.class)) {
 			return "TAG_Float";
-		} else if (clazz.equals(IntTag.class)) {
+		} else if (clazz.equals(TagInt.class)) {
 			return "TAG_Int";
-		} else if (clazz.equals(ListTag.class)) {
+		} else if (clazz.equals(TagList.class)) {
 			return "TAG_List";
-		} else if (clazz.equals(LongTag.class)) {
+		} else if (clazz.equals(TagLong.class)) {
 			return "TAG_Long";
-		} else if (clazz.equals(ShortTag.class)) {
+		} else if (clazz.equals(TagShort.class)) {
 			return "TAG_Short";
-		} else if (clazz.equals(StringTag.class)) {
+		} else if (clazz.equals(TagString.class)) {
 			return "TAG_String";
-		} else if (clazz.equals(BooleanTag.class)) {
+		} else if (clazz.equals(TagBoolean.class)) {
 			return "TAG_Boolean";
-		} else if (clazz.equals(NibbleTag.class)) {
+		} else if (clazz.equals(TagNibble.class)) {
 			return "TAG_Nibble";
-		} else if (clazz.equals(EByteTag.class)) {
+		} else if (clazz.equals(TagEByte.class)) {
 			return "TAG_EByte";
-		} else if (clazz.equals(EShortTag.class)) {
+		} else if (clazz.equals(TagEShort.class)) {
 			return "TAG_EShort";
-		} else if (clazz.equals(EIntTag.class)) {
+		} else if (clazz.equals(TagEInt.class)) {
 			return "TAG_EInt";
-		} else if (clazz.equals(ShortArrayTag.class)) {
+		} else if (clazz.equals(TagShortArray.class)) {
 			return "Tag_Short_Array";
-		} else if (clazz.equals(IntArrayTag.class)) {
+		} else if (clazz.equals(TagIntArray.class)) {
 			return "Tag_Int_Array";
-		} else if (clazz.equals(LongArrayTag.class)) {
+		} else if (clazz.equals(TagLongArray.class)) {
 			return "Tag_Long_Array";
-		} else if (clazz.equals(EShortArrayTag.class)) {
+		} else if (clazz.equals(TagEShortArray.class)) {
 			return "Tag_EShort_Array";
-		} else if (clazz.equals(EIntArrayTag.class)) {
+		} else if (clazz.equals(TagEIntArray.class)) {
 			return "Tag_EInt_Array";
 		} else {
 			throw new IllegalArgumentException("Invalid tag classs (" + clazz.getName() + ").");

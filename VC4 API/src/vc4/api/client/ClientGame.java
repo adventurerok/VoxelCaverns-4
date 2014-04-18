@@ -3,8 +3,6 @@
  */
 package vc4.api.client;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.GameState;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.gui.Component;
@@ -14,6 +12,7 @@ import vc4.api.input.MouseSet;
 import vc4.api.packet.Packet;
 import vc4.api.util.Fustrum;
 import vc4.api.util.Setting;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.World;
 
 /**
@@ -105,7 +104,7 @@ public interface ClientGame {
 
 	public abstract boolean guiVisible();
 
-	public CompoundTag getClientDetails();
+	public TagCompound getClientDetails();
 
 	public ClientServer getServer();
 }

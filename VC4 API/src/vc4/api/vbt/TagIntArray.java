@@ -1,24 +1,24 @@
 /**
  * 
  */
-package org.jnbt;
+package vc4.api.vbt;
 
 /**
  * @author paul
  * 
  */
-public class IntArrayTag extends Tag {
+public class TagIntArray extends Tag {
 
 	private int[] value;
 
-	public IntArrayTag(String name) {
+	public TagIntArray(String name) {
 		super(name);
 	}
 
 	/**
 	 * @param name
 	 */
-	public IntArrayTag(String name, int[] value) {
+	public TagIntArray(String name, int[] value) {
 		super(name);
 		this.value = value;
 

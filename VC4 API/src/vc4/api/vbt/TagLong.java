@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,19 +20,19 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_Byte</code> tag.
+ * The <code>TAG_Long</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class ByteTag extends Tag {
+public final class TagLong extends Tag {
 
 	/**
 	 * The value.
 	 */
-	private byte value;
+	private long value;
 
-	public ByteTag(String name) {
+	public TagLong(String name) {
 		super(name);
 	}
 
@@ -44,19 +44,19 @@ public final class ByteTag extends Tag {
 	 * @param value
 	 *            The value.
 	 */
-	public ByteTag(String name, byte value) {
+	public TagLong(String name, long value) {
 		super(name);
 		this.value = value;
 	}
 
 	@Override
-	public Byte getValue() {
+	public Long getValue() {
 		return value;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof Number) value = ((Number) o).byteValue();
+		if (o instanceof Number) value = ((Number) o).longValue();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public final class ByteTag extends Tag {
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_Byte" + append + ": " + value;
+		return "TAG_Long" + append + ": " + value;
 	}
 
 }

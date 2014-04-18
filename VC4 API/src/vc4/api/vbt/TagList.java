@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -19,21 +19,29 @@ package org.jnbt;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * The <code>TAG_Long</code> tag.
+ * The <code>TAG_List</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class LongTag extends Tag {
+public final class TagList extends Tag {
+
+	/**
+	 * The type.
+	 */
+	private Class<? extends Tag> type;
 
 	/**
 	 * The value.
 	 */
-	private long value;
+	private List<Tag> value;
 
-	public LongTag(String name) {
-		super(name);
+	public TagList(String name, Class<? extends Tag> type) {
+		this(name, type, new ArrayList<Tag>());
 	}
 
 	/**
@@ -41,22 +49,54 @@ public final class LongTag extends Tag {
 	 * 
 	 * @param name
 	 *            The name.
+	 * @param type
+	 *            The type of item in the list.
 	 * @param value
 	 *            The value.
 	 */
-	public LongTag(String name, long value) {
+	@SuppressWarnings("unchecked")
+	public TagList(String name, Class<? extends Tag> type, List<? extends Tag> value) {
 		super(name);
-		this.value = value;
+		this.type = type;
+		this.value = (List<Tag>) value;
+	}
+
+	public void addTag(Tag t) {
+		if (!t.getClass().equals(type)) throw new RuntimeException("A " + NBTUtils.getTypeName(t.getClass()) + " tag may not be added to a list of " + NBTUtils.getTypeName(type) + "tags");
+		value.add(t);
+	}
+
+	public Tag getNextTag() {
+		if (!hasNext()) throw new RuntimeException("No tags left");
+		return value.remove(0);
+	}
+
+	/**
+	 * Gets the type of item in this list.
+	 * 
+	 * @return The type of item in this list.
+	 */
+	public Class<? extends Tag> getType() {
+		return type;
 	}
 
 	@Override
-	public Long getValue() {
+	public List<Tag> getValue() {
 		return value;
 	}
 
+	public boolean hasNext() {
+		return !value.isEmpty();
+	}
+
+	public void setType(Class<? extends Tag> type) {
+		this.type = type;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof Number) value = ((Number) o).longValue();
+		if (o instanceof List) value = (List<Tag>) o;
 	}
 
 	@Override
@@ -66,7 +106,13 @@ public final class LongTag extends Tag {
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_Long" + append + ": " + value;
+		StringBuilder bldr = new StringBuilder();
+		bldr.append("TAG_List" + append + ": " + value.size() + " entries of type " + NBTUtils.getTypeName(type) + "\r\n{\r\n");
+		for (Tag t : value) {
+			bldr.append("   " + t.toString().replaceAll("\r\n", "\r\n   ") + "\r\n");
+		}
+		bldr.append("}");
+		return bldr.toString();
 	}
 
 }

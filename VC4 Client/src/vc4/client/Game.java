@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import org.jnbt.CompoundTag;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
@@ -41,6 +40,7 @@ import vc4.api.sound.Audio;
 import vc4.api.sound.Music;
 import vc4.api.text.Localization;
 import vc4.api.util.*;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.*;
 import vc4.api.world.World;
 import vc4.api.yaml.ThreadYaml;
@@ -299,9 +299,11 @@ public class Game extends Component implements ClientGame {
 			if (_currentc != null) _currentc.fireMouseEvent("clicked", 1, x, y);
 		}
 		super.update();
+		long oldTime = 0;
+		String oldArea = null;
 		if (gameState == GameState.SINGLEPLAYER) {
-			long oldTime = world.getTime();
-			String oldArea = player.getArea();
+			oldTime = world.getTime();
+			oldArea = player.getArea();
 			player.setArea("{l:area.wilderness}");
 			SoundManager.setListener(player);
 			if (!textFocus) {
@@ -315,7 +317,9 @@ public class Game extends Component implements ClientGame {
 				if (mouseSet.getCurrent().rightButtomPressed()) player.rightMouseDown(delta);
 			}
 			if (!textFocus) player.updateInput();
-			world.update(delta, camera.getPosition());
+		}
+		if(gameState == GameState.SINGLEPLAYER || gameState == GameState.MULTIPLAYER) world.update(delta, camera.getPosition());
+		if(gameState == GameState.SINGLEPLAYER){
 			Audio.playMusic(world.getMusic(player));
 			if (!textFocus) {
 				Keyboard keys = Input.getClientKeyboard();
@@ -886,8 +890,8 @@ public class Game extends Component implements ClientGame {
 	}
 
 	@Override
-	public CompoundTag getClientDetails() {
-		CompoundTag tag = new CompoundTag("client");
+	public TagCompound getClientDetails() {
+		TagCompound tag = new TagCompound("client");
 		tag.setString("version", Version.VERSION);
 		tag.setString("name", "VC4 Server Debug/Testing Client");
 		tag.setByte("graphics", 1);

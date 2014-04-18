@@ -1,44 +1,45 @@
 /**
  * 
  */
-package org.jnbt;
+package vc4.api.vbt;
 
 /**
  * @author paul
  * 
  */
-public class EIntArrayTag extends Tag {
+public class TagEShortArray extends Tag {
 
-	private long[] value;
+	private int[] value;
 
-	public EIntArrayTag(String name) {
+	public TagEShortArray(String name) {
 		super(name);
+		// TASK Auto-generated constructor stub
 	}
 
 	/**
 	 * @param name
 	 */
-	public EIntArrayTag(String name, long[] value) {
+	public TagEShortArray(String name, int[] value) {
 		super(name);
 		this.value = value;
 
 	}
 
 	@Override
-	public long[] getValue() {
+	public int[] getValue() {
 		return value;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof long[]) value = (long[]) o;
+		if (o instanceof int[]) value = (int[]) o;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder hex = new StringBuilder();
-		for (long b : value) {
-			String hexDigits = Long.toHexString(b).toUpperCase();
+		for (int b : value) {
+			String hexDigits = Integer.toHexString(b).toUpperCase();
 			if (hexDigits.length() == 1) {
 				hex.append("0");
 			}
@@ -49,7 +50,7 @@ public class EIntArrayTag extends Tag {
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_Eint_Array" + append + ": " + hex.toString();
+		return "TAG_Eshort_Array" + append + ": " + hex.toString();
 	}
 
 }

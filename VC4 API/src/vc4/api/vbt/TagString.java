@@ -1,6 +1,4 @@
-package org.jnbt;
-
-import java.nio.charset.Charset;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -22,29 +20,58 @@ import java.nio.charset.Charset;
  */
 
 /**
- * A class which holds constant values.
+ * The <code>TAG_String</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class NBTConstants {
+public final class TagString extends Tag {
 
 	/**
-	 * The character set used by NBT (UTF-8).
+	 * The value.
 	 */
-	public static final Charset CHARSET = Charset.forName("UTF-8");
+	private String value;
+
+	public TagString(String name) {
+		super(name);
+		value = "";
+	}
 
 	/**
-	 * Tag type constants.
+	 * Creates the tag.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param value
+	 *            The value.
 	 */
-	public static final int TYPE_END = 0, TYPE_BYTE = 1, TYPE_SHORT = 2, TYPE_INT = 3, TYPE_LONG = 4, TYPE_FLOAT = 5, TYPE_DOUBLE = 6, TYPE_BYTE_ARRAY = 7, TYPE_STRING = 8, TYPE_LIST = 9, TYPE_COMPOUND = 10, TYPE_INT_ARRAY = 11,
-			TYPE_NIBBLE = 12, TYPE_EBYTE = 13, TYPE_ESHORT = 14, TYPE_EINT = 15, TYPE_SHORT_ARRAY = 16, TYPE_BOOLEAN = 17, TYPE_LONG_ARRAY = 18, TYPE_ESHORT_ARRAY = 19, TYPE_EINT_ARRAY = 20;
+	public TagString(String name, String value) {
+		super(name);
+		this.value = value;
+	}
 
-	/**
-	 * Default private constructor.
-	 */
-	private NBTConstants() {
+	@Override
+	public String getValue() {
+		return value;
+	}
 
+	@Override
+	public void setValue(Object o) {
+		value = o.toString();
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		String name = getName();
+		String append = "";
+		if (name != null && !name.equals("")) {
+			append = "(\"" + this.getName() + "\")";
+		}
+		return "TAG_String" + append + ": " + value;
 	}
 
 }

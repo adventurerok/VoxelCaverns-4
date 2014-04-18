@@ -3,12 +3,11 @@ package vc4.api.area;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.entity.Entity;
 import vc4.api.logging.Logger;
 import vc4.api.math.MathUtils;
 import vc4.api.util.AABB;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.Chunk;
 import vc4.api.world.World;
 
@@ -39,7 +38,7 @@ public abstract class Area {
 		return world;
 	}
 
-	public static Area loadArea(World world, CompoundTag tag) {
+	public static Area loadArea(World world, TagCompound tag) {
 		short id = tag.getShort("id");
 		String name = world.getAreaName(id);
 		Constructor<? extends Area> clz = getAreaType(name);
@@ -53,14 +52,14 @@ public abstract class Area {
 		return null;
 	}
 
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = new CompoundTag("tag");
+	public TagCompound getSaveCompound() {
+		TagCompound tag = new TagCompound("tag");
 		tag.setShort("id", getId());
-		tag.addTag(CompoundTag.createAABBTag("aabb", bounds));
+		tag.addTag(TagCompound.createAABBTag("aabb", bounds));
 		return tag;
 	}
 
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		bounds = tag.getCompoundTag("aabb").readAABB();
 	}
 

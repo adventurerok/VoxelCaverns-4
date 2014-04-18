@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,53 +20,33 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_Int</code> tag.
+ * The <code>TAG_End</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class IntTag extends Tag {
-
-	/**
-	 * The value.
-	 */
-	private int value;
-
-	public IntTag(String name) {
-		super(name);
-	}
+public final class TagEnd extends Tag {
 
 	/**
 	 * Creates the tag.
-	 * 
-	 * @param name
-	 *            The name.
-	 * @param value
-	 *            The value.
 	 */
-	public IntTag(String name, int value) {
-		super(name);
-		this.value = value;
+	public TagEnd() {
+		super("");
 	}
 
 	@Override
-	public Integer getValue() {
-		return value;
+	public Object getValue() {
+		return null;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof Number) value = ((Number) o).intValue();
+
 	}
 
 	@Override
 	public String toString() {
-		String name = getName();
-		String append = "";
-		if (name != null && !name.equals("")) {
-			append = "(\"" + this.getName() + "\")";
-		}
-		return "TAG_Int" + append + ": " + value;
+		return "TAG_End";
 	}
 
 }

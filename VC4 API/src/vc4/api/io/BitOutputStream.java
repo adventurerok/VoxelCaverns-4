@@ -3,8 +3,8 @@ package vc4.api.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.jnbt.NBTOutputStream;
-import org.jnbt.Tag;
+import vc4.api.vbt.NBTOutputStream;
+import vc4.api.vbt.Tag;
 
 /**
  * The BitOutputStream allows writing individual bits to a general Java OutputStream. Like the various Stream-classes from Java, the BitOutputStream has to be created based on another OutputStream. This class is able to write a single bit

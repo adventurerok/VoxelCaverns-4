@@ -3,10 +3,9 @@ package vc4.impl.io;
 import java.io.*;
 import java.util.Arrays;
 
-import org.jnbt.*;
-
 import vc4.api.io.*;
 import vc4.api.util.DirectoryLocator;
+import vc4.api.vbt.*;
 import vc4.api.world.*;
 import vc4.impl.world.*;
 
@@ -21,14 +20,14 @@ public class VBTSaveFormat implements SaveFormat {
 		if (!file.exists()) return null;
 		// long start = System.nanoTime();
 		try (NBTInputStream in = new NBTInputStream(new FileInputStream(file), true)) {
-			CompoundTag root = (CompoundTag) in.readTag();
+			TagCompound root = (TagCompound) in.readTag();
 
 			ImplChunk chunk = new ImplChunk((ImplWorld) world, ChunkPos.create(x, y, z));
 			chunk.setPopulated(root.getBoolean("populated", false));
-			ListTag bs = root.getListTag("stores");
+			TagList bs = root.getListTag("stores");
 			int d = 0;
 			while (bs.hasNext()) {
-				CompoundTag stag = (CompoundTag) bs.getNextTag();
+				TagCompound stag = (TagCompound) bs.getNextTag();
 				BlockStore store = chunk.getBlockStore(d++);
 				if (stag.hasKey("onlyBlock")) {
 					store.setBlocks(new short[4096]);
@@ -57,23 +56,23 @@ public class VBTSaveFormat implements SaveFormat {
 		String path = DirectoryLocator.getPath() + "/worlds/" + chunk.getWorld().getSaveName() + "/chunks/" + chunk.getChunkPos().y + "/" + chunk.getChunkPos().z + "/" + chunk.getChunkPos().x + ".vbt";
 		File file = new File(path);
 		file.getParentFile().mkdirs();
-		CompoundTag root = new CompoundTag("root");
+		TagCompound root = new TagCompound("root");
 		root.setBoolean("populated", chunk.isPopulated());
-		ListTag bs = new ListTag("stores", CompoundTag.class);
+		TagList bs = new TagList("stores", TagCompound.class);
 		for (int d = 0; d < 8; ++d) {
 			BlockStore store = chunk.getBlockStore(d);
-			CompoundTag stag = new CompoundTag("store: " + d);
+			TagCompound stag = new TagCompound("store: " + d);
 			if (store.getBlocks() != null) {
 				short shor = getOnlyElement(store.getBlocks());
 				if (shor != -1) {
 					stag.setShort("onlyBlock", shor);
-				} else stag.addTag(new ByteArrayTag("blocks", toByteArray(store.getBlocks(), (short) 11)));
+				} else stag.addTag(new TagByteArray("blocks", toByteArray(store.getBlocks(), (short) 11)));
 			}
 			if (store.getData() != null) {
 				byte shor = getOnlyElement(store.getData());
 				if (shor != -1) {
-					stag.addTag(new ByteTag("onlyData", shor));
-				} else stag.addTag(new ByteArrayTag("data", toByteArray(store.getData(), (short) 5)));
+					stag.addTag(new TagByte("onlyData", shor));
+				} else stag.addTag(new TagByteArray("data", toByteArray(store.getData(), (short) 5)));
 			}
 			bs.addTag(stag);
 		}

@@ -8,9 +8,6 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import org.jnbt.CompoundTag;
-import org.jnbt.Tag;
-
 import vc4.api.Version;
 import vc4.api.cmd.*;
 import vc4.api.font.ChatColor;
@@ -21,6 +18,8 @@ import vc4.api.server.User;
 import vc4.api.text.Localization;
 import vc4.api.util.OS;
 import vc4.api.util.StringSplitter;
+import vc4.api.vbt.Tag;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.World;
 import vc4.impl.GameLoader;
 import vc4.tester.cmd.CommandListener;
@@ -91,7 +90,7 @@ public class TesterConsole extends ServerConsole implements MouseListener, Windo
 	}
 
 	public Tag getClientDetails() {
-		CompoundTag tag = new CompoundTag("client");
+		TagCompound tag = new TagCompound("client");
 		tag.setString("version", Version.VERSION);
 		tag.setString("name", "VC4 Server Debug/Testing Client");
 		tag.setByte("graphics", 0);

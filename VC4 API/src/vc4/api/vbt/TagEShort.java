@@ -1,14 +1,14 @@
-package org.jnbt;
+package vc4.api.vbt;
 
-public class EShortTag extends Tag {
+public class TagEShort extends Tag {
 
 	private int value;
 
-	public EShortTag(String name) {
+	public TagEShort(String name) {
 		super(name);
 	}
 
-	public EShortTag(String name, int value) {
+	public TagEShort(String name, int value) {
 		super(name);
 		this.value = value;
 	}

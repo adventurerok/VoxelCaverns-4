@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -34,11 +34,11 @@ import vc4.api.vector.*;
  * @author Graham Edgecombe
  * 
  */
-public final class CompoundTag extends Tag {
+public final class TagCompound extends Tag {
 
 	@SuppressWarnings("resource")
-	public static CompoundTag readFrom(BitInputStream in) throws IOException {
-		return (CompoundTag) new NBTInputStream(in).readTag();
+	public static TagCompound readFrom(BitInputStream in) throws IOException {
+		return (TagCompound) new NBTInputStream(in).readTag();
 	}
 
 	/**
@@ -46,7 +46,7 @@ public final class CompoundTag extends Tag {
 	 */
 	private Map<String, Tag> value;
 
-	public CompoundTag(String name) {
+	public TagCompound(String name) {
 		this(name, new HashMap<String, Tag>());
 	}
 
@@ -58,7 +58,7 @@ public final class CompoundTag extends Tag {
 	 * @param value
 	 *            The value.
 	 */
-	public CompoundTag(String name, Map<String, Tag> value) {
+	public TagCompound(String name, Map<String, Tag> value) {
 		super(name);
 		this.value = value;
 	}
@@ -80,20 +80,20 @@ public final class CompoundTag extends Tag {
 		return def;
 	}
 
-	public BooleanTag getBooleanTag(String name) {
-		return (BooleanTag) getTag(name);
+	public TagBoolean getBooleanTag(String name) {
+		return (TagBoolean) getTag(name);
 	}
 
-	public ByteArrayTag getByteArrayTag(String name) {
-		return (ByteArrayTag) getTag(name);
+	public TagByteArray getByteArrayTag(String name) {
+		return (TagByteArray) getTag(name);
 	}
 
-	public ByteTag getByteTag(String name) {
-		return (ByteTag) getTag(name);
+	public TagByte getByteTag(String name) {
+		return (TagByte) getTag(name);
 	}
 
-	public CompoundTag getCompoundTag(String name) {
-		return (CompoundTag) getTag(name);
+	public TagCompound getCompoundTag(String name) {
+		return (TagCompound) getTag(name);
 	}
 
 	public double getDouble(String name) {
@@ -104,36 +104,36 @@ public final class CompoundTag extends Tag {
 		return getByteTag(name).getValue();
 	}
 
-	public DoubleTag getDoubleTag(String name) {
-		return (DoubleTag) getTag(name);
+	public TagDouble getDoubleTag(String name) {
+		return (TagDouble) getTag(name);
 	}
 
-	public EByteTag getEByteTag(String name) {
-		return (EByteTag) getTag(name);
+	public TagEByte getEByteTag(String name) {
+		return (TagEByte) getTag(name);
 	}
 
-	public EIntArrayTag getEIntArrayTag(String name) {
-		return (EIntArrayTag) getTag(name);
+	public TagEIntArray getEIntArrayTag(String name) {
+		return (TagEIntArray) getTag(name);
 	}
 
-	public EIntTag getEIntTag(String name) {
-		return (EIntTag) getTag(name);
+	public TagEInt getEIntTag(String name) {
+		return (TagEInt) getTag(name);
 	}
 
-	public EShortArrayTag getEShortArrayTag(String name) {
-		return (EShortArrayTag) getTag(name);
+	public TagEShortArray getEShortArrayTag(String name) {
+		return (TagEShortArray) getTag(name);
 	}
 
-	public EShortTag getEShortTag(String name) {
-		return (EShortTag) getTag(name);
+	public TagEShort getEShortTag(String name) {
+		return (TagEShort) getTag(name);
 	}
 
 	public float getFloat(String name) {
 		return getFloatTag(name).getValue();
 	}
 
-	public FloatTag getFloatTag(String name) {
-		return (FloatTag) getTag(name);
+	public TagFloat getFloatTag(String name) {
+		return (TagFloat) getTag(name);
 	}
 
 	public int getInt(String name) {
@@ -149,32 +149,32 @@ public final class CompoundTag extends Tag {
 		return def;
 	}
 
-	public IntArrayTag getIntArrayTag(String name) {
-		return (IntArrayTag) getTag(name);
+	public TagIntArray getIntArrayTag(String name) {
+		return (TagIntArray) getTag(name);
 	}
 
-	public IntTag getIntTag(String name) {
-		return (IntTag) getTag(name);
+	public TagInt getIntTag(String name) {
+		return (TagInt) getTag(name);
 	}
 
-	public ListTag getListTag(String name) {
-		return (ListTag) getTag(name);
+	public TagList getListTag(String name) {
+		return (TagList) getTag(name);
 	}
 
 	public long getLong(String name) {
 		return getLongTag(name).getValue();
 	}
 
-	public LongArrayTag getLongArrayTag(String name) {
-		return (LongArrayTag) getTag(name);
+	public TagLongArray getLongArrayTag(String name) {
+		return (TagLongArray) getTag(name);
 	}
 
-	public LongTag getLongTag(String name) {
-		return (LongTag) getTag(name);
+	public TagLong getLongTag(String name) {
+		return (TagLong) getTag(name);
 	}
 
-	public NibbleTag getNibbleTag(String name) {
-		return (NibbleTag) getTag(name);
+	public TagNibble getNibbleTag(String name) {
+		return (TagNibble) getTag(name);
 	}
 
 	public short getShort(String name) {
@@ -190,12 +190,12 @@ public final class CompoundTag extends Tag {
 		}
 	}
 
-	public ShortArrayTag getShortArrayTag(String name) {
-		return (ShortArrayTag) getTag(name);
+	public TagShortArray getShortArrayTag(String name) {
+		return (TagShortArray) getTag(name);
 	}
 
-	public ShortTag getShortTag(String name) {
-		return (ShortTag) getTag(name);
+	public TagShort getShortTag(String name) {
+		return (TagShort) getTag(name);
 	}
 
 	public String getString(String name) {
@@ -211,8 +211,8 @@ public final class CompoundTag extends Tag {
 		return def;
 	}
 
-	public StringTag getStringTag(String name) {
-		return (StringTag) getTag(name);
+	public TagString getStringTag(String name) {
+		return (TagString) getTag(name);
 	}
 
 	public Tag getTag(String name) {
@@ -233,27 +233,27 @@ public final class CompoundTag extends Tag {
 	}
 
 	public void setBoolean(String name, boolean b) {
-		addTag(new BooleanTag(name, b));
+		addTag(new TagBoolean(name, b));
 	}
 
 	public void setDouble(String name, double i) {
-		addTag(new DoubleTag(name, i));
+		addTag(new TagDouble(name, i));
 	}
 
 	public void setInt(String name, int i) {
-		addTag(new IntTag(name, i));
+		addTag(new TagInt(name, i));
 	}
 
 	public void setLong(String name, long value) {
-		addTag(new LongTag(name, value));
+		addTag(new TagLong(name, value));
 	}
 
 	public void setShort(String name, short i) {
-		addTag(new ShortTag(name, i));
+		addTag(new TagShort(name, i));
 	}
 
 	public void setString(String name, String s) {
-		addTag(new StringTag(name, s));
+		addTag(new TagString(name, s));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -299,23 +299,23 @@ public final class CompoundTag extends Tag {
 	}
 
 	public void setNibble(String name, byte def) {
-		addTag(new NibbleTag(name, def));
+		addTag(new TagNibble(name, def));
 	}
 
 	public void setByte(String name, int b) {
-		addTag(new ByteTag(name, (byte) b));
+		addTag(new TagByte(name, (byte) b));
 	}
 
-	public static CompoundTag createVector3dTag(String name, Vector3d vect) {
-		CompoundTag tag = new CompoundTag(name);
+	public static TagCompound createVector3dTag(String name, Vector3d vect) {
+		TagCompound tag = new TagCompound(name);
 		tag.setDouble("x", vect.x);
 		tag.setDouble("y", vect.y);
 		tag.setDouble("z", vect.z);
 		return tag;
 	}
 
-	public static CompoundTag createAABBTag(String name, AABB bb) {
-		CompoundTag tag = new CompoundTag(name);
+	public static TagCompound createAABBTag(String name, AABB bb) {
+		TagCompound tag = new TagCompound(name);
 		tag.setDouble("mix", bb.minX);
 		tag.setDouble("miy", bb.minY);
 		tag.setDouble("miz", bb.minZ);
@@ -360,16 +360,16 @@ public final class CompoundTag extends Tag {
 		return res;
 	}
 
-	public static CompoundTag createVector3lTag(String name, Vector3l vect) {
-		CompoundTag tag = new CompoundTag(name);
+	public static TagCompound createVector3lTag(String name, Vector3l vect) {
+		TagCompound tag = new TagCompound(name);
 		tag.setLong("x", vect.x);
 		tag.setLong("y", vect.y);
 		tag.setLong("z", vect.z);
 		return tag;
 	}
 
-	public static CompoundTag createVector3iTag(String name, Vector3i vect) {
-		CompoundTag tag = new CompoundTag(name);
+	public static TagCompound createVector3iTag(String name, Vector3i vect) {
+		TagCompound tag = new TagCompound(name);
 		tag.setInt("x", vect.x);
 		tag.setInt("y", vect.y);
 		tag.setInt("z", vect.z);

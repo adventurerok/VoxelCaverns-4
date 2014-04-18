@@ -5,8 +5,6 @@ package vc4.api.entity;
 
 import java.util.Random;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.block.Block;
 import vc4.api.block.CraftingTable;
 import vc4.api.block.render.BlockRendererDefault;
@@ -24,6 +22,7 @@ import vc4.api.render.CracksRenderer;
 import vc4.api.tool.*;
 import vc4.api.util.AABB;
 import vc4.api.util.RayTraceResult;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.*;
@@ -166,31 +165,31 @@ public class EntityPlayer extends EntityLiving implements IEntityPickUpItems {
 	}
 
 	@Override
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = super.getSaveCompound();
+	public TagCompound getSaveCompound() {
+		TagCompound tag = super.getSaveCompound();
 		tag.setInt("heMax", maxHealing);
 		tag.setInt("hpMax", maxHealth);
 		tag.setDouble("heNow", nowHealing);
 		tag.setDouble("heMinus", healMinus);
-		CompoundTag inv = new CompoundTag("inv");
+		TagCompound inv = new TagCompound("inv");
 		inventory.writeContainer(world, inv);
 		tag.addTag(inv);
-		tag.addTag(CompoundTag.createVector3dTag("spawn", this.spawn));
+		tag.addTag(TagCompound.createVector3dTag("spawn", this.spawn));
 		if (this.oRP != null) {
-			tag.addTag(CompoundTag.createVector3lTag("minePos", this.oRP));
+			tag.addTag(TagCompound.createVector3lTag("minePos", this.oRP));
 			tag.setDouble("mineAmt", minedAmount);
 		}
 		return tag;
 	}
 
 	@Override
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		super.loadSaveCompound(tag);
 		maxHealing = tag.getInt("heMax");
 		maxHealth = tag.getInt("hpMax");
 		nowHealing = tag.getDouble("heNow");
 		healMinus = tag.getDouble("heMinus");
-		CompoundTag inv = tag.getCompoundTag("inv");
+		TagCompound inv = tag.getCompoundTag("inv");
 		inventory = (ContainerInventory) Container.readContainer(world, inv);
 		spawn = tag.getCompoundTag("spawn").readVector3d();
 		if (tag.hasKey("minePos")) {

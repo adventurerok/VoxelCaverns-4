@@ -2,10 +2,9 @@ package vc4.api.packet;
 
 import java.io.IOException;
 
-import org.jnbt.Tag;
-
 import vc4.api.io.SwitchInputStream;
 import vc4.api.io.SwitchOutputStream;
+import vc4.api.vbt.Tag;
 
 public class Packet40NBT extends Packet {
 

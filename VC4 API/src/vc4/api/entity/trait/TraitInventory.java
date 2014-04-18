@@ -1,10 +1,9 @@
 package vc4.api.entity.trait;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.container.Container;
 import vc4.api.container.ContainerItems;
 import vc4.api.entity.Entity;
+import vc4.api.vbt.TagCompound;
 
 public class TraitInventory extends Trait {
 
@@ -32,16 +31,16 @@ public class TraitInventory extends Trait {
 	}
 
 	@Override
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		super.loadSaveCompound(tag);
-		CompoundTag inv = tag.getCompoundTag("inv");
+		TagCompound inv = tag.getCompoundTag("inv");
 		inventory = (ContainerItems) Container.readContainer(entity.world, inv);
 	}
 
 	@Override
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = super.getSaveCompound();
-		CompoundTag inv = new CompoundTag("inv");
+	public TagCompound getSaveCompound() {
+		TagCompound tag = super.getSaveCompound();
+		TagCompound inv = new TagCompound("inv");
 		inventory.writeContainer(entity.world, inv);
 		tag.addTag(inv);
 		return tag;

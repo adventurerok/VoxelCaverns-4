@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,19 +20,19 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_Byte_Array</code> tag.
+ * The <code>TAG_Float</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class ByteArrayTag extends Tag {
+public final class TagFloat extends Tag {
 
 	/**
 	 * The value.
 	 */
-	private byte[] value;
+	private float value;
 
-	public ByteArrayTag(String name) {
+	public TagFloat(String name) {
 		super(name);
 	}
 
@@ -44,38 +44,29 @@ public final class ByteArrayTag extends Tag {
 	 * @param value
 	 *            The value.
 	 */
-	public ByteArrayTag(String name, byte[] value) {
+	public TagFloat(String name, float value) {
 		super(name);
 		this.value = value;
 	}
 
 	@Override
-	public byte[] getValue() {
+	public Float getValue() {
 		return value;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof byte[]) value = (byte[]) o;
-
+		if (o instanceof Number) value = ((Number) o).floatValue();
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder hex = new StringBuilder();
-		for (byte b : value) {
-			String hexDigits = Integer.toHexString(b).toUpperCase();
-			if (hexDigits.length() == 1) {
-				hex.append("0");
-			}
-			hex.append(hexDigits).append(" ");
-		}
 		String name = getName();
 		String append = "";
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_Byte_Array" + append + ": " + hex.toString();
+		return "TAG_Float" + append + ": " + value;
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.jnbt.*;
+import vc4.api.vbt.*;
 
 public class NBTNode extends DefaultMutableTreeNode {
 
@@ -30,7 +30,7 @@ public class NBTNode extends DefaultMutableTreeNode {
 	}
 
 	private void calculateList() {
-		ListTag list = (ListTag) tag;
+		TagList list = (TagList) tag;
 		for (Tag t : list.getValue()) {
 			add(new NBTNode(t));
 		}
@@ -53,7 +53,7 @@ public class NBTNode extends DefaultMutableTreeNode {
 	}
 
 	private void calculateChildren() {
-		CompoundTag cm = (CompoundTag) tag;
+		TagCompound cm = (TagCompound) tag;
 		for (Entry<String, Tag> o : cm.getValue().entrySet()) {
 			add(calculateTag(o.getValue()));
 		}
@@ -81,11 +81,11 @@ public class NBTNode extends DefaultMutableTreeNode {
 				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + tag.getValue();
 				else return tag.getValue().toString();
 			case NBTConstants.TYPE_COMPOUND:
-				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((CompoundTag) tag).getValue().size() + " entries";
-				else return ((CompoundTag) tag).getValue().size() + " entries";
+				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((TagCompound) tag).getValue().size() + " entries";
+				else return ((TagCompound) tag).getValue().size() + " entries";
 			case NBTConstants.TYPE_LIST:
-				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((ListTag) tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((ListTag) tag).getType());
-				else return ((ListTag) tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((ListTag) tag).getType());
+				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + ((TagList) tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((TagList) tag).getType());
+				else return ((TagList) tag).getValue().size() + " entries of type " + NBTUtils.getSimpleName(((TagList) tag).getType());
 			default:
 				if (tag.getName() != null && !tag.getName().isEmpty()) return tag.getName() + ": " + NBTUtils.getTypeName(tag.getClass());
 				else return NBTUtils.getTypeName(tag.getClass());
@@ -97,11 +97,11 @@ public class NBTNode extends DefaultMutableTreeNode {
 	}
 
 	public void addTag(Tag t) {
-		if (tag instanceof CompoundTag) {
-			((CompoundTag) tag).addTag(t);
+		if (tag instanceof TagCompound) {
+			((TagCompound) tag).addTag(t);
 			add(new NBTNode(t));
-		} else if (tag instanceof ListTag) {
-			ListTag l = (ListTag) tag;
+		} else if (tag instanceof TagList) {
+			TagList l = (TagList) tag;
 			if (!l.getType().isInstance(t)) return;
 			l.addTag(t);
 			NBTEditor.getSingleton().getTreeModel().insertNodeInto(new NBTNode(t), this, getChildCount());
@@ -110,10 +110,10 @@ public class NBTNode extends DefaultMutableTreeNode {
 	}
 
 	public void removeNode(NBTNode node) {
-		if (tag instanceof CompoundTag) {
-			((CompoundTag) tag).remove(node.getTag().getName());
-		} else if (tag instanceof ListTag) {
-			ListTag l = (ListTag) tag;
+		if (tag instanceof TagCompound) {
+			((TagCompound) tag).remove(node.getTag().getName());
+		} else if (tag instanceof TagList) {
+			TagList l = (TagList) tag;
 			l.getValue().remove(node.getTag());
 		}
 		NBTEditor.getSingleton().getTreeModel().removeNodeFromParent(node);

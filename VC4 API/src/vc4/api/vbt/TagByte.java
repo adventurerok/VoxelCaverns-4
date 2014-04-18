@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,19 +20,19 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_Double</code> tag.
+ * The <code>TAG_Byte</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class DoubleTag extends Tag {
+public final class TagByte extends Tag {
 
 	/**
 	 * The value.
 	 */
-	private double value;
+	private byte value;
 
-	public DoubleTag(String name) {
+	public TagByte(String name) {
 		super(name);
 	}
 
@@ -44,20 +44,19 @@ public final class DoubleTag extends Tag {
 	 * @param value
 	 *            The value.
 	 */
-	public DoubleTag(String name, double value) {
+	public TagByte(String name, byte value) {
 		super(name);
 		this.value = value;
 	}
 
 	@Override
-	public Double getValue() {
+	public Byte getValue() {
 		return value;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof Number) value = ((Number) o).doubleValue();
-
+		if (o instanceof Number) value = ((Number) o).byteValue();
 	}
 
 	@Override
@@ -67,7 +66,7 @@ public final class DoubleTag extends Tag {
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_Double" + append + ": " + value;
+		return "TAG_Byte" + append + ": " + value;
 	}
 
 }

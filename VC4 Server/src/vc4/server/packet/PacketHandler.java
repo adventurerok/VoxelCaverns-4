@@ -2,8 +2,6 @@ package vc4.server.packet;
 
 import java.util.Arrays;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.VoxelCaverns;
 import vc4.api.cmd.Command;
 import vc4.api.logging.Logger;
@@ -12,6 +10,7 @@ import vc4.api.server.SUID;
 import vc4.api.server.ServerConsole;
 import vc4.api.util.StringSplitter;
 import vc4.api.util.SuidUtils;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.Chunk;
 import vc4.impl.cmd.CommandExecutor;
 import vc4.impl.world.ImplWorld;
@@ -50,11 +49,14 @@ public class PacketHandler {
 		for (Chunk c : ((ImplWorld) VoxelCaverns.getCurrentWorld()).chunks.values()) {
 			if (c == null) continue;
 			TaskManager.sendPackets(s, new Packet6Chunk(c));
-			// break;
 		}
 		return true;
 	}
 
+	public void sendDictionaries(ServerUser s){
+		
+	}
+	
 	public boolean handlePacketAccept(ServerUser s, Packet0Accept p) {
 		s.setAccepted(true);
 		TaskManager.sendPackets(s, new Packet3SUID(1, ServerSettings.usid));
@@ -104,7 +106,7 @@ public class PacketHandler {
 	public boolean handlePacketNBT(ServerUser s, Packet40NBT p) {
 		switch (p.getType()) {
 			case 0:
-				s.setInfoTag((CompoundTag) p.tag);
+				s.setInfoTag((TagCompound) p.tag);
 				break;
 		}
 		return true;

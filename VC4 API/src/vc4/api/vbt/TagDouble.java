@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,49 +20,54 @@ package org.jnbt;
  */
 
 /**
- * Represents a single NBT tag.
+ * The <code>TAG_Double</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public abstract class Tag {
+public final class TagDouble extends Tag {
 
 	/**
-	 * The name of this tag.
+	 * The value.
 	 */
-	private String name;
+	private double value;
+
+	public TagDouble(String name) {
+		super(name);
+	}
 
 	/**
-	 * Creates the tag with the specified name.
+	 * Creates the tag.
 	 * 
 	 * @param name
 	 *            The name.
+	 * @param value
+	 *            The value.
 	 */
-	public Tag(String name) {
-		this.name = name;
+	public TagDouble(String name, double value) {
+		super(name);
+		this.value = value;
 	}
 
-	/**
-	 * Gets the name of this tag.
-	 * 
-	 * @return The name of this tag.
-	 */
-	public final String getName() {
-		return name;
+	@Override
+	public Double getValue() {
+		return value;
 	}
 
-	/**
-	 * Gets the value of this tag.
-	 * 
-	 * @return The value of this tag.
-	 */
-	public abstract Object getValue();
+	@Override
+	public void setValue(Object o) {
+		if (o instanceof Number) value = ((Number) o).doubleValue();
 
-	public abstract void setValue(Object o);
+	}
 
-	public void setName(String name) {
-		this.name = name;
-
+	@Override
+	public String toString() {
+		String name = getName();
+		String append = "";
+		if (name != null && !name.equals("")) {
+			append = "(\"" + this.getName() + "\")";
+		}
+		return "TAG_Double" + append + ": " + value;
 	}
 
 }

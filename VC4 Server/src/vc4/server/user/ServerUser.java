@@ -3,8 +3,6 @@ package vc4.server.user;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.entity.EntityPlayer;
 import vc4.api.io.*;
 import vc4.api.logging.Logger;
@@ -15,6 +13,7 @@ import vc4.api.server.Group;
 import vc4.api.server.Server;
 import vc4.api.server.ServerConsole;
 import vc4.api.server.User;
+import vc4.api.vbt.TagCompound;
 import vc4.server.Console;
 import vc4.server.packet.PacketHandler;
 
@@ -27,7 +26,7 @@ public class ServerUser extends Thread implements User {
 	private boolean connected = true;
 	private boolean accepted = false;
 	private long timer = 0;
-	private CompoundTag infoTag;
+	private TagCompound infoTag;
 	private EntityPlayer player;
 
 	private UserInfo info;
@@ -90,7 +89,7 @@ public class ServerUser extends Thread implements User {
 		// Logger.getLogger("VC4").fine("Payload: " + p.toString());
 	}
 
-	public ServerUser setInfoTag(CompoundTag infoTag) {
+	public ServerUser setInfoTag(TagCompound infoTag) {
 		this.infoTag = infoTag;
 		return this;
 	}
@@ -100,7 +99,7 @@ public class ServerUser extends Thread implements User {
 		return this;
 	}
 
-	public CompoundTag getInfoTag() {
+	public TagCompound getInfoTag() {
 		return infoTag;
 	}
 

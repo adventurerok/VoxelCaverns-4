@@ -4,8 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jnbt.*;
-
+import vc4.api.vbt.*;
 import vc4.api.vector.Vector3i;
 
 public class Thing {
@@ -14,7 +13,7 @@ public class Thing {
 	Vector3i size;
 	short[] blocks;
 	byte[] data;
-	ArrayList<CompoundTag> special;
+	ArrayList<TagCompound> special;
 
 	public int arrayPos(int x, int y, int z) {
 		return (x * size.y + y) * size.z + z;
@@ -26,24 +25,24 @@ public class Thing {
 		}
 	}
 
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = new CompoundTag("root");
-		tag.addTag(CompoundTag.createVector3iTag("centre", centre));
-		tag.addTag(CompoundTag.createVector3iTag("size", size));
-		tag.addTag(new ShortArrayTag("blocks", blocks));
-		tag.addTag(new ByteArrayTag("data", data));
-		tag.addTag(new ListTag("special", CompoundTag.class, (List<? extends Tag>) special));
+	public TagCompound getSaveCompound() {
+		TagCompound tag = new TagCompound("root");
+		tag.addTag(TagCompound.createVector3iTag("centre", centre));
+		tag.addTag(TagCompound.createVector3iTag("size", size));
+		tag.addTag(new TagShortArray("blocks", blocks));
+		tag.addTag(new TagByteArray("data", data));
+		tag.addTag(new TagList("special", TagCompound.class, (List<? extends Tag>) special));
 		return tag;
 	}
 
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		centre = tag.getCompoundTag("centre").readVector3i();
 		size = tag.getCompoundTag("size").readVector3i();
 		blocks = tag.getShortArrayTag("blocks").getValue();
 		data = tag.getByteArrayTag("data").getValue();
 		special = new ArrayList<>();
 		for (Tag t : tag.getListTag("special").getValue()) {
-			special.add((CompoundTag) t);
+			special.add((TagCompound) t);
 		}
 	}
 
@@ -53,13 +52,13 @@ public class Thing {
 		this.size = size;
 	}
 
-	public Thing(CompoundTag tag) {
+	public Thing(TagCompound tag) {
 		loadSaveCompound(tag);
 	}
 
 	public Thing(InputStream in) throws IOException {
 		try (NBTInputStream i = new NBTInputStream(in, true)) {
-			loadSaveCompound((CompoundTag) i.readTag());
+			loadSaveCompound((TagCompound) i.readTag());
 		}
 	}
 }

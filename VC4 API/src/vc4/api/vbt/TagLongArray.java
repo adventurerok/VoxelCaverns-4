@@ -1,24 +1,24 @@
 /**
  * 
  */
-package org.jnbt;
+package vc4.api.vbt;
 
 /**
  * @author paul
  * 
  */
-public class LongArrayTag extends Tag {
+public class TagLongArray extends Tag {
 
 	private long[] value;
 
-	public LongArrayTag(String name) {
+	public TagLongArray(String name) {
 		super(name);
 	}
 
 	/**
 	 * @param name
 	 */
-	public LongArrayTag(String name, long[] value) {
+	public TagLongArray(String name, long[] value) {
 		super(name);
 		this.value = value;
 

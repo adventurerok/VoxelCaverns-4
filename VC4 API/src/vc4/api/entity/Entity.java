@@ -5,15 +5,14 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.jnbt.CompoundTag;
-import org.jnbt.ListTag;
-
 import vc4.api.VoxelCaverns;
 import vc4.api.entity.trait.Trait;
 import vc4.api.logging.Logger;
 import vc4.api.math.MathUtils;
 import vc4.api.path.astar.Agent;
 import vc4.api.util.AABB;
+import vc4.api.vbt.TagCompound;
+import vc4.api.vbt.TagList;
 import vc4.api.vector.Vector3d;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.Chunk;
@@ -53,7 +52,7 @@ public abstract class Entity implements Agent {
 		return types.get(name);
 	}
 
-	public static Entity loadEntity(World world, CompoundTag tag) {
+	public static Entity loadEntity(World world, TagCompound tag) {
 		short id = tag.getShort("id");
 		String name = world.getEntityName(id);
 		Constructor<? extends Entity> clz = getEntityType(name);
@@ -453,22 +452,22 @@ public abstract class Entity implements Agent {
 	 * 
 	 * @return The save compound
 	 */
-	public CompoundTag getSaveCompound() {
-		CompoundTag root = new CompoundTag("root");
+	public TagCompound getSaveCompound() {
+		TagCompound root = new TagCompound("root");
 		root.setShort("id", (short) getId());
-		CompoundTag pos = new CompoundTag("pos");
+		TagCompound pos = new TagCompound("pos");
 		pos.setDouble("x", position.x);
 		pos.setDouble("y", position.y);
 		pos.setDouble("z", position.z);
 		root.addTag(pos);
-		CompoundTag motion = new CompoundTag("motion");
+		TagCompound motion = new TagCompound("motion");
 		motion.setDouble("x", motionX);
 		motion.setDouble("y", motionY);
 		motion.setDouble("z", motionZ);
 		root.addTag(motion);
 		root.setInt("hp", getHealth());
 		root.setLong("alive", ticksAlive);
-		ListTag trs = new ListTag("traits", CompoundTag.class);
+		TagList trs = new TagList("traits", TagCompound.class);
 		for (Trait t : traits.values()) {
 			if (!t.persistent()) continue;
 			trs.addTag(t.getSaveCompound());
@@ -477,15 +476,15 @@ public abstract class Entity implements Agent {
 		return root;
 	}
 
-	public void loadSaveCompound(CompoundTag tag) {
-		CompoundTag pos = tag.getCompoundTag("pos");
+	public void loadSaveCompound(TagCompound tag) {
+		TagCompound pos = tag.getCompoundTag("pos");
 		position = new Vector3d();
 		position.x = pos.getDouble("x");
 		position.y = pos.getDouble("y");
 		position.z = pos.getDouble("z");
 		oldPos = position.clone();
 		calculateBounds();
-		CompoundTag motion = tag.getCompoundTag("motion");
+		TagCompound motion = tag.getCompoundTag("motion");
 		motionX = motion.getDouble("x");
 		motionY = motion.getDouble("y");
 		motionZ = motion.getDouble("z");
@@ -498,10 +497,10 @@ public abstract class Entity implements Agent {
 		traits.clear();
 		traits = newTraits;
 		if (tag.hasKey("traits")) {
-			ListTag trs = tag.getListTag("traits");
+			TagList trs = tag.getListTag("traits");
 			while (trs.hasNext()) {
 				try {
-					CompoundTag tal = (CompoundTag) trs.getNextTag();
+					TagCompound tal = (TagCompound) trs.getNextTag();
 					Trait rait = Trait.loadTrait(this, tal);
 					traits.put(rait.name(), rait);
 				} catch (Exception e) {

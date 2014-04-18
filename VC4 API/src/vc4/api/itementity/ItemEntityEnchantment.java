@@ -2,8 +2,7 @@ package vc4.api.itementity;
 
 import java.util.ArrayList;
 
-import org.jnbt.*;
-
+import vc4.api.vbt.*;
 import vc4.api.world.World;
 
 public class ItemEntityEnchantment extends ItemEntity {
@@ -41,22 +40,22 @@ public class ItemEntityEnchantment extends ItemEntity {
 	public ArrayList<Short> enchantments = new ArrayList<Short>();
 
 	@Override
-	public CompoundTag getSaveCompound(World world) {
-		CompoundTag tag = super.getSaveCompound(world);
-		ListTag lis = new ListTag("ench", ShortTag.class);
+	public TagCompound getSaveCompound(World world) {
+		TagCompound tag = super.getSaveCompound(world);
+		TagList lis = new TagList("ench", TagShort.class);
 		for (int d = 0; d < enchantments.size(); ++d)
-			lis.addTag(new ShortTag("val", enchantments.get(d)));
+			lis.addTag(new TagShort("val", enchantments.get(d)));
 		tag.addTag(lis);
 		return tag;
 	}
 
 	@Override
-	public void loadSaveCompound(World world, CompoundTag tag) {
+	public void loadSaveCompound(World world, TagCompound tag) {
 		super.loadSaveCompound(world, tag);
-		ListTag lis = tag.getListTag("ench");
+		TagList lis = tag.getListTag("ench");
 		enchantments.clear();
 		while (lis.hasNext()) {
-			enchantments.add(((ShortTag) lis.getNextTag()).getValue());
+			enchantments.add(((TagShort) lis.getNextTag()).getValue());
 		}
 	}
 

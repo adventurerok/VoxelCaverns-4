@@ -5,11 +5,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import org.jnbt.*;
-
 import vc4.api.item.Item;
 import vc4.api.item.ItemStack;
 import vc4.api.logging.Logger;
+import vc4.api.vbt.*;
 import vc4.api.world.World;
 
 public abstract class Container implements IContainer, Iterable<ItemStack>, Serializable, Cloneable {
@@ -182,7 +181,7 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		isOpen = true;
 	}
 
-	protected void readExtraData(World world, CompoundTag tag) {
+	protected void readExtraData(World world, TagCompound tag) {
 
 	}
 
@@ -230,17 +229,17 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 		return "game.voxelcaverns.data.containers.Container: " + getGuiName();
 	}
 
-	protected void writeExtraData(World world, CompoundTag tag) {
+	protected void writeExtraData(World world, TagCompound tag) {
 
 	}
 
-	public void writeContainer(World world, CompoundTag tag) {
-		tag.addTag(new ShortTag("id", world.getRegisteredContainer(getName())));
+	public void writeContainer(World world, TagCompound tag) {
+		tag.addTag(new TagShort("id", world.getRegisteredContainer(getName())));
 		tag.setInt("size", getSize());
-		ListTag lis = new ListTag("items", CompoundTag.class);
+		TagList lis = new TagList("items", TagCompound.class);
 		for (int d = 0; d < getSize(); ++d) {
 			if (getItem(d) == null || !getItem(d).exists()) continue;
-			CompoundTag i = new CompoundTag("item");
+			TagCompound i = new TagCompound("item");
 			ItemStack.write(world, getItem(d), i);
 			i.setInt("slot", d);
 			lis.addTag(i);
@@ -253,15 +252,15 @@ public abstract class Container implements IContainer, Iterable<ItemStack>, Seri
 	public static void initClass() {
 	}
 
-	public static Container readContainer(World world, CompoundTag tag) {
+	public static Container readContainer(World world, TagCompound tag) {
 		try {
 			short id = tag.getShortTag("id").getValue();
 			Constructor<? extends Container> ccons = types.get(world.getContainerName(id));
 			Container c = ccons.newInstance();
 			c.slots = new ItemStack[tag.getInt("size")];
-			ListTag lis = tag.getListTag("items");
+			TagList lis = tag.getListTag("items");
 			while (lis.hasNext()) {
-				CompoundTag t = (CompoundTag) lis.getNextTag();
+				TagCompound t = (TagCompound) lis.getNextTag();
 				ItemStack i = ItemStack.read(world, t);
 				c.slots[t.getInt("slot")] = i;
 			}

@@ -12,26 +12,18 @@ import vc4.api.vector.Vector3l;
  */
 public class ChunkPos {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+
+
 	@Override
 	public int hashCode() {
-		return (int) (((y & 1023) << 22) | ((x & 2047) << 11) | (z & 2047));
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (x);
+		result = prime * result + (int) (y);
+		result = prime * result + (int) (z);
+		return result;
 	}
 
-	// @Override
-	// public int hashCode() {
-	// return (int) (x ^ y ^ z);
-	// }
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;

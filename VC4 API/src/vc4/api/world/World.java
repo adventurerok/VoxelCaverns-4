@@ -6,15 +6,15 @@ package vc4.api.world;
 import java.util.List;
 import java.util.Random;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.biome.Biome;
 import vc4.api.block.Block;
 import vc4.api.entity.*;
 import vc4.api.generator.WorldGenerator;
+import vc4.api.io.Dictionary;
 import vc4.api.sound.Music;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3d;
 
 /**
@@ -71,7 +71,7 @@ public interface World {
 
 	public WorldGenerator getGenerator();
 
-	public CompoundTag getGeneratorTag();
+	public TagCompound getGeneratorTag();
 
 	public MapData getMapData(long x, long z);
 
@@ -216,4 +216,6 @@ public interface World {
 	public float getNearbySkylight(long x, long y, long z, int d);
 
 	public abstract void notifyNear(long x, long y, long z);
+
+	public abstract Dictionary getDictionary(String name);
 }

@@ -3,8 +3,8 @@ package vc4.api.io;
 import java.io.*;
 import java.util.zip.Deflater;
 
-import org.jnbt.NBTOutputStream;
-import org.jnbt.Tag;
+import vc4.api.vbt.NBTOutputStream;
+import vc4.api.vbt.Tag;
 
 public class SwitchOutputStream extends OutputStream implements DataOutput {
 

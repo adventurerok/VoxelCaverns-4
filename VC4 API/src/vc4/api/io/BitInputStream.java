@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jnbt.NBTInputStream;
-import org.jnbt.Tag;
+import vc4.api.vbt.NBTInputStream;
+import vc4.api.vbt.Tag;
 
 /**
  * The BitInputStream allows reading individual bits from a general Java InputStream. Like the various Stream-classes from Java, the BitInputStream has to be created based on another Input stream. It provides a function to read the next bit

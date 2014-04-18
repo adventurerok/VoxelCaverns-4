@@ -20,9 +20,8 @@ import vc4.api.util.ColorUtils;
 public class GuiCreative extends Component {
 
 	private static OpenGL gl;
-	public static ContainerCreative def = new ContainerCreative();
 
-	public ContainerCreative inventory = def;
+	public ContainerCreative inventory = new ContainerCreative();
 	public static FontRenderer renderer = FontRenderer.createFontRenderer("unispaced_14", 14f);
 
 	public int pages = 1;

@@ -1,14 +1,14 @@
-package org.jnbt;
+package vc4.api.vbt;
 
-public class BooleanTag extends Tag {
+public class TagBoolean extends Tag {
 
 	private boolean value;
 
-	public BooleanTag(String name) {
+	public TagBoolean(String name) {
 		super(name);
 	}
 
-	public BooleanTag(String name, boolean value) {
+	public TagBoolean(String name, boolean value) {
 		super(name);
 		this.value = value;
 	}

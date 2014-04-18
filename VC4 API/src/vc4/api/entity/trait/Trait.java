@@ -3,10 +3,9 @@ package vc4.api.entity.trait;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.entity.Entity;
 import vc4.api.logging.Logger;
+import vc4.api.vbt.TagCompound;
 
 public abstract class Trait {
 
@@ -30,7 +29,7 @@ public abstract class Trait {
 		return types.get(name);
 	}
 
-	public static Trait loadTrait(Entity entity, CompoundTag tag) {
+	public static Trait loadTrait(Entity entity, TagCompound tag) {
 		short id = tag.getShort("id");
 		String name = entity.world.getTraitName(id);
 		Constructor<? extends Trait> clz = getTraitType(name);
@@ -63,13 +62,13 @@ public abstract class Trait {
 		return entity.world.getRegisteredTrait(name());
 	}
 
-	public CompoundTag getSaveCompound() {
-		CompoundTag root = new CompoundTag("root");
+	public TagCompound getSaveCompound() {
+		TagCompound root = new TagCompound("root");
 		root.setShort("id", getId());
 		return root;
 	}
 
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 
 	}
 

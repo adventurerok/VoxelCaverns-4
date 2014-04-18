@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License (BitNBT extension written by AdventurerOK)
@@ -126,30 +126,30 @@ public final class NBTInputStream implements Closeable {
 				if (depth == 0) {
 					throw new IOException("TAG_End found without a TAG_Compound/TAG_List tag preceding it.");
 				} else {
-					return new EndTag();
+					return new TagEnd();
 				}
 			case NBTConstants.TYPE_BYTE:
-				return new ByteTag(name, is.readByte());
+				return new TagByte(name, is.readByte());
 			case NBTConstants.TYPE_SHORT:
-				return new ShortTag(name, is.readShort());
+				return new TagShort(name, is.readShort());
 			case NBTConstants.TYPE_INT:
-				return new IntTag(name, is.readInt());
+				return new TagInt(name, is.readInt());
 			case NBTConstants.TYPE_LONG:
-				return new LongTag(name, is.readLong());
+				return new TagLong(name, is.readLong());
 			case NBTConstants.TYPE_FLOAT:
-				return new FloatTag(name, is.readFloat());
+				return new TagFloat(name, is.readFloat());
 			case NBTConstants.TYPE_DOUBLE:
-				return new DoubleTag(name, is.readDouble());
+				return new TagDouble(name, is.readDouble());
 			case NBTConstants.TYPE_BYTE_ARRAY:
 				int length = is.readInt();
 				byte[] bytes = new byte[length];
 				is.readBytes(bytes);
-				return new ByteArrayTag(name, bytes);
+				return new TagByteArray(name, bytes);
 			case NBTConstants.TYPE_STRING:
 				length = is.readShort();
 				bytes = new byte[length];
 				is.readBytes(bytes);
-				return new StringTag(name, new String(bytes, NBTConstants.CHARSET));
+				return new TagString(name, new String(bytes, NBTConstants.CHARSET));
 			case NBTConstants.TYPE_LIST:
 				int childType = is.readByte();
 				length = is.readInt();
@@ -157,63 +157,63 @@ public final class NBTInputStream implements Closeable {
 				List<Tag> tagList = new ArrayList<Tag>();
 				for (int i = 0; i < length; i++) {
 					Tag tag = readTagPayload(childType, "", depth + 1);
-					if (tag instanceof EndTag) { throw new IOException("TAG_End not permitted in a list."); }
+					if (tag instanceof TagEnd) { throw new IOException("TAG_End not permitted in a list."); }
 					tagList.add(tag);
 				}
 
-				return new ListTag(name, NBTUtils.getTypeClass(childType), tagList);
+				return new TagList(name, NBTUtils.getTypeClass(childType), tagList);
 			case NBTConstants.TYPE_COMPOUND:
 				Map<String, Tag> tagMap = new HashMap<String, Tag>();
 				while (true) {
 					Tag tag = readTag(depth + 1);
-					if (tag instanceof EndTag) {
+					if (tag instanceof TagEnd) {
 						break;
 					} else {
 						tagMap.put(tag.getName(), tag);
 					}
 				}
 
-				return new CompoundTag(name, tagMap);
+				return new TagCompound(name, tagMap);
 			case NBTConstants.TYPE_BOOLEAN:
-				return new BooleanTag(name, is.readBoolean());
+				return new TagBoolean(name, is.readBoolean());
 			case NBTConstants.TYPE_NIBBLE:
-				return new NibbleTag(name, (byte) is.readBits((short) 4));
+				return new TagNibble(name, (byte) is.readBits((short) 4));
 			case NBTConstants.TYPE_EBYTE:
-				return new EByteTag(name, (short) is.readBits((short) 12));
+				return new TagEByte(name, (short) is.readBits((short) 12));
 			case NBTConstants.TYPE_ESHORT:
-				return new EShortTag(name, is.readBits((short) 24));
+				return new TagEShort(name, is.readBits((short) 24));
 			case NBTConstants.TYPE_EINT:
-				return new EIntTag(name, is.readLongBits((short) 48));
+				return new TagEInt(name, is.readLongBits((short) 48));
 			case NBTConstants.TYPE_SHORT_ARRAY:
 				length = is.readInt();
 				short[] shorts = new short[length];
 				for (int d = 0; d < length; ++d)
 					shorts[d] = is.readShort();
-				return new ShortArrayTag(name, shorts);
+				return new TagShortArray(name, shorts);
 			case NBTConstants.TYPE_INT_ARRAY:
 				length = is.readInt();
 				int[] ints = new int[length];
 				for (int d = 0; d < length; ++d)
 					ints[d] = is.readInt();
-				return new IntArrayTag(name, ints);
+				return new TagIntArray(name, ints);
 			case NBTConstants.TYPE_LONG_ARRAY:
 				length = is.readInt();
 				long[] longs = new long[length];
 				for (int d = 0; d < length; ++d)
 					longs[d] = is.readLong();
-				return new LongArrayTag(name, longs);
+				return new TagLongArray(name, longs);
 			case NBTConstants.TYPE_ESHORT_ARRAY:
 				length = is.readInt();
 				ints = new int[length];
 				for (int d = 0; d < length; ++d)
 					ints[d] = is.readBits((short) 24);
-				return new EShortArrayTag(name, ints);
+				return new TagEShortArray(name, ints);
 			case NBTConstants.TYPE_EINT_ARRAY:
 				length = is.readInt();
 				longs = new long[length];
 				for (int d = 0; d < length; ++d)
 					longs[d] = is.readLongBits((short) 48);
-				return new EIntArrayTag(name, longs);
+				return new TagEIntArray(name, longs);
 			default:
 				throw new IOException("Invalid tag type: " + type + ".");
 				// return null;

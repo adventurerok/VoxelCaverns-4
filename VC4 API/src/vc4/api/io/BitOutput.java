@@ -2,7 +2,7 @@ package vc4.api.io;
 
 import java.io.IOException;
 
-import org.jnbt.Tag;
+import vc4.api.vbt.Tag;
 
 public interface BitOutput {
 

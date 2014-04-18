@@ -11,9 +11,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
-import org.jnbt.*;
-
 import vc4.api.logging.Logger;
+import vc4.api.vbt.*;
 
 public class NBTEditor extends JFrame {
 
@@ -90,7 +89,7 @@ public class NBTEditor extends JFrame {
 						((DefaultTreeModel) nbtTree.getModel()).reload(rootNode);
 					} else {
 						NBTNode node = (NBTNode) nbtTree.getSelectionPath().getLastPathComponent();
-						if (node.getTag() instanceof CompoundTag || node.getTag() instanceof ListTag) {
+						if (node.getTag() instanceof TagCompound || node.getTag() instanceof TagList) {
 							node.addTag(tag);
 							((DefaultTreeModel) nbtTree.getModel()).reload(node);
 						} else {
@@ -113,7 +112,7 @@ public class NBTEditor extends JFrame {
 				int num = Integer.parseInt(e.getActionCommand().substring(5));
 				Class<? extends Tag> t = NBTUtils.getTypeClass(num);
 				String name = JOptionPane.showInputDialog("Tag name");
-				ListTag tag = new ListTag(name, t);
+				TagList tag = new TagList(name, t);
 				if (nbtTree.getSelectionPath() == null || !(nbtTree.getSelectionPath().getLastPathComponent() instanceof NBTNode)) {
 					root.addTag(tag);
 					getTreeModel().insertNodeInto(new NBTNode(tag), rootNode, rootNode.getChildCount());
@@ -121,7 +120,7 @@ public class NBTEditor extends JFrame {
 					((DefaultTreeModel) nbtTree.getModel()).reload(rootNode);
 				} else {
 					NBTNode node = (NBTNode) nbtTree.getSelectionPath().getLastPathComponent();
-					if (node.getTag() instanceof CompoundTag || node.getTag() instanceof ListTag) {
+					if (node.getTag() instanceof TagCompound || node.getTag() instanceof TagList) {
 						node.addTag(tag);
 						((DefaultTreeModel) nbtTree.getModel()).reload(node);
 					} else {
@@ -205,7 +204,7 @@ public class NBTEditor extends JFrame {
 		e.setVisible(true);
 	}
 
-	private CompoundTag root = new CompoundTag("root");
+	private TagCompound root = new TagCompound("root");
 	private NBTNode rootNode;
 	private NBTTree nbtTree;
 	private JToolBar addBar = new JToolBar();
@@ -396,20 +395,20 @@ public class NBTEditor extends JFrame {
 
 	}
 
-	private boolean checkCompoundTagForExtras(CompoundTag tag) {
+	private boolean checkCompoundTagForExtras(TagCompound tag) {
 		for (Tag t : tag.getValue().values()) {
 			if (NBTUtils.getTypeCode(t.getClass()) > 11) return true;
-			if (t instanceof CompoundTag) {
-				if (checkCompoundTagForExtras((CompoundTag) t)) return true;
-			} else if (t instanceof ListTag) {
-				if (NBTUtils.getTypeCode(((ListTag) t).getType()) > 11) return true;
+			if (t instanceof TagCompound) {
+				if (checkCompoundTagForExtras((TagCompound) t)) return true;
+			} else if (t instanceof TagList) {
+				if (NBTUtils.getTypeCode(((TagList) t).getType()) > 11) return true;
 			}
 		}
 		return false;
 	}
 
 	public void clear() {
-		root = new CompoundTag("root");
+		root = new TagCompound("root");
 		rootNode = new NBTNode(root);
 		nbtTree.setModel(new DefaultTreeModel(rootNode));
 		file = null;
@@ -477,7 +476,7 @@ public class NBTEditor extends JFrame {
 		if (f == null) return;
 		try {
 			NBTInputStream in = new NBTInputStream(new FileInputStream(f));
-			root = (CompoundTag) in.readTag();
+			root = (TagCompound) in.readTag();
 			in.close();
 			file = f;
 			rootNode = new NBTNode(root);
@@ -489,7 +488,7 @@ public class NBTEditor extends JFrame {
 			e.printStackTrace();
 			try {
 				NBTInputStream in = new NBTInputStream(new FileInputStream(f), false);
-				root = (CompoundTag) in.readTag();
+				root = (TagCompound) in.readTag();
 				nbtTree.setModel(new DefaultTreeModel(rootNode));
 				in.close();
 				file = f;
@@ -499,7 +498,7 @@ public class NBTEditor extends JFrame {
 				System.out.println("Failed to load file with VC format, attempting minecraft");
 				try {
 					MCInputStream in = new MCInputStream(new FileInputStream(f));
-					root = (CompoundTag) in.readTag();
+					root = (TagCompound) in.readTag();
 					in.close();
 					file = f;
 					rootNode = new NBTNode(root);
@@ -510,7 +509,7 @@ public class NBTEditor extends JFrame {
 					System.out.println("Failed to load with GZip MC, attempting without");
 					try {
 						MCInputStream in = new MCInputStream(new FileInputStream(f), false);
-						root = (CompoundTag) in.readTag();
+						root = (TagCompound) in.readTag();
 						rootNode = new NBTNode(root);
 						nbtTree.setModel(new DefaultTreeModel(rootNode));
 						in.close();
@@ -552,10 +551,10 @@ public class NBTEditor extends JFrame {
 		for (int d = 0; d < node.getChildCount(); ++d) {
 			NBTNode kid = (NBTNode) node.getChildAt(d);
 			if (NBTUtils.getTypeCode(kid.getTag().getClass()) > 11) toRemove.add(kid);
-			if (kid.getTag() instanceof CompoundTag) {
+			if (kid.getTag() instanceof TagCompound) {
 				removeExtras(kid);
-			} else if (kid.getTag() instanceof ListTag) {
-				if (NBTUtils.getTypeCode(((ListTag) kid.getTag()).getType()) > 11) toRemove.add(kid);
+			} else if (kid.getTag() instanceof TagList) {
+				if (NBTUtils.getTypeCode(((TagList) kid.getTag()).getType()) > 11) toRemove.add(kid);
 			}
 		}
 		for (NBTNode s : toRemove) {
@@ -605,11 +604,11 @@ public class NBTEditor extends JFrame {
 		if (selPath == null) return false;
 		if (!(selPath.getLastPathComponent() instanceof NBTNode)) return false;
 		NBTNode node = (NBTNode) selPath.getLastPathComponent();
-		if (node.getTag() instanceof ListTag) return true;
-		if (node.getTag() instanceof CompoundTag) return false;
+		if (node.getTag() instanceof TagList) return true;
+		if (node.getTag() instanceof TagCompound) return false;
 		if (!(node.getParent() instanceof NBTNode)) return false;
 		node = (NBTNode) node.getParent();
-		if (node.getTag() instanceof ListTag) return true;
+		if (node.getTag() instanceof TagList) return true;
 		return false;
 	}
 
@@ -620,7 +619,7 @@ public class NBTEditor extends JFrame {
 		NBTNode node = (NBTNode) selPath.getLastPathComponent();
 		if (!(node.getParent() instanceof NBTNode)) return false;
 		node = (NBTNode) node.getParent();
-		if (node.getTag() instanceof ListTag) return true;
+		if (node.getTag() instanceof TagList) return true;
 		return false;
 	}
 

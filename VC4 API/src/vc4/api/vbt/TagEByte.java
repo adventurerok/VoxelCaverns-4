@@ -1,14 +1,14 @@
-package org.jnbt;
+package vc4.api.vbt;
 
-public class EByteTag extends Tag {
+public class TagEByte extends Tag {
 
 	private short value;
 
-	public EByteTag(String name) {
+	public TagEByte(String name) {
 		super(name);
 	}
 
-	public EByteTag(String name, short value) {
+	public TagEByte(String name, short value) {
 		super(name);
 		this.value = value;
 	}

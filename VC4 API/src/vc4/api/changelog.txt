@@ -398,3 +398,13 @@ VC4-Development-0.0.2-336
 	* Fixed bug causing deflater in SwitchOutputStream to not work
 VC4-Development-0.0.2-337
 	* Fixed bug in SwitchInputStream
+VC4-Development-0.0.2-338
+	+ Chunks recieved are now added to the world
+	* recieved chunks are now set as populated so the (hopefully) render
+VC4-Development-0.0.2-339
+	* Client now calls world update method in multiplayer
+VC4-Development-0.0.2-340
+	* Downloaded BlockStores for multiplayer chunks are now inserted into the chunk
+VC4-Development-0.0.3-341
+	* Changed the dictionary system, dictionaryinfo now used to load dictionaries
+	* This is necessary for the multiplayer update

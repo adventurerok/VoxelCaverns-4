@@ -7,8 +7,6 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import org.jnbt.*;
-
 import vc4.api.Resources;
 import vc4.api.biome.Biome;
 import vc4.api.biome.ZoomGenerator;
@@ -29,6 +27,7 @@ import vc4.api.sound.Music;
 import vc4.api.text.Localization;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
+import vc4.api.vbt.*;
 import vc4.api.vector.*;
 import vc4.api.world.*;
 import vc4.impl.plugin.PluginManager;
@@ -79,6 +78,8 @@ public class ImplWorld implements World {
 	private static BlockStore fake = new BlockStore(0, 0, 0);
 	public HashMap<ChunkPos, ImplChunk> chunks = new HashMap<>(8192);
 	public HashMap<Vector2l, ImplMapData> heights = new HashMap<>(512);
+	private HashMap<String, Dictionary> dictionaries = new HashMap<>();
+	private HashMap<String, DictionaryInfo> dictInfo = new HashMap<>();
 	private Dictionary registeredBlocks = new Dictionary(2).put("air", 0).put("stone", 1);
 	private Dictionary registeredItems = new Dictionary(2048);
 	private Dictionary registeredCrafting = new Dictionary(1);
@@ -94,7 +95,7 @@ public class ImplWorld implements World {
 	private String generatorName = "overworld";
 	private String name = "World";
 	private String saveName;
-	private CompoundTag generatorTag = new CompoundTag("gen");
+	private TagCompound generatorTag = new TagCompound("gen");
 	protected boolean loaded = false;
 	private LinkedList<Vector3l> lightUpdates = new LinkedList<>();
 	private LinkedList<Vector2l> downScans = new LinkedList<>();
@@ -115,6 +116,23 @@ public class ImplWorld implements World {
 	private boolean multiplayer = false;
 
 	private ConcurrentLinkedDeque<ImplChunk> chunksToAdd = new ConcurrentLinkedDeque<>();
+	
+	private void loadDefaultDictInfos() {
+		registerDictionaryInfo(new DictionaryInfo("blocks", 2).put("air", 0).put("stone", 1));
+		registerDictionaryInfo(new DictionaryInfo("items", 2048));
+		registerDictionaryInfo(new DictionaryInfo("crafting", 1));
+		registerDictionaryInfo(new DictionaryInfo("entitys", 10).put("item", 0).put("player", 5));
+		registerDictionaryInfo(new DictionaryInfo("biomes", 0));
+		registerDictionaryInfo(new DictionaryInfo("tileentitys", 5));
+		registerDictionaryInfo(new DictionaryInfo("itementitys", 5).put("enchantment", 0));
+		registerDictionaryInfo(new DictionaryInfo("containers", 5));
+		registerDictionaryInfo(new DictionaryInfo("traits", 25).put("inventory", 0));
+		registerDictionaryInfo(new DictionaryInfo("areas", 10));
+	}
+	
+	public void registerDictionaryInfo(DictionaryInfo info) {
+		dictInfo.put(info.getName(), info);
+	}
 
 	/**
 	 * 
@@ -150,27 +168,45 @@ public class ImplWorld implements World {
 		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/";
 		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
 		if (!wld.exists()) return;
-		loadDict(registeredBiomes, dirPath + "biomes.dictionary");
-		loadDict(registeredBlocks, dirPath + "blocks.dictionary");
-		loadDict(registeredItems, dirPath + "items.dictionary");
-		loadDict(registeredEntitys, dirPath + "entitys.dictionary");
-		loadDict(registeredCrafting, dirPath + "crafting.dictionary");
-		loadDict(registeredContainers, dirPath + "containers.dictionary");
-		loadDict(registeredTileEntitys, dirPath + "tileentitys.dictionary");
-		loadDict(registeredItemEntitys, dirPath + "itementitys.dictionary");
-		loadDict(registeredTraits, dirPath + "traits.dictionary");
-		loadDict(registeredAreas, dirPath + "areas.dictionary");
+		loadDefaultDictInfos();
+		PluginManager.loadDicts(this);
+		loadDicts(dirPath);
 		try (NBTInputStream in = new NBTInputStream(new FileInputStream(wld), true)) {
-			loadSaveCompound((CompoundTag) in.readTag());
+			loadSaveCompound((TagCompound) in.readTag());
 		}
 	}
-
-	private void loadDict(Dictionary dict, String path) throws FileNotFoundException {
+	
+	private void loadDicts(String path) throws FileNotFoundException{
+		for(DictionaryInfo dict : dictInfo.values()) {
+			Dictionary odict = loadDict(dict, path + "/" + dict.getName() + ".dictionary");
+			dictionaries.put(dict.getName(), odict);
+		}
+		registeredBiomes = dictionaries.get("biomes");
+		registeredBlocks = dictionaries.get("blocks");
+		registeredItems = dictionaries.get("items");
+		registeredEntitys = dictionaries.get("entitys");
+		registeredCrafting = dictionaries.get("crafting");
+		registeredContainers = dictionaries.get("containers");
+		registeredTileEntitys = dictionaries.get("tileentitys");
+		registeredItemEntitys = dictionaries.get("itementitys");
+		registeredTraits = dictionaries.get("traits");
+		registeredAreas = dictionaries.get("areas");
+	}
+	
+	@Override
+	public Dictionary getDictionary(String name){
+		return dictionaries.get(name);
+	}
+	
+	private Dictionary loadDict(DictionaryInfo dict, String path) throws FileNotFoundException {
 		File file = new File(path);
-		if (!file.exists()) return;
-		dict.load(new FileInputStream(file));
+		if (!file.exists()) return new Dictionary(dict);
+		Dictionary dicto = new Dictionary(dict);
+		dicto.load(new FileInputStream(file));
+		return dicto;
 	}
 
+	
 	public SaveFormat getSaveFormat() {
 		return saveFormat;
 	}
@@ -1394,8 +1430,8 @@ public class ImplWorld implements World {
 		return time;
 	}
 
-	public CompoundTag getSaveCompound() {
-		CompoundTag root = new CompoundTag("root");
+	public TagCompound getSaveCompound() {
+		TagCompound root = new TagCompound("root");
 		root.setLong("time", time);
 		root.setString("generator", generatorName);
 		root.setLong("seed", seed);
@@ -1405,7 +1441,7 @@ public class ImplWorld implements World {
 		return root;
 	}
 
-	public void loadSaveCompound(CompoundTag root) {
+	public void loadSaveCompound(TagCompound root) {
 		time = root.getLong("time");
 		generatorName = root.getString("generator");
 		seed = root.getLong("seed");
@@ -1432,7 +1468,7 @@ public class ImplWorld implements World {
 		File file = new File(path);
 		if (!file.exists()) return spawnPlayer(name);
 		try (NBTInputStream in = new NBTInputStream(new FileInputStream(file), true)) {
-			EntityPlayer plr = (EntityPlayer) Entity.loadEntity(this, (CompoundTag) in.readTag());
+			EntityPlayer plr = (EntityPlayer) Entity.loadEntity(this, (TagCompound) in.readTag());
 			plr.loadNearbyChunks();
 			plr.addToWorld();
 			addPlayer(plr);
@@ -1572,7 +1608,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public CompoundTag getGeneratorTag() {
+	public TagCompound getGeneratorTag() {
 		return generatorTag;
 	}
 

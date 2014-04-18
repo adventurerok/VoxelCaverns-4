@@ -2,8 +2,6 @@ package vc4.api.entity;
 
 import java.util.List;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.Resources;
 import vc4.api.block.Block;
 import vc4.api.graphics.*;
@@ -11,6 +9,7 @@ import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 import vc4.api.render.DataRenderer;
 import vc4.api.render.ItemRenderer;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.World;
 
@@ -130,16 +129,16 @@ public class EntityItem extends Entity {
 	}
 
 	@Override
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = super.getSaveCompound();
-		CompoundTag itm = new CompoundTag("item");
+	public TagCompound getSaveCompound() {
+		TagCompound tag = super.getSaveCompound();
+		TagCompound itm = new TagCompound("item");
 		ItemStack.write(world, item, itm);
 		tag.addTag(itm);
 		return tag;
 	}
 
 	@Override
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		super.loadSaveCompound(tag);
 		item = ItemStack.read(world, tag.getCompoundTag("item"));
 	}

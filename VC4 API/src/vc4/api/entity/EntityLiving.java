@@ -2,8 +2,6 @@ package vc4.api.entity;
 
 import java.util.HashMap;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.Resources;
 import vc4.api.VoxelCaverns;
 import vc4.api.client.Client;
@@ -15,6 +13,7 @@ import vc4.api.graphics.OpenGL;
 import vc4.api.item.ItemStack;
 import vc4.api.math.MathUtils;
 import vc4.api.model.Model;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.*;
 import vc4.api.world.World;
 
@@ -173,9 +172,9 @@ public abstract class EntityLiving extends Entity {
 	}
 
 	@Override
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = super.getSaveCompound();
-		CompoundTag rot = new CompoundTag("angle");
+	public TagCompound getSaveCompound() {
+		TagCompound tag = super.getSaveCompound();
+		TagCompound rot = new TagCompound("angle");
 		rot.setDouble("yaw", moveYaw);
 		rot.setDouble("pitch", movePitch);
 		tag.addTag(rot);
@@ -187,9 +186,9 @@ public abstract class EntityLiving extends Entity {
 	}
 
 	@Override
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		super.loadSaveCompound(tag);
-		CompoundTag rot = tag.getCompoundTag("angle");
+		TagCompound rot = tag.getCompoundTag("angle");
 		moveYaw = rot.getDouble("yaw");
 		movePitch = rot.getDouble("pitch");
 		healing = tag.getInt("he");

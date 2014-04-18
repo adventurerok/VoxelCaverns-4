@@ -4,10 +4,9 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.entity.Entity;
 import vc4.api.logging.Logger;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3i;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.*;
@@ -32,14 +31,14 @@ public abstract class TileEntity {
 		return types.get(name);
 	}
 
-	public static TileEntity loadTileEntity(Chunk chunk, CompoundTag tag) {
+	public static TileEntity loadTileEntity(Chunk chunk, TagCompound tag) {
 		short id = tag.getShort("id");
 		String name = chunk.getWorld().getTileEntityName(id);
 		Constructor<? extends TileEntity> clz = getTileEntityType(name);
 		try {
 			TileEntity e = clz.newInstance(chunk.getWorld());
 			e.position = new Vector3l();
-			CompoundTag pos = tag.getCompoundTag("pos");
+			TagCompound pos = tag.getCompoundTag("pos");
 			e.position.x = chunk.getChunkPos().worldX(pos.getByteTag("x").getValue());
 			e.position.y = chunk.getChunkPos().worldY(pos.getByteTag("y").getValue());
 			e.position.z = chunk.getChunkPos().worldZ(pos.getByteTag("z").getValue());
@@ -174,14 +173,14 @@ public abstract class TileEntity {
 		}
 	}
 
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 
 	}
 
-	public CompoundTag getSaveCompound() {
-		CompoundTag root = new CompoundTag("root");
+	public TagCompound getSaveCompound() {
+		TagCompound root = new TagCompound("root");
 		root.setShort("id", getId());
-		CompoundTag pos = new CompoundTag("pos");
+		TagCompound pos = new TagCompound("pos");
 		pos.setByte("x", (byte) (position.x & 31));
 		pos.setByte("y", (byte) (position.y & 31));
 		pos.setByte("z", (byte) (position.z & 31));

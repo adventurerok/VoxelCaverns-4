@@ -8,7 +8,7 @@ import vc4.api.item.ItemStack;
 import vc4.api.logging.Logger;
 
 public class ContainerCreative extends Container {
-
+	
 	public static ItemStack[] creativeItems = getCreativeItems();
 	public ArrayList<ItemStack> searchResults = new ArrayList<ItemStack>();
 	public String searchTerm = "";
@@ -18,7 +18,7 @@ public class ContainerCreative extends Container {
 	private static final long serialVersionUID = 807934544796532170L;
 
 	public ContainerCreative() {
-		super(creativeItems);
+		super(creativeItems = getCreativeItems());
 	}
 
 	public boolean search(String term) {

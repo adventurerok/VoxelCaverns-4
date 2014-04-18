@@ -3,15 +3,15 @@ package vc4.editor.util;
 import java.util.List;
 import java.util.Random;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.biome.Biome;
 import vc4.api.block.Block;
 import vc4.api.entity.*;
 import vc4.api.generator.WorldGenerator;
+import vc4.api.io.Dictionary;
 import vc4.api.sound.Music;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.*;
 
@@ -196,7 +196,7 @@ public class TestWorld implements World {
 	}
 
 	@Override
-	public CompoundTag getGeneratorTag() {
+	public TagCompound getGeneratorTag() {
 		// TASK Auto-generated method stub
 		return null;
 	}
@@ -552,6 +552,11 @@ public class TestWorld implements World {
 
 	@Override
 	public List<Entity> getEntitiesInBoundsExcluding(Chunk chunk, AABB bounds, Entity exclude) {
+		return null;
+	}
+
+	@Override
+	public Dictionary getDictionary(String name) {
 		return null;
 	}
 

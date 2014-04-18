@@ -1,14 +1,14 @@
-package org.jnbt;
+package vc4.api.vbt;
 
-public class NibbleTag extends Tag {
+public class TagNibble extends Tag {
 
 	private byte value;
 
-	public NibbleTag(String name) {
+	public TagNibble(String name) {
 		super(name);
 	}
 
-	public NibbleTag(String name, byte value) {
+	public TagNibble(String name, byte value) {
 		super(name);
 		this.value = value;
 	}

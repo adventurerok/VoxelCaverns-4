@@ -3,10 +3,9 @@ package vc4.api.itementity;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.entity.Entity;
 import vc4.api.logging.Logger;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.World;
 
 public abstract class ItemEntity {
@@ -26,8 +25,8 @@ public abstract class ItemEntity {
 	@Override
 	public abstract ItemEntity clone();
 
-	public CompoundTag getSaveCompound(World world) {
-		CompoundTag tag = new CompoundTag("tag");
+	public TagCompound getSaveCompound(World world) {
+		TagCompound tag = new TagCompound("tag");
 		tag.setShort("id", getId(world));
 		return tag;
 	}
@@ -36,11 +35,11 @@ public abstract class ItemEntity {
 		return types.get(name);
 	}
 
-	public void loadSaveCompound(World world, CompoundTag tag) {
+	public void loadSaveCompound(World world, TagCompound tag) {
 
 	}
 
-	public static ItemEntity loadItemEntity(World world, CompoundTag tag) {
+	public static ItemEntity loadItemEntity(World world, TagCompound tag) {
 		short id = tag.getShort("id");
 		String name = world.getItemEntityName(id);
 		Constructor<? extends ItemEntity> clz = getItemEntityType(name);

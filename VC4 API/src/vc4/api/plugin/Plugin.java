@@ -6,6 +6,7 @@ package vc4.api.plugin;
 import java.util.*;
 
 import vc4.api.cmd.*;
+import vc4.api.io.DictionaryInfo;
 import vc4.api.logging.Logger;
 import vc4.api.world.World;
 
@@ -56,6 +57,10 @@ public abstract class Plugin {
 	public abstract void onEnable();
 
 	public abstract void onDisable();
+	
+	public ArrayList<DictionaryInfo> getDictInfos() {
+		return null;
+	}
 
 	public void loadBlocks(World world) {
 

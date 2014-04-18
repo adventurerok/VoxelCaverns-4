@@ -23,7 +23,7 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
-import org.jnbt.*;
+import vc4.api.vbt.*;
 
 /**
  * <p>
@@ -116,36 +116,36 @@ public final class MCInputStream implements Closeable {
 				if (depth == 0) {
 					throw new IOException("TAG_End found without a TAG_Compound/TAG_List tag preceding it.");
 				} else {
-					return new EndTag();
+					return new TagEnd();
 				}
 			case NBTConstants.TYPE_BYTE:
-				return new ByteTag(name, is.readByte());
+				return new TagByte(name, is.readByte());
 			case NBTConstants.TYPE_SHORT:
-				return new ShortTag(name, is.readShort());
+				return new TagShort(name, is.readShort());
 			case NBTConstants.TYPE_INT:
-				return new IntTag(name, is.readInt());
+				return new TagInt(name, is.readInt());
 			case NBTConstants.TYPE_LONG:
-				return new LongTag(name, is.readLong());
+				return new TagLong(name, is.readLong());
 			case NBTConstants.TYPE_FLOAT:
-				return new FloatTag(name, is.readFloat());
+				return new TagFloat(name, is.readFloat());
 			case NBTConstants.TYPE_DOUBLE:
-				return new DoubleTag(name, is.readDouble());
+				return new TagDouble(name, is.readDouble());
 			case NBTConstants.TYPE_BYTE_ARRAY:
 				int length = is.readInt();
 				byte[] bytes = new byte[length];
 				is.readFully(bytes);
-				return new ByteArrayTag(name, bytes);
+				return new TagByteArray(name, bytes);
 			case NBTConstants.TYPE_INT_ARRAY:
 				length = is.readInt();
 				int[] ints = new int[length];
 				for (int d = 0; d < ints.length; ++d)
 					ints[d] = is.readInt();
-				return new IntArrayTag(name, ints);
+				return new TagIntArray(name, ints);
 			case NBTConstants.TYPE_STRING:
 				length = is.readShort();
 				bytes = new byte[length];
 				is.readFully(bytes);
-				return new StringTag(name, new String(bytes, NBTConstants.CHARSET));
+				return new TagString(name, new String(bytes, NBTConstants.CHARSET));
 			case NBTConstants.TYPE_LIST:
 				int childType = is.readByte();
 				length = is.readInt();
@@ -153,23 +153,23 @@ public final class MCInputStream implements Closeable {
 				List<Tag> tagList = new ArrayList<Tag>();
 				for (int i = 0; i < length; i++) {
 					Tag tag = readTagPayload(childType, "", depth + 1);
-					if (tag instanceof EndTag) { throw new IOException("TAG_End not permitted in a list."); }
+					if (tag instanceof TagEnd) { throw new IOException("TAG_End not permitted in a list."); }
 					tagList.add(tag);
 				}
 
-				return new ListTag(name, NBTUtils.getTypeClass(childType), tagList);
+				return new TagList(name, NBTUtils.getTypeClass(childType), tagList);
 			case NBTConstants.TYPE_COMPOUND:
 				Map<String, Tag> tagMap = new HashMap<String, Tag>();
 				while (true) {
 					Tag tag = readTag(depth + 1);
-					if (tag instanceof EndTag) {
+					if (tag instanceof TagEnd) {
 						break;
 					} else {
 						tagMap.put(tag.getName(), tag);
 					}
 				}
 
-				return new CompoundTag(name, tagMap);
+				return new TagCompound(name, tagMap);
 			default:
 				throw new IOException("Invalid tag type: " + type + ".");
 		}

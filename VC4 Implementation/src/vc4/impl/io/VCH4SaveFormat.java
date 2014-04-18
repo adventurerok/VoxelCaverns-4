@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.jnbt.*;
-
 import vc4.api.area.Area;
 import vc4.api.entity.Entity;
 import vc4.api.io.*;
@@ -15,6 +13,7 @@ import vc4.api.logging.Logger;
 import vc4.api.profile.Profiler;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.util.DirectoryLocator;
+import vc4.api.vbt.*;
 import vc4.api.vector.Vector2l;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.*;
@@ -41,12 +40,12 @@ public class VCH4SaveFormat implements SaveFormat {
 		if (!file.exists()) return null;
 		ImplChunk chunk = new ImplChunk((ImplWorld) world, ChunkPos.create(x, y, z));
 		try (DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(file))))) {
-			CompoundTag root = (CompoundTag) new NBTInputStream(in, false).readTag();
+			TagCompound root = (TagCompound) new NBTInputStream(in, false).readTag();
 			chunk.setPopulated(root.getBoolean("populated", false));
 			if (root.hasKey("entitys")) {
-				ListTag elist = root.getListTag("entitys");
+				TagList elist = root.getListTag("entitys");
 				while (elist.hasNext()) {
-					CompoundTag ent = (CompoundTag) elist.getNextTag();
+					TagCompound ent = (TagCompound) elist.getNextTag();
 					try {
 						chunk.entitys.add(Entity.loadEntity(world, ent));
 					} catch (Exception e) {
@@ -55,9 +54,9 @@ public class VCH4SaveFormat implements SaveFormat {
 				}
 			}
 			if (root.hasKey("tiles")) {
-				ListTag tlist = root.getListTag("tiles");
+				TagList tlist = root.getListTag("tiles");
 				while (tlist.hasNext()) {
-					CompoundTag ent = (CompoundTag) tlist.getNextTag();
+					TagCompound ent = (TagCompound) tlist.getNextTag();
 					try {
 						TileEntity tile = TileEntity.loadTileEntity(chunk, ent);
 						chunk.tileEntitys.put(tile.getPositionInChunk(), tile);
@@ -67,9 +66,9 @@ public class VCH4SaveFormat implements SaveFormat {
 				}
 			}
 			if (root.hasKey("areas")) {
-				ListTag tlist = root.getListTag("areas");
+				TagList tlist = root.getListTag("areas");
 				while (tlist.hasNext()) {
-					CompoundTag ent = (CompoundTag) tlist.getNextTag();
+					TagCompound ent = (TagCompound) tlist.getNextTag();
 					try {
 						Area tile = Area.loadArea(world, ent);
 						chunk.areas.add(tile);
@@ -79,7 +78,7 @@ public class VCH4SaveFormat implements SaveFormat {
 				}
 			}
 			if (root.hasKey("bluds")) {
-				ListTag bluds = root.getListTag("bluds");
+				TagList bluds = root.getListTag("bluds");
 				loadBlockUpdateTag(chunk, bluds);
 			}
 			for (int d = 0; d < 8; ++d) {
@@ -116,27 +115,27 @@ public class VCH4SaveFormat implements SaveFormat {
 		String path = DirectoryLocator.getPath() + "/worlds/" + chunk.getWorld().getSaveName() + "/chunks/" + chunk.getChunkPos().y + "/" + chunk.getChunkPos().z + "/" + chunk.getChunkPos().x + ".vch4";
 		File file = new File(path);
 		file.getParentFile().mkdirs();
-		CompoundTag root = new CompoundTag("root");
+		TagCompound root = new TagCompound("root");
 		root.setBoolean("populated", chunk.isPopulated());
-		ListTag elist = new ListTag("entitys", CompoundTag.class);
+		TagList elist = new TagList("entitys", TagCompound.class);
 		List<Entity> lis = (List<Entity>) c.getEntityList().clone();
 		for (int d = 0; d < lis.size(); ++d) {
 			if (!lis.get(d).persistent()) continue;
-			CompoundTag tag = lis.get(d).getSaveCompound();
+			TagCompound tag = lis.get(d).getSaveCompound();
 			elist.addTag(tag);
 		}
 		root.addTag(elist);
-		ListTag tlist = new ListTag("tiles", CompoundTag.class);
+		TagList tlist = new TagList("tiles", TagCompound.class);
 		for (TileEntity t : chunk.getTileEntitys().values()) {
 			if (!t.persistent()) continue;
-			CompoundTag tag = t.getSaveCompound();
+			TagCompound tag = t.getSaveCompound();
 			tlist.addTag(tag);
 		}
 		root.addTag(tlist);
-		ListTag alist = new ListTag("areas", CompoundTag.class);
+		TagList alist = new TagList("areas", TagCompound.class);
 		for (Area a : chunk.getAreas()) {
 			if (!a.persistent()) continue;
-			CompoundTag tag = a.getSaveCompound();
+			TagCompound tag = a.getSaveCompound();
 			alist.addTag(tag);
 		}
 		root.addTag(alist);
@@ -216,7 +215,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		MapData data = new ImplMapData(new Vector2l(x, z));
 		try (DataInputStream in = new DataInputStream(new GZIPInputStream(new FileInputStream(file)))) {
 			BitInputStream bis = new BitInputStream(in);
-			CompoundTag tag = (CompoundTag) new NBTInputStream(bis).readTag();
+			TagCompound tag = (TagCompound) new NBTInputStream(bis).readTag();
 			if (tag.getBoolean("genheights")) {
 				int[] heights = new int[32 * 32];
 				for (int d = 0; d < heights.length; ++d) {
@@ -249,7 +248,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		String path = DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/map/" + map.getPosition().y + "/" + map.getPosition().x + ".vmd4";
 		File file = new File(path);
 		file.getParentFile().mkdirs();
-		CompoundTag root = new CompoundTag("root");
+		TagCompound root = new TagCompound("root");
 		root.setBoolean("genheights", true);
 		root.setBoolean("skyheights", true);
 		root.setBoolean("biomes", true);
@@ -272,10 +271,10 @@ public class VCH4SaveFormat implements SaveFormat {
 		}
 	}
 
-	public ListTag getBlockUpdateTag(ImplChunk chunk) {
-		ListTag tag = new ListTag("bluds", CompoundTag.class);
+	public TagList getBlockUpdateTag(ImplChunk chunk) {
+		TagList tag = new TagList("bluds", TagCompound.class);
 		for (BlockUpdate u : chunk.getBlockUpdates()) {
-			CompoundTag p = new CompoundTag("u");
+			TagCompound p = new TagCompound("u");
 			p.setByte("x", (byte) u.x);
 			p.setByte("y", (byte) u.y);
 			p.setByte("z", (byte) u.z);
@@ -287,9 +286,9 @@ public class VCH4SaveFormat implements SaveFormat {
 
 	}
 
-	public void loadBlockUpdateTag(ImplChunk chunk, ListTag tag) {
+	public void loadBlockUpdateTag(ImplChunk chunk, TagList tag) {
 		while (tag.hasNext()) {
-			CompoundTag c = (CompoundTag) tag.getNextTag();
+			TagCompound c = (TagCompound) tag.getNextTag();
 			BlockUpdate ud = new BlockUpdate(0, 0, 0, 0, 0);
 			ud.x = c.getByte("x");
 			ud.y = c.getByte("y");
@@ -309,28 +308,28 @@ public class VCH4SaveFormat implements SaveFormat {
 		String path = DirectoryLocator.getPath() + "/worlds/" + chunk.getWorld().getSaveName() + "/chunks/" + chunk.getChunkPos().y + "/" + chunk.getChunkPos().z + "/" + chunk.getChunkPos().x + ".vch4";
 		File file = new File(path);
 		file.getParentFile().mkdirs();
-		CompoundTag root = new CompoundTag("root");
-		root.addTag(CompoundTag.createVector3lTag("pos", chunk.getChunkPos().toVector3l()));
+		TagCompound root = new TagCompound("root");
+		root.addTag(TagCompound.createVector3lTag("pos", chunk.getChunkPos().toVector3l()));
 		root.setByte("populated", chunk.isPopulated() ? 1 : 0);
-		ListTag elist = new ListTag("entitys", CompoundTag.class);
+		TagList elist = new TagList("entitys", TagCompound.class);
 		List<Entity> lis = (List<Entity>) c.getEntityList().clone();
 		for (int d = 0; d < lis.size(); ++d) {
 			if (!lis.get(d).persistent()) continue;
-			CompoundTag tag = lis.get(d).getSaveCompound();
+			TagCompound tag = lis.get(d).getSaveCompound();
 			elist.addTag(tag);
 		}
 		root.addTag(elist);
-		ListTag tlist = new ListTag("tiles", CompoundTag.class);
+		TagList tlist = new TagList("tiles", TagCompound.class);
 		for (TileEntity t : chunk.getTileEntitys().values()) {
 			if (!t.persistent()) continue;
-			CompoundTag tag = t.getSaveCompound();
+			TagCompound tag = t.getSaveCompound();
 			tlist.addTag(tag);
 		}
 		root.addTag(tlist);
-		ListTag alist = new ListTag("areas", CompoundTag.class);
+		TagList alist = new TagList("areas", TagCompound.class);
 		for (Area a : chunk.getAreas()) {
 			if (!a.persistent()) continue;
-			CompoundTag tag = a.getSaveCompound();
+			TagCompound tag = a.getSaveCompound();
 			alist.addTag(tag);
 		}
 		root.addTag(alist);
@@ -391,14 +390,14 @@ public class VCH4SaveFormat implements SaveFormat {
 		ImplChunk chunk;
 		try {
 			DataInputStream in = new DataInputStream(bis.getInputStream());
-			CompoundTag root = (CompoundTag) new NBTInputStream(bis).readTag();
+			TagCompound root = (TagCompound) new NBTInputStream(bis).readTag();
 			Vector3l chunkPos = root.getCompoundTag("pos").readVector3l();
 			chunk = new ImplChunk((ImplWorld) world, ChunkPos.create(chunkPos.x, chunkPos.y, chunkPos.z));
 			chunk.setPopulated(root.getByte("populated", 0) == 1 ? true : false);
 			if (root.hasKey("entitys")) {
-				ListTag elist = root.getListTag("entitys");
+				TagList elist = root.getListTag("entitys");
 				while (elist.hasNext()) {
-					CompoundTag ent = (CompoundTag) elist.getNextTag();
+					TagCompound ent = (TagCompound) elist.getNextTag();
 					try {
 						chunk.entitys.add(Entity.loadEntity(world, ent));
 					} catch (Exception e) {
@@ -407,9 +406,9 @@ public class VCH4SaveFormat implements SaveFormat {
 				}
 			}
 			if (root.hasKey("tiles")) {
-				ListTag tlist = root.getListTag("tiles");
+				TagList tlist = root.getListTag("tiles");
 				while (tlist.hasNext()) {
-					CompoundTag ent = (CompoundTag) tlist.getNextTag();
+					TagCompound ent = (TagCompound) tlist.getNextTag();
 					try {
 						TileEntity tile = TileEntity.loadTileEntity(chunk, ent);
 						chunk.tileEntitys.put(tile.getPositionInChunk(), tile);
@@ -419,9 +418,9 @@ public class VCH4SaveFormat implements SaveFormat {
 				}
 			}
 			if (root.hasKey("areas")) {
-				ListTag tlist = root.getListTag("areas");
+				TagList tlist = root.getListTag("areas");
 				while (tlist.hasNext()) {
-					CompoundTag ent = (CompoundTag) tlist.getNextTag();
+					TagCompound ent = (TagCompound) tlist.getNextTag();
 					try {
 						Area tile = Area.loadArea(world, ent);
 						chunk.areas.add(tile);
@@ -431,7 +430,7 @@ public class VCH4SaveFormat implements SaveFormat {
 				}
 			}
 			if (root.hasKey("bluds")) {
-				ListTag bluds = root.getListTag("bluds");
+				TagList bluds = root.getListTag("bluds");
 				loadBlockUpdateTag(chunk, bluds);
 			}
 			for (int d = 0; d < 8; ++d) {
@@ -493,7 +492,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		in.readDeflated();
 		short idat;
 		for (int d = 0; d < 8; ++d) {
-			BlockStore s = new BlockStore((d >> 2) << 4, ((d >> 1) & 1) << 4, (d & 1) << 4);
+			BlockStore s = c.getBlockStore(d);
 			int dinfo = in.readByte();
 			if ((dinfo & 1) != 0) s.blocks = new short[4096];
 			if ((dinfo & 2) != 0) s.data = new byte[4096];
@@ -509,6 +508,7 @@ public class VCH4SaveFormat implements SaveFormat {
 				}
 			}
 		}
+		c.setPopulated(true);
 		return c;
 	}
 

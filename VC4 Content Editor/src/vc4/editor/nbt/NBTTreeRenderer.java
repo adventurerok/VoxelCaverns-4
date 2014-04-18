@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import org.jnbt.NBTUtils;
+import vc4.api.vbt.NBTUtils;
 
 public class NBTTreeRenderer extends DefaultTreeCellRenderer {
 

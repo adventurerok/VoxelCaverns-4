@@ -1,24 +1,24 @@
 /**
  * 
  */
-package org.jnbt;
+package vc4.api.vbt;
 
 /**
  * @author paul
  * 
  */
-public class ShortArrayTag extends Tag {
+public class TagShortArray extends Tag {
 
 	private short[] value;
 
-	public ShortArrayTag(String name) {
+	public TagShortArray(String name) {
 		super(name);
 	}
 
 	/**
 	 * @param name
 	 */
-	public ShortArrayTag(String name, short[] value) {
+	public TagShortArray(String name, short[] value) {
 		super(name);
 		this.value = value;
 

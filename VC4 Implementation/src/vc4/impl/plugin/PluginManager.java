@@ -13,11 +13,14 @@ import java.util.jar.JarFile;
 
 import vc4.api.cmd.Command;
 import vc4.api.cmd.ExecutableCommand;
+import vc4.api.io.DictionaryInfo;
 import vc4.api.logging.Logger;
-import vc4.api.plugin.*;
+import vc4.api.plugin.Plugin;
+import vc4.api.plugin.PluginInfoFile;
 import vc4.api.server.User;
 import vc4.api.util.DirectoryLocator;
 import vc4.api.world.World;
+import vc4.impl.world.ImplWorld;
 
 /**
  * @author paul
@@ -224,6 +227,19 @@ public class PluginManager {
 			this.infoFile = infoFile;
 		}
 
+	}
+	
+	public static void loadDicts(ImplWorld world){
+		ArrayList<DictionaryInfo> all = new ArrayList<>();
+		ArrayList<DictionaryInfo> curr;
+		for(Plugin p : loadedPlugins.values()){
+			curr = p.getDictInfos();
+			if(curr == null) continue;
+			all.addAll(curr);
+		}
+		for(DictionaryInfo i : all){
+			world.registerDictionaryInfo(i);
+		}
 	}
 
 	public static void onWorldLoad(World world) {

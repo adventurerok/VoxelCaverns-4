@@ -5,9 +5,6 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import org.jnbt.CompoundTag;
-import org.jnbt.ListTag;
-
 import vc4.api.block.Block;
 import vc4.api.crafting.CraftingStack;
 import vc4.api.entity.EntityPlayer;
@@ -18,6 +15,8 @@ import vc4.api.stats.Stats;
 import vc4.api.tool.Tool;
 import vc4.api.util.ColorUtils;
 import vc4.api.util.NumberUtils;
+import vc4.api.vbt.TagCompound;
+import vc4.api.vbt.TagList;
 import vc4.api.world.World;
 
 /**
@@ -441,13 +440,13 @@ public class ItemStack implements Comparable<ItemStack>, Serializable {
 		out.writeInt(amount);
 	}
 
-	public static void write(World world, ItemStack s, CompoundTag tag) {
+	public static void write(World world, ItemStack s, TagCompound tag) {
 		tag.setShort("id", s == null ? 0 : s.itemId);
 		if (s == null || !s.exists()) return;
 		tag.setShort("damage", s.damage);
 		tag.setInt("amount", s.amount);
 		if (s.entities.size() > 0) {
-			ListTag lis = new ListTag("entitys", CompoundTag.class);
+			TagList lis = new TagList("entitys", TagCompound.class);
 			for (int d = 0; d < s.entities.size(); ++d) {
 				try {
 					lis.addTag(s.entities.get(d).getSaveCompound(world));
@@ -459,17 +458,17 @@ public class ItemStack implements Comparable<ItemStack>, Serializable {
 		}
 	}
 
-	public static ItemStack read(World world, CompoundTag in) {
+	public static ItemStack read(World world, TagCompound in) {
 		short id = in.getShort("id");
 		if (id == 0) return null;
 		ItemStack s = new ItemStack(id);
 		s.damage = in.getShort("damage");
 		s.amount = in.getInt("amount");
 		if (in.hasKey("entitys")) {
-			ListTag lis = in.getListTag("entitys");
+			TagList lis = in.getListTag("entitys");
 			while (lis.hasNext()) {
 				try {
-					s.entities.add(ItemEntity.loadItemEntity(world, (CompoundTag) lis.getNextTag()));
+					s.entities.add(ItemEntity.loadItemEntity(world, (TagCompound) lis.getNextTag()));
 				} catch (Exception e) {
 					Logger.getLogger("VC4").info("Failed to read ItemEntity", e);
 				}

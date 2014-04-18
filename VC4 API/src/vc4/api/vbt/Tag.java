@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,33 +20,49 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_End</code> tag.
+ * Represents a single NBT tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class EndTag extends Tag {
+public abstract class Tag {
 
 	/**
-	 * Creates the tag.
+	 * The name of this tag.
 	 */
-	public EndTag() {
-		super("");
+	private String name;
+
+	/**
+	 * Creates the tag with the specified name.
+	 * 
+	 * @param name
+	 *            The name.
+	 */
+	public Tag(String name) {
+		this.name = name;
 	}
 
-	@Override
-	public Object getValue() {
-		return null;
+	/**
+	 * Gets the name of this tag.
+	 * 
+	 * @return The name of this tag.
+	 */
+	public final String getName() {
+		return name;
 	}
 
-	@Override
-	public void setValue(Object o) {
+	/**
+	 * Gets the value of this tag.
+	 * 
+	 * @return The value of this tag.
+	 */
+	public abstract Object getValue();
 
-	}
+	public abstract void setValue(Object o);
 
-	@Override
-	public String toString() {
-		return "TAG_End";
+	public void setName(String name) {
+		this.name = name;
+
 	}
 
 }

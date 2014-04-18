@@ -2,24 +2,23 @@ package vc4.api.container;
 
 import java.util.*;
 
-import org.jnbt.CompoundTag;
-import org.jnbt.NibbleTag;
-
 import vc4.api.item.ItemStack;
+import vc4.api.vbt.TagCompound;
+import vc4.api.vbt.TagNibble;
 import vc4.api.world.World;
 
 public class ContainerInventory extends Container {
 
 	@Override
-	protected void writeExtraData(World world, CompoundTag tag) {
-		tag.addTag(new NibbleTag("selected", (byte) selected));
-		CompoundTag held = new CompoundTag("held");
+	protected void writeExtraData(World world, TagCompound tag) {
+		tag.addTag(new TagNibble("selected", (byte) selected));
+		TagCompound held = new TagCompound("held");
 		ItemStack.write(world, getHeldItemStack(), held);
 		tag.addTag(held);
 	}
 
 	@Override
-	protected void readExtraData(World world, CompoundTag tag) {
+	protected void readExtraData(World world, TagCompound tag) {
 		selected = tag.getNibbleTag("selected").getValue();
 		setHeldItemStack(ItemStack.read(world, tag.getCompoundTag("held")));
 	}

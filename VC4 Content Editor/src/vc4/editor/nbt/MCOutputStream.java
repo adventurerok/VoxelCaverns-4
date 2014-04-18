@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-import org.jnbt.*;
+import vc4.api.vbt.*;
 
 /*
  * JNBT License
@@ -95,40 +95,40 @@ public final class MCOutputStream implements Closeable {
 		int type = NBTUtils.getTypeCode(tag.getClass());
 		switch (type) {
 			case NBTConstants.TYPE_END:
-				writeEndTagPayload((EndTag) tag);
+				writeEndTagPayload((TagEnd) tag);
 				break;
 			case NBTConstants.TYPE_BYTE:
-				writeByteTagPayload((ByteTag) tag);
+				writeByteTagPayload((TagByte) tag);
 				break;
 			case NBTConstants.TYPE_SHORT:
-				writeShortTagPayload((ShortTag) tag);
+				writeShortTagPayload((TagShort) tag);
 				break;
 			case NBTConstants.TYPE_INT:
-				writeIntTagPayload((IntTag) tag);
+				writeIntTagPayload((TagInt) tag);
 				break;
 			case NBTConstants.TYPE_LONG:
-				writeLongTagPayload((LongTag) tag);
+				writeLongTagPayload((TagLong) tag);
 				break;
 			case NBTConstants.TYPE_FLOAT:
-				writeFloatTagPayload((FloatTag) tag);
+				writeFloatTagPayload((TagFloat) tag);
 				break;
 			case NBTConstants.TYPE_DOUBLE:
-				writeDoubleTagPayload((DoubleTag) tag);
+				writeDoubleTagPayload((TagDouble) tag);
 				break;
 			case NBTConstants.TYPE_BYTE_ARRAY:
-				writeByteArrayTagPayload((ByteArrayTag) tag);
+				writeByteArrayTagPayload((TagByteArray) tag);
 				break;
 			case NBTConstants.TYPE_INT_ARRAY:
-				writeIntArrayTagPayload((IntArrayTag) tag);
+				writeIntArrayTagPayload((TagIntArray) tag);
 				break;
 			case NBTConstants.TYPE_STRING:
-				writeStringTagPayload((StringTag) tag);
+				writeStringTagPayload((TagString) tag);
 				break;
 			case NBTConstants.TYPE_LIST:
-				writeListTagPayload((ListTag) tag);
+				writeListTagPayload((TagList) tag);
 				break;
 			case NBTConstants.TYPE_COMPOUND:
-				writeCompoundTagPayload((CompoundTag) tag);
+				writeCompoundTagPayload((TagCompound) tag);
 				break;
 			default:
 				// throw new IOException("Invalid tag type: " + type + ".");
@@ -143,7 +143,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeByteTagPayload(ByteTag tag) throws IOException {
+	private void writeByteTagPayload(TagByte tag) throws IOException {
 		os.writeByte(tag.getValue());
 	}
 
@@ -155,13 +155,13 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeByteArrayTagPayload(ByteArrayTag tag) throws IOException {
+	private void writeByteArrayTagPayload(TagByteArray tag) throws IOException {
 		byte[] bytes = tag.getValue();
 		os.writeInt(bytes.length);
 		os.write(bytes);
 	}
 
-	private void writeIntArrayTagPayload(IntArrayTag tag) throws IOException {
+	private void writeIntArrayTagPayload(TagIntArray tag) throws IOException {
 		int[] ints = tag.getValue();
 		os.writeInt(ints.length);
 		for (int d = 0; d < ints.length; ++d)
@@ -176,7 +176,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeCompoundTagPayload(CompoundTag tag) throws IOException {
+	private void writeCompoundTagPayload(TagCompound tag) throws IOException {
 		for (Tag childTag : tag.getValue().values()) {
 			writeTag(childTag);
 		}
@@ -191,7 +191,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeListTagPayload(ListTag tag) throws IOException {
+	private void writeListTagPayload(TagList tag) throws IOException {
 		Class<? extends Tag> clazz = tag.getType();
 		List<Tag> tags = tag.getValue();
 		int size = tags.size();
@@ -211,7 +211,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeStringTagPayload(StringTag tag) throws IOException {
+	private void writeStringTagPayload(TagString tag) throws IOException {
 		byte[] bytes = tag.getValue().getBytes(NBTConstants.CHARSET);
 		os.writeShort(bytes.length);
 		os.write(bytes);
@@ -225,7 +225,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeDoubleTagPayload(DoubleTag tag) throws IOException {
+	private void writeDoubleTagPayload(TagDouble tag) throws IOException {
 		os.writeDouble(tag.getValue());
 	}
 
@@ -237,7 +237,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeFloatTagPayload(FloatTag tag) throws IOException {
+	private void writeFloatTagPayload(TagFloat tag) throws IOException {
 		os.writeFloat(tag.getValue());
 	}
 
@@ -249,7 +249,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeLongTagPayload(LongTag tag) throws IOException {
+	private void writeLongTagPayload(TagLong tag) throws IOException {
 		os.writeLong(tag.getValue());
 	}
 
@@ -261,7 +261,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeIntTagPayload(IntTag tag) throws IOException {
+	private void writeIntTagPayload(TagInt tag) throws IOException {
 		os.writeInt(tag.getValue());
 	}
 
@@ -273,7 +273,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeShortTagPayload(ShortTag tag) throws IOException {
+	private void writeShortTagPayload(TagShort tag) throws IOException {
 		os.writeShort(tag.getValue());
 	}
 
@@ -285,7 +285,7 @@ public final class MCOutputStream implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void writeEndTagPayload(EndTag tag) {
+	private void writeEndTagPayload(TagEnd tag) {
 		/* empty */
 	}
 

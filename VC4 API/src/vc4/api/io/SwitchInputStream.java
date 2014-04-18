@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import org.jnbt.NBTInputStream;
-import org.jnbt.Tag;
+import vc4.api.vbt.NBTInputStream;
+import vc4.api.vbt.Tag;
 
 public class SwitchInputStream extends InputStream implements DataInput {
 

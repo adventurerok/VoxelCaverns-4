@@ -1,4 +1,4 @@
-package org.jnbt;
+package vc4.api.vbt;
 
 /*
  * JNBT License
@@ -20,19 +20,19 @@ package org.jnbt;
  */
 
 /**
- * The <code>TAG_Float</code> tag.
+ * The <code>TAG_Int</code> tag.
  * 
  * @author Graham Edgecombe
  * 
  */
-public final class FloatTag extends Tag {
+public final class TagInt extends Tag {
 
 	/**
 	 * The value.
 	 */
-	private float value;
+	private int value;
 
-	public FloatTag(String name) {
+	public TagInt(String name) {
 		super(name);
 	}
 
@@ -44,19 +44,19 @@ public final class FloatTag extends Tag {
 	 * @param value
 	 *            The value.
 	 */
-	public FloatTag(String name, float value) {
+	public TagInt(String name, int value) {
 		super(name);
 		this.value = value;
 	}
 
 	@Override
-	public Float getValue() {
+	public Integer getValue() {
 		return value;
 	}
 
 	@Override
 	public void setValue(Object o) {
-		if (o instanceof Number) value = ((Number) o).floatValue();
+		if (o instanceof Number) value = ((Number) o).intValue();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public final class FloatTag extends Tag {
 		if (name != null && !name.equals("")) {
 			append = "(\"" + this.getName() + "\")";
 		}
-		return "TAG_Float" + append + ": " + value;
+		return "TAG_Int" + append + ": " + value;
 	}
 
 }

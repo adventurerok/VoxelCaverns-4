@@ -3,18 +3,33 @@ package vc4.api.io;
 import java.io.*;
 import java.util.Map.Entry;
 
-import org.jnbt.*;
-
 import vc4.api.logging.Logger;
 import vc4.api.map.BidiMap;
+import vc4.api.vbt.*;
 
 public class Dictionary {
 
 	private BidiMap<String, Integer> dict = new BidiMap<>();
 	private int min, max = Integer.MAX_VALUE;
+	private DictionaryInfo info;
 
-	public Dictionary() {
-
+	public Dictionary(DictionaryInfo info) {
+		info.prepareDictionary(this);
+	}
+	
+	
+	public DictionaryInfo getInfo() {
+		return info;
+	}
+	
+	public Dictionary setMin(int min) {
+		this.min = min;
+		return this;
+	}
+	
+	public Dictionary setMax(int max) {
+		this.max = max;
+		return this;
 	}
 
 	public Dictionary(int min) {
@@ -56,18 +71,26 @@ public class Dictionary {
 	public void save(OutputStream o) {
 		PrintStream out = new PrintStream(o);
 		out.println("#VoxelCaverns dictionary file");
-		for (Entry<String, Integer> e : dict.entrySet()) {
-			if (e.getValue() < min || e.getValue() >= max) continue;
-			out.println(e.getKey() + "=" + e.getValue());
+		if(info == null) { 
+			for (Entry<String, Integer> e : dict.entrySet()) {
+				if (e.getValue() < min || e.getValue() >= max) continue;
+				out.println(e.getKey() + "=" + e.getValue());
+			}
+		} else {
+			for (Entry<String, Integer> e : dict.entrySet()) {
+				if (e.getValue() < min || e.getValue() >= max) continue;
+				if(info.containsKey(e.getKey())) continue;
+				out.println(e.getKey() + "=" + e.getValue());
+			}
 		}
 		out.close();
 	}
 
-	public CompoundTag getSaveCompound() {
-		CompoundTag root = new CompoundTag("dict");
-		ListTag bidi = new ListTag("dict", CompoundTag.class);
+	public TagCompound getSaveCompound() {
+		TagCompound root = new TagCompound("dict");
+		TagList bidi = new TagList("dict", TagCompound.class);
 		for (Entry<String, Integer> e : dict.entrySet()) {
-			CompoundTag k = new CompoundTag("entry");
+			TagCompound k = new TagCompound("entry");
 			k.setString("k", e.getKey());
 			k.setInt("v", e.getValue());
 			bidi.addTag(k);
@@ -78,10 +101,10 @@ public class Dictionary {
 		return root;
 	}
 
-	public void load(CompoundTag root) {
-		ListTag bidi = root.getListTag("dict");
+	public void load(TagCompound root) {
+		TagList bidi = root.getListTag("dict");
 		while (bidi.hasNext()) {
-			CompoundTag k = (CompoundTag) bidi.getNextTag();
+			TagCompound k = (TagCompound) bidi.getNextTag();
 			put(k.getString("k"), k.getInt("v"));
 		}
 		min = root.getInt("min", 0);
