@@ -75,7 +75,7 @@ public class Dungeon {
 	}
 
 	public void setDungeonBlock(long x, long y, long z) {
-		if (style.getType() != 14 && world.getBlockId(x, y, z) == 0) return;
+		if (y < 1 && style.getType() != 14 && world.getBlockId(x, y, z) == 0) return;
 		if (rand.nextInt(3) == 0) world.setBlockIdDataNoNotify(x, y, z, style.getMossId(), style.getType());
 		else world.setBlockIdDataNoNotify(x, y, z, style.getBrickId(), style.getType());
 	}

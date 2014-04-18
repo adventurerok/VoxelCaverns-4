@@ -230,6 +230,7 @@ public class Vanilla extends Plugin {
 		GeneratorList.registerGenerator("overworld", gen);
 		GeneratorList.registerGenerator("flat", new FlatlandsGenerator());
 		GeneratorList.registerGenerator("sky", new SkylandGenerator());
+		GeneratorList.registerGenerator("dungeontest", new DungeonTestGenerator());
 
 		// normal
 		GeneratorList.registerPlantGen(plantTreeOak, new TreeGenBasic());

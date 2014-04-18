@@ -27,7 +27,8 @@ public class DungeonStyle {
 	}
 
 	public boolean canGenerate(World world, long x, long y, long z) {
-		return y < -32;
+		//return y < -32;
+		return true;
 	}
 
 	public int getBrickId() {

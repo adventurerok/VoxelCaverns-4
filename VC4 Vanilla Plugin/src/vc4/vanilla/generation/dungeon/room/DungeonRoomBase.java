@@ -87,11 +87,17 @@ public class DungeonRoomBase extends DungeonRoom {
 		result.add(Door.genDoor(door.right.move(3, door.dir.clockwise()).move(3, door.dir), door.dir).setNewRoomDir(door.dir.clockwise()));
 		return result;
 	}
+	
+	public boolean generate(World world, long x, long y, long z) {
+		return generate(world, x, y, z, false);
+	}
 
-	public void generate(World world, long x, long y, long z) {
+	public boolean generate(World world, long x, long y, long z, boolean force) {
 		Random rand = world.createRandom(x, y, z, 1263763L);
-		if (y > -3 || y < -185) return;
-		if (rand.nextInt(Client.debugMode() ? 150 : 500) != 0) return;
+		if(!force){
+			if (y > -3 || y < -185) return false;
+			if (rand.nextInt(Client.debugMode() ? 150 : 500) != 0) return false;
+		}
 		x <<= 5;
 		y <<= 5;
 		z <<= 5;
@@ -103,7 +109,7 @@ public class DungeonRoomBase extends DungeonRoom {
 		dir = dir.counterClockwise();
 		d.dir = dir;
 		Dungeon dungeon = new Dungeon(world, x - 40, y - 30, z - 40, x + 40, y + 30, z + 40, rand);
-		if (dungeon.getStyle() == null) return;
+		if (dungeon.getStyle() == null) return false;
 		ConcurrentLinkedQueue<Door> doorsToGen = new ConcurrentLinkedQueue<Door>();
 		doorsToGen.addAll(nextRoom(dungeon.getStyle(), rand).generate(world, d, dungeon));
 		int rooms = 1;
@@ -114,6 +120,7 @@ public class DungeonRoomBase extends DungeonRoom {
 			++rooms;
 			if (dungeon.getStyle().getMaxRooms() != -1 && rooms > dungeon.getStyle().getMaxRooms()) break;
 		}
+		return true;
 	}
 
 	public static DungeonRoom nextRoom(DungeonStyle style, Random rand) {
