@@ -21,6 +21,7 @@ import vc4.api.entity.spawn.*;
 import vc4.api.generator.*;
 import vc4.api.gui.GuiOpenContainer;
 import vc4.api.io.Dictionary;
+import vc4.api.io.DictionaryInfo;
 import vc4.api.item.Item;
 import vc4.api.itementity.ItemEntity;
 import vc4.api.list.IntList;
@@ -57,8 +58,8 @@ import vc4.vanilla.underbiome.UnderBiome;
  */
 public class Vanilla extends Plugin {
 
-	static Dictionary trades = new Dictionary();
-	static Dictionary underBiomes = new Dictionary();
+	static Dictionary trades = null;
+	static Dictionary underBiomes = null;
 
 	public static Color[] woolColors = new Color[64];
 
@@ -71,7 +72,7 @@ public class Vanilla extends Plugin {
 	public static Block crackedBrick, snow, cactus, weeds, vines, willowVines;
 	public static Block workbench, chest, table, chair, gravel, ladder, lightberries;
 	public static Block algae, torch, reeds, wheat, barley, stakes, farmland, deadCrop;
-	public static Block wire, notGate, repeaterGate, andGate, orGate, norGate, nandGate;
+	public static Block wire, notGate, repeaterGate, andGate, orGate, xorGate, norGate, nandGate;
 	public static Block flipFlop, gapRepeaterGate, button, bitMonitor;
 	public static Block redWire, blueWire, greenWire, yellowWire;
 	public static Block wool0, wool1, present;
@@ -314,6 +315,14 @@ public class Vanilla extends Plugin {
 	}
 
 	@Override
+	public ArrayList<DictionaryInfo> getDictInfos() {
+		ArrayList<DictionaryInfo> res = new ArrayList<>();
+		res.add(new DictionaryInfo("underbiomes", 0));
+		res.add(new DictionaryInfo("trades", 0));
+		return res;
+	}
+
+	@Override
 	public void preWorldLoad(World world) {
 		if (VoxelCaverns.hasGraphics()) {
 			BlockTexture.update();
@@ -322,10 +331,9 @@ public class Vanilla extends Plugin {
 		biomes = new ArrayList<>();
 		for (int d = 0; d < BiomeType.getNumberOfTypes(); ++d)
 			biomes.add(new ArrayList<Integer>());
-		try {
-			loadDict(underBiomes = new Dictionary(), DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/underbiomes.dictionary");
-		} catch (FileNotFoundException e) {
-		}
+
+		underBiomes = world.getDictionary("underbiomes");
+
 	}
 
 	@Override
@@ -385,6 +393,7 @@ public class Vanilla extends Plugin {
 		repeaterGate = new BlockRepeaterGate(world.getRegisteredBlock("vanilla.gate.repeater")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.repeater");
 		andGate = new BlockAndGate(world.getRegisteredBlock("vanilla.gate.and")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.and");
 		orGate = new BlockOrGate(world.getRegisteredBlock("vanilla.gate.or")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.or");
+		xorGate = new BlockXorGate(world.getRegisteredBlock("vanilla.gate.xor")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.xor");
 		norGate = new BlockNorGate(world.getRegisteredBlock("vanilla.gate.nor")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.nor");
 		nandGate = new BlockNandGate(world.getRegisteredBlock("vanilla.gate.nand")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("gate.nand");
 		flipFlop = new BlockFlipFlop(world.getRegisteredBlock("vanilla.flipflop")).setMineData(new MiningData().setTimes(0.03, 0.03, 0.03)).setName("flipflop");
@@ -621,10 +630,7 @@ public class Vanilla extends Plugin {
 		spawnStick = new ItemSpawnWand(world.getRegisteredItem("vanilla.spawnwand"));
 		WorldGenOres.onWorldLoad(world);
 		Dungeon.onWorldLoad(world);
-		try {
-			loadDict(trades = new Dictionary(), DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/trades.dictionary");
-		} catch (FileNotFoundException e) {
-		}
+		trades = world.getDictionary("trades");
 		loadTrades(world);
 		SpawnControl.addSpawnEntry(new SpawnEntry(100, new BasicSpawner(EntityZombie.class), new AndFilter(new LightFilter(7, 0), new SkylightFilter(false), new HumanoidFilter())));
 		loadBiomesList();
@@ -640,12 +646,6 @@ public class Vanilla extends Plugin {
 			trades.save(new FileOutputStream(DirectoryLocator.getPath() + "/worlds/" + world.getSaveName() + "/trades.dictionary"));
 		} catch (FileNotFoundException e) {
 		}
-	}
-
-	private void loadDict(Dictionary dict, String path) throws FileNotFoundException {
-		File file = new File(path);
-		if (!file.exists()) return;
-		dict.load(new FileInputStream(file));
 	}
 
 	public ArrayList<ArrayList<Integer>> getBiomes() {

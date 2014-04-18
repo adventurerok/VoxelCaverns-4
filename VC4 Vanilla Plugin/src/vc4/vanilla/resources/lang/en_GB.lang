@@ -146,6 +146,7 @@ block.gate.nand.name=NAND Gate
 block.gate.repeater.name=Repeater Gate
 block.gate.and.name=AND Gate
 block.gate.or.name=OR Gate
+block.gate.xor.name=XOR Gate
 block.gate.not.name=NOT Gate
 block.wire.name=Kradonium Wire
 block.wire.desc=Used to send signals

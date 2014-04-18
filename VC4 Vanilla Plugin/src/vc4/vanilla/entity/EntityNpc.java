@@ -1,13 +1,12 @@
 package vc4.vanilla.entity;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.Resources;
 import vc4.api.entity.*;
 import vc4.api.entity.trait.TraitInventory;
 import vc4.api.graphics.texture.AnimatedTexture;
 import vc4.api.math.MathUtils;
 import vc4.api.sound.Audio;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.World;
 import vc4.vanilla.area.AreaVillage;
 import vc4.vanilla.entity.ai.AIFreeNPCs;
@@ -151,8 +150,8 @@ public class EntityNpc extends EntityLiving {
 	}
 
 	@Override
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = super.getSaveCompound();
+	public TagCompound getSaveCompound() {
+		TagCompound tag = super.getSaveCompound();
 		tag.setString("firstName", firstName);
 		tag.setString("lastName", lastName);
 		tag.setBoolean("man", man);
@@ -164,7 +163,7 @@ public class EntityNpc extends EntityLiving {
 	}
 
 	@Override
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		super.loadSaveCompound(tag);
 		firstName = tag.getString("firstName", "Unnamed");
 		lastName = tag.getString("lastName", "Villager");

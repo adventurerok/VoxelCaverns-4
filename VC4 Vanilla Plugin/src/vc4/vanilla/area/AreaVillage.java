@@ -2,12 +2,11 @@ package vc4.vanilla.area;
 
 import java.util.List;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.area.Area;
 import vc4.api.entity.Entity;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.util.AABB;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.World;
 import vc4.vanilla.entity.EntityNpc;
 
@@ -39,14 +38,14 @@ public class AreaVillage extends Area {
 	}
 
 	@Override
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = super.getSaveCompound();
+	public TagCompound getSaveCompound() {
+		TagCompound tag = super.getSaveCompound();
 		tag.setString("name", villageName);
 		return tag;
 	}
 
 	@Override
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		super.loadSaveCompound(tag);
 		villageName = tag.getString("name", "ErrorVille");
 	}

@@ -3,12 +3,11 @@ package vc4.vanilla.tileentity;
 import java.awt.Color;
 import java.util.Random;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.container.Container;
 import vc4.api.entity.EntityItem;
 import vc4.api.math.MathUtils;
 import vc4.api.tileentity.TileEntityContainer;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
@@ -129,22 +128,22 @@ public class TileEntityChest extends TileEntityContainer {
 	}
 
 	@Override
-	public CompoundTag getSaveCompound() {
-		CompoundTag tag = super.getSaveCompound();
+	public TagCompound getSaveCompound() {
+		TagCompound tag = super.getSaveCompound();
 		tag.setByte("type", type);
 		tag.setByte("sub", subtype);
-		CompoundTag items = new CompoundTag("items");
+		TagCompound items = new TagCompound("items");
 		chest.writeContainer(world, items);
 		tag.addTag(items);
 		return tag;
 	}
 
 	@Override
-	public void loadSaveCompound(CompoundTag tag) {
+	public void loadSaveCompound(TagCompound tag) {
 		super.loadSaveCompound(tag);
 		type = tag.getByte("type");
 		subtype = tag.getByte("sub");
-		CompoundTag items = tag.getCompoundTag("items");
+		TagCompound items = tag.getCompoundTag("items");
 		chest = new ContainerChest(getCorrectSlots());
 		chest = (ContainerChest) Container.readContainer(world, items);
 	}

@@ -1,8 +1,7 @@
 package vc4.vanilla.generation.village;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.util.Direction;
+import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3d;
 import vc4.api.world.ThingImporter;
 import vc4.api.world.World;
@@ -27,7 +26,7 @@ public class BuildingThing implements Building, ThingImporter {
 	}
 
 	@Override
-	public void importSpecial(World world, Vector3d base, Direction dir, CompoundTag special) {
+	public void importSpecial(World world, Vector3d base, Direction dir, TagCompound special) {
 		int id = special.getInt("id");
 		if (id == 0) {
 			Vector3d pos = special.getCompoundTag("pos").readVector3d();

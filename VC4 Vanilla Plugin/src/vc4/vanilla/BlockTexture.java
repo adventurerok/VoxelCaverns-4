@@ -24,6 +24,7 @@ public class BlockTexture {
 	public static int repeaterGateInput, repeaterGateOutput, repeaterGateOther;
 	public static int andGateInput, andGateOutput, andGateOther, andGateInputA, andGateInputB;
 	public static int orGateInput, orGateOutput, orGateOther, orGateInputA, orGateInputB;
+	public static int xorGateInput, xorGateOutput, xorGateOther, xorGateInputA, xorGateInputB;
 	public static int norGateInput, norGateOutput, norGateOther, norGateInputA, norGateInputB;
 	public static int nandGateInput, nandGateOutput, nandGateOther, nandGateInputA, nandGateInputB;
 	public static int flipFlopInput, flipFlopOutput;
@@ -134,6 +135,11 @@ public class BlockTexture {
 		orGateInputB = tex.getArrayIndex("orgateinputb");
 		orGateOutput = tex.getArrayIndex("orgateoutput");
 		orGateOther = tex.getArrayIndex("orgateother");
+		xorGateInput = tex.getArrayIndex("xorgateinput");
+		xorGateInputA = tex.getArrayIndex("xorgateinputa");
+		xorGateInputB = tex.getArrayIndex("xorgateinputb");
+		xorGateOutput = tex.getArrayIndex("xorgateoutput");
+		xorGateOther = tex.getArrayIndex("xorgateother");
 		norGateInput = tex.getArrayIndex("norgateinput");
 		norGateInputA = tex.getArrayIndex("norgateinputa");
 		norGateInputB = tex.getArrayIndex("norgateinputb");

@@ -2,9 +2,8 @@ package vc4.vanilla.itementity;
 
 import java.awt.Color;
 
-import org.jnbt.CompoundTag;
-
 import vc4.api.itementity.ItemEntity;
+import vc4.api.vbt.TagCompound;
 import vc4.api.world.World;
 import vc4.vanilla.block.BlockPlanks;
 
@@ -90,15 +89,15 @@ public class ItemEntityChest extends ItemEntity {
 	}
 
 	@Override
-	public CompoundTag getSaveCompound(World world) {
-		CompoundTag tag = super.getSaveCompound(world);
+	public TagCompound getSaveCompound(World world) {
+		TagCompound tag = super.getSaveCompound(world);
 		tag.setNibble("type", type);
 		tag.setNibble("sub", subtype);
 		return tag;
 	}
 
 	@Override
-	public void loadSaveCompound(World world, CompoundTag tag) {
+	public void loadSaveCompound(World world, TagCompound tag) {
 		super.loadSaveCompound(world, tag);
 		type = tag.getNibble("type");
 		subtype = tag.getNibble("sub");
