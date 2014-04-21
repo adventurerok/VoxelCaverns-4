@@ -29,8 +29,19 @@ public class Vector3l implements Vector3<Vector3l> {
 		this.z = z;
 	}
 
+	//1 move
 	public Vector3l move(long amount, Direction dir) {
 		return new Vector3l(x + amount * dir.getX(), y + amount * dir.getY(), z + amount * dir.getZ());
+	}
+	
+	//2 moves
+	public Vector3l move(long amount1, Direction dir1, long amount2, Direction dir2) {
+		return new Vector3l(x + amount1 * dir1.getX() + amount2 * dir2.getX(), y + amount1 * dir1.getY() + amount2 * dir2.getY(), z + amount1 * dir1.getZ() + amount2 * dir2.getZ());
+	}
+	
+	//3 moves
+	public Vector3l move(long amount1, Direction dir1, long amount2, Direction dir2, long amount3, Direction dir3) {
+		return new Vector3l(x + (amount1 * dir1.getX()) + (amount2 * dir2.getX()) + (amount3 * dir3.getX()), y + (amount1 * dir1.getY()) + (amount2 * dir2.getY()) + (amount3 * dir3.getY()), z + (amount1 * dir1.getZ()) + (amount2 * dir2.getZ()) + (amount3 * dir3.getZ()));
 	}
 
 	@Override
@@ -142,6 +153,11 @@ public class Vector3l implements Vector3<Vector3l> {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "V3l[" + x + "," + y + "," + z + "]";
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -166,11 +166,11 @@ public class ImplWorld implements World {
 
 	public void loadInfo() throws IOException {
 		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/";
-		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
-		if (!wld.exists()) return;
 		loadDefaultDictInfos();
 		PluginManager.loadDicts(this);
 		loadDicts(dirPath);
+		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
+		if (!wld.exists()) return;
 		try (NBTInputStream in = new NBTInputStream(new FileInputStream(wld), true)) {
 			loadSaveCompound((TagCompound) in.readTag());
 		}
@@ -1937,6 +1937,33 @@ public class ImplWorld implements World {
 	public boolean hasDayLight(long x, long y, long z) {
 		if (!hasSkyLight(x, y, z)) return false;
 		return skyLight > 0.4;
+	}
+
+	@Override
+	public float getBlockDensity(Vector3d pos, AABB bounds) {
+		double d = 1.0D / ((bounds.maxX - bounds.minX) * 2D + 1.0D);
+		double d1 = 1.0D / ((bounds.maxY - bounds.minY) * 2D + 1.0D);
+		double d2 = 1.0D / ((bounds.maxZ - bounds.minZ) * 2D + 1.0D);
+		int i = 0;
+		int j = 0;
+
+		for (float f = 0.0F; f <= 1.0F; f = (float) (f + d)) {
+			for (float f1 = 0.0F; f1 <= 1.0F; f1 = (float) (f1 + d1)) {
+				for (float f2 = 0.0F; f2 <= 1.0F; f2 = (float) (f2 + d2)) {
+					double d3 = bounds.minX + (bounds.maxX - bounds.minX) * f;
+					double d4 = bounds.minY + (bounds.maxY - bounds.minY) * f1;
+					double d5 = bounds.minZ + (bounds.maxZ - bounds.minZ) * f2;
+
+					if (rayTraceBlocks(new Vector3d(d3, d4, d5), pos, 200) == null) {
+						i++;
+					}
+
+					j++;
+				}
+			}
+		}
+
+		return (float) i / (float) j;
 	}
 
 }

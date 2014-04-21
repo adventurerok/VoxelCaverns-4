@@ -3,6 +3,8 @@
  */
 package vc4.api.util;
 
+import vc4.api.vector.Vector3l;
+
 /**
  * @author paul
  * 
@@ -49,6 +51,22 @@ public enum Direction {
 		dirs[17] = CUSTOM7;
 		dirs[18] = CUSTOM8;
 		dirs[19] = CUSTOM9;
+	}
+	
+	public static Direction getDirection(Vector3l move){
+		if(move.y == 0){
+			if(move.x == 0){
+				if(move.z == 0) return null;
+				return move.z < 0 ? WEST : EAST;
+			} else if(move.z == 0){
+				return move.x < 0 ? SOUTH : NORTH;
+			}
+		} else {
+			if(move.x == 0 && move.z == 0){
+				return move.y < 0 ? DOWN : UP;
+			}
+		}
+		return null;
 	}
 
 	public static Direction getDirection(int id) {

@@ -560,4 +560,9 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	@Override
+	public float getBlockDensity(Vector3d pos, AABB bounds) {
+		return 0;
+	}
+
 }

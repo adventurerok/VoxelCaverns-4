@@ -31,7 +31,7 @@ public class Block {
 	public final int textureIndex;
 
 	protected float timeToDestroy;
-	protected float blastResistance;
+	protected float blastResistance = 1;
 	protected int renderType;
 	protected String name;
 	protected BlockRenderer renderer = main;
@@ -71,6 +71,11 @@ public class Block {
 
 	public Block setMineData(MiningData mineData) {
 		this.mineData = mineData;
+		return this;
+	}
+	
+	public Block setBlastResistance(float res){
+		this.blastResistance = res;
 		return this;
 	}
 
@@ -570,6 +575,10 @@ public class Block {
 	public AABB[] getCollisionSizes(World world, long x, long y, long z) {
 		if (!isAir || uid == -1) return new AABB[] { square };
 		else return null;
+	}
+	
+	public float getBlastResistance(World world, long x, long y, long z, Entity exploder){
+		return blastResistance;
 	}
 
 	/**

@@ -408,3 +408,5 @@ VC4-Development-0.0.2-340
 VC4-Development-0.0.3-341
 	* Changed the dictionary system, dictionaryinfo now used to load dictionaries
 	* This is necessary for the multiplayer update
+VC4-Development-0.0.3-342
+	+ Added new methods to Vector3l to perform 2 or 3 moves at the same time

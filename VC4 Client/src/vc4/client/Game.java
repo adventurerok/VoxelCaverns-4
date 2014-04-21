@@ -301,7 +301,7 @@ public class Game extends Component implements ClientGame {
 		super.update();
 		long oldTime = 0;
 		String oldArea = null;
-		if (gameState == GameState.SINGLEPLAYER) {
+		if (gameState == GameState.SINGLEPLAYER && player != null) {
 			oldTime = world.getTime();
 			oldArea = player.getArea();
 			player.setArea("{l:area.wilderness}");
@@ -555,6 +555,7 @@ public class Game extends Component implements ClientGame {
 					ingameGui.onWorldLoad();
 				}
 			} catch (Exception e) {
+				Logger.getLogger(Game.class).warning("Exception while changing state: ", e);
 				return;
 			}
 		} else if (action.startsWith("connect:")) {

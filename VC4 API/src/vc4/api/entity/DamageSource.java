@@ -18,6 +18,7 @@ public class DamageSource {
 
 	public static final DamageSource fallDamage = new DamageSource("falling", 0);
 	public static final DamageSource fireDamage = new DamageSource("fire", 2);
+	public static final DamageSource explosionDamage = new DamageSource("explosion", 7);
 
 	public static final DamageSource melee(EntityLiving attacker, ItemStack weapon) {
 		return new DamageSource("melee", 1).setAttacker(attacker).setWeapon(weapon);

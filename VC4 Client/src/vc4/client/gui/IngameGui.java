@@ -257,6 +257,7 @@ public class IngameGui extends Component {
 	@Override
 	public void update() {
 		if (!isVisible()) return;
+		if (Client.getPlayer() == null) return;
 		TraitOpenContainers oc = (TraitOpenContainers) Client.getPlayer().getTrait("opencontainers");
 		// HashMap<OpenContainer, GuiOpenContainer> nGui = new HashMap<>();
 		for (OpenContainer o : oc.getContainers()) {

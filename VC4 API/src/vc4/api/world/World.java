@@ -218,4 +218,6 @@ public interface World {
 	public abstract void notifyNear(long x, long y, long z);
 
 	public abstract Dictionary getDictionary(String name);
+
+	public float getBlockDensity(Vector3d pos, AABB bounds);
 }
