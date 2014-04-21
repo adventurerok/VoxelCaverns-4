@@ -9,9 +9,9 @@ import vc4.vanilla.Vanilla;
 import vc4.vanilla.entity.EntityNpc;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
+import vc4.vanilla.generation.furnature.*;
 import vc4.vanilla.generation.village.Building;
 import vc4.vanilla.generation.village.Village;
-import vc4.vanilla.generation.village.furnature.*;
 
 public class WoodShop implements Building {
 
@@ -26,24 +26,24 @@ public class WoodShop implements Building {
 		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 3), Vanilla.ladder.uid, 0));
 		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 4), Vanilla.ladder.uid, 0));
 		furniture.add(new FurnatureLadder(new Adjustment(6, -2, 5), Vanilla.ladder.uid, 0));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -2, 0), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -1, 0), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 0, 0), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 1, 0), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 2, 0), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -2, 2), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, -1, 2), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 0, 2), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 1, 2), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 2, 2), Vanilla.planks.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(4, 2, 1), Vanilla.planks.uid));
+		furniture.add(new FurnatureBasic(new Adjustment(4, -2, 0), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, -1, 0), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, 0, 0), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, 1, 0), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, 2, 0), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, -2, 2), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, -1, 2), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, 0, 2), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, 1, 2), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, 2, 2), Vanilla.planks.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(4, 2, 1), Vanilla.planks.uid, ville.getWoodType()));
 		furniture.add(new FurnatureChair(new Adjustment(5, 0, 0), Vanilla.chair.uid, 0));
 		furniture.add(new FurnatureChair(new Adjustment(5, 2, 4), Vanilla.chair.uid, 2));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(6, 1, 4), Vanilla.table.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(6, 2, 4), Vanilla.table.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(6, 3, 4), Vanilla.table.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(1, 0, 4), Vanilla.table.uid));
-		furniture.add(new FurnatureVillagePlanks(new Adjustment(1, 1, 4), Vanilla.table.uid));
+		furniture.add(new FurnatureBasic(new Adjustment(6, 1, 4), Vanilla.table.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(6, 2, 4), Vanilla.table.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(6, 3, 4), Vanilla.table.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(1, 0, 4), Vanilla.table.uid, ville.getWoodType()));
+		furniture.add(new FurnatureBasic(new Adjustment(1, 1, 4), Vanilla.table.uid, ville.getWoodType()));
 		furniture.add(new FurnatureTorch(new Adjustment(2, -2, 2), Vanilla.torch.uid, 2));
 		furniture.add(new FurnatureTorch(new Adjustment(2, 3, 2), Vanilla.torch.uid, 4));
 		lastVille = ville;
@@ -86,7 +86,7 @@ public class WoodShop implements Building {
 			}
 		}
 		for (Furnature f : furniture) {
-			f.place(ville, door.left, door.dir);
+			f.place(ville.getWorld(), door.left, door.dir);
 		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
 		ville.setEmptyBlock(door.left.x, door.left.y + 1, door.left.z);

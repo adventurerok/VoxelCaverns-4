@@ -12,10 +12,7 @@ import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
 import vc4.vanilla.entity.EntityNpc;
 import vc4.vanilla.entity.EntityNpc.NpcState;
-import vc4.vanilla.generation.dungeon.Door;
-import vc4.vanilla.generation.dungeon.Dungeon;
-import vc4.vanilla.generation.dungeon.RoomBB;
-import vc4.vanilla.generation.dungeon.WeightedRoom;
+import vc4.vanilla.generation.dungeon.*;
 import vc4.vanilla.generation.dungeon.style.DungeonStyle;
 
 /**
@@ -43,29 +40,31 @@ public class DungeonRoomBase extends DungeonRoom {
 	@Override
 	public Collection<Door> generate(World world, Door door, Dungeon dungeon) {
 		ArrayList<Door> result = new ArrayList<>();
+		result.add(door.clone().flip());
+		result.add(door.move(7, door.dir));
+		result.add(Door.genDoor(door.left.move(3, door.dir.counterClockwise()).move(3, door.dir), door.dir));
+		result.add(Door.genDoor(door.right.move(3, door.dir.clockwise()).move(3, door.dir), door.dir));
 		Vector3l start = door.left;
 		start = start.move(3, door.dir.counterClockwise());
-		if (!dungeon.inBounds(start)) return result;
+		if (!dungeon.inBounds(start)) return null;
 		Vector3l end = door.right;
 		end = end.move(3, door.dir.clockwise());
 		end = end.move(7, door.dir);
-		if (!dungeon.inBounds(end)) return result;
+		if (!dungeon.inBounds(end)) return null;
 		long sx = Math.min(start.x, end.x);
 		long sz = Math.min(start.z, end.z);
 		long ex = Math.max(start.x, end.x);
 		long ez = Math.max(start.z, end.z);
+		//if(ex - sx == 5 || ez - sz == 5) Logger.getLogger(DungeonRoomBase.class).debug("DL: " + door.left + ", DR: " + door.right + ", DF: " + door.dir);
 		RoomBB bb = new RoomBB(sx + 1, start.y, sz + 1, ex - 1, start.y + 3, ez - 1);
-		if (!dungeon.addRoom(bb)) return result;
+		RoomInfo info = new RoomInfo(bb, result);
+		if (!dungeon.addRoom(info)) return null;
 		for (long x = sx; x <= ex; ++x) {
 			for (long z = sz; z <= ez; ++z) {
 				for (long y = start.y - 1; y < start.y + 5; ++y) {
 					if (y == start.y - 1 || y == start.y + 4) {
 						dungeon.setDungeonBlock(x, y, z);
 					} else if (x == sx || x == ex || z == sz || z == ez) {
-						if ((x == sx + 3 || x == sx + 4 || z == sz + 3 || z == sz + 4) && y < start.y + 2 && y > start.y - 1) {
-							dungeon.setEmptyBlock(x, y, z);
-							continue;
-						}
 						dungeon.setDungeonBlock(x, y, z);
 					} else dungeon.setEmptyBlock(x, y, z);
 				}
@@ -81,10 +80,6 @@ public class DungeonRoomBase extends DungeonRoom {
 		prisoner.setState(NpcState.TRAPPED);
 		prisoner.setSkinId((byte) dungeon.getRand().nextInt());
 		prisoner.addToWorld();
-		result.add(door.clone().setNewRoomDir(door.dir.opposite()));
-		result.add(door.move(7, door.dir));
-		result.add(Door.genDoor(door.left.move(3, door.dir.counterClockwise()).move(3, door.dir), door.dir).setNewRoomDir(door.dir.counterClockwise()));
-		result.add(Door.genDoor(door.right.move(3, door.dir.clockwise()).move(3, door.dir), door.dir).setNewRoomDir(door.dir.clockwise()));
 		return result;
 	}
 	
@@ -113,13 +108,18 @@ public class DungeonRoomBase extends DungeonRoom {
 		ConcurrentLinkedQueue<Door> doorsToGen = new ConcurrentLinkedQueue<Door>();
 		doorsToGen.addAll(nextRoom(dungeon.getStyle(), rand).generate(world, d, dungeon));
 		int rooms = 1;
+		Collection<Door> gened = null;
 		while ((d = doorsToGen.poll()) != null) {
 			if (!dungeon.inBounds(d.left) || (rand.nextDouble() < dungeon.getStyle().getRoomFailChance() && rooms > 8)) continue;
 			DungeonRoom room = nextRoom(dungeon.getStyle(), rand);
-			doorsToGen.addAll(room.generate(world, d, dungeon));
-			++rooms;
+			gened = room.generate(world, d, dungeon);
+			if(gened != null){
+				doorsToGen.addAll(gened);
+				++rooms;
+			}
 			if (dungeon.getStyle().getMaxRooms() != -1 && rooms > dungeon.getStyle().getMaxRooms()) break;
 		}
+		dungeon.clearUsedDoors();
 		return true;
 	}
 
@@ -128,7 +128,7 @@ public class DungeonRoomBase extends DungeonRoom {
 		for (WeightedRoom d : style.getRooms()) {
 			max += d.getWeight();
 		}
-		int num = rand.nextInt(max);
+		int num = rand.nextInt(max + 1);
 		for (WeightedRoom d : style.getRooms()) {
 			num -= d.getWeight();
 			if (num <= 0) return d.getRoom();

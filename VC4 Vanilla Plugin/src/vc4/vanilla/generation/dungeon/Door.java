@@ -41,11 +41,8 @@ public class Door {
 
 	public static Door genDoor(Vector3l loc, Direction d) {
 		Door di = new Door(loc, loc.add(new Vector3l(d.getX(), d.getY(), d.getZ())));
-		// if(d == Direction.SOUTH || d == Direction.WEST){
-		// Vector3l ri = di.right;
-		// di.right = di.left;
-		// di.left = ri;
-		// }
+		Vector3l lToR = di.left.subtract(di.right);
+		di.dir = Direction.getDirection(lToR).clockwise();
 		return di;
 	}
 
@@ -57,19 +54,41 @@ public class Door {
 	public int getWidth() {
 		return width;
 	}
+	
+	public boolean fits(Door other){
+		if(other.dir == this.dir){
+			if(!other.left.equals(this.left)) return false;
+			return other.right.equals(this.right);
+		} else if(other.dir == this.dir.opposite()){
+			if(!other.left.equals(this.right)) return false;
+			return other.right.equals(this.left);
+		} else return false;
+	}
+	
+	public RoomBB getBB(){
+		return new RoomBB(Math.min(left.x, right.x), left.y, Math.min(left.z, right.z), Math.max(left.x, right.x), left.y + 1, Math.max(left.z, right.z));
+	}
+	
+	public boolean intercepts(RoomBB room){
+		RoomBB me = getBB();
+		return room.intercepts(me);
+		
+	}
 
 	public Door setNewRoomDir(Direction dir) {
-		this.dir = dir;
 		if (left.equals(right.move(width, dir.clockwise()))) {
-			Vector3l ri = right;
-			right = left;
-			left = ri;
+			return new Door(right, left, dir);
+		} else {
+			return new Door(left,  right, dir);
 		}
-		return this;
+	}
+	
+	public Door flip(){
+		return new Door(right, left, dir.opposite());
 	}
 
 	public Door move(int amount, Direction dir) {
-		return new Door(left.move(amount, dir), right.move(amount, dir), dir);
+		return new Door(left.move(amount, dir), right.move(amount, dir), this.dir);
 	}
 
 	public Door(Vector3l pos, Direction dir) {

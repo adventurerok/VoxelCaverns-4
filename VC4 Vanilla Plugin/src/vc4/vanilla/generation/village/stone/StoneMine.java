@@ -9,9 +9,9 @@ import vc4.api.world.World;
 import vc4.vanilla.Vanilla;
 import vc4.vanilla.generation.dungeon.Door;
 import vc4.vanilla.generation.dungeon.RoomBB;
+import vc4.vanilla.generation.furnature.*;
 import vc4.vanilla.generation.village.Building;
 import vc4.vanilla.generation.village.Village;
-import vc4.vanilla.generation.village.furnature.*;
 
 public class StoneMine implements Building {
 
@@ -95,7 +95,7 @@ public class StoneMine implements Building {
 			}
 		}
 		for (Furnature f : furniture) {
-			f.place(ville, door.left, door.dir);
+			f.place(ville.getWorld(), door.left, door.dir);
 		}
 		ville.setEmptyBlock(door.left.x, door.left.y, door.left.z);
 		ville.setEmptyBlock(door.left.x, door.left.y + 1, door.left.z);
