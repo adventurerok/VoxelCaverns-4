@@ -25,6 +25,7 @@ public class Block {
 
 	public static final AABB square = AABB.getBoundingBox(0, 1, 0, 1, 0, 1);
 	public static final BlockRenderer main = new BlockRendererDefault();
+	public static boolean canFallableFall = true;
 
 	public final short uid;
 	public final Material material;
@@ -697,6 +698,10 @@ public class Block {
 	 */
 	public boolean updatesRandomly() {
 		return true;
+	}
+
+	public void onBlockExploded(World world, long x, long y, long z, Entity exploder) {
+		
 	}
 
 }

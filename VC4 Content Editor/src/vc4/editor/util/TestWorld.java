@@ -13,6 +13,7 @@ import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
 import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3l;
 import vc4.api.world.*;
 
 public class TestWorld implements World {
@@ -562,6 +563,43 @@ public class TestWorld implements World {
 
 	@Override
 	public float getBlockDensity(Vector3d pos, AABB bounds) {
+		return 0;
+	}
+
+	@Override
+	public byte getBlockData(Vector3l pos) {
+		return 0;
+	}
+
+	@Override
+	public short getBlockId(Vector3l pos) {
+		return 0;
+	}
+
+	@Override
+	public Block getBlockType(Vector3l pos) {
+		return null;
+	}
+
+	@Override
+	public void setBlockData(Vector3l pos, int data) {
+	}
+
+	@Override
+	public void setBlockId(Vector3l pos, int id) {
+	}
+
+	@Override
+	public void setBlockIdData(Vector3l pos, int id, int data) {
+	}
+
+	@Override
+	public float getSkyLight() {
+		return 0;
+	}
+
+	@Override
+	public byte getBlockLight(Vector3l pos) {
 		return 0;
 	}
 

@@ -4,6 +4,7 @@
 package vc4.vanilla.generation.world;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import vc4.api.biome.*;
 import vc4.api.entity.EntityPlayer;
@@ -34,6 +35,19 @@ import vc4.vanilla.underbiome.UnderBiome;
  * 
  */
 public class OverworldGenerator implements WorldGenerator {
+	
+	private static class BiomeHeightGenerator {
+		
+		ZoomGenerator biome;
+		ZoomGenerator height;
+		
+		public BiomeHeightGenerator(ZoomGenerator biome, ZoomGenerator height) {
+			super();
+			this.biome = biome;
+			this.height = height;
+		}
+		
+	}
 
 	private RecursiveGenCaves caveGen = new RecursiveGenCaves();
 	private WorldGenRuins ruinsGen = new WorldGenRuins();
@@ -52,6 +66,9 @@ public class OverworldGenerator implements WorldGenerator {
 	ChunkGenChasms chasmGen = new ChunkGenChasms();
 	ArrayList<ArrayList<Integer>> biomes;
 	ZoomGenerator underBiomeGenerator;
+	ConcurrentHashMap<Long, BiomeHeightGenerator> biomeHeightGens = new ConcurrentHashMap<>();
+	long worldSeed;
+	
 
 	public static Vector3f[] lightColors = new Vector3f[256];
 
@@ -75,8 +92,10 @@ public class OverworldGenerator implements WorldGenerator {
 
 	@Override
 	public Vector3f getLightColor(World world, MapData m, long x, long y, long z, int cx, int cz, int level) {
-		if (y >= -5050) return lightColors[level];
-		if (y <= -5144) return lightColors[240 + level];
+		if (y >= -5050)
+			return lightColors[level];
+		if (y <= -5144)
+			return lightColors[240 + level];
 		return lightColors[(int) (((14 - ((y + 5150) / 7)) << 4) + level)];
 	}
 
@@ -85,9 +104,9 @@ public class OverworldGenerator implements WorldGenerator {
 		waterLakeGen = new WorldGenUndergroundLake(Vanilla.water.uid, 100);
 		lavaLakeGen = new WorldGenUndergroundLake(Vanilla.lava.uid, 175);
 		biomes = Vanilla.biomes;
-		underBiomeGenerator = new BiomeGenUnderBiomes(world, Vanilla.underBiomesList.toArray());
+		underBiomeGenerator = new BiomeGenUnderBiomes(world.getSeed(), Vanilla.underBiomesList.toArray());
 		for (int d = 0; d < 8; ++d)
-			underBiomeGenerator = new BiomeGenZoom(world, underBiomeGenerator);
+			underBiomeGenerator = new BiomeGenZoom(world.getSeed(), underBiomeGenerator);
 		Vanilla.underBiomesGen = underBiomeGenerator;
 	}
 
@@ -111,19 +130,25 @@ public class OverworldGenerator implements WorldGenerator {
 
 	public int[] getNoiseDiff(MapData data, long y) {
 		int[] res = Arrays.copyOf(data.getGenHeightMap(), 1024);
-		for (int cx = 0; cx < 32; ++cx) {
-			for (int cz = 0; cz < 32; ++cz) {
-				res[cz * 32 + cx] = (int) (res[cz * 32 + cx] - ((y << 5) + 31));
-			}
+		for (int d = 0; d < res.length; ++d) {
+			res[d] = (int) (res[d] - ((y << 5) + 31));
 		}
 		return res;
+	}
+
+	public void getNoiseDiff(int[] res, long y) {
+		for (int d = 0; d < res.length; ++d) {
+			res[d] = (int) (res[d] - ((y << 5) + 31));
+		}
 	}
 
 	@Override
 	public Music getBiomeMusic(EntityPlayer player) {
 		Vector3l pos = player.position.toVector3l();
-		if (pos.y < -5000) return Vanilla.musicHell;
-		if (pos.y > 750) return Vanilla.musicSky;
+		if (pos.y < -5000)
+			return Vanilla.musicHell;
+		if (pos.y > 750)
+			return Vanilla.musicSky;
 		Biome biome = player.getWorld().getBiome(pos.x, pos.z);
 		return biome.music;
 	}
@@ -131,12 +156,19 @@ public class OverworldGenerator implements WorldGenerator {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.api.generator.WorldGenerator#generate(vc4.api.world.World, long, long, long)
+	 * @see vc4.api.generator.WorldGenerator#generate(vc4.api.world.World, long,
+	 * long, long)
 	 */
 	@Override
 	public GeneratorOutput generate(World world, long x, long y, long z, MapData data) {
 		SimplexOctaveGenerator hellNoise = null;
 		GeneratorOutput out = new GeneratorOutput();
+		
+		//prepareGenerators(world);
+		//biomeGenerator.generate(wx - 1, wz - 1, 34);
+		//int rn[] = heightGenerator.generate(wx - 1, wz - 1, 34);
+		//getNoiseDiff(rn, y);
+
 		int[] nz = getNoiseDiff(data, y);
 		Random rand = world.createRandom(x, y, z, 456564231L);
 		Biome bio;
@@ -151,12 +183,15 @@ public class OverworldGenerator implements WorldGenerator {
 				ubiom = UnderBiome.byId(ubiomes[cz * 32 + cx]);
 				bio = data.getBiome(cx, cz);
 				diff = nz[cz * 32 + cx];
+				//diff = rn[(cz + 1) * 34 + (cx + 1)];
 				for (cy = 31; cy >= 0; --cy) {
 					b = true;
 					if (diff > 5000) {
 						double big = -1 + (diff - 5000) / 500;
-						if (big > 0.95) big = 1.9 - big;
-						if (hellNoise == null) hellNoise = initHellNoise(world);
+						if (big > 0.95)
+							big = 1.9 - big;
+						if (hellNoise == null)
+							hellNoise = initHellNoise(world);
 						b = hellNoise.noise((x << 5) + cx, (y << 5) + cy, (z << 5) + cz, 0.1f, 1f, true) >= big;
 					}
 					if (diff > -1 && b) {
@@ -165,7 +200,8 @@ public class OverworldGenerator implements WorldGenerator {
 						} else if (diff < 5000) {
 							out.setBlockId(cx, cy, cz, ubiom.stoneBlockId);
 							out.setBlockData(cx, cy, cz, ubiom.stoneBlockData);
-						} else out.setBlockId(cx, cy, cz, Vanilla.hellrock.uid);
+						} else
+							out.setBlockId(cx, cy, cz, Vanilla.hellrock.uid);
 					} else if (!b) {
 						if ((y << 5) + cy < -5975) {
 							out.setBlockId(cx, cy, cz, Vanilla.lava.uid);
@@ -181,9 +217,12 @@ public class OverworldGenerator implements WorldGenerator {
 				}
 			}
 		}
-		if (world.getGeneratorTag().getBoolean("chasms", true)) chasmGen.generate(world, data, x, y, z, out);
-		if (world.getGeneratorTag().getBoolean("volcanos", true)) volcanoGen.generate(world, data, x, y, z, out);
-		if (world.getGeneratorTag().getBoolean("caves", true)) caveGen.generate(world, data, x, y, z, out);
+		if (world.getGeneratorTag().getBoolean("chasms", true))
+			chasmGen.generate(world, data, x, y, z, out);
+		if (world.getGeneratorTag().getBoolean("volcanos", true))
+			volcanoGen.generate(world, data, x, y, z, out);
+		if (world.getGeneratorTag().getBoolean("caves", true))
+			caveGen.generate(world, data, x, y, z, out);
 		return out;
 	}
 
@@ -215,7 +254,8 @@ public class OverworldGenerator implements WorldGenerator {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.api.generator.WorldGenerator#populate(vc4.api.world.World, long, long, long)
+	 * @see vc4.api.generator.WorldGenerator#populate(vc4.api.world.World, long,
+	 * long, long)
 	 */
 	@Override
 	public void populate(World world, long x, long y, long z) {
@@ -238,12 +278,15 @@ public class OverworldGenerator implements WorldGenerator {
 		if (y == 0 && world.getBiome((x << 5) + 16, (z << 5) + 16) == Vanilla.biomeSwamp) {
 			algaeGen.populate(world, x, y, z);
 		}
-		if (world.getGeneratorTag().getBoolean("ores", true)) oresGen.populate(world, x, y, z);
+		if (world.getGeneratorTag().getBoolean("ores", true))
+			oresGen.populate(world, x, y, z);
 		if (y > 30) {
 			floatingGen.populate(world, x, y, z);
-			TreeGenBasic oakGen = new TreeGenBasic(world, new Random(world.getSeed() ^ 71927L ^ x ^ 139013L ^ y ^ 1038794L ^ z));
+			TreeGenBasic oakGen = new TreeGenBasic(world, new Random(world.getSeed() ^ 71927L ^ x ^ 139013L ^ y
+					^ 1038794L ^ z));
 			for (int d = 0; d < 100; ++d) {
-				oakGen.generate((x << 5) + oakGen.rand.nextInt(32), (y << 5) + oakGen.rand.nextInt(32), (z << 5) + oakGen.rand.nextInt(32), Vanilla.plantTreeOak);
+				oakGen.generate((x << 5) + oakGen.rand.nextInt(32), (y << 5) + oakGen.rand.nextInt(32), (z << 5)
+						+ oakGen.rand.nextInt(32), Vanilla.plantTreeOak);
 			}
 		}
 	}
@@ -256,8 +299,10 @@ public class OverworldGenerator implements WorldGenerator {
 		Graphics.getClientShaderManager().unbindShader();
 		if (pos.y < 192) {
 			gl.begin(GLPrimative.QUADS);
-			if (pos.y > -5200) gl.color(0.6f, 0.45f, 0.45f, 1);
-			else gl.color(0.8f, 0.3f, 0.3f, 1);
+			if (pos.y > -5200)
+				gl.color(0.6f, 0.45f, 0.45f, 1);
+			else
+				gl.color(0.8f, 0.3f, 0.3f, 1);
 			gl.vertex(-256, -256, -256);
 			gl.vertex(256, -256, -256);
 			gl.vertex(256, -256, 256);
@@ -294,65 +339,81 @@ public class OverworldGenerator implements WorldGenerator {
 
 	}
 
+	public void prepareGenerators(World world) {
+		if(worldSeed != world.getSeed()){
+			biomeHeightGens.clear();
+			worldSeed = world.getSeed();
+		} else{
+			BiomeHeightGenerator gen = biomeHeightGens.get(Thread.currentThread().getId());
+			if(gen != null && gen.biome != null && gen.height != null) return;
+		}
+		int op = 0;
+		ZoomGenerator bgen = new BiomeGenIslands(world.getSeed());
+		// bgen = new BiomeGenZoom(world, bgen, false);
+		// bgen = new BiomeGenIslands(world, bgen);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		bgen = new BiomeGenSuperBiome(world.getSeed(), bgen);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenBiome(world.getSeed(), bgen, biomes);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		ZoomGenerator hgen = new HeightGenSeed(world.getSeed());
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 0
+		bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		hgen = new HeightGenZoom(world.getSeed(), hgen);
+		float rVal = 1f;
+		float rMod = 0.5f;
+		hgen = new HeightGenDisplace(world.getSeed(), hgen, rVal *= rMod);
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 1
+		bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		hgen = new BiomeGenZoom(world.getSeed(), hgen);
+		hgen = new HeightGenDisplace(world.getSeed(), hgen, rVal *= rMod);
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 2
+		bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		hgen = new HeightGenZoom(world.getSeed(), hgen);
+		hgen = new HeightGenDisplace(world.getSeed(), hgen, rVal *= rMod);
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 3
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		hgen = new HeightGenZoom(world.getSeed(), hgen);
+		hgen = new HeightGenDisplace(world.getSeed(), hgen, rVal *= rMod);
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 4
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		hgen = new HeightGenZoom(world.getSeed(), hgen);
+		hgen = new HeightGenDisplace(world.getSeed(), hgen, rVal *= rMod);
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 5
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		hgen = new HeightGenZoom(world.getSeed(), hgen);
+		hgen = new HeightGenDisplace(world.getSeed(), hgen, rVal *= rMod);
+		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 6
+		hgen = new HeightGenZoom(world.getSeed(), hgen);
+		hgen = new BiomeGenZoom(world.getSeed(), hgen);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true); // 7
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true); // 8
+		
+		BiomeHeightGenerator gen = new BiomeHeightGenerator(bgen, hgen);
+		biomeHeightGens.put(Thread.currentThread().getId(), gen);
+	}
+
 	@Override
 	public void generateMapData(World world, MapData data) {
 		long wx = data.getPosition().x << 5;
 		long wz = data.getPosition().y << 5;
-		int op = 0;
-		ZoomGenerator bgen = new BiomeGenIslands(world);
-		// bgen = new BiomeGenZoom(world, bgen, false);
-		// bgen = new BiomeGenIslands(world, bgen);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSuperBiome(world, bgen);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenBiome(world, bgen, biomes);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSubBiome(world, bgen, op++);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		ZoomGenerator hgen = new HeightGenSeed(world);
-		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 0
-		bgen = new BiomeGenSubBiome(world, bgen, op++);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		hgen = new HeightGenZoom(world, hgen);
-		float rVal = 1f;
-		float rMod = 0.5f;
-		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 1
-		bgen = new BiomeGenSubBiome(world, bgen, op++);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		hgen = new BiomeGenZoom(world, hgen);
-		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 2
-		bgen = new BiomeGenSubBiome(world, bgen, op++);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		hgen = new HeightGenZoom(world, hgen);
-		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 3
-		bgen = new BiomeGenZoom(world, bgen, true);
-		hgen = new HeightGenZoom(world, hgen);
-		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 4
-		bgen = new BiomeGenZoom(world, bgen, true);
-		hgen = new HeightGenZoom(world, hgen);
-		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 5
-		bgen = new BiomeGenZoom(world, bgen, true);
-		hgen = new HeightGenZoom(world, hgen);
-		hgen = new HeightGenDisplace(world, hgen, rVal *= rMod);
-		((BiomeGenZoom) bgen).setSeeding((HeightGenBiomeInput) hgen); // 6
-		hgen = new HeightGenZoom(world, hgen);
-		hgen = new BiomeGenZoom(world, hgen);
-		bgen = new BiomeGenZoom(world, bgen, true); // 7
-		bgen = new BiomeGenZoom(world, bgen, true); // 8
 
-		int[] intBiomes = bgen.generate(wx, wz, 32);
+		prepareGenerators(world);
+		BiomeHeightGenerator gen = biomeHeightGens.get(Thread.currentThread().getId());
+
+		int[] intBiomes = gen.biome.generate(wx, wz, 32);
 		short[] biomes = new short[32 * 32];
 		for (int d = 0; d < 1024; ++d)
 			biomes[d] = (short) intBiomes[d];
 		data.setBiomeMap(biomes);
-		int[] gh = hgen.generate(wx, wz, 32);
+		int[] gh = gen.height.generate(wx, wz, 32);
 		int[] th = new int[1024];
 		for (int d = 0; d < 1024; ++d) {
 			th[d] = gh[d];
@@ -365,38 +426,39 @@ public class OverworldGenerator implements WorldGenerator {
 	@Override
 	public ZoomGenerator getBiomeMapGenerator(World world, int zoom) {
 		int op = 0;
-		ZoomGenerator bgen = new BiomeGenIslands(world);
+		ZoomGenerator bgen = new BiomeGenIslands(world.getSeed());
 		// bgen = new BiomeGenZoom(world, bgen, false);
 		// bgen = new BiomeGenIslands(world, bgen);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSuperBiome(world, bgen);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenBiome(world, bgen, biomes);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		bgen = new BiomeGenSuperBiome(world.getSeed(), bgen);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenBiome(world.getSeed(), bgen, biomes);
 		if (zoom < 10) {
-			bgen = new BiomeGenZoom(world, bgen, true);
-			bgen = new BiomeGenSubBiome(world, bgen, op++);
+			bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+			bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
 			if (zoom < 9) {
-				bgen = new BiomeGenZoom(world, bgen, true);
-				bgen = new BiomeGenSubBiome(world, bgen, op++);
+				bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+				bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
 				if (zoom < 8) {
-					bgen = new BiomeGenZoom(world, bgen, true);
-					bgen = new BiomeGenSubBiome(world, bgen, op++);
+					bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+					bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
 					if (zoom < 7) {
-						bgen = new BiomeGenZoom(world, bgen, true);
-						bgen = new BiomeGenSubBiome(world, bgen, op++);
+						bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+						bgen = new BiomeGenSubBiome(world.getSeed(), bgen, op++);
 						if (zoom < 6) {
-							bgen = new BiomeGenZoom(world, bgen, true);
+							bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
 							if (zoom < 5) {
-								bgen = new BiomeGenZoom(world, bgen, true);
+								bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
 								if (zoom < 4) {
-									bgen = new BiomeGenZoom(world, bgen, true);
+									bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
 									if (zoom < 3) {
-										bgen = new BiomeGenZoom(world, bgen, true);
+										bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
 										if (zoom < 2) {
-											bgen = new BiomeGenZoom(world, bgen, true);
-											if (zoom == 0) bgen = new BiomeGenZoom(world, bgen, true);
+											bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+											if (zoom == 0)
+												bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
 										}
 									}
 								}

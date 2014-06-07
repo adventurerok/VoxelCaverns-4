@@ -155,8 +155,9 @@ public class Explosion {
 
 			if (bid > 0) {
 				if(rand.nextFloat() <= dropChance) Block.byId(bid).dropItems(world, bx, by, bz, null);
+				Block.byId(bid).onBlockExploded(world, bx, by, bz, exploder);
 				world.setBlockId(bx, by, bz, 0);
-				//Block.byId(bid).onBlockExploded(world, bx, by, bz, data, exploder);
+				
 			}
 		}
 

@@ -10,7 +10,7 @@ import vc4.vanilla.BlockTexture;
  * @author paul
  * 
  */
-public class BlockSand extends Block {
+public class BlockSand extends BlockFallable {
 
 	/**
 	 * @param uid

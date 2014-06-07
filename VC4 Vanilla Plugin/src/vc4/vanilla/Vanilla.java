@@ -75,7 +75,7 @@ public class Vanilla extends Plugin {
 	public static Block wire, notGate, repeaterGate, andGate, orGate, xorGate, norGate, nandGate;
 	public static Block flipFlop, gapRepeaterGate, button, bitMonitor;
 	public static Block redWire, blueWire, greenWire, yellowWire;
-	public static Block wool0, wool1, present;
+	public static Block wool0, wool1, present, explosive, pressureplate;
 
 	// Items
 	public static Item food, spawnStick, stick, metalBar, alloyBar, crop, seeds;
@@ -408,6 +408,8 @@ public class Vanilla extends Plugin {
 		wool0 = new BlockWool(world.getRegisteredBlock("vanilla.wool.0"), 0).setMineData(new MiningData().setPowers(0, 1, 25).setTimes(0.5, 0.2, 0.05)).setName("wool");
 		wool1 = new BlockWool(world.getRegisteredBlock("vanilla.wool.1"), 1).setMineData(new MiningData().setPowers(0, 1, 25).setTimes(0.5, 0.2, 0.05)).setName("wool");
 		present = new BlockPresent(world.getRegisteredBlock("vanilla.present")).setName("present");
+		explosive = new BlockExplosive(world.getRegisteredBlock("vanilla.explosive")).setName("explosive");
+		pressureplate = new BlockPressurePlate(world.getRegisteredBlock("vanilla.pressureplate")).setName("pressureplate");
 	}
 
 	@Override

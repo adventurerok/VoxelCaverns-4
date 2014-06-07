@@ -1,3 +1,5 @@
+block.pressureplate.name=Pressure Plate
+block.pressureplate.desc=Master of disguise!
 block.present.name=Blue Present
 block.present.desc=Only at Christmas!
 block.wool.name=Wool
@@ -360,6 +362,10 @@ block.bookshelfench.chestnut.name=Enchanted Chestnut Bookshelf
 block.bookshelfench.chestnut.desc=Contains the book of chests,...
 block.bookshelfench.redwood.name=Enchanted Redwood Bookshelf
 block.bookshelfench.kapok.name=Enchanted Kapok Bookshelf
+block.tnt.name=TNT
+block.tnt.desc=Parody of dynamite
+block.rdx.name=RDX
+block.rdx.desc=Research Department Explosive\nMore powerful than TNT!
 
 
 item.pick.wood.name=Wooden Pickaxe

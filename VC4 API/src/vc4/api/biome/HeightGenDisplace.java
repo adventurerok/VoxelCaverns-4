@@ -1,8 +1,6 @@
 package vc4.api.biome;
 
-import vc4.api.biome.ZoomGenerator;
 import vc4.api.math.MathUtils;
-import vc4.api.world.World;
 
 public class HeightGenDisplace extends ZoomGenerator implements HeightGenBiomeInput {
 
@@ -28,8 +26,8 @@ public class HeightGenDisplace extends ZoomGenerator implements HeightGenBiomeIn
 		return result;
 	}
 
-	public HeightGenDisplace(World world, ZoomGenerator parent, float rough) {
-		super(world, parent);
+	public HeightGenDisplace(long worldSeed, ZoomGenerator parent, float rough) {
+		super(worldSeed, parent);
 		this.rough = rough;
 	}
 

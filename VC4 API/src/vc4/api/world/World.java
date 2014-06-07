@@ -16,6 +16,7 @@ import vc4.api.tileentity.TileEntity;
 import vc4.api.util.*;
 import vc4.api.vbt.TagCompound;
 import vc4.api.vector.Vector3d;
+import vc4.api.vector.Vector3l;
 
 /**
  * @author paul
@@ -40,12 +41,16 @@ public interface World {
 	public Biome getBiome(long x, long z);
 
 	public byte getBlockData(long x, long y, long z);
+	public byte getBlockData(Vector3l pos);
 
 	public short getBlockId(long x, long y, long z);
+	public short getBlockId(Vector3l pos);
 
 	public Block getBlockType(long x, long y, long z);
+	public Block getBlockType(Vector3l pos);
 
 	public byte getBlockLight(long x, long y, long z);
+	public byte getBlockLight(Vector3l pos);
 
 	public Chunk getChunk(ChunkPos pos);
 
@@ -134,12 +139,15 @@ public interface World {
 	public RayTraceResult rayTraceBlocks(Vector3d start, Vector3d end, int amount);
 
 	public void setBlockData(long x, long y, long z, int data);
+	public void setBlockData(Vector3l pos, int data);
 
 	public void setBlockDataNoNotify(long x, long y, long z, int data);
 
 	public void setBlockId(long x, long y, long z, int id);
+	public void setBlockId(Vector3l pos, int id);
 
 	public void setBlockIdData(long x, long y, long z, int id, int data);
+	public void setBlockIdData(Vector3l pos, int id, int data);
 
 	public void setBlockIdDataNoNotify(long x, long y, long z, int id, int data);
 
@@ -220,4 +228,6 @@ public interface World {
 	public abstract Dictionary getDictionary(String name);
 
 	public float getBlockDensity(Vector3d pos, AABB bounds);
+
+	public abstract float getSkyLight();
 }

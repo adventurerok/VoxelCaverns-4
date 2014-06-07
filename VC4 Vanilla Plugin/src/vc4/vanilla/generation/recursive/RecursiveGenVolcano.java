@@ -66,19 +66,19 @@ public class RecursiveGenVolcano extends RecursiveGenerator {
 	}
 
 	private void createZoom(World world) {
-		ZoomGenerator bgen = new BiomeGenIslands(world);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenIslands(world, bgen);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSuperBiome(world, bgen);
-		bgen = new BiomeGenZoom(world, bgen, false);
-		bgen = new BiomeGenBiome(world, bgen, Vanilla.biomes);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSubBiome(world, bgen, 0);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSubBiome(world, bgen, 1);
-		bgen = new BiomeGenZoom(world, bgen, true);
-		bgen = new BiomeGenSubBiome(world, bgen, 2);
+		ZoomGenerator bgen = new BiomeGenIslands(world.getSeed());
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenIslands(world.getSeed(), bgen);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		bgen = new BiomeGenSuperBiome(world.getSeed(), bgen);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, false);
+		bgen = new BiomeGenBiome(world.getSeed(), bgen, Vanilla.biomes);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		bgen = new BiomeGenSubBiome(world.getSeed(), bgen, 0);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		bgen = new BiomeGenSubBiome(world.getSeed(), bgen, 1);
+		bgen = new BiomeGenZoom(world.getSeed(), bgen, true);
+		bgen = new BiomeGenSubBiome(world.getSeed(), bgen, 2);
 		volcanicCheck = bgen;
 		lastWorld = world;
 	}

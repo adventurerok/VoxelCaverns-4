@@ -2,14 +2,13 @@ package vc4.api.biome;
 
 import java.util.ArrayList;
 
-import vc4.api.world.World;
-
 public class BiomeGenBiome extends ZoomGenerator {
 
 	private ArrayList<ArrayList<Integer>> types = new ArrayList<>();
 
-	public BiomeGenBiome(World world, ZoomGenerator parent, ArrayList<ArrayList<Integer>> types) {
-		super(world, parent);
+	
+	public BiomeGenBiome(long worldSeed, ZoomGenerator parent, ArrayList<ArrayList<Integer>> types) {
+		super(worldSeed, parent);
 		this.types = types;
 	}
 

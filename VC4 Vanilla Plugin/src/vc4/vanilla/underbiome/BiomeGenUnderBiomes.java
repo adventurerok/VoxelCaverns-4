@@ -1,7 +1,6 @@
 package vc4.vanilla.underbiome;
 
 import vc4.api.biome.ZoomGenerator;
-import vc4.api.world.World;
 
 public class BiomeGenUnderBiomes extends ZoomGenerator {
 
@@ -21,8 +20,8 @@ public class BiomeGenUnderBiomes extends ZoomGenerator {
 		return result;
 	}
 
-	public BiomeGenUnderBiomes(World world, int[] biomes) {
-		super(world);
+	public BiomeGenUnderBiomes(long worldSeed, int[] biomes) {
+		super(worldSeed);
 		this.biomesToGenerate = biomes;
 
 	}

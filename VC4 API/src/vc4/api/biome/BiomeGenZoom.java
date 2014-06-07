@@ -1,18 +1,17 @@
 package vc4.api.biome;
 
-import vc4.api.world.World;
 
 public class BiomeGenZoom extends ZoomGenerator {
 
 	boolean mode = true;
 	HeightGenBiomeInput seeding;
 
-	public BiomeGenZoom(World world, ZoomGenerator parent) {
-		super(world, parent);
+	public BiomeGenZoom(long worldSeed, ZoomGenerator parent) {
+		super(worldSeed, parent);
 	}
 
-	public BiomeGenZoom(World world, ZoomGenerator parent, boolean mode) {
-		super(world, parent);
+	public BiomeGenZoom(long worldSeed, ZoomGenerator parent, boolean mode) {
+		super(worldSeed, parent);
 		this.mode = mode;
 	}
 

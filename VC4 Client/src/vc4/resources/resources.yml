@@ -23,6 +23,7 @@ shader:
     - "texture3d"
     - "model"
     - "model_mt"
+    - "texturelight"
     
 font:
     - "unispaced_24"

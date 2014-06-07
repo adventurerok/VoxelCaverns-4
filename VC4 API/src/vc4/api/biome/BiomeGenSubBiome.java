@@ -1,13 +1,12 @@
 package vc4.api.biome;
 
-import vc4.api.world.World;
 
 public class BiomeGenSubBiome extends ZoomGenerator {
 
 	int op;
 
-	public BiomeGenSubBiome(World world, ZoomGenerator parent, int op) {
-		super(world, parent);
+	public BiomeGenSubBiome(long worldSeed, ZoomGenerator parent, int op) {
+		super(worldSeed, parent);
 		this.op = op;
 	}
 

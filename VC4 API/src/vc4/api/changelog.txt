@@ -410,3 +410,16 @@ VC4-Development-0.0.3-341
 	* This is necessary for the multiplayer update
 VC4-Development-0.0.3-342
 	+ Added new methods to Vector3l to perform 2 or 3 moves at the same time
+VC4-Development-0.0.3-343
+	+ Added explosions
+	+ Added EntityBlock
+VC4-Development-0.0.3-344
+	+ added new methods to block to handle explosions
+VC4-Development-0.0.3-345
+	* Block entities should now render
+VC4-Development-0.0.3-346
+	* Block entities should render with light
+VC4-Development-0.0.3-347
+	* EntityBlock now caches block vertex arrays
+VC4-Development-0.0.3-348
+	* Fixed a bug in EntityBlock which caused weird lighting

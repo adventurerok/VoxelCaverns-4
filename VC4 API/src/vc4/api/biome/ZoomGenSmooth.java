@@ -1,11 +1,10 @@
 package vc4.api.biome;
 
-import vc4.api.world.World;
 
 public class ZoomGenSmooth extends ZoomGenerator {
 
-	public ZoomGenSmooth(World world, ZoomGenerator parent) {
-		super(world, parent);
+	public ZoomGenSmooth(long worldSeed, ZoomGenerator parent) {
+		super(worldSeed, parent);
 	}
 
 	@Override

@@ -122,6 +122,19 @@ public class BlockButton extends Block {
 		}
 		return 0;
 	}
+	
+	@Override
+	public void onBlockMined(World world, long x, long y, long z, ItemStack mined) {
+		byte data = world.getBlockData(x, y, z);
+		world.setBlockData(x, y, z, (data & 7));
+		{
+			Direction dir = Direction.getDirection(data & 7);
+			long ax = x + dir.getX();
+			long ay = y + dir.getY();
+			long az = z + dir.getZ();
+			world.notifyNear(ax, ay, az);
+		}
+	}
 
 	@Override
 	public void nearbyBlockChanged(World world, long x, long y, long z, Direction dir) {

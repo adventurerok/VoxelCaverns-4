@@ -1,12 +1,11 @@
 package vc4.api.biome;
 
 import vc4.api.math.MathUtils;
-import vc4.api.world.World;
 
 public class HeightGenZoom extends ZoomGenerator {
 
-	public HeightGenZoom(World world, ZoomGenerator parent) {
-		super(world, parent);
+	public HeightGenZoom(long worldSeed, ZoomGenerator parent) {
+		super(worldSeed, parent);
 	}
 
 	@Override

@@ -156,6 +156,7 @@ public class ImplWorld implements World {
 		} catch (IOException e) {
 			Logger.getLogger(ImplWorld.class).warning("Failed to load world details", e);
 		}
+		EntityBlock.clearPrerendered();
 		onLoad();
 		startGenThreads(4);
 	}
@@ -1301,6 +1302,7 @@ public class ImplWorld implements World {
 		setBlockDataNoNotify(x, y, z, data);
 	}
 
+	@Override
 	public float getSkyLight() {
 		return skyLight;
 	}
@@ -1964,6 +1966,41 @@ public class ImplWorld implements World {
 		}
 
 		return (float) i / (float) j;
+	}
+
+	@Override
+	public byte getBlockData(Vector3l pos) {
+		return getBlockData(pos.x, pos.y, pos.z);
+	}
+
+	@Override
+	public short getBlockId(Vector3l pos) {
+		return getBlockId(pos.x, pos.y, pos.z);
+	}
+
+	@Override
+	public Block getBlockType(Vector3l pos) {
+		return getBlockType(pos.x, pos.y, pos.z);
+	}
+
+	@Override
+	public void setBlockData(Vector3l pos, int data) {
+		setBlockData(pos.x, pos.y, pos.z, data);
+	}
+
+	@Override
+	public void setBlockId(Vector3l pos, int id) {
+		setBlockId(pos.x, pos.y, pos.z, id);
+	}
+
+	@Override
+	public void setBlockIdData(Vector3l pos, int id, int data) {
+		setBlockIdData(pos.x, pos.y, pos.z, id, data);
+	}
+
+	@Override
+	public byte getBlockLight(Vector3l pos) {
+		return getBlockLight(pos.x, pos.y, pos.z);
 	}
 
 }

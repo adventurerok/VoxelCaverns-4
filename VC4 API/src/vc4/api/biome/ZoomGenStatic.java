@@ -9,7 +9,7 @@ public class ZoomGenStatic extends ZoomGenerator {
 	}
 
 	public ZoomGenStatic(int[] data) {
-		super(null);
+		super(1);
 		this.data = data;
 	}
 

@@ -48,6 +48,10 @@ public class Vector3l implements Vector3<Vector3l> {
 	public Vector3l add(Vector3l vec) {
 		return new Vector3l(x + vec.x, y + vec.y, z + vec.z);
 	}
+	
+	public Vector3l add(long x, long y, long z){
+		return new Vector3l(this.x + x, this.y + y, this.z + z);
+	}
 
 	/*
 	 * (non-Javadoc)

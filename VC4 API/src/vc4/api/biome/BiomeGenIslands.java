@@ -1,7 +1,5 @@
 package vc4.api.biome;
 
-import vc4.api.biome.ZoomGenerator;
-import vc4.api.world.World;
 
 public class BiomeGenIslands extends ZoomGenerator {
 
@@ -20,13 +18,13 @@ public class BiomeGenIslands extends ZoomGenerator {
 		return result;
 	}
 
-	public BiomeGenIslands(World world, ZoomGenerator parent) {
-		super(world, parent);
+	public BiomeGenIslands(long worldSeed, ZoomGenerator parent) {
+		super(worldSeed, parent);
 		// TASK Auto-generated constructor stub
 	}
 
-	public BiomeGenIslands(World world) {
-		super(world);
+	public BiomeGenIslands(long worldSeed) {
+		super(worldSeed);
 		// TASK Auto-generated constructor stub
 	}
 

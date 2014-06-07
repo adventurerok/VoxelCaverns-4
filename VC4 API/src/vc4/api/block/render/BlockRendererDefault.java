@@ -21,7 +21,8 @@ import vc4.api.world.*;
  */
 public class BlockRendererDefault implements BlockRenderer {
 
-	private static float shadow = 0.9625f;
+	//private static float shadow = 0.9625f;
+	private static float shadow = 0.9265f;
 
 	/*
 	 * (non-Javadoc)

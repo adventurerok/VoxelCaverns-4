@@ -101,18 +101,18 @@ public class ZoomVisual {
 	}
 
 	private static int[] doZoomFunc(int x, int z) {
-		ZoomGenerator par = new HeightGenSeed(world);
-		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1 / 2f);
-		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1 / 4f);
-		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1 / 8f);
-		par = new HeightGenZoom(world, par);
-		par = new HeightGenDisplace(world, par, 1 / 16f);
-		par = new HeightGenZoom(world, par);
-		par = new HeightGenZoom(world, par);
-		par = new BiomeGenZoom(world, par);
+		ZoomGenerator par = new HeightGenSeed(world.getSeed());
+		par = new HeightGenZoom(world.getSeed(), par);
+		par = new HeightGenDisplace(world.getSeed(), par, 1 / 2f);
+		par = new HeightGenZoom(world.getSeed(), par);
+		par = new HeightGenDisplace(world.getSeed(), par, 1 / 4f);
+		par = new HeightGenZoom(world.getSeed(), par);
+		par = new HeightGenDisplace(world.getSeed(), par, 1 / 8f);
+		par = new HeightGenZoom(world.getSeed(), par);
+		par = new HeightGenDisplace(world.getSeed(), par, 1 / 16f);
+		par = new HeightGenZoom(world.getSeed(), par);
+		par = new HeightGenZoom(world.getSeed(), par);
+		par = new BiomeGenZoom(world.getSeed(), par);
 		long start = System.nanoTime();
 		int[] result = par.generate(x * size, z * size, size);
 

@@ -1,7 +1,5 @@
 package vc4.api.biome;
 
-import vc4.api.biome.ZoomGenerator;
-import vc4.api.world.World;
 
 public class HeightGenSeed extends ZoomGenerator implements HeightGenBiomeInput {
 
@@ -22,13 +20,13 @@ public class HeightGenSeed extends ZoomGenerator implements HeightGenBiomeInput 
 		return result;
 	}
 
-	public HeightGenSeed(World world, ZoomGenerator parent) {
-		super(world, parent);
+	public HeightGenSeed(long worldSeed, ZoomGenerator parent) {
+		super(worldSeed, parent);
 		// TASK Auto-generated constructor stub
 	}
 
-	public HeightGenSeed(World world) {
-		super(world);
+	public HeightGenSeed(long worldSeed) {
+		super(worldSeed);
 		// TASK Auto-generated constructor stub
 	}
 

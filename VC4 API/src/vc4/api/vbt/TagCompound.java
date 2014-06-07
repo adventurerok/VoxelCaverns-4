@@ -239,6 +239,10 @@ public final class TagCompound extends Tag {
 	public void setDouble(String name, double i) {
 		addTag(new TagDouble(name, i));
 	}
+	
+	public void setFloat(String name, float i) {
+		addTag(new TagFloat(name, i));
+	}
 
 	public void setInt(String name, int i) {
 		addTag(new TagInt(name, i));
