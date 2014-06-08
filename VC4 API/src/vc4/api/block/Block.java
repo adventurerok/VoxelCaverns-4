@@ -44,6 +44,9 @@ public class Block {
 	private boolean solid = true;
 	private boolean standable = true;
 	private boolean standinable = false;
+	
+	protected boolean usesExtended = false;
+	ExtendedSize extendedSize = null;
 
 	protected static Random rand = new Random();
 
@@ -213,6 +216,15 @@ public class Block {
 	public boolean canStandIn() {
 		return standinable || isAir;
 	}
+	
+	public boolean usesExtended(){
+		return usesExtended;
+	}
+	
+	public ExtendedSize getExtendedSize(){
+		return extendedSize;
+	}
+	
 
 	/**
 	 * Gets the renderer array index to use 0: Solid render array (back face culling) 1: Transparent render array (no culling) 2: Fluid render array (renders after entities)

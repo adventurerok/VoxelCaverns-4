@@ -138,6 +138,11 @@ public class ImplChunk implements Chunk {
 	public byte getBlockData(int x, int y, int z) {
 		return stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].getBlockData(x & 0xF, y & 0xF, z & 0xF);
 	}
+	
+	@Override
+	public int getBlockExtended(int x, int y, int z) {
+		return stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].getBlockExtended(x & 0xF, y & 0xF, z & 0xF);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -168,8 +173,20 @@ public class ImplChunk implements Chunk {
 	 */
 	@Override
 	public void setBlockData(int x, int y, int z, byte data) {
-		if (stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockData(x & 0xF, y & 0xF, z & 0xF, data)) isModified = true;
-		notifyNear(x, y, z);
+		if (stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockData(x & 0xF, y & 0xF, z & 0xF, data)){
+			isModified = true;
+			notifyNear(x, y, z);
+		}
+	}
+	
+	
+
+	@Override
+	public void setBlockExtended(int x, int y, int z, int e) {
+		if (stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockExtended(x & 0xF, y & 0xF, z & 0xF, e)){
+			isModified = true;
+			notifyNear(x, y, z);
+		}
 	}
 
 	/*
@@ -624,5 +641,7 @@ public class ImplChunk implements Chunk {
 	public LinkedList<BlockUpdate> getBlockUpdates() {
 		return blockUpdates;
 	}
+
+	
 
 }

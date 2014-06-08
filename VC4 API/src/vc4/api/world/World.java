@@ -51,12 +51,15 @@ public interface World {
 
 	public byte getBlockLight(long x, long y, long z);
 	public byte getBlockLight(Vector3l pos);
+	
+	public int getBlockExtended(long x, long y, long z);
+	public int getBlockExtended(Vector3l pos);
 
 	public Chunk getChunk(ChunkPos pos);
 
 	public Chunk getChunk(long x, long y, long z);
 
-	public abstract String[] getDebugInfo();
+	public String[] getDebugInfo();
 
 	public List<Entity> getEntitiesInBounds(Chunk chunk, AABB bounds);
 
@@ -82,7 +85,7 @@ public interface World {
 
 	public Music getMusic(EntityPlayer player);
 
-	public abstract String getName();
+	public String getName();
 
 	public int getNearbyHeight(long x, long z, Direction dir);
 
@@ -96,37 +99,40 @@ public interface World {
 
 	public byte getNearbyBlockData(long x, long y, long z, Direction dir);
 
-	public abstract byte getNearbyBlockData(long x, long y, long z, int d);
+	public byte getNearbyBlockData(long x, long y, long z, int d);
 
 	public short getNearbyBlockId(long x, long y, long z, Direction dir);
 
-	public abstract short getNearbyBlockId(long x, long y, long z, int d);
+	public short getNearbyBlockId(long x, long y, long z, int d);
+	
+	public int getNearbyBlockExtended(long x, long y, long z, Direction dir);
+	public int getNearbyBlockExtended(Vector3l pos, Direction dir);
 
 	public Block getNearbyBlockType(long x, long y, long z, Direction dir);
 
-	public abstract Block getNearbyBlockType(long x, long y, long z, int dir);
+	public Block getNearbyBlockType(long x, long y, long z, int dir);
 
-	public abstract TileEntity getNearbyTileEntity(long x, long y, long z, Direction dir);
+	public TileEntity getNearbyTileEntity(long x, long y, long z, Direction dir);
 
-	public abstract TileEntity getNearbyTileEntity(long x, long y, long z, int dir);
+	public TileEntity getNearbyTileEntity(long x, long y, long z, int dir);
 
 	public List<EntityPlayer> getPlayers();
 
-	public abstract byte getRegisteredBiome(String name);
+	public byte getRegisteredBiome(String name);
 
 	public short getRegisteredBlock(String name);
 
-	public abstract short getRegisteredCrafting(String name);
+	public short getRegisteredCrafting(String name);
 
-	public abstract short getRegisteredEntity(String name);
+	public short getRegisteredEntity(String name);
 
 	public int getRegisteredItem(String name);
 
-	public abstract String getSaveName();
+	public String getSaveName();
 
 	public long getSeed();
 
-	public abstract TileEntity getTileEntity(long x, long y, long z);
+	public TileEntity getTileEntity(long x, long y, long z);
 
 	public long getTime();
 
@@ -148,6 +154,9 @@ public interface World {
 
 	public void setBlockIdData(long x, long y, long z, int id, int data);
 	public void setBlockIdData(Vector3l pos, int id, int data);
+	
+	public void setBlockExtended(long x, long y, long z, int extended);
+	public void setBlockExtended(Vector3l pos, int extended);
 
 	public void setBlockIdDataNoNotify(long x, long y, long z, int id, int data);
 
@@ -156,6 +165,9 @@ public interface World {
 	public void setNearbyBlockData(long x, long y, long z, int data, Direction dir);
 
 	public void setNearbyBlockDataNoNotify(long x, long y, long z, int data, Direction dir);
+	
+	public void setNearbyBlockExtended(long x, long y, long z, int extended, Direction dir);
+	public void setNearbyBlockExtended(Vector3l pos, int extended, Direction dir);
 
 	public void setNearbyBlockId(long x, long y, long z, int id, Direction dir);
 
@@ -165,9 +177,9 @@ public interface World {
 
 	public void setNearbyBlockIdNoNotify(long x, long y, long z, int id, Direction dir);
 
-	public abstract void setNearbyTileEntity(long x, long y, long z, TileEntity t, Direction dir);
+	public void setNearbyTileEntity(long x, long y, long z, TileEntity t, Direction dir);
 
-	public abstract void setTileEntity(long x, long y, long z, TileEntity t);
+	public void setTileEntity(long x, long y, long z, TileEntity t);
 
 	public Chunk loadChunk(ChunkPos pos);
 
@@ -175,59 +187,59 @@ public interface World {
 
 	public String getContainerName(int id);
 
-	public abstract String getItemEntityName(int id);
+	public String getItemEntityName(int id);
 
-	public abstract String getTileEntityName(int id);
+	public String getTileEntityName(int id);
 
-	public abstract short getRegisteredItemEntity(String name);
+	public short getRegisteredItemEntity(String name);
 
-	public abstract short getRegisteredTileEntity(String name);
+	public short getRegisteredTileEntity(String name);
 
-	public abstract short getRegisteredContainer(String name);
+	public short getRegisteredContainer(String name);
 
-	public abstract void setDirty(long x, long y, long z);
+	public void setDirty(long x, long y, long z);
 
-	public abstract RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach);
+	public RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach);
 
 	public void broadcast(String message, Vector3d pos, double radius);
 
-	public abstract String getTraitName(int id);
+	public String getTraitName(int id);
 
-	public abstract short getRegisteredTrait(String name);
+	public short getRegisteredTrait(String name);
 
-	public abstract String getAreaName(int id);
+	public String getAreaName(int id);
 
-	public abstract short getRegisteredArea(String name);
+	public short getRegisteredArea(String name);
 
-	public abstract List<Entity> getEntitiesInBounds(AABB bounds, Class<? extends Entity> type);
+	public List<Entity> getEntitiesInBounds(AABB bounds, Class<? extends Entity> type);
 
-	public abstract List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude);
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude);
 
-	public abstract String getTimeText();
+	public String getTimeText();
 
-	public abstract int getDayOfMonth();
+	public int getDayOfMonth();
 
-	public abstract int getMonth();
+	public int getMonth();
 
-	public abstract void addTime(long add);
+	public void addTime(long add);
 
-	public abstract int getHeight(long x, long z);
+	public int getHeight(long x, long z);
 
-	public abstract boolean blockTransparencyChange(long x, long y, long z, boolean trans);
+	public boolean blockTransparencyChange(long x, long y, long z, boolean trans);
 
 	public boolean hasSkyLight(long x, long y, long z);
 
 	public boolean hasDayLight(long x, long y, long z);
 
-	public abstract boolean scheduleBlockUpdate(long x, long y, long z, int time, int buid);
+	public boolean scheduleBlockUpdate(long x, long y, long z, int time, int buid);
 
 	public float getNearbySkylight(long x, long y, long z, int d);
 
-	public abstract void notifyNear(long x, long y, long z);
+	public void notifyNear(long x, long y, long z);
 
-	public abstract Dictionary getDictionary(String name);
+	public Dictionary getDictionary(String name);
 
 	public float getBlockDensity(Vector3d pos, AABB bounds);
 
-	public abstract float getSkyLight();
+	public float getSkyLight();
 }

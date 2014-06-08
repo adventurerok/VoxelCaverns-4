@@ -12,8 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import vc4.api.biome.*;
-import vc4.api.world.World;
-import vc4.editor.util.TestWorld;
 
 public class ZoomVisual {
 
@@ -25,7 +23,6 @@ public class ZoomVisual {
 	private static int size = 32;
 	private static int imgSize = size * width;
 
-	static World world = new TestWorld(seed);
 
 	public static void main(String[] args) {
 		int[] result = doFourZooms();
@@ -101,18 +98,18 @@ public class ZoomVisual {
 	}
 
 	private static int[] doZoomFunc(int x, int z) {
-		ZoomGenerator par = new HeightGenSeed(world.getSeed());
-		par = new HeightGenZoom(world.getSeed(), par);
-		par = new HeightGenDisplace(world.getSeed(), par, 1 / 2f);
-		par = new HeightGenZoom(world.getSeed(), par);
-		par = new HeightGenDisplace(world.getSeed(), par, 1 / 4f);
-		par = new HeightGenZoom(world.getSeed(), par);
-		par = new HeightGenDisplace(world.getSeed(), par, 1 / 8f);
-		par = new HeightGenZoom(world.getSeed(), par);
-		par = new HeightGenDisplace(world.getSeed(), par, 1 / 16f);
-		par = new HeightGenZoom(world.getSeed(), par);
-		par = new HeightGenZoom(world.getSeed(), par);
-		par = new BiomeGenZoom(world.getSeed(), par);
+		ZoomGenerator par = new HeightGenSeed(seed);
+		par = new HeightGenZoom(seed, par);
+		par = new HeightGenDisplace(seed, par, 1 / 2f);
+		par = new HeightGenZoom(seed, par);
+		par = new HeightGenDisplace(seed, par, 1 / 4f);
+		par = new HeightGenZoom(seed, par);
+		par = new HeightGenDisplace(seed, par, 1 / 8f);
+		par = new HeightGenZoom(seed, par);
+		par = new HeightGenDisplace(seed, par, 1 / 16f);
+		par = new HeightGenZoom(seed, par);
+		par = new HeightGenZoom(seed, par);
+		par = new BiomeGenZoom(seed, par);
 		long start = System.nanoTime();
 		int[] result = par.generate(x * size, z * size, size);
 

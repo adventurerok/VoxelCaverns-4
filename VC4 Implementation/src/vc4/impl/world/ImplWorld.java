@@ -38,18 +38,6 @@ import vc4.impl.plugin.PluginManager;
  */
 public class ImplWorld implements World {
 
-	public static final int RENDER_DISTANCE = 256;
-	public static final int CHUNK_RANGE = RENDER_DISTANCE / 32;
-	public static final int RENDER_DISTANCE_SQUARED = RENDER_DISTANCE * RENDER_DISTANCE;
-	public static final int RENDER_DISTANCE_CUBED = RENDER_DISTANCE_SQUARED * RENDER_DISTANCE;
-	public static final int RENDER_RANGE_SQUARED = (int) (RENDER_DISTANCE_SQUARED * 1.2208);
-	public static final int LOAD_LIMIT_SQUARED = (int) (RENDER_DISTANCE_SQUARED * 0.9156);
-
-	static public Vector3f dayLight = new Vector3f(1, 1, 1);
-	static public Vector3f nightLight = new Vector3f(0.12878312F, 0.12878312F, 0.25756624F);
-
-	Biome fakeBiome = Biome.createFake();
-
 	private static class BlockStoreDist implements Comparable<BlockStoreDist> {
 		BlockStore s;
 		ImplChunk c;
@@ -74,6 +62,18 @@ public class ImplWorld implements World {
 			else return 0;
 		}
 	}
+	public static final int RENDER_DISTANCE = 256;
+	public static final int CHUNK_RANGE = RENDER_DISTANCE / 32;
+	public static final int RENDER_DISTANCE_SQUARED = RENDER_DISTANCE * RENDER_DISTANCE;
+	public static final int RENDER_DISTANCE_CUBED = RENDER_DISTANCE_SQUARED * RENDER_DISTANCE;
+	public static final int RENDER_RANGE_SQUARED = (int) (RENDER_DISTANCE_SQUARED * 1.2208);
+
+	public static final int LOAD_LIMIT_SQUARED = (int) (RENDER_DISTANCE_SQUARED * 0.9156);
+	static public Vector3f dayLight = new Vector3f(1, 1, 1);
+
+	static public Vector3f nightLight = new Vector3f(0.12878312F, 0.12878312F, 0.25756624F);
+
+	Biome fakeBiome = Biome.createFake();
 
 	private static BlockStore fake = new BlockStore(0, 0, 0);
 	public HashMap<ChunkPos, ImplChunk> chunks = new HashMap<>(8192);
@@ -117,23 +117,10 @@ public class ImplWorld implements World {
 
 	private ConcurrentLinkedDeque<ImplChunk> chunksToAdd = new ConcurrentLinkedDeque<>();
 	
-	private void loadDefaultDictInfos() {
-		registerDictionaryInfo(new DictionaryInfo("blocks", 2).put("air", 0).put("stone", 1));
-		registerDictionaryInfo(new DictionaryInfo("items", 2048));
-		registerDictionaryInfo(new DictionaryInfo("crafting", 1));
-		registerDictionaryInfo(new DictionaryInfo("entitys", 10).put("item", 0).put("player", 5));
-		registerDictionaryInfo(new DictionaryInfo("biomes", 0));
-		registerDictionaryInfo(new DictionaryInfo("tileentitys", 5));
-		registerDictionaryInfo(new DictionaryInfo("itementitys", 5).put("enchantment", 0));
-		registerDictionaryInfo(new DictionaryInfo("containers", 5));
-		registerDictionaryInfo(new DictionaryInfo("traits", 25).put("inventory", 0));
-		registerDictionaryInfo(new DictionaryInfo("areas", 10));
+	public ImplWorld(boolean server) {
+		multiplayer = server;
 	}
 	
-	public void registerDictionaryInfo(DictionaryInfo info) {
-		dictInfo.put(info.getName(), info);
-	}
-
 	/**
 	 * 
 	 */
@@ -141,8 +128,16 @@ public class ImplWorld implements World {
 		this.saveName = saveName;
 	}
 
-	public ImplWorld(boolean server) {
-		multiplayer = server;
+	public void addChunk(Chunk chunk) {
+		chunksToAdd.add((ImplChunk) chunk);
+	}
+
+	public void addLightUpdate(Vector3l pos) {
+		lightUpdates.add(pos);
+	}
+
+	public void addPlayer(EntityPlayer player) {
+		players.add(player);
 	}
 
 	@Override
@@ -150,68 +145,34 @@ public class ImplWorld implements World {
 		time += add;
 	}
 
-	public void loadWorld() {
-		try {
-			loadInfo();
-		} catch (IOException e) {
-			Logger.getLogger(ImplWorld.class).warning("Failed to load world details", e);
-		}
-		EntityBlock.clearPrerendered();
-		onLoad();
-		startGenThreads(4);
-	}
-
-	public void addLightUpdate(Vector3l pos) {
-		lightUpdates.add(pos);
-	}
-
-	public void loadInfo() throws IOException {
-		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/";
-		loadDefaultDictInfos();
-		PluginManager.loadDicts(this);
-		loadDicts(dirPath);
-		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
-		if (!wld.exists()) return;
-		try (NBTInputStream in = new NBTInputStream(new FileInputStream(wld), true)) {
-			loadSaveCompound((TagCompound) in.readTag());
-		}
-	}
-	
-	private void loadDicts(String path) throws FileNotFoundException{
-		for(DictionaryInfo dict : dictInfo.values()) {
-			Dictionary odict = loadDict(dict, path + "/" + dict.getName() + ".dictionary");
-			dictionaries.put(dict.getName(), odict);
-		}
-		registeredBiomes = dictionaries.get("biomes");
-		registeredBlocks = dictionaries.get("blocks");
-		registeredItems = dictionaries.get("items");
-		registeredEntitys = dictionaries.get("entitys");
-		registeredCrafting = dictionaries.get("crafting");
-		registeredContainers = dictionaries.get("containers");
-		registeredTileEntitys = dictionaries.get("tileentitys");
-		registeredItemEntitys = dictionaries.get("itementitys");
-		registeredTraits = dictionaries.get("traits");
-		registeredAreas = dictionaries.get("areas");
-	}
-	
 	@Override
-	public Dictionary getDictionary(String name){
-		return dictionaries.get(name);
-	}
-	
-	private Dictionary loadDict(DictionaryInfo dict, String path) throws FileNotFoundException {
-		File file = new File(path);
-		if (!file.exists()) return new Dictionary(dict);
-		Dictionary dicto = new Dictionary(dict);
-		dicto.load(new FileInputStream(file));
-		return dicto;
+	public boolean blockTransparencyChange(long x, long y, long z, boolean trans) {
+		if (y > 768 || y < -768) return false;
+		MapData dat = getMapData(x >> 5, z >> 5);
+		if (dat == null) return false;
+		if (trans) {
+			if (y == dat.getHeight((int) (x & 31), (int) (z & 31))) {
+				downScan(x, y - 1, z, 0);
+				return true;
+			}
+		} else {
+			if (y > dat.getHeight((int) (x & 31), (int) (z & 31))) {
+				dat.setHeight((int) (x & 31), (int) (z & 31), (int) y);
+				return true;
+			}
+		}
+		return false;
 	}
 
-	
-	public SaveFormat getSaveFormat() {
-		return saveFormat;
+	@Override
+	public void broadcast(String message, Vector3d pos, double radius) {
+		radius *= radius;
+		for (EntityPlayer p : players) {
+			if (p.position.distanceSquared(pos) > radius) continue;
+			p.message(message);
+		}
 	}
-
+	
 	public float calculateSkyLight() {
 		int time = getTimeOfDay();
 		if (time >= 8500 && time <= 15500) return 1;
@@ -229,41 +190,18 @@ public class ImplWorld implements World {
 			return 1f - ((time - start) / 1000f);
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	private void startGenThreads(int num) {
-		GeneratorThread.world = this;
-		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
-		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
-		GeneratorThread.locations = new Vector3d[0];
-		GeneratorThread.maxNum = num - 1;
-		genThreads = new GeneratorThread[num];
-		for (int d = 0; d < num; ++d) {
-			genThreads[d] = new GeneratorThread(d);
-			genThreads[d].start();
-		}
-	}
-
+	
 	@Override
-	public void setDirty(long x, long y, long z) {
-		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
-		if (c != null) {
-			c.setDirty((int) (x & 31), (int) (y & 31), (int) (z & 31));
-		}
+	public boolean chunkExists(ChunkPos pos) {
+		return chunks.get(pos) != null;
 	}
-
-	// private void checkLoad(ChunkPos start, int x, int y, int z, ArrayList<ChunkPos> toLoad) {
-	// start = start.add(x, y, z);
-	// if (toLoad.contains(start)) return;
-	// if (chunks.get(start) != null) return;
-	// toLoad.add(start);
-	// }
-
+	
 	@Override
 	public boolean chunkExists(long x, long y, long z) {
 		return getChunk(x, y, z) != null;
 	}
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -286,26 +224,27 @@ public class ImplWorld implements World {
 		return new XORShiftRandom(seed);
 	}
 
-	public void onLoad() {
-		Item.clearItems();
-		Block.clearBlocks();
-		Biome.clear();
-		CraftingManager.emptyRecipes();
-		PluginManager.onWorldLoad(this);
-		GeneratorList.onWorldLoad(this);
-		loaded = true;
-	}
-
-	public void addPlayer(EntityPlayer player) {
-		players.add(player);
-	}
-
-	public void removePlayer(EntityPlayer player) {
-		players.remove(player);
-	}
-
-	public void addChunk(Chunk chunk) {
-		chunksToAdd.add((ImplChunk) chunk);
+	public void downScan(long x, long y, long z, int amt) {
+		setDirty(x, y, z);
+		if (amt > 5) {
+			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), (int) (y - 1));
+			downScans.add(new Vector2l(x, z));
+			return;
+		}
+		if (y <= -768) {
+			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), -768);
+			return;
+		}
+		int id = getBlockId(x, y, z);
+		if (id == -1) {
+			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), (int) (y - 1));
+			return;
+		}
+		if (Block.blockOpacity[id] >= 6) {
+			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), (int) y);
+			return;
+		}
+		downScan(x, y - 1, z, amt + 1);
 	}
 
 	public void draw(Vector3d pos) {
@@ -397,64 +336,16 @@ public class ImplWorld implements World {
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 	}
 
+	// private void checkLoad(ChunkPos start, int x, int y, int z, ArrayList<ChunkPos> toLoad) {
+	// start = start.add(x, y, z);
+	// if (toLoad.contains(start)) return;
+	// if (chunks.get(start) != null) return;
+	// toLoad.add(start);
+	// }
+
 	public void drawBackground(EntityPlayer player) {
 		getGenerator().renderSkyBox(this, player);
 		Graphics.getOpenGL().color(1, 1, 1, 1);
-	}
-
-	@Override
-	public boolean blockTransparencyChange(long x, long y, long z, boolean trans) {
-		if (y > 768 || y < -768) return false;
-		MapData dat = getMapData(x >> 5, z >> 5);
-		if (dat == null) return false;
-		if (trans) {
-			if (y == dat.getHeight((int) (x & 31), (int) (z & 31))) {
-				downScan(x, y - 1, z, 0);
-				return true;
-			}
-		} else {
-			if (y > dat.getHeight((int) (x & 31), (int) (z & 31))) {
-				dat.setHeight((int) (x & 31), (int) (z & 31), (int) y);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void downScan(long x, long y, long z, int amt) {
-		setDirty(x, y, z);
-		if (amt > 5) {
-			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), (int) (y - 1));
-			downScans.add(new Vector2l(x, z));
-			return;
-		}
-		if (y <= -768) {
-			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), -768);
-			return;
-		}
-		int id = getBlockId(x, y, z);
-		if (id == -1) {
-			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), (int) (y - 1));
-			return;
-		}
-		if (Block.blockOpacity[id] >= 6) {
-			getMapData(x >> 5, z >> 5).setHeight((int) (x & 31), (int) (z & 31), (int) y);
-			return;
-		}
-		downScan(x, y - 1, z, amt + 1);
-	}
-
-	public Vector3f getSkyColor(EntityPlayer player) {
-		float sky = getSkyLight();
-		Biome b = getBiome(MathUtils.floor(player.position.x), MathUtils.floor(player.position.z));
-		if (sky < 0.0001f) return new Vector3f(b.nightColor);
-		if (sky > 0.9999f) return new Vector3f(b.dayColor);
-		if (sky == 0.5f) return new Vector3f(b.dawnColor);
-		if (sky < 0.5f) {
-			return new Vector3f(ColorUtils.differColors(b.nightColor, b.dawnColor, sky * 2));
-		} else {
-			return new Vector3f(ColorUtils.differColors(b.dawnColor, b.dayColor, (sky * 2) - 1));
-		}
 	}
 
 	@Override
@@ -465,30 +356,19 @@ public class ImplWorld implements World {
 		return chunk;
 	}
 
-	public MapData getOrGenerate(Vector2l pos) {
-		MapData data = heights.get(pos);
-		if (data == null) data = loadMapData(pos);
-		return data;
-	}
-
-	public MapData loadMapData(Vector2l pos) {
-		ImplMapData data = null;
-		try {
-			data = (ImplMapData) getSaveFormat().readMap(this, pos.x, pos.y);
-		} catch (IOException e) {
-			Logger.getLogger(ImplWorld.class).warning("Error while loading map data", e);
-		}
-		if (data == null) {
-			data = new ImplMapData(pos);
-			getGenerator().generateMapData(this, data);
-			try {
-				getSaveFormat().writeMap(this, data);
-			} catch (IOException e) {
-				Logger.getLogger(ImplWorld.class).warning("Error while saving map data", e);
+	@Override
+	public AABB[] getAABBsInBounds(AABB bounds, Entity exclude) {
+		List<AABB> list = getBlockCollisionInBounds(bounds);
+		if (list == null) list = new ArrayList<AABB>();
+		List<Entity> entities = getEntitiesInBoundsExcluding(bounds, exclude);
+		for (int dofor = 0; dofor < entities.size(); ++dofor) {
+			if (entities.get(dofor).bounds != null && entities.get(dofor).canCollide(exclude)) {
+				list.add(entities.get(dofor).bounds);
 			}
 		}
-		heights.put(pos, data);
-		return data;
+		while (list.contains(null))
+			list.remove(null);
+		return list.toArray(new AABB[list.size()]);
 	}
 
 	@Override
@@ -508,18 +388,20 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public AABB[] getAABBsInBounds(AABB bounds, Entity exclude) {
-		List<AABB> list = getBlockCollisionInBounds(bounds);
-		if (list == null) list = new ArrayList<AABB>();
-		List<Entity> entities = getEntitiesInBoundsExcluding(bounds, exclude);
-		for (int dofor = 0; dofor < entities.size(); ++dofor) {
-			if (entities.get(dofor).bounds != null && entities.get(dofor).canCollide(exclude)) {
-				list.add(entities.get(dofor).bounds);
-			}
+	public String getAreaName(int id) {
+		return registeredAreas.getName(id);
+	}
+
+	@Override
+	public Biome getBiome(long x, long z) {
+		MapData m = getMapData(x >> 5, z >> 5);
+		if (m != null) {
+			return m.getBiome((int) (x & 31), (int) (z & 31));
+		} else {
+			if (biomeLookup == null) biomeLookup = getGenerator().getBiomeMapGenerator(this, 0);
+			if (biomeLookup != null) return Biome.byId(biomeLookup.generate(x, z, 1)[0]);
+			return fakeBiome;
 		}
-		while (list.contains(null))
-			list.remove(null);
-		return list.toArray(new AABB[list.size()]);
 	}
 
 	public List<AABB> getBlockCollisionInBounds(AABB bounds) {
@@ -555,6 +437,50 @@ public class ImplWorld implements World {
 		else return -1;
 	}
 
+	@Override
+	public byte getBlockData(Vector3l pos) {
+		return getBlockData(pos.x, pos.y, pos.z);
+	}
+
+	@Override
+	public float getBlockDensity(Vector3d pos, AABB bounds) {
+		double d = 1.0D / ((bounds.maxX - bounds.minX) * 2D + 1.0D);
+		double d1 = 1.0D / ((bounds.maxY - bounds.minY) * 2D + 1.0D);
+		double d2 = 1.0D / ((bounds.maxZ - bounds.minZ) * 2D + 1.0D);
+		int i = 0;
+		int j = 0;
+
+		for (float f = 0.0F; f <= 1.0F; f = (float) (f + d)) {
+			for (float f1 = 0.0F; f1 <= 1.0F; f1 = (float) (f1 + d1)) {
+				for (float f2 = 0.0F; f2 <= 1.0F; f2 = (float) (f2 + d2)) {
+					double d3 = bounds.minX + (bounds.maxX - bounds.minX) * f;
+					double d4 = bounds.minY + (bounds.maxY - bounds.minY) * f1;
+					double d5 = bounds.minZ + (bounds.maxZ - bounds.minZ) * f2;
+
+					if (rayTraceBlocks(new Vector3d(d3, d4, d5), pos, 200) == null) {
+						i++;
+					}
+
+					j++;
+				}
+			}
+		}
+
+		return (float) i / (float) j;
+	}
+
+	@Override
+	public int getBlockExtended(long x, long y, long z) {
+		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) return c.getBlockExtended((int) (x & 31), (int) (y & 31), (int) (z & 31));
+		else return -1;
+	}
+
+	@Override
+	public int getBlockExtended(Vector3l pos) {
+		return getBlockExtended(pos.x, pos.y, pos.z);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -565,6 +491,23 @@ public class ImplWorld implements World {
 		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
 		if (c != null) return c.getBlockId((int) (x & 31), (int) (y & 31), (int) (z & 31));
 		else return -1;
+	}
+
+	@Override
+	public short getBlockId(Vector3l pos) {
+		return getBlockId(pos.x, pos.y, pos.z);
+	}
+
+	@Override
+	public byte getBlockLight(long x, long y, long z) {
+		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) return c.getBlockLight((int) (x & 31), (int) (y & 31), (int) (z & 31));
+		else return 15;
+	}
+
+	@Override
+	public byte getBlockLight(Vector3l pos) {
+		return getBlockLight(pos.x, pos.y, pos.z);
 	}
 
 	public BlockStore getBlockStore(long x, long y, long z) {
@@ -592,6 +535,11 @@ public class ImplWorld implements World {
 		return Block.byId(getBlockId(x, y, z));
 	}
 
+	@Override
+	public Block getBlockType(Vector3l pos) {
+		return getBlockType(pos.x, pos.y, pos.z);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -613,40 +561,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public List<Entity> getEntitiesInBoundsExcluding(Chunk chunk, AABB bounds, Entity exclude) {
-		if (bounds == null) return null;
-		if (chunk == null) return getEntitiesInBoundsExcluding(bounds, exclude);
-		List<Entity> list = new ArrayList<>();
-		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
-		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
-		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
-		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
-		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
-		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
-		long x, y, z;
-		ImplChunk c;
-		for (x = minX; x <= maxX; ++x) {
-			for (y = minY; y <= maxY; ++y) {
-				for (z = minZ; z <= maxZ; ++z) {
-					if (x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
-					else c = chunks.get(ChunkPos.create(x, y, z));
-					if (c == null || c.entitys == null) continue;
-					// long start = System.nanoTime();
-					for (Entity e : c.entitys) {
-						// Entity e = c.entitys.get(dofor);
-						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
-					}
-					// long time = System.nanoTime() - start;
-					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
-				}
-			}
-		}
-
-		return list;
-	}
-
-	@Override
-	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
+	public List<Entity> getCollidableEntitiesInBounds(AABB bounds) {
 		if (bounds == null) return null;
 
 		List<Entity> list = new ArrayList<>();
@@ -656,17 +571,19 @@ public class ImplWorld implements World {
 		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
 		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
 		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
-		long x, y, z;
+		long y, z;
+		int dofor;
 		ImplChunk c;
-		for (x = minX; x <= maxX; ++x) {
+		Entity e;
+		for (long x = minX; x <= maxX; ++x) {
 			for (y = minY; y <= maxY; ++y) {
 				for (z = minZ; z <= maxZ; ++z) {
 					c = chunks.get(ChunkPos.create(x, y, z));
 					if (c == null || c.entitys == null) continue;
 					// long start = System.nanoTime();
-					for (Entity e : c.entitys) {
-						// Entity e = c.entitys.get(dofor);
-						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
+					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						e = c.entitys.get(dofor);
+						if (e != null && e.canCollide(null) && bounds.intersectsWith(e.bounds)) list.add(e);
 					}
 					// long time = System.nanoTime() - start;
 					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
@@ -678,45 +595,13 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude) {
+	public List<Entity> getCollidableEntitiesInBounds(Chunk chunk, AABB bounds) {
 		if (bounds == null) return null;
-
+		if (chunk == null) return getCollidableEntitiesInBounds(bounds);
 		List<Entity> list = new ArrayList<>();
 		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
 		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
 		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
-		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
-		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
-		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
-		for (long x = minX; x <= maxX; ++x) {
-			for (long y = minY; y <= maxY; ++y) {
-				for (long z = minZ; z <= maxZ; ++z) {
-					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
-					if (c == null || c.entitys == null) continue;
-					// long start = System.nanoTime();
-					for (Entity e : c.entitys) {
-						// Entity e = c.entitys.get(dofor);
-						if (!type.isAssignableFrom(e.getClass())) continue;
-						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
-					}
-					// long time = System.nanoTime() - start;
-					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
-				}
-			}
-		}
-
-		return list;
-	}
-
-	@Override
-	public List<Entity> getEntitiesInBounds(Chunk chunk, AABB bounds) {
-		if (bounds == null) return null;
-
-		if (chunk == null) return getEntitiesInBounds(bounds);
-		List<Entity> list = new ArrayList<>();
-		long minX = MathUtils.floor(bounds.minX - 1d) >> 5;
-		long minY = MathUtils.floor(bounds.minY - 1d) >> 5;
-		long minZ = MathUtils.floor(bounds.minZ - 1d) >> 5;
 		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
 		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
 		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
@@ -733,7 +618,7 @@ public class ImplWorld implements World {
 					// long start = System.nanoTime();
 					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
 						e = c.entitys.get(dofor);
-						if (e != null && bounds.intersectsWith(e.bounds)) list.add(e);
+						if (e != null && e.canCollide(null) && bounds.intersectsWith(e.bounds)) list.add(e);
 					}
 					// long time = System.nanoTime() - start;
 					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
@@ -742,6 +627,34 @@ public class ImplWorld implements World {
 		}
 
 		return list;
+	}
+
+	@Override
+	public String getContainerName(int id) {
+		return registeredContainers.getName(id);
+	}
+
+	@Override
+	public int getDayOfMonth() {
+		return (int) (((time / 24000) + 5) % 8);
+	}
+
+	@Override
+	public byte getDayOfYear() {
+		return (byte) ((time / 24000) % 96);
+	}
+
+	@Override
+	public String[] getDebugInfo() {
+		String[] res = new String[2];
+		res[0] = "World: " + getName() + " (" + getSaveName() + ")" + ", seed:" + getSeed();
+		res[1] = "Chunks: " + visibleChunks + "/" + chunks.size() + ", MapData: " + heights.size();
+		return res;
+	}
+
+	@Override
+	public Dictionary getDictionary(String name){
+		return dictionaries.get(name);
 	}
 
 	@Override
@@ -813,6 +726,201 @@ public class ImplWorld implements World {
 		return list;
 	}
 
+	@Override
+	public List<Entity> getEntitiesInBounds(Chunk chunk, AABB bounds) {
+		if (bounds == null) return null;
+
+		if (chunk == null) return getEntitiesInBounds(bounds);
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 1d) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 1d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 1d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long y, z;
+		int dofor;
+		ImplChunk c;
+		Entity e;
+		for (long x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					if (x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					else c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
+						e = c.entitys.get(dofor);
+						if (e != null && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Class<? extends Entity> type, Entity exclude) {
+		if (bounds == null) return null;
+
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		for (long x = minX; x <= maxX; ++x) {
+			for (long y = minY; y <= maxY; ++y) {
+				for (long z = minZ; z <= maxZ; ++z) {
+					ImplChunk c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (Entity e : c.entitys) {
+						// Entity e = c.entitys.get(dofor);
+						if (!type.isAssignableFrom(e.getClass())) continue;
+						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(AABB bounds, Entity exclude) {
+		if (bounds == null) return null;
+
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long x, y, z;
+		ImplChunk c;
+		for (x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (Entity e : c.entitys) {
+						// Entity e = c.entitys.get(dofor);
+						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<Entity> getEntitiesInBoundsExcluding(Chunk chunk, AABB bounds, Entity exclude) {
+		if (bounds == null) return null;
+		if (chunk == null) return getEntitiesInBoundsExcluding(bounds, exclude);
+		List<Entity> list = new ArrayList<>();
+		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
+		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
+		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
+		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
+		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
+		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
+		long x, y, z;
+		ImplChunk c;
+		for (x = minX; x <= maxX; ++x) {
+			for (y = minY; y <= maxY; ++y) {
+				for (z = minZ; z <= maxZ; ++z) {
+					if (x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
+					else c = chunks.get(ChunkPos.create(x, y, z));
+					if (c == null || c.entitys == null) continue;
+					// long start = System.nanoTime();
+					for (Entity e : c.entitys) {
+						// Entity e = c.entitys.get(dofor);
+						if (e != null && e != exclude && bounds.intersectsWith(e.bounds)) list.add(e);
+					}
+					// long time = System.nanoTime() - start;
+					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
+				}
+			}
+		}
+
+		return list;
+	}
+
+	@Override
+	public String getEntityName(int id) {
+		return registeredEntitys.getName(id);
+	}
+
+	@Override
+	public double getFallAcceleration() {
+		return 0.15;
+	}
+
+	@Override
+	public double getFallMaxSpeed() {
+		return 2.5;
+	}
+
+	@Override
+	public WorldGenerator getGenerator() {
+		return GeneratorList.getWorldGenerator(generatorName);
+	}
+
+	@Override
+	public TagCompound getGeneratorTag() {
+		return generatorTag;
+	}
+
+	@Override
+	public int getHeight(long x, long z) {
+		try {
+			return getMapData(x >> 5, z >> 5).getHeight((int) (x & 31), (int) (z & 31));
+		} catch (Exception e) {
+			return 512;
+		}
+	}
+
+	@Override
+	public String getItemEntityName(int id) {
+		return registeredItemEntitys.getName(id);
+	}
+
+	public MapData getMapData(Chunk c) {
+		return heights.get(new Vector2l(c.getChunkPos().x, c.getChunkPos().z));
+	}
+
+	@Override
+	public MapData getMapData(long x, long z) {
+		return heights.get(new Vector2l(x, z));
+	}
+
+	@Override
+	public int getMonth() {
+		return ((((getDayOfYear() + 5) % 96) / 8) + 2) % 12;
+	}
+
+	@Override
+	public Music getMusic(EntityPlayer player) {
+		return getGenerator().getBiomeMusic(player);
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -829,6 +937,19 @@ public class ImplWorld implements World {
 	@Override
 	public byte getNearbyBlockData(long x, long y, long z, int d) {
 		return getNearbyBlockData(x, y, z, Direction.getDirection(d));
+	}
+
+	@Override
+	public int getNearbyBlockExtended(long x, long y, long z, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		return getBlockExtended(x, y, z);
+	}
+
+	@Override
+	public int getNearbyBlockExtended(Vector3l pos, Direction dir) {
+		return getNearbyBlockExtended(pos.x, pos.y, pos.z, dir);
 	}
 
 	/*
@@ -850,16 +971,11 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public TileEntity getNearbyTileEntity(long x, long y, long z, Direction dir) {
+	public byte getNearbyBlockLight(long x, long y, long z, Direction dir) {
 		x += dir.getX();
 		y += dir.getY();
 		z += dir.getZ();
-		return getTileEntity(x, y, z);
-	}
-
-	@Override
-	public TileEntity getNearbyTileEntity(long x, long y, long z, int dir) {
-		return getNearbyTileEntity(x, y, z, Direction.getDirection(dir));
+		return getBlockLight(x, y, z);
 	}
 
 	/*
@@ -880,6 +996,149 @@ public class ImplWorld implements World {
 		return getNearbyBlockType(x, y, z, Direction.getDirection(dir));
 	}
 
+	@Override
+	public int getNearbyHeight(long x, long z, Direction dir) {
+		x += dir.getX();
+		z += dir.getZ();
+		MapData m = getMapData(x >> 5, z >> 5);
+		if (m == null) return 0;
+		return m.getHeight((int) (x & 31), (int) (z & 31));
+	}
+
+	@Override
+	public int getNearbyHeight(long x, long z, int dir) {
+		return getNearbyHeight(x, z, Direction.getDirection(dir));
+	}
+
+	@Override
+	public float getNearbySkylight(long x, long y, long z, int d) {
+		if (hasNearbySkylight(x, y, z, d)) return 1;
+		Direction dir = Direction.getDirection(d);
+		if (dir.getY() != 0) {
+			y += dir.getY();
+			int nid = getBlockId(x, y, z);
+			if (nid == -1) return 0;
+			if (Block.blockOpacity[nid] > 5) return 0;
+			for (int da = 0; da < 4; ++da) {
+				if (hasNearbySkylight(x, y, z, da)) return 0.5f;
+			}
+		} else {
+			x += dir.getX();
+			z += dir.getZ();
+			int nid = getBlockId(x, y, z);
+			if (nid == -1) return 0;
+			if (Block.blockOpacity[nid] > 5) return 0;
+			int od = Direction.getOpposite(d).id();
+			for (int da = 0; da < 4; ++da) {
+				if (da == od) continue;
+				if (hasNearbySkylight(x, y, z, da)) return 0.5f;
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public TileEntity getNearbyTileEntity(long x, long y, long z, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		return getTileEntity(x, y, z);
+	}
+
+	@Override
+	public TileEntity getNearbyTileEntity(long x, long y, long z, int dir) {
+		return getNearbyTileEntity(x, y, z, Direction.getDirection(dir));
+	}
+
+	public MapData getOrGenerate(Vector2l pos) {
+		MapData data = heights.get(pos);
+		if (data == null) data = loadMapData(pos);
+		return data;
+	}
+
+	@Override
+	public List<EntityPlayer> getPlayers() {
+		return players;
+	}
+
+	@Override
+	public short getRegisteredArea(String name) {
+		return (short) registeredAreas.get(name);
+	}
+
+	@Override
+	public byte getRegisteredBiome(String name) {
+		return (byte) registeredBiomes.get(name);
+	}
+
+	@Override
+	public short getRegisteredBlock(String name) {
+		return (short) registeredBlocks.get(name);
+	}
+
+	@Override
+	public short getRegisteredContainer(String name) {
+		return (short) registeredContainers.get(name);
+	}
+
+	@Override
+	public short getRegisteredCrafting(String name) {
+		return (short) registeredCrafting.get(name);
+	}
+
+	@Override
+	public short getRegisteredEntity(String name) {
+		return (short) registeredEntitys.get(name);
+	}
+
+	@Override
+	public int getRegisteredItem(String name) {
+		return registeredItems.get(name);
+	}
+
+	@Override
+	public short getRegisteredItemEntity(String name) {
+		return (short) registeredItemEntitys.get(name);
+	}
+
+	@Override
+	public short getRegisteredTileEntity(String name) {
+		return (short) registeredTileEntitys.get(name);
+	}
+
+	@Override
+	public short getRegisteredTrait(String name) {
+		return (short) registeredTraits.get(name);
+	}
+
+	public TagCompound getSaveCompound() {
+		TagCompound root = new TagCompound("root");
+		root.setLong("time", time);
+		root.setString("generator", generatorName);
+		root.setLong("seed", seed);
+		root.setString("name", name);
+		root.addTag(generatorTag);
+		root.setString("format", saveFormatName);
+		return root;
+	}
+
+	public SaveFormat getSaveFormat() {
+		return saveFormat;
+	}
+
+	@Override
+	public String getSaveName() {
+		return saveName;
+	}
+
+	@Override
+	public float getSeason() {
+		int doy = getDayOfYear();
+		if (doy <= 24) return 0.5f + (doy / 48f);
+		if (doy <= 72) return 1f - ((doy - 24) / 48f);
+		return 0f + ((doy - 72) / 48f);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -890,13 +1149,81 @@ public class ImplWorld implements World {
 		return seed;
 	}
 
-	public void saveChunk(long x, long y, long z) {
-		Chunk c = chunks.get(ChunkPos.createFromWorldPos(x, y, z));
-		if (c != null) saveChunk(c);
+	public Vector3f getSkyColor(EntityPlayer player) {
+		float sky = getSkyLight();
+		Biome b = getBiome(MathUtils.floor(player.position.x), MathUtils.floor(player.position.z));
+		if (sky < 0.0001f) return new Vector3f(b.nightColor);
+		if (sky > 0.9999f) return new Vector3f(b.dayColor);
+		if (sky == 0.5f) return new Vector3f(b.dawnColor);
+		if (sky < 0.5f) {
+			return new Vector3f(ColorUtils.differColors(b.nightColor, b.dawnColor, sky * 2));
+		} else {
+			return new Vector3f(ColorUtils.differColors(b.dawnColor, b.dayColor, (sky * 2) - 1));
+		}
 	}
 
-	public void saveChunk(Chunk chunk) {
-		genThreads[(int) (chunk.getChunkPos().z & GeneratorThread.maxNum)].toSave.add((ImplChunk) chunk);
+	@Override
+	public float getSkyLight() {
+		return skyLight;
+	}
+
+	@Override
+	public TileEntity getTileEntity(long x, long y, long z) {
+		ImplChunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) { return c.getTileEntity((int) (x & 31), (int) (y & 31), (int) (z & 31)); }
+		return null;
+	}
+
+	@Override
+	public String getTileEntityName(int id) {
+		return registeredTileEntitys.getName(id);
+	}
+
+	@Override
+	public long getTime() {
+		return time;
+	}
+
+	@Override
+	public int getTimeOfDay() {
+		return (int) (time % 24000);
+	}
+
+	@Override
+	public String getTimeText() {
+		int hour = getTimeOfDay() / 1000;
+		int min = (int) ((time % 1000) * 0.06);
+		String month = Localization.getLocalization("time.month." + getMonth());
+		int dom = getDayOfMonth();
+		long year = time / 2304000;
+		return Localization.getLocalization("time.format", hour, min, month, dom, year);
+	}
+
+	@Override
+	public String getTraitName(int id) {
+		return registeredTraits.getName(id);
+	}
+
+	@Override
+	public boolean hasDayLight(long x, long y, long z) {
+		if (!hasSkyLight(x, y, z)) return false;
+		return skyLight > 0.4;
+	}
+
+	@Override
+	public boolean hasNearbySkylight(long x, long y, long z, Direction dir) {
+		y += dir.getY();
+		return y > getNearbyHeight(x, z, dir);
+	}
+
+	@Override
+	public boolean hasNearbySkylight(long x, long y, long z, int dir) {
+		return hasNearbySkylight(x, y, z, Direction.getDirection(dir));
+	}
+
+	@Override
+	public boolean hasSkyLight(long x, long y, long z) {
+		return y > getHeight(x, z);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1000,6 +1327,157 @@ public class ImplWorld implements World {
 		Profiler.stop();
 	}
 
+	@Override
+	public Chunk loadChunk(ChunkPos pos) {
+		if (chunks.containsKey(pos)) return chunks.get(pos);
+		ImplChunk c = null;
+		try {
+			c = (ImplChunk) getSaveFormat().readChunk(this, pos.x, pos.y, pos.z);
+		} catch (IOException e) {
+			Logger.getLogger(ImplWorld.class).warning("Failed to load chunk", e);
+		}
+		if (c != null) {
+			chunks.put(pos, c);
+			return c;
+		} else {
+			c = (ImplChunk) generateChunk(pos);
+			chunks.put(pos, c);
+			return c;
+		}
+	}
+
+	private void loadDefaultDictInfos() {
+		registerDictionaryInfo(new DictionaryInfo("blocks", 2).put("air", 0).put("stone", 1));
+		registerDictionaryInfo(new DictionaryInfo("items", 2048));
+		registerDictionaryInfo(new DictionaryInfo("crafting", 1));
+		registerDictionaryInfo(new DictionaryInfo("entitys", 10).put("item", 0).put("player", 5));
+		registerDictionaryInfo(new DictionaryInfo("biomes", 0));
+		registerDictionaryInfo(new DictionaryInfo("tileentitys", 5));
+		registerDictionaryInfo(new DictionaryInfo("itementitys", 5).put("enchantment", 0));
+		registerDictionaryInfo(new DictionaryInfo("containers", 5));
+		registerDictionaryInfo(new DictionaryInfo("traits", 25).put("inventory", 0));
+		registerDictionaryInfo(new DictionaryInfo("areas", 10));
+	}
+
+	private Dictionary loadDict(DictionaryInfo dict, String path) throws FileNotFoundException {
+		File file = new File(path);
+		if (!file.exists()) return new Dictionary(dict);
+		Dictionary dicto = new Dictionary(dict);
+		dicto.load(new FileInputStream(file));
+		return dicto;
+	}
+
+	private void loadDicts(String path) throws FileNotFoundException{
+		for(DictionaryInfo dict : dictInfo.values()) {
+			Dictionary odict = loadDict(dict, path + "/" + dict.getName() + ".dictionary");
+			dictionaries.put(dict.getName(), odict);
+		}
+		registeredBiomes = dictionaries.get("biomes");
+		registeredBlocks = dictionaries.get("blocks");
+		registeredItems = dictionaries.get("items");
+		registeredEntitys = dictionaries.get("entitys");
+		registeredCrafting = dictionaries.get("crafting");
+		registeredContainers = dictionaries.get("containers");
+		registeredTileEntitys = dictionaries.get("tileentitys");
+		registeredItemEntitys = dictionaries.get("itementitys");
+		registeredTraits = dictionaries.get("traits");
+		registeredAreas = dictionaries.get("areas");
+	}
+
+	public void loadInfo() throws IOException {
+		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/";
+		loadDefaultDictInfos();
+		PluginManager.loadDicts(this);
+		loadDicts(dirPath);
+		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
+		if (!wld.exists()) return;
+		try (NBTInputStream in = new NBTInputStream(new FileInputStream(wld), true)) {
+			loadSaveCompound((TagCompound) in.readTag());
+		}
+	}
+
+	public MapData loadMapData(Vector2l pos) {
+		ImplMapData data = null;
+		try {
+			data = (ImplMapData) getSaveFormat().readMap(this, pos.x, pos.y);
+		} catch (IOException e) {
+			Logger.getLogger(ImplWorld.class).warning("Error while loading map data", e);
+		}
+		if (data == null) {
+			data = new ImplMapData(pos);
+			getGenerator().generateMapData(this, data);
+			try {
+				getSaveFormat().writeMap(this, data);
+			} catch (IOException e) {
+				Logger.getLogger(ImplWorld.class).warning("Error while saving map data", e);
+			}
+		}
+		heights.put(pos, data);
+		return data;
+	}
+
+	public EntityPlayer loadPlayer(String name) {
+		String path = DirectoryLocator.getPath() + "/worlds/" + saveName + "/players/" + name + ".vbt";
+		File file = new File(path);
+		if (!file.exists()) return spawnPlayer(name);
+		try (NBTInputStream in = new NBTInputStream(new FileInputStream(file), true)) {
+			EntityPlayer plr = (EntityPlayer) Entity.loadEntity(this, (TagCompound) in.readTag());
+			plr.loadNearbyChunks();
+			plr.addToWorld();
+			addPlayer(plr);
+			return plr;
+		} catch (IOException e) {
+			Logger.getLogger("VC4").warning("Error while loading player: " + name, e);
+			return spawnPlayer(name);
+		}
+	}
+
+	public void loadSaveCompound(TagCompound root) {
+		time = root.getLong("time");
+		generatorName = root.getString("generator");
+		seed = root.getLong("seed");
+		name = root.getString("name");
+		generatorTag = root.getCompoundTag("gen");
+		saveFormatName = root.getString("format", "VCH4");
+		saveFormat = SaveFormats.getSaveFormat(saveFormatName);
+	}
+
+	public void loadWorld() {
+		try {
+			loadInfo();
+		} catch (IOException e) {
+			Logger.getLogger(ImplWorld.class).warning("Failed to load world details", e);
+		}
+		EntityBlock.clearPrerendered();
+		onLoad();
+		startGenThreads(4);
+	}
+
+	@Override
+	public void notifyNear(long x, long y, long z) {
+		Direction dir;
+		long px, py, pz;
+		Block b;
+		for (int d = 0; d < 6; ++d) {
+			dir = Direction.getDirection(d);
+			px = x + dir.getX();
+			py = y + dir.getY();
+			pz = z + dir.getZ();
+			b = getBlockType(px, py, pz);
+			b.nearbyBlockChanged(this, px, py, pz, dir.opposite());
+		}
+	}
+
+	public void onLoad() {
+		Item.clearItems();
+		Block.clearBlocks();
+		Biome.clear();
+		CraftingManager.emptyRecipes();
+		PluginManager.onWorldLoad(this);
+		GeneratorList.onWorldLoad(this);
+		loaded = true;
+	}
+
 	private boolean populate(long x, long y, long z) {
 		MapData data = getMapData(x, z);
 		if (data == null) return false;
@@ -1035,68 +1513,6 @@ public class ImplWorld implements World {
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public void notifyNear(long x, long y, long z) {
-		Direction dir;
-		long px, py, pz;
-		Block b;
-		for (int d = 0; d < 6; ++d) {
-			dir = Direction.getDirection(d);
-			px = x + dir.getX();
-			py = y + dir.getY();
-			pz = z + dir.getZ();
-			b = getBlockType(px, py, pz);
-			b.nearbyBlockChanged(this, px, py, pz, dir.opposite());
-		}
-	}
-
-	@Override
-	public RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach) {
-		Vector3d start = entity.getEyePos();
-		AABB checkBounds = entity.bounds.include(end.x, end.y, end.z).expand(1F, 1F, 1F);
-		List<Entity> entities = getEntitiesInBoundsExcluding(checkBounds, entity);
-		Entity pointing = null;
-		double closest = reach + 1;
-		Vector3d vector = null;
-
-		for (int i = 0; i < entities.size(); i++) {
-			Entity ne = entities.get(i);
-
-			if (!ne.includeInRayTrace() || ne.isDead) {
-				continue;
-			}
-
-			AABB aabb = ne.bounds.expand(0.1F, 0.1F, 0.1F);
-			RayTraceResult rtr = aabb.calculateIntercept(start, end);
-
-			if (rtr == null) {
-				continue;
-			}
-
-			if (aabb.isVecInside(start)) {
-				if (0.0D < closest || closest == 0.0D) {
-					pointing = ne;
-					closest = 0.0D;
-					vector = rtr.vector;
-				}
-
-				continue;
-			}
-
-			double dist = start.distance(rtr.vector);
-
-			if (dist < closest || closest == 0.0D) {
-				pointing = ne;
-				closest = dist;
-				vector = rtr.vector;
-			}
-		}
-
-		if (pointing != null) { return new RayTraceResult(pointing, vector); }
-
-		return null;
 	}
 
 	@Override
@@ -1199,19 +1615,110 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public void setTileEntity(long x, long y, long z, TileEntity t) {
-		ImplChunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
-		if (c != null) {
-			c.setTileEntity((int) (x & 31), (int) (y & 31), (int) (z & 31), t);
-			notifyNear(x, y, z);
+	public RayTraceResult rayTraceEntitys(EntityLiving entity, Vector3d end, double reach) {
+		Vector3d start = entity.getEyePos();
+		AABB checkBounds = entity.bounds.include(end.x, end.y, end.z).expand(1F, 1F, 1F);
+		List<Entity> entities = getEntitiesInBoundsExcluding(checkBounds, entity);
+		Entity pointing = null;
+		double closest = reach + 1;
+		Vector3d vector = null;
+
+		for (int i = 0; i < entities.size(); i++) {
+			Entity ne = entities.get(i);
+
+			if (!ne.includeInRayTrace() || ne.isDead) {
+				continue;
+			}
+
+			AABB aabb = ne.bounds.expand(0.1F, 0.1F, 0.1F);
+			RayTraceResult rtr = aabb.calculateIntercept(start, end);
+
+			if (rtr == null) {
+				continue;
+			}
+
+			if (aabb.isVecInside(start)) {
+				if (0.0D < closest || closest == 0.0D) {
+					pointing = ne;
+					closest = 0.0D;
+					vector = rtr.vector;
+				}
+
+				continue;
+			}
+
+			double dist = start.distance(rtr.vector);
+
+			if (dist < closest || closest == 0.0D) {
+				pointing = ne;
+				closest = dist;
+				vector = rtr.vector;
+			}
+		}
+
+		if (pointing != null) { return new RayTraceResult(pointing, vector); }
+
+		return null;
+	}
+
+	public void registerDictionaryInfo(DictionaryInfo info) {
+		dictInfo.put(info.getName(), info);
+	}
+
+	public void removePlayer(EntityPlayer player) {
+		players.remove(player);
+	}
+
+	public void saveChunk(Chunk chunk) {
+		genThreads[(int) (chunk.getChunkPos().z & GeneratorThread.maxNum)].toSave.add((ImplChunk) chunk);
+	}
+
+	public void saveChunk(long x, long y, long z) {
+		Chunk c = chunks.get(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) saveChunk(c);
+	}
+
+	public void saveInfo() throws IOException {
+		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/";
+		File dir = new File(dirPath);
+		if (!dir.exists() && !dir.mkdirs()) return;
+		registeredBlocks.save(new FileOutputStream(dirPath + "blocks.dictionary"));
+		registeredItems.save(new FileOutputStream(dirPath + "items.dictionary"));
+		registeredEntitys.save(new FileOutputStream(dirPath + "entitys.dictionary"));
+		registeredCrafting.save(new FileOutputStream(dirPath + "crafting.dictionary"));
+		registeredBiomes.save(new FileOutputStream(dirPath + "biomes.dictionary"));
+		registeredContainers.save(new FileOutputStream(dirPath + "containers.dictionary"));
+		registeredTileEntitys.save(new FileOutputStream(dirPath + "tileentitys.dictionary"));
+		registeredItemEntitys.save(new FileOutputStream(dirPath + "itementitys.dictionary"));
+		registeredTraits.save(new FileOutputStream(dirPath + "traits.dictionary"));
+		registeredAreas.save(new FileOutputStream(dirPath + "areas.dictionary"));
+		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
+		NBTOutputStream out = new NBTOutputStream(new FileOutputStream(wld), true);
+		out.writeTag(getSaveCompound());
+		out.close();
+		PluginManager.onWorldSave(this);
+	}
+
+	public void savePlayer(EntityPlayer player) {
+		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/players/";
+		File dir = new File(dirPath);
+		if (!dir.exists() && !dir.mkdirs()) return;
+		File wld = new File(dirPath + player.getPlayerName() + ".vbt"); // VBT format, not bnbt (Binary NBT VC3)
+		try (NBTOutputStream out = new NBTOutputStream(new FileOutputStream(wld), true)) {
+			out.writeTag(player.getSaveCompound());
+		} catch (IOException e) {
+			Logger.getLogger(ImplWorld.class).warning("Failed to save player: " + player.getName(), e);
 		}
 	}
 
 	@Override
-	public TileEntity getTileEntity(long x, long y, long z) {
-		ImplChunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
-		if (c != null) { return c.getTileEntity((int) (x & 31), (int) (y & 31), (int) (z & 31)); }
-		return null;
+	public boolean scheduleBlockUpdate(long x, long y, long z, int time, int buid) {
+		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) {
+			c.scheduleBlockUpdate((int) (x & 31), (int) (y & 31), (int) (z & 31), time, buid);
+			return true;
+		}
+		return false;
 	}
 
 	/*
@@ -1229,11 +1736,30 @@ public class ImplWorld implements World {
 	}
 
 	@Override
+	public void setBlockData(Vector3l pos, int data) {
+		setBlockData(pos.x, pos.y, pos.z, data);
+	}
+
+	@Override
 	public void setBlockDataNoNotify(long x, long y, long z, int data) {
 		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
 		if (c != null) {
 			c.setBlockData((int) (x & 31), (int) (y & 31), (int) (z & 31), (byte) data);
 		}
+	}
+
+	@Override
+	public void setBlockExtended(long x, long y, long z, int extended) {
+		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) {
+			c.setBlockExtended((int) (x & 31), (int) (y & 31), (int) (z & 31), extended);
+			notifyNear(x, y, z);
+		}
+	}
+
+	@Override
+	public void setBlockExtended(Vector3l pos, int extended) {
+		setBlockExtended(pos.x, pos.y, pos.z, extended);
 	}
 
 	/*
@@ -1248,6 +1774,11 @@ public class ImplWorld implements World {
 			c.setBlockId((int) (x & 31), (int) (y & 31), (int) (z & 31), (short) id);
 			notifyNear(x, y, z);
 		}
+	}
+
+	@Override
+	public void setBlockId(Vector3l pos, int id) {
+		setBlockId(pos.x, pos.y, pos.z, id);
 	}
 
 	/*
@@ -1265,6 +1796,11 @@ public class ImplWorld implements World {
 	}
 
 	@Override
+	public void setBlockIdData(Vector3l pos, int id, int data) {
+		setBlockIdData(pos.x, pos.y, pos.z, id, data);
+	}
+
+	@Override
 	public void setBlockIdDataNoNotify(long x, long y, long z, int id, int data) {
 		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
 		if (c != null) {
@@ -1279,6 +1815,14 @@ public class ImplWorld implements World {
 			c.setBlockId((int) (x & 31), (int) (y & 31), (int) (z & 31), (short) id);
 		}
 
+	}
+
+	@Override
+	public void setDirty(long x, long y, long z) {
+		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) {
+			c.setDirty((int) (x & 31), (int) (y & 31), (int) (z & 31));
+		}
 	}
 
 	/*
@@ -1303,8 +1847,16 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public float getSkyLight() {
-		return skyLight;
+	public void setNearbyBlockExtended(long x, long y, long z, int extended, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		setBlockExtended(x, y, z, extended);
+	}
+
+	@Override
+	public void setNearbyBlockExtended(Vector3l pos, int extended, Direction dir) {
+		setNearbyBlockExtended(pos.x, pos.y, pos.z, extended, dir);
 	}
 
 	/*
@@ -1318,14 +1870,6 @@ public class ImplWorld implements World {
 		y += dir.getY();
 		z += dir.getZ();
 		setBlockId(x, y, z, id);
-	}
-
-	@Override
-	public void setNearbyTileEntity(long x, long y, long z, TileEntity t, Direction dir) {
-		x += dir.getX();
-		y += dir.getY();
-		z += dir.getZ();
-		setTileEntity(x, y, z, t);
 	}
 
 	/*
@@ -1357,6 +1901,100 @@ public class ImplWorld implements World {
 		z += dir.getZ();
 		setBlockIdNoNotify(x, y, z, id);
 
+	}
+
+	@Override
+	public void setNearbyTileEntity(long x, long y, long z, TileEntity t, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
+		z += dir.getZ();
+		setTileEntity(x, y, z, t);
+	}
+
+	@Override
+	public void setTileEntity(long x, long y, long z, TileEntity t) {
+		ImplChunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
+		if (c != null) {
+			c.setTileEntity((int) (x & 31), (int) (y & 31), (int) (z & 31), t);
+			notifyNear(x, y, z);
+		}
+	}
+
+	private EntityPlayer spawnPlayer(String name) {
+		EntityPlayer plr = new EntityPlayer(this);
+		MapData dat = getOrGenerate(new Vector2l(0, 0));
+		plr.setSpawn(new Vector3d(16, dat.getGenHeight(16, 16) + 2, 16));
+		plr.respawn();
+		plr.addToWorld();
+		addPlayer(plr);
+		return plr;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void startGenThreads(int num) {
+		GeneratorThread.world = this;
+		GeneratorThread.chunks = (HashMap<ChunkPos, ImplChunk>) chunks.clone();
+		GeneratorThread.heights = (HashMap<Vector2l, ImplMapData>) heights.clone();
+		GeneratorThread.locations = new Vector3d[0];
+		GeneratorThread.maxNum = num - 1;
+		genThreads = new GeneratorThread[num];
+		for (int d = 0; d < num; ++d) {
+			genThreads[d] = new GeneratorThread(d);
+			genThreads[d].start();
+		}
+	}
+
+	public void unload() {
+		GeneratorThread.stop = true;
+		try {
+			saveInfo();
+			unloadChunks();
+			saveInfo();
+		} catch (IOException e) {
+			Logger.getLogger(ImplWorld.class).warning("Exception occured", e);
+		}
+	}
+
+	public void unloadChunks() {
+		GeneratorThread.stop = true;
+		Logger.getLogger("VC4").info("Waiting for gen threads");
+		outside: while (true) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+			for (int d = 0; d < genThreads.length; ++d) {
+				if (genThreads[d].isAlive()) continue outside;
+			}
+			break;
+		}
+		Logger.getLogger("VC4").info("Saving chunks");
+		int saved = 0;
+		for (ImplChunk c : chunks.values()) {
+			if (c.isModified()) {
+				UnloadThread.toSave.add(c);
+				saved++;
+			}
+		}
+		UnloadThread.world = this;
+		UnloadThread[] unload = new UnloadThread[32];
+		for (int d = 0; d < unload.length; ++d) {
+			unload[d] = new UnloadThread();
+			unload[d].start();
+		}
+		outer: while (true) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+			for (int d = 0; d < unload.length; ++d) {
+				if (unload[d].isAlive()) continue outer;
+			}
+			break;
+		}
+		Logger.getLogger("VC4").info("Saved " + saved + " chunks!");
+		UnloadThread.world = null;
+		chunks.clear();
 	}
 
 	public void update(double delta, Vector3d... loc) {
@@ -1415,592 +2053,6 @@ public class ImplWorld implements World {
 		}
 		Profiler.stop();
 		Profiler.stop();
-	}
-
-	@Override
-	public boolean scheduleBlockUpdate(long x, long y, long z, int time, int buid) {
-		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
-		if (c != null) {
-			c.scheduleBlockUpdate((int) (x & 31), (int) (y & 31), (int) (z & 31), time, buid);
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public long getTime() {
-		return time;
-	}
-
-	public TagCompound getSaveCompound() {
-		TagCompound root = new TagCompound("root");
-		root.setLong("time", time);
-		root.setString("generator", generatorName);
-		root.setLong("seed", seed);
-		root.setString("name", name);
-		root.addTag(generatorTag);
-		root.setString("format", saveFormatName);
-		return root;
-	}
-
-	public void loadSaveCompound(TagCompound root) {
-		time = root.getLong("time");
-		generatorName = root.getString("generator");
-		seed = root.getLong("seed");
-		name = root.getString("name");
-		generatorTag = root.getCompoundTag("gen");
-		saveFormatName = root.getString("format", "VCH4");
-		saveFormat = SaveFormats.getSaveFormat(saveFormatName);
-	}
-
-	public void savePlayer(EntityPlayer player) {
-		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/players/";
-		File dir = new File(dirPath);
-		if (!dir.exists() && !dir.mkdirs()) return;
-		File wld = new File(dirPath + player.getPlayerName() + ".vbt"); // VBT format, not bnbt (Binary NBT VC3)
-		try (NBTOutputStream out = new NBTOutputStream(new FileOutputStream(wld), true)) {
-			out.writeTag(player.getSaveCompound());
-		} catch (IOException e) {
-			Logger.getLogger(ImplWorld.class).warning("Failed to save player: " + player.getName(), e);
-		}
-	}
-
-	public EntityPlayer loadPlayer(String name) {
-		String path = DirectoryLocator.getPath() + "/worlds/" + saveName + "/players/" + name + ".vbt";
-		File file = new File(path);
-		if (!file.exists()) return spawnPlayer(name);
-		try (NBTInputStream in = new NBTInputStream(new FileInputStream(file), true)) {
-			EntityPlayer plr = (EntityPlayer) Entity.loadEntity(this, (TagCompound) in.readTag());
-			plr.loadNearbyChunks();
-			plr.addToWorld();
-			addPlayer(plr);
-			return plr;
-		} catch (IOException e) {
-			Logger.getLogger("VC4").warning("Error while loading player: " + name, e);
-			return spawnPlayer(name);
-		}
-	}
-
-	private EntityPlayer spawnPlayer(String name) {
-		EntityPlayer plr = new EntityPlayer(this);
-		MapData dat = getOrGenerate(new Vector2l(0, 0));
-		plr.setSpawn(new Vector3d(16, dat.getGenHeight(16, 16) + 2, 16));
-		plr.respawn();
-		plr.addToWorld();
-		addPlayer(plr);
-		return plr;
-	}
-
-	public void saveInfo() throws IOException {
-		String dirPath = DirectoryLocator.getPath() + "/worlds/" + saveName + "/";
-		File dir = new File(dirPath);
-		if (!dir.exists() && !dir.mkdirs()) return;
-		registeredBlocks.save(new FileOutputStream(dirPath + "blocks.dictionary"));
-		registeredItems.save(new FileOutputStream(dirPath + "items.dictionary"));
-		registeredEntitys.save(new FileOutputStream(dirPath + "entitys.dictionary"));
-		registeredCrafting.save(new FileOutputStream(dirPath + "crafting.dictionary"));
-		registeredBiomes.save(new FileOutputStream(dirPath + "biomes.dictionary"));
-		registeredContainers.save(new FileOutputStream(dirPath + "containers.dictionary"));
-		registeredTileEntitys.save(new FileOutputStream(dirPath + "tileentitys.dictionary"));
-		registeredItemEntitys.save(new FileOutputStream(dirPath + "itementitys.dictionary"));
-		registeredTraits.save(new FileOutputStream(dirPath + "traits.dictionary"));
-		registeredAreas.save(new FileOutputStream(dirPath + "areas.dictionary"));
-		File wld = new File(dirPath + "world.vbt"); // VBT format, not bnbt (Binary NBT VC3)
-		NBTOutputStream out = new NBTOutputStream(new FileOutputStream(wld), true);
-		out.writeTag(getSaveCompound());
-		out.close();
-		PluginManager.onWorldSave(this);
-	}
-
-	public void unloadChunks() {
-		GeneratorThread.stop = true;
-		Logger.getLogger("VC4").info("Waiting for gen threads");
-		outside: while (true) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-			}
-			for (int d = 0; d < genThreads.length; ++d) {
-				if (genThreads[d].isAlive()) continue outside;
-			}
-			break;
-		}
-		Logger.getLogger("VC4").info("Saving chunks");
-		int saved = 0;
-		for (ImplChunk c : chunks.values()) {
-			if (c.isModified()) {
-				UnloadThread.toSave.add(c);
-				saved++;
-			}
-		}
-		UnloadThread.world = this;
-		UnloadThread[] unload = new UnloadThread[32];
-		for (int d = 0; d < unload.length; ++d) {
-			unload[d] = new UnloadThread();
-			unload[d].start();
-		}
-		outer: while (true) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-			}
-			for (int d = 0; d < unload.length; ++d) {
-				if (unload[d].isAlive()) continue outer;
-			}
-			break;
-		}
-		Logger.getLogger("VC4").info("Saved " + saved + " chunks!");
-		UnloadThread.world = null;
-		chunks.clear();
-	}
-
-	@Override
-	public short getRegisteredBlock(String name) {
-		return (short) registeredBlocks.get(name);
-	}
-
-	@Override
-	public int getRegisteredItem(String name) {
-		return registeredItems.get(name);
-	}
-
-	@Override
-	public short getRegisteredCrafting(String name) {
-		return (short) registeredCrafting.get(name);
-	}
-
-	@Override
-	public short getRegisteredEntity(String name) {
-		return (short) registeredEntitys.get(name);
-	}
-
-	@Override
-	public short getRegisteredArea(String name) {
-		return (short) registeredAreas.get(name);
-	}
-
-	@Override
-	public short getRegisteredTrait(String name) {
-		return (short) registeredTraits.get(name);
-	}
-
-	@Override
-	public short getRegisteredContainer(String name) {
-		return (short) registeredContainers.get(name);
-	}
-
-	@Override
-	public short getRegisteredTileEntity(String name) {
-		return (short) registeredTileEntitys.get(name);
-	}
-
-	@Override
-	public short getRegisteredItemEntity(String name) {
-		return (short) registeredItemEntitys.get(name);
-	}
-
-	@Override
-	public byte getRegisteredBiome(String name) {
-		return (byte) registeredBiomes.get(name);
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public TagCompound getGeneratorTag() {
-		return generatorTag;
-	}
-
-	@Override
-	public String getSaveName() {
-		return saveName;
-	}
-
-	@Override
-	public List<EntityPlayer> getPlayers() {
-		return players;
-	}
-
-	@Override
-	public double getFallAcceleration() {
-		return 0.15;
-	}
-
-	@Override
-	public double getFallMaxSpeed() {
-		return 2.5;
-	}
-
-	@Override
-	public boolean chunkExists(ChunkPos pos) {
-		return chunks.get(pos) != null;
-	}
-
-	@Override
-	public WorldGenerator getGenerator() {
-		return GeneratorList.getWorldGenerator(generatorName);
-	}
-
-	@Override
-	public Music getMusic(EntityPlayer player) {
-		return getGenerator().getBiomeMusic(player);
-	}
-
-	@Override
-	public MapData getMapData(long x, long z) {
-		return heights.get(new Vector2l(x, z));
-	}
-
-	public MapData getMapData(Chunk c) {
-		return heights.get(new Vector2l(c.getChunkPos().x, c.getChunkPos().z));
-	}
-
-	@Override
-	public String[] getDebugInfo() {
-		String[] res = new String[2];
-		res[0] = "World: " + getName() + " (" + getSaveName() + ")" + ", seed:" + getSeed();
-		res[1] = "Chunks: " + visibleChunks + "/" + chunks.size() + ", MapData: " + heights.size();
-		return res;
-	}
-
-	@Override
-	public Biome getBiome(long x, long z) {
-		MapData m = getMapData(x >> 5, z >> 5);
-		if (m != null) {
-			return m.getBiome((int) (x & 31), (int) (z & 31));
-		} else {
-			if (biomeLookup == null) biomeLookup = getGenerator().getBiomeMapGenerator(this, 0);
-			if (biomeLookup != null) return Biome.byId(biomeLookup.generate(x, z, 1)[0]);
-			return fakeBiome;
-		}
-	}
-
-	@Override
-	public int getHeight(long x, long z) {
-		try {
-			return getMapData(x >> 5, z >> 5).getHeight((int) (x & 31), (int) (z & 31));
-		} catch (Exception e) {
-			return 512;
-		}
-	}
-
-	public void unload() {
-		GeneratorThread.stop = true;
-		try {
-			saveInfo();
-			unloadChunks();
-			saveInfo();
-		} catch (IOException e) {
-			Logger.getLogger(ImplWorld.class).warning("Exception occured", e);
-		}
-	}
-
-	@Override
-	public Chunk loadChunk(ChunkPos pos) {
-		if (chunks.containsKey(pos)) return chunks.get(pos);
-		ImplChunk c = null;
-		try {
-			c = (ImplChunk) getSaveFormat().readChunk(this, pos.x, pos.y, pos.z);
-		} catch (IOException e) {
-			Logger.getLogger(ImplWorld.class).warning("Failed to load chunk", e);
-		}
-		if (c != null) {
-			chunks.put(pos, c);
-			return c;
-		} else {
-			c = (ImplChunk) generateChunk(pos);
-			chunks.put(pos, c);
-			return c;
-		}
-	}
-
-	@Override
-	public String getEntityName(int id) {
-		return registeredEntitys.getName(id);
-	}
-
-	@Override
-	public String getTileEntityName(int id) {
-		return registeredTileEntitys.getName(id);
-	}
-
-	@Override
-	public String getItemEntityName(int id) {
-		return registeredItemEntitys.getName(id);
-	}
-
-	@Override
-	public String getTraitName(int id) {
-		return registeredTraits.getName(id);
-	}
-
-	@Override
-	public String getAreaName(int id) {
-		return registeredAreas.getName(id);
-	}
-
-	@Override
-	public String getContainerName(int id) {
-		return registeredContainers.getName(id);
-	}
-
-	@Override
-	public void broadcast(String message, Vector3d pos, double radius) {
-		radius *= radius;
-		for (EntityPlayer p : players) {
-			if (p.position.distanceSquared(pos) > radius) continue;
-			p.message(message);
-		}
-	}
-
-	@Override
-	public List<Entity> getCollidableEntitiesInBounds(Chunk chunk, AABB bounds) {
-		if (bounds == null) return null;
-		if (chunk == null) return getCollidableEntitiesInBounds(bounds);
-		List<Entity> list = new ArrayList<>();
-		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
-		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
-		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
-		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
-		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
-		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
-		long y, z;
-		int dofor;
-		ImplChunk c;
-		Entity e;
-		for (long x = minX; x <= maxX; ++x) {
-			for (y = minY; y <= maxY; ++y) {
-				for (z = minZ; z <= maxZ; ++z) {
-					if (x == chunk.getChunkPos().x && y == chunk.getChunkPos().y && z == chunk.getChunkPos().z) c = (ImplChunk) chunk;
-					else c = chunks.get(ChunkPos.create(x, y, z));
-					if (c == null || c.entitys == null) continue;
-					// long start = System.nanoTime();
-					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
-						e = c.entitys.get(dofor);
-						if (e != null && e.canCollide(null) && bounds.intersectsWith(e.bounds)) list.add(e);
-					}
-					// long time = System.nanoTime() - start;
-					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
-				}
-			}
-		}
-
-		return list;
-	}
-
-	@Override
-	public List<Entity> getCollidableEntitiesInBounds(AABB bounds) {
-		if (bounds == null) return null;
-
-		List<Entity> list = new ArrayList<>();
-		long minX = MathUtils.floor(bounds.minX - 2D) >> 5;
-		long minY = MathUtils.floor(bounds.minY - 2d) >> 5;
-		long minZ = MathUtils.floor(bounds.minZ - 2d) >> 5;
-		long maxX = MathUtils.floor(bounds.maxX + 2d) >> 5;
-		long maxY = MathUtils.floor(bounds.maxY + 2d) >> 5;
-		long maxZ = MathUtils.floor(bounds.maxZ + 2d) >> 5;
-		long y, z;
-		int dofor;
-		ImplChunk c;
-		Entity e;
-		for (long x = minX; x <= maxX; ++x) {
-			for (y = minY; y <= maxY; ++y) {
-				for (z = minZ; z <= maxZ; ++z) {
-					c = chunks.get(ChunkPos.create(x, y, z));
-					if (c == null || c.entitys == null) continue;
-					// long start = System.nanoTime();
-					for (dofor = 0; dofor < c.entitys.size(); ++dofor) {
-						e = c.entitys.get(dofor);
-						if (e != null && e.canCollide(null) && bounds.intersectsWith(e.bounds)) list.add(e);
-					}
-					// long time = System.nanoTime() - start;
-					// Logger.getLogger(getClass()).info("E in BB took " + (time / 1000000D) + "ms");
-				}
-			}
-		}
-
-		return list;
-	}
-
-	@Override
-	public byte getBlockLight(long x, long y, long z) {
-		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
-		if (c != null) return c.getBlockLight((int) (x & 31), (int) (y & 31), (int) (z & 31));
-		else return 15;
-	}
-
-	@Override
-	public byte getNearbyBlockLight(long x, long y, long z, Direction dir) {
-		x += dir.getX();
-		y += dir.getY();
-		z += dir.getZ();
-		return getBlockLight(x, y, z);
-	}
-
-	@Override
-	public int getTimeOfDay() {
-		return (int) (time % 24000);
-	}
-
-	@Override
-	public byte getDayOfYear() {
-		return (byte) ((time / 24000) % 96);
-	}
-
-	@Override
-	public float getSeason() {
-		int doy = getDayOfYear();
-		if (doy <= 24) return 0.5f + (doy / 48f);
-		if (doy <= 72) return 1f - ((doy - 24) / 48f);
-		return 0f + ((doy - 72) / 48f);
-	}
-
-	@Override
-	public int getMonth() {
-		return ((((getDayOfYear() + 5) % 96) / 8) + 2) % 12;
-	}
-
-	@Override
-	public int getDayOfMonth() {
-		return (int) (((time / 24000) + 5) % 8);
-	}
-
-	@Override
-	public String getTimeText() {
-		int hour = getTimeOfDay() / 1000;
-		int min = (int) ((time % 1000) * 0.06);
-		String month = Localization.getLocalization("time.month." + getMonth());
-		int dom = getDayOfMonth();
-		long year = time / 2304000;
-		return Localization.getLocalization("time.format", hour, min, month, dom, year);
-	}
-
-	@Override
-	public int getNearbyHeight(long x, long z, Direction dir) {
-		x += dir.getX();
-		z += dir.getZ();
-		MapData m = getMapData(x >> 5, z >> 5);
-		if (m == null) return 0;
-		return m.getHeight((int) (x & 31), (int) (z & 31));
-	}
-
-	@Override
-	public int getNearbyHeight(long x, long z, int dir) {
-		return getNearbyHeight(x, z, Direction.getDirection(dir));
-	}
-
-	@Override
-	public boolean hasNearbySkylight(long x, long y, long z, Direction dir) {
-		y += dir.getY();
-		return y > getNearbyHeight(x, z, dir);
-	}
-
-	@Override
-	public float getNearbySkylight(long x, long y, long z, int d) {
-		if (hasNearbySkylight(x, y, z, d)) return 1;
-		Direction dir = Direction.getDirection(d);
-		if (dir.getY() != 0) {
-			y += dir.getY();
-			int nid = getBlockId(x, y, z);
-			if (nid == -1) return 0;
-			if (Block.blockOpacity[nid] > 5) return 0;
-			for (int da = 0; da < 4; ++da) {
-				if (hasNearbySkylight(x, y, z, da)) return 0.5f;
-			}
-		} else {
-			x += dir.getX();
-			z += dir.getZ();
-			int nid = getBlockId(x, y, z);
-			if (nid == -1) return 0;
-			if (Block.blockOpacity[nid] > 5) return 0;
-			int od = Direction.getOpposite(d).id();
-			for (int da = 0; da < 4; ++da) {
-				if (da == od) continue;
-				if (hasNearbySkylight(x, y, z, da)) return 0.5f;
-			}
-		}
-		return 0;
-	}
-
-	@Override
-	public boolean hasNearbySkylight(long x, long y, long z, int dir) {
-		return hasNearbySkylight(x, y, z, Direction.getDirection(dir));
-	}
-
-	@Override
-	public boolean hasSkyLight(long x, long y, long z) {
-		return y > getHeight(x, z);
-	}
-
-	@Override
-	public boolean hasDayLight(long x, long y, long z) {
-		if (!hasSkyLight(x, y, z)) return false;
-		return skyLight > 0.4;
-	}
-
-	@Override
-	public float getBlockDensity(Vector3d pos, AABB bounds) {
-		double d = 1.0D / ((bounds.maxX - bounds.minX) * 2D + 1.0D);
-		double d1 = 1.0D / ((bounds.maxY - bounds.minY) * 2D + 1.0D);
-		double d2 = 1.0D / ((bounds.maxZ - bounds.minZ) * 2D + 1.0D);
-		int i = 0;
-		int j = 0;
-
-		for (float f = 0.0F; f <= 1.0F; f = (float) (f + d)) {
-			for (float f1 = 0.0F; f1 <= 1.0F; f1 = (float) (f1 + d1)) {
-				for (float f2 = 0.0F; f2 <= 1.0F; f2 = (float) (f2 + d2)) {
-					double d3 = bounds.minX + (bounds.maxX - bounds.minX) * f;
-					double d4 = bounds.minY + (bounds.maxY - bounds.minY) * f1;
-					double d5 = bounds.minZ + (bounds.maxZ - bounds.minZ) * f2;
-
-					if (rayTraceBlocks(new Vector3d(d3, d4, d5), pos, 200) == null) {
-						i++;
-					}
-
-					j++;
-				}
-			}
-		}
-
-		return (float) i / (float) j;
-	}
-
-	@Override
-	public byte getBlockData(Vector3l pos) {
-		return getBlockData(pos.x, pos.y, pos.z);
-	}
-
-	@Override
-	public short getBlockId(Vector3l pos) {
-		return getBlockId(pos.x, pos.y, pos.z);
-	}
-
-	@Override
-	public Block getBlockType(Vector3l pos) {
-		return getBlockType(pos.x, pos.y, pos.z);
-	}
-
-	@Override
-	public void setBlockData(Vector3l pos, int data) {
-		setBlockData(pos.x, pos.y, pos.z, data);
-	}
-
-	@Override
-	public void setBlockId(Vector3l pos, int id) {
-		setBlockId(pos.x, pos.y, pos.z, id);
-	}
-
-	@Override
-	public void setBlockIdData(Vector3l pos, int id, int data) {
-		setBlockIdData(pos.x, pos.y, pos.z, id, data);
-	}
-
-	@Override
-	public byte getBlockLight(Vector3l pos) {
-		return getBlockLight(pos.x, pos.y, pos.z);
 	}
 
 }

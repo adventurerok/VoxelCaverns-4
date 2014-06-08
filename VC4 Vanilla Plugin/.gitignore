@@ -2,3 +2,5 @@
 /bin
 /.gitignore
 /build.xml
+/.externalToolBuilders/
+/.settings/
