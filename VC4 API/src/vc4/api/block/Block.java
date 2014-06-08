@@ -46,7 +46,7 @@ public class Block {
 	private boolean standinable = false;
 	
 	protected boolean usesExtended = false;
-	ExtendedSize extendedSize = null;
+	protected int extendedSize = 0;
 
 	protected static Random rand = new Random();
 
@@ -221,7 +221,7 @@ public class Block {
 		return usesExtended;
 	}
 	
-	public ExtendedSize getExtendedSize(){
+	public int getExtendedSize(){
 		return extendedSize;
 	}
 	

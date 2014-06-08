@@ -52,8 +52,8 @@ public interface World {
 	public byte getBlockLight(long x, long y, long z);
 	public byte getBlockLight(Vector3l pos);
 	
-	public int getBlockExtended(long x, long y, long z);
-	public int getBlockExtended(Vector3l pos);
+	public byte[] getBlockExtended(long x, long y, long z);
+	public byte[] getBlockExtended(Vector3l pos);
 
 	public Chunk getChunk(ChunkPos pos);
 
@@ -105,8 +105,8 @@ public interface World {
 
 	public short getNearbyBlockId(long x, long y, long z, int d);
 	
-	public int getNearbyBlockExtended(long x, long y, long z, Direction dir);
-	public int getNearbyBlockExtended(Vector3l pos, Direction dir);
+	public byte[] getNearbyBlockExtended(long x, long y, long z, Direction dir);
+	public byte[] getNearbyBlockExtended(Vector3l pos, Direction dir);
 
 	public Block getNearbyBlockType(long x, long y, long z, Direction dir);
 
@@ -155,8 +155,8 @@ public interface World {
 	public void setBlockIdData(long x, long y, long z, int id, int data);
 	public void setBlockIdData(Vector3l pos, int id, int data);
 	
-	public void setBlockExtended(long x, long y, long z, int extended);
-	public void setBlockExtended(Vector3l pos, int extended);
+	public void setBlockExtended(long x, long y, long z, byte[] extended);
+	public void setBlockExtended(Vector3l pos, byte[] extended);
 
 	public void setBlockIdDataNoNotify(long x, long y, long z, int id, int data);
 
@@ -166,8 +166,8 @@ public interface World {
 
 	public void setNearbyBlockDataNoNotify(long x, long y, long z, int data, Direction dir);
 	
-	public void setNearbyBlockExtended(long x, long y, long z, int extended, Direction dir);
-	public void setNearbyBlockExtended(Vector3l pos, int extended, Direction dir);
+	public void setNearbyBlockExtended(long x, long y, long z, byte[] extended, Direction dir);
+	public void setNearbyBlockExtended(Vector3l pos, byte[] extended, Direction dir);
 
 	public void setNearbyBlockId(long x, long y, long z, int id, Direction dir);
 

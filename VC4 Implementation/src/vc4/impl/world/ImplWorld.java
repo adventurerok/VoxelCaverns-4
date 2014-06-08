@@ -470,14 +470,14 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public int getBlockExtended(long x, long y, long z) {
+	public byte[] getBlockExtended(long x, long y, long z) {
 		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
 		if (c != null) return c.getBlockExtended((int) (x & 31), (int) (y & 31), (int) (z & 31));
-		else return -1;
+		else return new byte[0];
 	}
 
 	@Override
-	public int getBlockExtended(Vector3l pos) {
+	public byte[] getBlockExtended(Vector3l pos) {
 		return getBlockExtended(pos.x, pos.y, pos.z);
 	}
 
@@ -940,7 +940,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public int getNearbyBlockExtended(long x, long y, long z, Direction dir) {
+	public byte[] getNearbyBlockExtended(long x, long y, long z, Direction dir) {
 		x += dir.getX();
 		y += dir.getY();
 		z += dir.getZ();
@@ -948,7 +948,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public int getNearbyBlockExtended(Vector3l pos, Direction dir) {
+	public byte[] getNearbyBlockExtended(Vector3l pos, Direction dir) {
 		return getNearbyBlockExtended(pos.x, pos.y, pos.z, dir);
 	}
 
@@ -1749,7 +1749,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public void setBlockExtended(long x, long y, long z, int extended) {
+	public void setBlockExtended(long x, long y, long z, byte[] extended) {
 		Chunk c = getChunk(ChunkPos.createFromWorldPos(x, y, z));
 		if (c != null) {
 			c.setBlockExtended((int) (x & 31), (int) (y & 31), (int) (z & 31), extended);
@@ -1758,7 +1758,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public void setBlockExtended(Vector3l pos, int extended) {
+	public void setBlockExtended(Vector3l pos, byte[] extended) {
 		setBlockExtended(pos.x, pos.y, pos.z, extended);
 	}
 
@@ -1847,7 +1847,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public void setNearbyBlockExtended(long x, long y, long z, int extended, Direction dir) {
+	public void setNearbyBlockExtended(long x, long y, long z, byte[] extended, Direction dir) {
 		x += dir.getX();
 		y += dir.getY();
 		z += dir.getZ();
@@ -1855,7 +1855,7 @@ public class ImplWorld implements World {
 	}
 
 	@Override
-	public void setNearbyBlockExtended(Vector3l pos, int extended, Direction dir) {
+	public void setNearbyBlockExtended(Vector3l pos, byte[] extended, Direction dir) {
 		setNearbyBlockExtended(pos.x, pos.y, pos.z, extended, dir);
 	}
 

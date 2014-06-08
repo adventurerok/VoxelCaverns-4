@@ -5,6 +5,7 @@ package vc4.impl.world;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import vc4.api.array.ByteArray;
 import vc4.api.block.Block;
 import vc4.api.render.ChunkRenderer;
 import vc4.api.vector.Vector3d;
@@ -21,7 +22,7 @@ public class BlockStore {
 	public byte[] data;
 	public byte[] light = new byte[4096];
 	
-	public ConcurrentHashMap<Short, Integer> extendedData;
+	public ConcurrentHashMap<Short, ByteArray> extendedData = new ConcurrentHashMap<>();
 
 	public ChunkRenderer oldData[] = new ChunkRenderer[3];
 	public ChunkRenderer currentData[] = new ChunkRenderer[3];
@@ -70,11 +71,11 @@ public class BlockStore {
 		return data != null ? data[arrayCalc(x, y, z)] : 0;
 	}
 	
-	public int getBlockExtended(int x, int y, int z){
-		if(extendedData == null) return 0;
-		Integer i = extendedData.get(arrayCalc(x, y, z));
-		if(i == null) return 0;
-		return i;
+	public byte[] getBlockExtended(int x, int y, int z){
+		if(extendedData == null) return new byte[0];
+		ByteArray i = extendedData.get(arrayCalc(x, y, z));
+		if(i == null || i.array == null) return new byte[0];
+		return i.array;
 	}
 	
 
@@ -127,17 +128,18 @@ public class BlockStore {
 		return false;
 	}
 	
-	public boolean setBlockExtended(int x, int y, int z, int e){
+	public boolean setBlockExtended(int x, int y, int z, byte[] e){
 		int ac = arrayCalc(x, y, z);
 		if(!Block.byId(blocks != null ? blocks[ac] : 0).usesExtended()) return false;
-		if(extendedData == null && e != 0){
+		if(extendedData == null && e != null){
 			extendedData = new ConcurrentHashMap<>();
-			extendedData.put((short)ac, e);
+			extendedData.put((short)ac, new ByteArray(e));
 			clearRenderers();
 			return true;
 		} else {
 			if(extendedData != null){
-				if(extendedData.put((short) ac, e) != e) {
+				ByteArray n = new ByteArray(e);
+				if(!n.equals(extendedData.put((short) ac, n))) {
 					clearRenderers();
 					return true;
 				} else return false;

@@ -6,8 +6,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import vc4.api.area.Area;
+import vc4.api.array.ByteArray;
 import vc4.api.block.Block;
-import vc4.api.block.ExtendedSize;
 import vc4.api.entity.Entity;
 import vc4.api.io.*;
 import vc4.api.logging.Logger;
@@ -26,6 +26,21 @@ import vc4.impl.world.*;
  * 
  */
 public class VCH4SaveFormat implements SaveFormat {
+	
+	private static class ExtendedData {
+		
+		short block;
+		byte[] data;
+		
+		public ExtendedData(short block, byte[] data) {
+			super();
+			this.block = block;
+			this.data = data;
+		}
+		
+		
+		
+	}
 
 	public static boolean ENABLED = true;
 
@@ -104,39 +119,30 @@ public class VCH4SaveFormat implements SaveFormat {
 			}
 			if(root.hasKey("ext") && root.getBoolean("ext")){
 				HashSet<Short> types = new HashSet<>();
+				HashMap<Short, Integer> sizes = new HashMap<>();
 				short len = in.readShort();
+				short ip;
 				for(int d = 0; d < len; ++d){
-					types.add(in.readShort());
+					ip = in.readShort();
+					types.add((short) (ip & 2047));
+					sizes.put((short) (ip & 2047), (ip >> 11) & 31);
 				}
 				byte ext[] = new byte[4];
 				int es = 0;
+				byte[] res;
 				for(int d = 0; d < 8; ++d){
 					BlockStore store = chunk.getBlockStore(d);
 					if(store.blocks == null) continue;
 					for(short i = 0; i < store.blocks.length; ++i){
 						if(!types.contains(store.blocks[i])) continue;
 						ext[0] = in.readByte();
-						es = (ext[0] >> 6) & 3;
-						switch(es){
-						case 0:
-							store.extendedData.put(i, ext[0] & 63);
-							break;
-						case 1:
-							ext[1] = in.readByte();
-							store.extendedData.put(i, ((ext[0] & 63) << 8) | (ext[1] & 255));
-							break;
-						case 2:
-							ext[1] = in.readByte();
-							ext[2] = in.readByte();
-							store.extendedData.put(i, ((ext[0] & 63) << 16) | ((ext[1] & 255) << 8) | (ext[2] & 255));
-							break;
-						case 3:
-							ext[1] = in.readByte();
-							ext[2] = in.readByte();
-							ext[3] = in.readByte();
-							store.extendedData.put(i, ((ext[0] & 63) << 24) | ((ext[1] & 255) << 16) | ((ext[2] & 255) << 8) | (ext[3] & 255));
-							break;
+						es = sizes.get(store.blocks[i]);
+						res = new byte[es];
+						for(int p = 0; p < es; ++p){
+							res[p] = in.readByte();
 						}
+						store.extendedData.put(i, new ByteArray(res));
+						
 					}
 				}
 			}
@@ -181,14 +187,15 @@ public class VCH4SaveFormat implements SaveFormat {
 		root.addTag(getBlockUpdateTag(chunk));
 		short[] blocks;
 		byte[] data;
-		Integer ext;
-		int ex;
-		ExtendedSize et;
+		ByteArray ext;
+		byte[] ex;
+		int et;
+		int sm;
 		try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(path))))) {
 			BitOutputStream bos = new BitOutputStream(out);
 			new NBTOutputStream(bos).writeTag(root);
 			bos.flush();
-			ArrayList<Vector2i> extended = new ArrayList<>();
+			ArrayList<ExtendedData> extended = new ArrayList<>();
 			LinkedHashSet<Short> extendedBlocks = new LinkedHashSet<>();
 			for (int d = 0; d < 8; ++d) {
 				Profiler.start("blockstore");
@@ -208,8 +215,8 @@ public class VCH4SaveFormat implements SaveFormat {
 							if(Block.byId(blocks[a]).usesExtended()){
 								extendedBlocks.add(blocks[a]);
 								ext = store.extendedData.get((short)a);
-								ex = ext != null ? ext : 0;
-								extended.add(new Vector2i(blocks[a], ex));
+								ex = (ext != null && ext.array != null) ? ext.array : new byte[0];
+								extended.add(new ExtendedData(blocks[a], ex));
 							}
 						}
 						Profiler.stop();
@@ -235,25 +242,17 @@ public class VCH4SaveFormat implements SaveFormat {
 			}
 			out.writeShort(extendedBlocks.size());
 			for(Short s : extendedBlocks){
-				out.writeShort(s);
+				out.writeShort(((Block.byId(s).getExtendedSize() & 31) << 11) | (s & 2047));
 			}
-			for(Vector2i i : extended){
-				ex = i.y;
-				et = Block.byId(i.x).getExtendedSize();
-				switch(et){
-				case SIX:
-					out.writeByte((et.getBits() << 6) + (ex & 63));
-					break;
-				case FOURTEEN:
-					out.writeShort((et.getBits() << 14) + (ex & 16383));
-					break;
-				case TWENTYTWO:
-					out.writeShort((et.getBits() << 14) + ((ex >> 8) & 16383));
-					out.writeByte(ex & 255);
-					break;
-				case THIRTY:
-					out.writeInt((et.getBits() << 30) + (ex & 1073741823));
-					break;
+			for(ExtendedData i : extended){
+				ex = i.data;
+				et = (Block.byId(i.block).getExtendedSize() & 31);
+				sm = Math.min(ex.length, et);
+				for(int d = 0; d < sm; ++d){
+					out.writeByte(ex[d]);
+				}
+				for(int d = sm; d < et; ++d){
+					out.writeByte(0);
 				}
 			}
 			out.flush();

@@ -140,7 +140,7 @@ public class ImplChunk implements Chunk {
 	}
 	
 	@Override
-	public int getBlockExtended(int x, int y, int z) {
+	public byte[] getBlockExtended(int x, int y, int z) {
 		return stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].getBlockExtended(x & 0xF, y & 0xF, z & 0xF);
 	}
 
@@ -182,7 +182,7 @@ public class ImplChunk implements Chunk {
 	
 
 	@Override
-	public void setBlockExtended(int x, int y, int z, int e) {
+	public void setBlockExtended(int x, int y, int z, byte[] e) {
 		if (stores[((x >> 4) * 2 + (y >> 4)) * 2 + (z >> 4)].setBlockExtended(x & 0xF, y & 0xF, z & 0xF, e)){
 			isModified = true;
 			notifyNear(x, y, z);

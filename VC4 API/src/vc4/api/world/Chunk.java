@@ -18,13 +18,13 @@ public interface Chunk {
 
 	public byte getBlockData(int x, int y, int z);
 	
-	public int getBlockExtended(int x, int y, int z);
+	public byte[] getBlockExtended(int x, int y, int z);
 
 	public void setBlockId(int x, int y, int z, short id);
 
 	public void setBlockData(int x, int y, int z, byte data);
 	
-	public void setBlockExtended(int x, int y, int z, int extended);
+	public void setBlockExtended(int x, int y, int z, byte[] extended);
 
 	public void setBlockIdData(int x, int y, int z, short id, byte data);
 
