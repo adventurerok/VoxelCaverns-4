@@ -1,12 +1,13 @@
 package vc4.impl.io;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import vc4.api.area.Area;
+import vc4.api.block.Block;
+import vc4.api.block.ExtendedSize;
 import vc4.api.entity.Entity;
 import vc4.api.io.*;
 import vc4.api.logging.Logger;
@@ -14,8 +15,7 @@ import vc4.api.profile.Profiler;
 import vc4.api.tileentity.TileEntity;
 import vc4.api.util.DirectoryLocator;
 import vc4.api.vbt.*;
-import vc4.api.vector.Vector2l;
-import vc4.api.vector.Vector3l;
+import vc4.api.vector.*;
 import vc4.api.world.*;
 import vc4.impl.world.*;
 
@@ -102,6 +102,44 @@ public class VCH4SaveFormat implements SaveFormat {
 					}
 				}
 			}
+			if(root.hasKey("ext") && root.getBoolean("ext")){
+				HashSet<Short> types = new HashSet<>();
+				short len = in.readShort();
+				for(int d = 0; d < len; ++d){
+					types.add(in.readShort());
+				}
+				byte ext[] = new byte[4];
+				int es = 0;
+				for(int d = 0; d < 8; ++d){
+					BlockStore store = chunk.getBlockStore(d);
+					if(store.blocks == null) continue;
+					for(short i = 0; i < store.blocks.length; ++i){
+						if(!types.contains(store.blocks[i])) continue;
+						ext[0] = in.readByte();
+						es = (ext[0] >> 6) & 3;
+						switch(es){
+						case 0:
+							store.extendedData.put(i, ext[0] & 63);
+							break;
+						case 1:
+							ext[1] = in.readByte();
+							store.extendedData.put(i, ((ext[0] & 63) << 8) | (ext[1] & 255));
+							break;
+						case 2:
+							ext[1] = in.readByte();
+							ext[2] = in.readByte();
+							store.extendedData.put(i, ((ext[0] & 63) << 16) | ((ext[1] & 255) << 8) | (ext[2] & 255));
+							break;
+						case 3:
+							ext[1] = in.readByte();
+							ext[2] = in.readByte();
+							ext[3] = in.readByte();
+							store.extendedData.put(i, ((ext[0] & 63) << 24) | ((ext[1] & 255) << 16) | ((ext[2] & 255) << 8) | (ext[3] & 255));
+							break;
+						}
+					}
+				}
+			}
 		}
 		return chunk;
 	}
@@ -116,6 +154,7 @@ public class VCH4SaveFormat implements SaveFormat {
 		File file = new File(path);
 		file.getParentFile().mkdirs();
 		TagCompound root = new TagCompound("root");
+		root.setBoolean("ext", true);
 		root.setBoolean("populated", chunk.isPopulated());
 		TagList elist = new TagList("entitys", TagCompound.class);
 		List<Entity> lis = (List<Entity>) c.getEntityList().clone();
@@ -142,10 +181,15 @@ public class VCH4SaveFormat implements SaveFormat {
 		root.addTag(getBlockUpdateTag(chunk));
 		short[] blocks;
 		byte[] data;
+		Integer ext;
+		int ex;
+		ExtendedSize et;
 		try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(path))))) {
 			BitOutputStream bos = new BitOutputStream(out);
 			new NBTOutputStream(bos).writeTag(root);
 			bos.flush();
+			ArrayList<Vector2i> extended = new ArrayList<>();
+			LinkedHashSet<Short> extendedBlocks = new LinkedHashSet<>();
 			for (int d = 0; d < 8; ++d) {
 				Profiler.start("blockstore");
 				BlockStore store = chunk.getBlockStore(d);
@@ -161,6 +205,12 @@ public class VCH4SaveFormat implements SaveFormat {
 						out.writeByte(2); // 2 = Different block types
 						for (int a = 0; a < blocks.length; ++a) {
 							out.writeShort(blocks[a]);
+							if(Block.byId(blocks[a]).usesExtended()){
+								extendedBlocks.add(blocks[a]);
+								ext = store.extendedData.get((short)a);
+								ex = ext != null ? ext : 0;
+								extended.add(new Vector2i(blocks[a], ex));
+							}
 						}
 						Profiler.stop();
 					}
@@ -182,6 +232,29 @@ public class VCH4SaveFormat implements SaveFormat {
 					}
 				}
 				Profiler.stop();
+			}
+			out.writeShort(extendedBlocks.size());
+			for(Short s : extendedBlocks){
+				out.writeShort(s);
+			}
+			for(Vector2i i : extended){
+				ex = i.y;
+				et = Block.byId(i.x).getExtendedSize();
+				switch(et){
+				case SIX:
+					out.writeByte((et.getBits() << 6) + (ex & 63));
+					break;
+				case FOURTEEN:
+					out.writeShort((et.getBits() << 14) + (ex & 16383));
+					break;
+				case TWENTYTWO:
+					out.writeShort((et.getBits() << 14) + ((ex >> 8) & 16383));
+					out.writeByte(ex & 255);
+					break;
+				case THIRTY:
+					out.writeInt((et.getBits() << 30) + (ex & 1073741823));
+					break;
+				}
 			}
 			out.flush();
 		}
