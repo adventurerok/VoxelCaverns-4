@@ -138,6 +138,7 @@ public class ClientShaderManager implements ShaderManager {
 		glCompileShader(fragment);
 		if (glGetProgrami(fragment, GL_COMPILE_STATUS) == GL_FALSE) {
 			printLogInfo(fragment);
+			System.out.println("Failed to compile fragment shader: " + url);
 			fragment = 0;
 		}
 		return fragment;
@@ -162,12 +163,14 @@ public class ClientShaderManager implements ShaderManager {
 		glLinkProgram(current);
 		if (glGetProgrami(current, GL_LINK_STATUS) == GL_FALSE) {
 			printLogInfo(current);
-			return 0;
+			throw new RuntimeException("Failed to link shader program: " + name);
+			//return 0;
 		}
 		glValidateProgram(current);
 		if (glGetProgrami(current, GL_VALIDATE_STATUS) == GL_FALSE) {
 			printLogInfo(current);
-			return 0;
+			throw new RuntimeException("Failed to validate shader program: " + name);
+			//return 0;
 		}
 		shaderPrograms.put(current, new ShaderProgram(current));
 		namedShaders.put(name, current);
@@ -200,7 +203,8 @@ public class ClientShaderManager implements ShaderManager {
 		// if there was a problem compiling, reset vertShader to zero
 		if (glGetProgrami(vertex, GL_COMPILE_STATUS) == GL_FALSE) {
 			printLogInfo(vertex);
-			vertex = 0;
+			throw new RuntimeException("Failed to compile vertex shader: " + url);
+			//vertex = 0;
 		}
 		// if zero we won't be using the shader
 		return vertex;
