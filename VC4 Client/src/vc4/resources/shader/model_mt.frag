@@ -1,7 +1,7 @@
-#version 150 compatibility
+#version 130
 
-in vec4 theColor;
-in vec4 texCoord;
+varying vec4 theColor;
+varying vec4 texCoord;
 
 uniform sampler2DArray theTex;
 

@@ -80,26 +80,27 @@ public class DataRenderer implements Renderer {
 	 */
 	@Override
 	public void addVertex(Vertex v) {
-		if (tpos < 3) {
-			tri[tpos++] = v;
-		}
-		if (tpos == 3) {
-			Vector3f normal = new Vector3f(0, 0, 0);
-			Vector3f U = tri[1].position.subtract(tri[0].position).toVector3f();
-			Vector3f V = tri[2].position.subtract(tri[0].position).toVector3f();
-
-			normal.x = U.y * V.z - U.z * V.y;
-			normal.y = U.z * V.x - U.x * V.z;
-			normal.z = U.x * V.y - U.y * V.x;
-			inputVertex(tri[0], normal);
-			inputVertex(tri[1], normal);
-			inputVertex(tri[2], normal);
-			tpos = 0;
-		}
+		inputVertex(v);
+//		if (tpos < 3) {
+//			tri[tpos++] = v;
+//		}
+//		if (tpos == 3) {
+//			//Vector3f normal = new Vector3f(0, 0, 0);
+//			//Vector3f U = tri[1].position.subtract(tri[0].position).toVector3f();
+//			//Vector3f V = tri[2].position.subtract(tri[0].position).toVector3f();
+//
+//			//normal.x = U.y * V.z - U.z * V.y;
+//			//normal.y = U.z * V.x - U.x * V.z;
+//			//normal.z = U.x * V.y - U.y * V.x;
+//			inputVertex(tri[0]);
+//			inputVertex(tri[1]);
+//			inputVertex(tri[2]);
+//			tpos = 0;
+//		}
 
 	}
 
-	private void inputVertex(Vertex v, Vector3f normal) {
+	private void inputVertex(Vertex v) {
 		data.add((float) (v.position.x));
 		data.add((float) (v.position.y));
 		data.add((float) (v.position.z));
@@ -111,9 +112,9 @@ public class DataRenderer implements Renderer {
 		data.add(v.tex.y);
 		data.add(v.tex.z);
 		data.add(v.tex.w);
-		data.add(normal.x);
-		data.add(normal.y);
-		data.add(normal.z);
+		//data.add(normal.x);
+		//data.add(normal.y);
+		//data.add(normal.z);
 		++amountOfVertexes;
 	}
 
@@ -190,24 +191,33 @@ public class DataRenderer implements Renderer {
 	public void render() {
 		if (amountOfVertexes < 1) return;
 		if (!createdList) {
-			if ((amountOfVertexes * 14) != buffer.capacity()) System.out.println((amountOfVertexes * 14) + " -=- " + buffer.capacity());
-			listId = gl.genLists(1);
-			gl.newList(listId, GLCompileFunc.COMPILE);
-			boolean normal = true;
-			buffer.position(0);
-			gl.vertexAttribPointer(0, 3, normal, 56, buffer);
-			buffer.position(3);
-			gl.vertexAttribPointer(3, 4, normal, 56, buffer);
-			buffer.position(7);
-			gl.vertexAttribPointer(8, 4, normal, 56, buffer);
-			buffer.position(11);
-			gl.vertexAttribPointer(2, 3, normal, 56, buffer);
-			gl.drawArrays(GLPrimative.TRIANGLES, 0, amountOfVertexes);
-			gl.endList();
+			listId = createList(0, amountOfVertexes, GLPrimitive.TRIANGLES);
 			buffer = null;
 			createdList = true;
 		}
 		gl.callList(listId);
+	}
+
+	public int createList(int start, int count, GLPrimitive type) {
+		if(createdList) throw new RuntimeException("Cannot create list after render() is called once");
+		if (amountOfVertexes < 1) return 0;
+
+		if ((amountOfVertexes * 14) != buffer.capacity()) System.out.println((amountOfVertexes * 14) + " -=- " + buffer.capacity());
+		int listId = gl.genLists(1);
+		gl.newList(listId, GLCompileFunc.COMPILE);
+		boolean normal = true;
+		buffer.position(0);
+		gl.vertexAttribPointer(0, 3, normal, 44, buffer);
+		buffer.position(3);
+		gl.vertexAttribPointer(3, 4, normal, 44, buffer);
+		buffer.position(7);
+		gl.vertexAttribPointer(8, 4, normal, 44, buffer);
+		//buffer.position(11);
+		//gl.vertexAttribPointer(2, 3, normal, 56, buffer);
+		gl.drawArrays(type, start, count);
+		gl.endList();
+
+		return listId;
 	}
 
 	/*

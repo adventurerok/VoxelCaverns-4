@@ -1,12 +1,12 @@
-#version 150 compatibility
+#version 130
 
-out vec4 theColor;
-out vec3 texCoord;
+varying vec4 theColor;
+varying vec3 texCoord;
 
-in vec4 inVertex;
-in vec4 inColor;
-in vec3 inTex;
-in vec4 inData6;
+attribute vec4 inVertex;
+attribute vec4 inColor;
+attribute vec3 inTex;
+attribute vec4 inData6;
 
 uniform vec3 skyLight;
 

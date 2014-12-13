@@ -1,16 +1,11 @@
-#version 150 compatibility
+#version 130
 
-out vec4 theColor;
+varying vec4 theColor;
 
-in vec4 inVertex;
-in vec4 inColor;
-
-
-
+attribute vec4 inVertex;
+attribute vec4 inColor;
 
 void main(){
     theColor = inColor;
     gl_Position = gl_ModelViewProjectionMatrix * inVertex;
 }
-
-

@@ -176,7 +176,7 @@ public class Game extends Component implements ClientGame {
 			Vector3l pos = player.getEyePos().toVector3l();
 			if (world.getBlockType(pos.x, pos.y, pos.z) instanceof BlockFluid) {
 				Color col = world.getBlockType(pos.x, pos.y, pos.z).getColor(world, pos.x, pos.y, pos.z, 4);
-				gl.begin(GLPrimative.QUADS);
+				gl.begin(GLPrimitive.QUADS);
 				gl.color(col.getRed() / 255f, col.getGreen() / 255f, col.getBlue() / 255f, col.getAlpha() / 255f);
 				gl.vertex(0, 0);
 				gl.vertex(getWidth(), 0);
@@ -191,7 +191,7 @@ public class Game extends Component implements ClientGame {
 			int w = getWindow().getWidth() / 2 - 64;
 			int h = getWindow().getHeight() / 2 - 64;
 			int tex = getCrosshair(getCrosshairSetting().getString());
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(1, 1, 1, 1);
 			gl.texCoord(0, 0, tex);
 			gl.vertex(w, h);
@@ -213,7 +213,7 @@ public class Game extends Component implements ClientGame {
 			float my = Input.getClientMouse().getY();
 			mx -= cursor.getX();
 			my -= cursor.getY();
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(col);
 			gl.texCoord(0.001, 0.001, ind);
 			gl.vertex(mx, my);

@@ -234,7 +234,7 @@ public class ChunkRenderer implements Renderer {
 			gl.vertexAttribPointer(2, 3, normal, 72, buffer);
 			buffer.position(14);
 			gl.vertexAttribPointer(6, 4, normal, 72, buffer);
-			gl.drawArrays(GLPrimative.TRIANGLES, 0, amountOfVertexes);
+			gl.drawArrays(GLPrimitive.TRIANGLES, 0, amountOfVertexes);
 			gl.endList();
 			buffer = null;
 			createdList = true;

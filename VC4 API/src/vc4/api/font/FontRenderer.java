@@ -27,9 +27,9 @@ public abstract class FontRenderer {
 
 	public abstract Vector2f measureString(String text, float size);
 
-	public abstract float renderString(float x, float y, String text);
+	public abstract RenderedText renderString(float x, float y, String text);
 
-	public abstract float renderString(float x, float y, String text, float size);
+	public abstract RenderedText renderString(float x, float y, String text, float size);
 
 	public abstract void resetStyles();
 

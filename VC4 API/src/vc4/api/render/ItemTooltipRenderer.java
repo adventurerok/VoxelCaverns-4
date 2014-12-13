@@ -67,7 +67,7 @@ public class ItemTooltipRenderer {
 				int minusX = Math.max(0, (mouse.getX() + fWidth + 13) - wid);
 				int minusY = Math.max(0, (mouse.getY() + fHeight + 3) - hei);
 				Graphics.getClientShaderManager().unbindShader();
-				gl.begin(GLPrimative.QUADS);
+				gl.begin(GLPrimitive.QUADS);
 
 				gl.color(0.5f, 0.5f, 0.5f, 0.75f);
 				gl.vertex(mouse.getX() + 6 - minusX, mouse.getY() - minusY + 12);

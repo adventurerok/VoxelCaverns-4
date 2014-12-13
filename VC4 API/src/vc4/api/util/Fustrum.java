@@ -142,7 +142,7 @@ public class Fustrum {
 
 	public void drawLines() {
 		OpenGL gl = Graphics.getOpenGL();
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		// near plane
 		gl.vertex(ntl.x, ntl.y, ntl.z);
 		gl.vertex(ntr.x, ntr.y, ntr.z);
@@ -150,7 +150,7 @@ public class Fustrum {
 		gl.vertex(nbl.x, nbl.y, nbl.z);
 		gl.end();
 
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		// far plane
 		gl.vertex(ftr.x, ftr.y, ftr.z);
 		gl.vertex(ftl.x, ftl.y, ftl.z);
@@ -158,7 +158,7 @@ public class Fustrum {
 		gl.vertex(fbr.x, fbr.y, fbr.z);
 		gl.end();
 
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		// bottom plane
 		gl.vertex(nbl.x, nbl.y, nbl.z);
 		gl.vertex(nbr.x, nbr.y, nbr.z);
@@ -166,7 +166,7 @@ public class Fustrum {
 		gl.vertex(fbl.x, fbl.y, fbl.z);
 		gl.end();
 
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		// top plane
 		gl.vertex(ntr.x, ntr.y, ntr.z);
 		gl.vertex(ntl.x, ntl.y, ntl.z);
@@ -174,7 +174,7 @@ public class Fustrum {
 		gl.vertex(ftr.x, ftr.y, ftr.z);
 		gl.end();
 
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		// left plane
 		gl.vertex(ntl.x, ntl.y, ntl.z);
 		gl.vertex(nbl.x, nbl.y, nbl.z);
@@ -182,7 +182,7 @@ public class Fustrum {
 		gl.vertex(ftl.x, ftl.y, ftl.z);
 		gl.end();
 
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		// right plane
 		gl.vertex(nbr.x, nbr.y, nbr.z);
 		gl.vertex(ntr.x, ntr.y, ntr.z);

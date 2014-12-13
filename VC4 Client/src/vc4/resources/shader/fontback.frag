@@ -1,8 +1,6 @@
-#version 150 compatibility
+#version 130
 
-in vec4 theColor;
-
-
+varying vec4 theColor;
 
 void main(){
     gl_FragColor = theColor * vec4(1, 1, 1, 0.8);

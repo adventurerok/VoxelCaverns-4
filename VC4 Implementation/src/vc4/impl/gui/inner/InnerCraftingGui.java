@@ -41,7 +41,7 @@ public class InnerCraftingGui extends Panel {
 		gl.unbindShader();
 		ColorScheme scheme = Client.getGame().getCurrentColorScheme();
 		for (int x = amountOfSlots - 1; x > -1; x--) {
-			gl.begin(GLPrimative.LINE_LOOP);
+			gl.begin(GLPrimitive.LINE_LOOP);
 			gl.color(scheme.outlineNormal);
 			gl.vertex(start + px + x * 32, py + 12);
 			gl.vertex(start + px + x * 32 + 32, py + 12);
@@ -71,7 +71,7 @@ public class InnerCraftingGui extends Panel {
 		}
 		gl.bindShader("texture");
 		Resources.getAnimatedTexture("crafting").bind();
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		gl.color(1F, 1F, 1F, 1F);
 		int x = px;
 		int y = py + getHeight();

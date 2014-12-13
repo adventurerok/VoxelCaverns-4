@@ -45,7 +45,7 @@ public class ItemPanel extends Panel {
 			if (sx > msx) msx = sx;
 			if (sy * 32 + 32 > getHeight()) break;
 			if (sy > msy) msy = sy;
-			gl.begin(GLPrimative.LINE_LOOP);
+			gl.begin(GLPrimitive.LINE_LOOP);
 			gl.color(scheme.outlineNormal);
 			gl.vertex(px + sx * 32, py + sy * 32);
 			gl.vertex(px + sx * 32 + 32, py + sy * 32);

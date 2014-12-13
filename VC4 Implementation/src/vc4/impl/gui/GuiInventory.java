@@ -46,7 +46,7 @@ public class GuiInventory extends Component {
 			for (int y = 0; y < 4; y++) {
 				if (!inventory.isOpen() && y < 3) continue;
 				int at = ((3 - y) * 11) + x;
-				gl.begin(GLPrimative.QUADS);
+				gl.begin(GLPrimitive.QUADS);
 				if (inventory.getSelectedIndex() == at) gl.color(getColorScheme().backgroundSelected);
 				else gl.color(getColorScheme().backgroundNormal);
 				gl.vertex(px + x * 32, py + y * 32);
@@ -54,7 +54,7 @@ public class GuiInventory extends Component {
 				gl.vertex(px + x * 32 + 32, py + y * 32 + 32);
 				gl.vertex(px + x * 32, py + y * 32 + 32);
 				gl.end();
-				gl.begin(GLPrimative.LINE_LOOP);
+				gl.begin(GLPrimitive.LINE_LOOP);
 				if (inventory.getSelectedIndex() == at) gl.color(getColorScheme().outlineSelected);
 				else gl.color(getColorScheme().outlineNormal);
 				gl.vertex(px + x * 32, py + y * 32);

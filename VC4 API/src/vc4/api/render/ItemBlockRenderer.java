@@ -36,7 +36,7 @@ public class ItemBlockRenderer {
 		int texInd = Block.byId(current.getId()).getTextureIndex(current, 0);
 		Resources.getAnimatedTexture("blocks").bind();
 
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		Color blockColor = Block.byId(current.getId()).getColor(current, 0);
 		gl.color(blockColor.getRed() / 255F, blockColor.getGreen() / 255F, blockColor.getBlue() / 255F);
 		gl.texCoord(0, 0, texInd);
@@ -53,7 +53,7 @@ public class ItemBlockRenderer {
 			int texInd2 = ((IBlockMultitexture) Block.byId(current.getId())).getTextureIndexMultitexture(current, 0);
 			Color color = ((IBlockMultitexture) Block.byId(current.getId())).getColorMultitexture(current, 0);
 
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F);
 			gl.texCoord(0, 0, texInd2);
 			gl.vertex(position.x, position.y);
@@ -97,7 +97,7 @@ public class ItemBlockRenderer {
 
 	protected static void renderBlock3dTop() {
 		int texInd = Block.byId(current.getId()).getTextureIndex(current, 4);
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		Color blockColor = Block.byId(current.getId()).getColor(current, 4);
 		gl.color(blockColor.getRed() / 255F, blockColor.getGreen() / 255F, blockColor.getBlue() / 255F);
 		gl.texCoord(tix, tiz, texInd);
@@ -120,7 +120,7 @@ public class ItemBlockRenderer {
 
 			Color color = ((IBlockMultitexture) Block.byId(current.getId())).getColorMultitexture(current, 4);
 
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F);
 			gl.texCoord(tsx2, tsy2, texInd2);
 			gl.vertex(minX, minZ, maxY);
@@ -141,7 +141,7 @@ public class ItemBlockRenderer {
 		float tex = taz;
 		float tey = tay;
 
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		Color blockColor = Block.byId(current.getId()).getColor(current, 3);
 		gl.color(blockColor.getRed() / 255F, blockColor.getGreen() / 255F, blockColor.getBlue() / 255F);
 		gl.texCoord(tsx, tsy, texInd);
@@ -162,7 +162,7 @@ public class ItemBlockRenderer {
 			float tey2 = tay;
 			Color color = ((IBlockMultitexture) Block.byId(current.getId())).getColorMultitexture(current, 3);
 
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F);
 			gl.texCoord(tsx2, tsy2, texInd2);
 			gl.vertex(maxX, maxZ, maxY);
@@ -183,7 +183,7 @@ public class ItemBlockRenderer {
 		float tex = tax;
 		float tey = tay;
 
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		Color blockColor = Block.byId(current.getId()).getColor(current, 0);
 		gl.color(blockColor.getRed() / 255F, blockColor.getGreen() / 255F, blockColor.getBlue() / 255F);
 		gl.texCoord(tsx, tsy, texInd);
@@ -205,7 +205,7 @@ public class ItemBlockRenderer {
 
 			Color color = ((IBlockMultitexture) Block.byId(current.getId())).getColorMultitexture(current, 0);
 
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F);
 			gl.texCoord(tsx2, tsy2, texInd2);
 			gl.vertex(minX, maxZ, maxY);

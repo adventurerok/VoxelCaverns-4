@@ -58,7 +58,7 @@ public class FlatlandsGenerator implements WorldGenerator {
 		gl.disable(GLFlag.DEPTH_TEST);
 		Graphics.getClientShaderManager().unbindShader();
 		if (pos.y < 192) {
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			if (pos.y > -5200) gl.color(0.6f, 0.45f, 0.45f, 1);
 			else gl.color(0.8f, 0.3f, 0.3f, 1);
 			gl.vertex(-256, -256, -256);

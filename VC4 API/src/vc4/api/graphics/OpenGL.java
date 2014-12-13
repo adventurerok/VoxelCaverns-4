@@ -21,7 +21,7 @@ public interface OpenGL {
 
 	public void alphaFunc(GLCompareFunc func, float ref);
 
-	public void begin(GLPrimative type);
+	public void begin(GLPrimitive type);
 
 	public void bindShader(int shader);
 
@@ -77,7 +77,7 @@ public interface OpenGL {
 
 	public void disableVertexAttribArray(int index);
 
-	public void drawArrays(GLPrimative type, int first, int count);
+	public void drawArrays(GLPrimitive type, int first, int count);
 
 	public void enable(GLFlag flag);
 

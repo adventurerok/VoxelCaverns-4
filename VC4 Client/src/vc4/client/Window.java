@@ -21,11 +21,6 @@ public class Window extends ClientWindow {
 
 	private Game game;
 
-	AnimatedTexture test;
-
-	Renderer tr;
-
-	int texindex = 0;
 
 	/**
 	 * 
@@ -47,8 +42,11 @@ public class Window extends ClientWindow {
 			Display.setResizable(true);
 
 			PixelFormat p = new PixelFormat().withDepthBits(24).withAlphaBits(8).withStencilBits(0);
-			Display.create(p);
+			ContextAttribs glVersion = new ContextAttribs(3, 0);
+			//glVersion.withProfileCompatibility(true);
+			Display.create(p, glVersion);
 			if (gl == null) gl = Graphics.getOpenGL();
+
 
 			load();
 			resized();

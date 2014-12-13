@@ -45,9 +45,27 @@ public class ClientShaderManager implements ShaderManager {
 
 	protected static int GL_FALSE = 0;
 
-	protected static boolean printLogInfo(int obj) {
+	protected static boolean printProgramLogInfo(int obj) {
 		IntBuffer iVal = BufferUtils.createIntBuffer(1);
 		glGetProgram(obj, GL_INFO_LOG_LENGTH, iVal);
+
+		int length = iVal.get();
+		if (length > 1) {
+			// We have some info we need to output.
+			ByteBuffer infoLog = BufferUtils.createByteBuffer(length);
+			iVal.flip();
+			glGetProgramInfoLog(obj, iVal, infoLog);
+			byte[] infoBytes = new byte[length];
+			infoLog.get(infoBytes);
+			String out = new String(infoBytes);
+			System.out.println("Info log:\n" + out);
+		} else return true;
+		return false;
+	}
+
+	protected static boolean printShaderLogInfo(int obj) {
+		IntBuffer iVal = BufferUtils.createIntBuffer(1);
+		glGetShader(obj, GL_INFO_LOG_LENGTH, iVal);
 
 		int length = iVal.get();
 		if (length > 1) {
@@ -136,8 +154,8 @@ public class ClientShaderManager implements ShaderManager {
 		}
 		glShaderSource(fragment, fragCode);
 		glCompileShader(fragment);
-		if (glGetProgrami(fragment, GL_COMPILE_STATUS) == GL_FALSE) {
-			printLogInfo(fragment);
+		if (glGetShaderi(fragment, GL_COMPILE_STATUS) == GL_FALSE) {
+			printShaderLogInfo(fragment);
 			System.out.println("Failed to compile fragment shader: " + url);
 			fragment = 0;
 		}
@@ -151,24 +169,26 @@ public class ClientShaderManager implements ShaderManager {
 	 */
 	@Override
 	public int createShader(URL file, String name) throws IOException {
-		current = glCreateProgram();
-		if (current == 0) return current;
+
 		vertex = createVertShader(file);
 		fragment = createFragShader(file);
 
 		if (vertex == 0 || fragment == 0) return 0;
+
+		current = glCreateProgram();
+		if (current == 0) return current;
 		glAttachShader(current, vertex);
 		glAttachShader(current, fragment);
 		bindAllAttributes();
 		glLinkProgram(current);
 		if (glGetProgrami(current, GL_LINK_STATUS) == GL_FALSE) {
-			printLogInfo(current);
+			printProgramLogInfo(current);
 			throw new RuntimeException("Failed to link shader program: " + name);
 			//return 0;
 		}
 		glValidateProgram(current);
 		if (glGetProgrami(current, GL_VALIDATE_STATUS) == GL_FALSE) {
-			printLogInfo(current);
+			printProgramLogInfo(current);
 			throw new RuntimeException("Failed to validate shader program: " + name);
 			//return 0;
 		}
@@ -201,8 +221,8 @@ public class ClientShaderManager implements ShaderManager {
 		glShaderSource(vertex, vertexCode);
 		glCompileShader(vertex);
 		// if there was a problem compiling, reset vertShader to zero
-		if (glGetProgrami(vertex, GL_COMPILE_STATUS) == GL_FALSE) {
-			printLogInfo(vertex);
+		if (glGetShaderi(vertex, GL_COMPILE_STATUS) == GL_FALSE) {
+			printShaderLogInfo(vertex);
 			throw new RuntimeException("Failed to compile vertex shader: " + url);
 			//vertex = 0;
 		}

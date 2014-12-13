@@ -51,7 +51,7 @@ public class ChatBox extends Component {
 		float y = getY();
 		float width = getWidth();
 		Graphics.getClientShaderManager().bindShader("fontback");
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		for (int d = startLine; d < endLine; ++d) {
 			if (d < 0) {
 				y += 14F;

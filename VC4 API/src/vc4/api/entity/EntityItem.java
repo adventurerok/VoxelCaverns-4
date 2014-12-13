@@ -83,6 +83,7 @@ public class EntityItem extends Entity {
 				render = new DataRenderer();
 				Block.byId(item.getId()).getRenderer().renderBlock(item, -0.5f, -0.5f, -0.5f, render);
 				render.compile();
+				compiled = true;
 			}
 			gl.pushMatrix();
 			gl.translate(position.x, position.y + 0.1 + (MathUtils.sin(world.getTime() / 5f) * 0.1), position.z);
@@ -110,9 +111,17 @@ public class EntityItem extends Entity {
 			if (item.getAmount() > 15) amount = 3;
 			if (item.getAmount() > 60) amount = 4;
 			if (item.getAmount() > 98) amount = 5;
+			if(!compiled){
+				render = new DataRenderer();
+				ItemRenderer.renderItem3D(item, 0, 0, 0, render);
+				render.compile();
+				compiled = true;
+			}
+			if (item.isBlock()) Resources.getAnimatedTexture("blocks").bind();
+			else Resources.getAnimatedTexture("items").bind();
 			for (int d = 0; d < amount; ++d) {
 				gl.rotate((world.getTime() * 4) % 360, 0, 1, 0);
-				ItemRenderer.renderItem3D(item, 0, 0, 0);
+				render.render();
 			}
 			gl.popMatrix();
 		}

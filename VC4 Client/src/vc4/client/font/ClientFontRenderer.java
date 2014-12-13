@@ -14,6 +14,7 @@ import vc4.api.font.*;
 import vc4.api.graphics.*;
 import vc4.api.graphics.shader.ShaderManager;
 import vc4.api.math.MathUtils;
+import vc4.api.render.DataRenderer;
 import vc4.api.text.Localization;
 import vc4.api.vector.Vector2f;
 import vc4.api.vector.Vector3f;
@@ -23,6 +24,55 @@ import vc4.api.vector.Vector3f;
  * 
  */
 public class ClientFontRenderer extends FontRenderer {
+
+	private static class ClientRenderedText implements RenderedText{
+		int backs, vertexes, lines, texture;
+		float x, y, width, height, size;
+		String text;
+
+		@Override
+		public void draw() {
+			sm.bindShader("fontback");
+			gl.callList(backs);
+
+			sm.bindShader("font");
+			gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture);
+			gl.callList(vertexes);
+
+			gl.bindShader("shapes");
+			gl.callList(lines);
+		}
+
+		@Override
+		public float getX() {
+			return x;
+		}
+
+		@Override
+		public float getY() {
+			return y;
+		}
+
+		@Override
+		public float getWidth() {
+			return width;
+		}
+
+		@Override
+		public float getHeight() {
+			return height;
+		}
+
+		@Override
+		public String getText() {
+			return text;
+		}
+
+		@Override
+		public float getSize() {
+			return size;
+		}
+	}
 
 	private static OpenGL gl;
 	private static ShaderManager sm;
@@ -80,7 +130,7 @@ public class ClientFontRenderer extends FontRenderer {
 	 * @see vc4.api.font.FontRenderer#renderString(float, float, java.lang.String)
 	 */
 	@Override
-	public float renderString(float x, float y, String text) {
+	public RenderedText renderString(float x, float y, String text) {
 		return renderString(x, y, text, size);
 	}
 
@@ -90,9 +140,17 @@ public class ClientFontRenderer extends FontRenderer {
 	 * @see vc4.api.font.FontRenderer#renderString(float, float, java.lang.String, float)
 	 */
 	@Override
-	public float renderString(float x, float y, String text, float size) {
+	public RenderedText renderString(float x, float y, String text, float size) {
+		ClientRenderedText output = new ClientRenderedText();
+		output.x = x;
+		output.y = y;
+		output.size = size;
+		output.text = text;
+
 		boolean wasRendering = rendering;
+		int lineCount = 1;
 		float startX = x;
+		float maxX = x;
 		float sizeMulti = size / font.getSize();
 		if (!rendering) {
 			gl.lineWidth(2 * (size / 32F));
@@ -158,8 +216,10 @@ public class ClientFontRenderer extends FontRenderer {
 				if (strike.get() && sLine != null) lines.add(sLine);
 				if (back != null) backgrounds.add(back);
 
+				if(x > maxX) maxX = x;
 				x = startX;
 				y += size;
+				lineCount+= 1;
 				if (underline.get()) uLine = new Line(x, y + font.getBase() * sizeMulti + 1, getColor(uColor));
 				if (strike.get()) sLine = new Line(x, y + font.getBase() * sizeMulti * 0.67F, getColor(sColor));
 				if (getColor(bColor).getAlpha() > 3) back = new Background(x, y, font, getColor(bColor), sizeMulti);
@@ -198,14 +258,32 @@ public class ClientFontRenderer extends FontRenderer {
 			if (underline.get() && uLine != null) lines.add(uLine);
 			if (strike.get() && sLine != null) lines.add(sLine);
 			if (back != null) backgrounds.add(back);
-			renderBacks();
-			renderVertexes();
-			renderLines();
-			sm.unbindShader();
+
+			DataRenderer render = new DataRenderer();
+			int count = renderBacks(render);
+			render.compile();
+			int list = render.createList(0, count, GLPrimitive.LINES);
+			output.backs = list;
+
+			render = new DataRenderer();
+			count = renderVertexes(render);
+			render.compile();
+			list = render.createList(0, count, GLPrimitive.TRIANGLES);
+			output.vertexes = list;
+
+			render = new DataRenderer();
+			count = renderLines(render);
+			render.compile();
+			list = render.createList(0, count, GLPrimitive.TRIANGLES);
+			output.lines = list;
+
+			//sm.unbindShader();
 			rendering = false;
 		}
 		globalY = y;
-		return x - startX;
+		output.width = Math.max(x, maxX) - startX;
+		output.height = lineCount * size;
+		return output;
 	}
 
 	private float handleFormat(float x, float y, float size, String format) {
@@ -234,10 +312,10 @@ public class ClientFontRenderer extends FontRenderer {
 			String oa[] = value.split(",");
 			String args[] = Arrays.copyOfRange(oa, 1, oa.length);
 			String loc = Localization.getLocalization(oa[0], args);
-			return renderString(x, y, loc, size);
+			return renderString(x, y, loc, size).getWidth(); //TODO must fix
 		} else if (kc == 'n') {
 			disableFormat = true;
-			float f = renderString(x, y, value, size);
+			float f = renderString(x, y, value, size).getWidth(); //TODO must fix: text not actually rendered
 			disableFormat = false;
 			return f;
 		} else if (kc == 'f') {
@@ -304,13 +382,13 @@ public class ClientFontRenderer extends FontRenderer {
 			else if (c == 'l') randLetter.set(!randLetter.get());
 		} else if (kc == 'o') {
 			String setting = ClientWindow.getClientWindow().getGame().getSetting(value).getString();
-			return renderString(x, y, setting, size);
+			return renderString(x, y, setting, size).getWidth(); //TODO check if breaks anything
 		} else if (key.equals("lo")) {
 			String oa[] = value.split(",");
 			String args[] = Arrays.copyOfRange(oa, 1, oa.length);
 			String setting = ClientWindow.getClientWindow().getGame().getSetting(oa[0]).getString();
 			String loc = Localization.getLocalization(setting, args);
-			return renderString(x, y, loc, size);
+			return renderString(x, y, loc, size).getWidth();
 		}
 		return 0;
 	}
@@ -366,56 +444,70 @@ public class ClientFontRenderer extends FontRenderer {
 		italic = false;
 	}
 
-	private void renderLines() {
-		if (lines.isEmpty()) return;
-		sm.bindShader("shapes");
-		gl.begin(GLPrimative.LINES);
-		Line line = null;
+	private int renderLines(DataRenderer render) {
+		if (lines.isEmpty()) return 0;
+		//sm.bindShader("shapes");
+		int count = lines.size();
+		Line line;
 		while (!lines.isEmpty()) {
 			line = lines.poll();
 			if (line == null) continue;
 			Color c = line.color;
-			gl.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
-			gl.vertex(line.startX, line.y);
-			gl.vertex(line.endX, line.y);
+			render.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
+			render.addVertex(line.startX, line.y, 0);
+			render.addVertex(line.endX, line.y, 0);
 		}
-		gl.end();
+		return count;
 	}
 
-	private void renderVertexes() {
-		gl.bindTexture(GLTexture.TEX_2D_ARRAY, font.getTexture().getTexture());
-		sm.bindShader("font");
-		gl.begin(GLPrimative.QUADS);
-		Vertex v = null;
+	private int renderVertexes(DataRenderer render) {
+		//sm.bindShader("font");
+		//gl.bindTexture(GLTexture.TEX_2D_ARRAY, font.getTexture().getTexture());
+		//gl.begin(GLPrimitive.QUADS);
+		//render = new DataRenderer();
+		render.useQuadInputMode(true);
+		Vertex v;
+
+		int count = vertexes.size();
 		while ((v = vertexes.poll()) != null) {
 			if (v.color != null) {
 				Color c = v.color;
-				gl.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
+				render.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
 			}
-			gl.texCoord(v.tex.x, v.tex.y, v.tex.z);
-			gl.vertex(v.pos.x, v.pos.y);
+			render.tex(v.tex.x, v.tex.y, v.tex.z);
+			render.addVertex(v.pos.x, v.pos.y, 0f);
 		}
+		render.useQuadInputMode(false);
 
-		gl.end();
-		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
+		return count;
+
+		//render.compile();
+		//render.render();
+		//gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 	}
 
-	private void renderBacks() {
-		if (backgrounds.isEmpty()) return;
-		sm.bindShader("fontback");
-		gl.begin(GLPrimative.QUADS);
-		Background back = null;
+	private int renderBacks(DataRenderer render) {
+		if (backgrounds.isEmpty()) return 0;
+		//sm.bindShader("fontback");
+		//gl.begin(GLPrimitive.QUADS);
+		render.useQuadInputMode(true);
+
+		Background back;
+
+		int count = backgrounds.size();
 		while (!backgrounds.isEmpty()) {
 			back = backgrounds.poll();
 			if (back == null) continue;
 			Color c = back.color;
-			gl.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
-			gl.vertex(back.startX, back.startY, 1);
-			gl.vertex(back.endX, back.startY, 1);
-			gl.vertex(back.endX, back.endY, 1);
-			gl.vertex(back.startX, back.endY, 1);
+			render.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
+			render.addVertex(back.startX, back.startY, 1);
+			render.addVertex(back.endX, back.startY, 1);
+			render.addVertex(back.endX, back.endY, 1);
+			render.addVertex(back.startX, back.endY, 1);
 		}
-		gl.end();
+		render.useQuadInputMode(false);
+
+		return count;
 	}
 
 	private float colorFormat(Format<Color> color, String text, boolean allowNull) {

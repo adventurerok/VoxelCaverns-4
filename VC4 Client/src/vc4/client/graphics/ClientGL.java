@@ -41,10 +41,10 @@ public class ClientGL implements OpenGL {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.api.graphics.OpenGL#begin(vc4.api.graphics.GLPrimative)
+	 * @see vc4.api.graphics.OpenGL#begin(vc4.api.graphics.GLPrimitive)
 	 */
 	@Override
-	public void begin(GLPrimative type) {
+	public void begin(GLPrimitive type) {
 		GL11.glBegin(type.getGlInt());
 	}
 
@@ -285,10 +285,10 @@ public class ClientGL implements OpenGL {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.api.graphics.OpenGL#drawArrays(vc4.api.graphics.GLPrimative, int, int)
+	 * @see vc4.api.graphics.OpenGL#drawArrays(vc4.api.graphics.GLPrimitive, int, int)
 	 */
 	@Override
-	public void drawArrays(GLPrimative type, int first, int count) {
+	public void drawArrays(GLPrimitive type, int first, int count) {
 		GL11.glDrawArrays(type.getGlInt(), first, count);
 	}
 

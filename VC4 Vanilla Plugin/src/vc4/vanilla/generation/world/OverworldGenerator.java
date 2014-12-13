@@ -298,7 +298,7 @@ public class OverworldGenerator implements WorldGenerator {
 		gl.disable(GLFlag.DEPTH_TEST);
 		Graphics.getClientShaderManager().unbindShader();
 		if (pos.y < 192) {
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			if (pos.y > -5200)
 				gl.color(0.6f, 0.45f, 0.45f, 1);
 			else

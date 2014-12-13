@@ -1,10 +1,9 @@
-#version 150 compatibility
+#version 130
 
-in vec4 theColor;
-in vec3 texCoord;
+varying vec4 theColor;
+varying vec3 texCoord;
 
 uniform sampler2DArray theTex;
-
 
 void main(){
     gl_FragColor = texture(theTex, texCoord) * theColor;

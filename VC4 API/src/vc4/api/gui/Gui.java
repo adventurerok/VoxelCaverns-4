@@ -67,7 +67,7 @@ public abstract class Gui extends Component implements MouseListener {
 		if (gl == null) gl = Graphics.getOpenGL();
 		ColorScheme scheme = Client.getGame().getColorScheme(Client.getGame().getColorSchemeSetting().toString());
 		gl.unbindShader();
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		gl.color(scheme.backgroundNormal);
 		if (bord != null) {
 			gl.vertex(getX(), getY());
@@ -82,7 +82,7 @@ public abstract class Gui extends Component implements MouseListener {
 		}
 		gl.end();
 		if (bord != null) {
-			gl.begin(GLPrimative.LINE_LOOP);
+			gl.begin(GLPrimitive.LINE_LOOP);
 			gl.color(scheme.outlineNormal);
 			gl.vertex(getX(), getY());
 			gl.vertex(getX() + getWidth(), getY());
@@ -90,7 +90,7 @@ public abstract class Gui extends Component implements MouseListener {
 			gl.vertex(getX(), getY() + getHeight());
 			gl.end();
 		}
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		gl.color(scheme.outlineNormal);
 		gl.vertex(innerGui.getX(), innerGui.getY());
 		gl.vertex(innerGui.getX() + innerGui.getWidth(), innerGui.getY());
@@ -98,7 +98,7 @@ public abstract class Gui extends Component implements MouseListener {
 		gl.vertex(innerGui.getX(), innerGui.getY() + innerGui.getHeight());
 		gl.end();
 		if (bord != null) {
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(Color.red);
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 2, getY());
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH, getY());
@@ -110,14 +110,14 @@ public abstract class Gui extends Component implements MouseListener {
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 2, getY() + TOP_WIDTH - 2);
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 3.5f, getY() + TOP_WIDTH - 2);
 			gl.end();
-			gl.begin(GLPrimative.LINE_LOOP);
+			gl.begin(GLPrimitive.LINE_LOOP);
 			gl.color(scheme.outlineNormal);
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 3.5f, getY());
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH, getY());
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH, getY() + TOP_WIDTH - 2);
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 3.5f, getY() + TOP_WIDTH - 2);
 			gl.end();
-			gl.begin(GLPrimative.LINES);
+			gl.begin(GLPrimitive.LINES);
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 2, getY());
 			gl.vertex(getX() + getWidth() - SIDES_WIDTH - TOP_WIDTH * 2, getY() + TOP_WIDTH - 2);
 			gl.end();

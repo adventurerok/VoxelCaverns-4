@@ -123,11 +123,11 @@ public class ClientComponentUtils implements ComponentUtils {
 	 */
 	private void renderButton(Button c) {
 		ColorScheme clr = getColorScheme();
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		gl.color(c.isHovering() ? clr.backgroundSelected : clr.backgroundNormal);
 		callQuadForRectangle(c.getBounds(), 0, 0);
 		gl.end();
-		gl.begin(GLPrimative.LINE_LOOP);
+		gl.begin(GLPrimitive.LINE_LOOP);
 		gl.color(c.isHovering() ? clr.outlineSelected : clr.outlineNormal);
 		callQuadForRectangle(c.getBounds(), 0, 0);
 		gl.end();

@@ -70,7 +70,7 @@ public class ScreenMap extends Component {
 		int y = getParent().getHeight() / 2 - 256;
 		gl.enable(GLFlag.SCISSOR_TEST);
 		gl.scissor(x, y, 512, 512);
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		gl.color(1, 1, 1, 0.75f);
 		gl.texCoord(1, 0);
 		gl.vertex(x, y);
@@ -87,7 +87,7 @@ public class ScreenMap extends Component {
 		Resources.getAnimatedTexture("mapicons").bind();
 		// gl.texParameterMagFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.NEAREST);
 		// gl.texParameterMinFilter(GLTexture.TEX_2D_ARRAY, GLTextureFilter.NEAREST, null);
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		for (MapIcon i : icons) {
 			int ax = (int) (i.getPos().y * 512);
 			int ay = (int) ((1 - i.getPos().x) * 512);

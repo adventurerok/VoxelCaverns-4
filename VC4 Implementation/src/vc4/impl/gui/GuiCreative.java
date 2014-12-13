@@ -111,7 +111,7 @@ public class GuiCreative extends Component {
 		int wx = ClientWindow.getClientWindow().getWidth() - 384;
 
 		Graphics.getClientShaderManager().unbindShader();
-		gl.begin(GLPrimative.QUADS);
+		gl.begin(GLPrimitive.QUADS);
 		gl.color(scheme.backgroundNormal);
 		gl.vertex(wx - 36, cy);
 		gl.vertex(wx + 384, cy);
@@ -134,7 +134,7 @@ public class GuiCreative extends Component {
 		boolean hova = mouse.intersects(sh);
 
 		if (show) {
-			gl.begin(GLPrimative.TRIANGLES);
+			gl.begin(GLPrimitive.TRIANGLES);
 			if (!hova) gl.color(1F, 0F, 0F, 0.88F);
 			else gl.color(1F, 0F, 0F, 1F);
 			gl.vertex(px + 8, py);
@@ -142,7 +142,7 @@ public class GuiCreative extends Component {
 			gl.vertex(px, py + 16);
 			gl.end();
 		} else {
-			gl.begin(GLPrimative.TRIANGLES);
+			gl.begin(GLPrimitive.TRIANGLES);
 			if (!hova) gl.color(0F, 1F, 0F, 0.88F);
 			else gl.color(0F, 1F, 0F, 1F);
 			gl.vertex(px, py);
@@ -177,7 +177,7 @@ public class GuiCreative extends Component {
 				if (down) ++currentPage;
 			}
 
-			gl.begin(GLPrimative.TRIANGLES);
+			gl.begin(GLPrimitive.TRIANGLES);
 			gl.color(ColorUtils.brighterLinear(80, top));
 			gl.vertex(nx + 16, ny);
 			gl.color(top);
@@ -213,7 +213,7 @@ public class GuiCreative extends Component {
 		if (ix > -1 && iy > -1 && ix < columnsPerPage && iy < rows) {
 			int at = (iy * columnsPerPage) + ix + (currentPage * stacksPerPage);
 			Graphics.getClientShaderManager().unbindShader();
-			gl.begin(GLPrimative.QUADS);
+			gl.begin(GLPrimitive.QUADS);
 			gl.color(0.9F, 0.9F, 0.1F);
 			gl.vertex(cx + ix * 32, cy + iy * 32 + 32);
 			gl.vertex(cx + ix * 32 + 32, cy + iy * 32 + 32);

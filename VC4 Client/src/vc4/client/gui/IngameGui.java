@@ -86,7 +86,7 @@ public class IngameGui extends Component {
 			public void draw() {
 				if (hasFocus()) {
 					gl.unbindShader();
-					gl.begin(GLPrimative.QUADS);
+					gl.begin(GLPrimitive.QUADS);
 					gl.color(0, 0, 0, 1);
 					gl.vertex(0, Client.getGame().getWindow().getHeight() - 13);
 					gl.vertex(Client.getGame().getWindow().getWidth(), Client.getGame().getWindow().getHeight() - 13);
@@ -176,7 +176,7 @@ public class IngameGui extends Component {
 				float x2 = 176 / 512f;
 				float y1 = 16 / 512f;
 				float y2 = 32 / 512f;
-				gl.begin(GLPrimative.QUADS);
+				gl.begin(GLPrimitive.QUADS);
 				gl.color(Color.red);
 				gl.texCoord(0, y1, 0);
 				gl.vertex(sx, sy);
