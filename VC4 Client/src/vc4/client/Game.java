@@ -74,7 +74,7 @@ public class Game extends Component implements ClientGame {
 	private IngameGui ingameGui;
 	private ClientResources resources;
 	private long previousTenTicks = 0;
-	private Fustrum fustrum = new Fustrum();
+	private Frustum frustum = new Frustum();
 
 	private boolean showGui = true;
 
@@ -163,7 +163,7 @@ public class Game extends Component implements ClientGame {
 		}
 		if (gameState == GameState.SINGLEPLAYER || gameState == GameState.MULTIPLAYER) {
 			getWindow().enterRenderMode(RenderType.GAME);
-			calculateFustrum();
+			calculateFrustum();
 			camera.rotate();
 			if (gameState == GameState.SINGLEPLAYER) world.drawBackground(player);
 			camera.translate();
@@ -172,6 +172,9 @@ public class Game extends Component implements ClientGame {
 		}
 		gl.disable(GLFlag.DEPTH_TEST);
 		getWindow().enterRenderMode(RenderType.GUI);
+		gl.enableVertexAttribArray(0);
+		gl.enableVertexAttribArray(3);
+		gl.enableVertexAttribArray(8);
 		if (gameState == GameState.SINGLEPLAYER) {
 			Vector3l pos = player.getEyePos().toVector3l();
 			if (world.getBlockType(pos.x, pos.y, pos.z) instanceof BlockFluid) {
@@ -361,8 +364,8 @@ public class Game extends Component implements ClientGame {
 	public String takeScreenshot() {
 		int startX = 0;
 		int startY = 0;
-		int width = (int) window.getWidth();
-		int height = (int) window.getHeight();
+		int width = window.getWidth();
+		int height = window.getHeight();
 		GL11.glReadBuffer(GL11.GL_FRONT);
 		int bpp = 4; // Assuming a 32-bit display with a byte each for red, green, blue, and alpha.
 		ByteBuffer buffer = BufferUtils.createByteBuffer(Display.getWidth() * Display.getHeight() * bpp);
@@ -521,7 +524,7 @@ public class Game extends Component implements ClientGame {
 	 */
 	@Override
 	public void action(String action) {
-		Logger.getLogger("VC4").info("Recieved action: " + action);
+		Logger.getLogger("VC4").info("Received action: " + action);
 		if (action.equals("quit")) {
 			window.close();
 			return;
@@ -548,7 +551,7 @@ public class Game extends Component implements ClientGame {
 					try {
 						world.saveInfo();
 					} catch (IOException e) {
-						Logger.getLogger(Game.class).warning("Exception occured", e);
+						Logger.getLogger(Game.class).warning("Exception occurred", e);
 					}
 					player = world.loadPlayer("player");
 					camera = new PlayerController(player);
@@ -567,7 +570,7 @@ public class Game extends Component implements ClientGame {
 				world = new ImplWorld(true);
 				camera = new FPCameraController(0, 0, 0);
 			} catch (IOException e) {
-				Logger.getLogger(Game.class).warning("Exception occured", e);
+				Logger.getLogger(Game.class).warning("Exception occurred", e);
 			}
 		}
 		if (action.equals("back")) {
@@ -651,7 +654,7 @@ public class Game extends Component implements ClientGame {
 			resources = (ClientResources) Resources.getRes();
 			resources.load();
 		} catch (IOException e) {
-			Logger.getLogger(Game.class).warning("Exception occured", e);
+			Logger.getLogger(Game.class).warning("Exception occurred", e);
 		}
 		Localization.loadLocalization("en_GB");
 	}
@@ -786,7 +789,7 @@ public class Game extends Component implements ClientGame {
 		if (settings.containsKey(name)) {
 			settings.get(name).set(setting);
 		} else {
-			settings.put(name, new Setting<Object>(setting));
+			settings.put(name, new Setting<>(setting));
 		}
 	}
 
@@ -850,12 +853,12 @@ public class Game extends Component implements ClientGame {
 		gameState = g;
 	}
 
-	public void calculateFustrum() {
+	public void calculateFrustum() {
 		Vector2f nf = getNearFar();
-		fustrum.setCamInternals(getFieldOfVision(), window.getAspectRatio(), nf.x, nf.y);
+		frustum.setCamInternals(getFieldOfVision(), window.getAspectRatio(), nf.x, nf.y);
 		Vector3d p = camera.getPosition();
 		Vector3d l = p.add(camera.getLook());
-		fustrum.setCamDef(p, l, up);
+		frustum.setCamDef(p, l, up);
 	}
 
 	/**
@@ -872,8 +875,8 @@ public class Game extends Component implements ClientGame {
 	}
 
 	@Override
-	public Fustrum getViewFustrum() {
-		return fustrum;
+	public Frustum getViewFrustum() {
+		return frustum;
 	}
 
 	@Override

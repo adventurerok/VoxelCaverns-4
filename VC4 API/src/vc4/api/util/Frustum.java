@@ -4,7 +4,7 @@ import vc4.api.graphics.*;
 import vc4.api.math.MathUtils;
 import vc4.api.vector.Vector3d;
 
-public class Fustrum {
+public class Frustum {
 
 	public static int OUTSIDE = 0;
 	public static int INTERSECT = 1;
@@ -22,7 +22,7 @@ public class Fustrum {
 	double tang;
 	double nw, nh, fw, fh;
 
-	public Fustrum() {
+	public Frustum() {
 		for (int d = 0; d < 6; ++d)
 			pl[d] = new Plane();
 	}

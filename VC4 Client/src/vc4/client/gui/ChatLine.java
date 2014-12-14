@@ -3,6 +3,8 @@
  */
 package vc4.client.gui;
 
+import vc4.api.font.RenderedText;
+
 /**
  * @author paul
  * 
@@ -10,6 +12,8 @@ package vc4.client.gui;
 public class ChatLine {
 
 	long created;
+	RenderedText lastRender;
+	float lastAlpha;
 
 	public ChatLine(long created, String text) {
 		super();

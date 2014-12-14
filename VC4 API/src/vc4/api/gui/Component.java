@@ -25,7 +25,7 @@ public class Component {
 
 	private Component _parent;
 	private Rectangle _bounds = new Rectangle(0, 0, 100, 100);
-	private Rectangle _dbounds = new Rectangle(0, 0, 100, 100);
+	private Rectangle _dBounds = new Rectangle(0, 0, 100, 100);
 	private boolean _visible = true;
 
 	private boolean _focus = false;
@@ -300,11 +300,11 @@ public class Component {
 	}
 
 	public Rectangle getDefaultBounds() {
-		return _dbounds;
+		return _dBounds;
 	}
 
 	public void setDefaultBounds(Rectangle dbounds) {
-		_dbounds = dbounds;
+		_dBounds = dbounds;
 	}
 
 	/**

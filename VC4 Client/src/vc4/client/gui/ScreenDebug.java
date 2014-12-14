@@ -1,11 +1,13 @@
 package vc4.client.gui;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import vc4.api.biome.Biome;
 import vc4.api.client.Client;
 import vc4.api.entity.EntityPlayer;
 import vc4.api.font.FontRenderer;
+import vc4.api.font.RenderedText;
 import vc4.api.gui.Component;
 import vc4.api.vector.Vector3l;
 import vc4.api.world.World;
@@ -24,6 +26,9 @@ public class ScreenDebug extends Component {
 	FontRenderer font = FontRenderer.createFontRenderer("unispaced_14", 14);
 
 	int debugLine;
+
+	ArrayList<RenderedText> oldDebugLines = new ArrayList<>(20);
+	ArrayList<RenderedText> newDebugLines = new ArrayList<>(20);
 
 	public int calcFPS() {
 		long time = System.nanoTime(); // Current time in nano seconds
@@ -57,6 +62,11 @@ public class ScreenDebug extends Component {
 
 	@Override
 	public void draw() {
+		oldDebugLines.clear();
+		ArrayList<RenderedText> temp = oldDebugLines;
+		oldDebugLines = newDebugLines;
+		newDebugLines = temp;
+
 		debugLine = 0;
 		EntityPlayer player = Client.getGame().getPlayer();
 		World world = (World) player.getWorld();
@@ -89,7 +99,15 @@ public class ScreenDebug extends Component {
 	}
 
 	public void renderDebugLine(String line) {
-		font.renderString(10, 10 + 16 * debugLine, line);
+		RenderedText old;
+		if(oldDebugLines.size() > debugLine && (old = oldDebugLines.get(debugLine)) != null && line.equals(old.getText())){
+			newDebugLines.add(old);
+			old.draw();
+		} else {
+			RenderedText text = font.renderString(10, 10 + 16 * debugLine, line);
+			newDebugLines.add(text);
+			text.draw();
+		}
 		++debugLine;
 	}
 }

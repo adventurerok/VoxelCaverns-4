@@ -10,7 +10,7 @@ import vc4.api.gui.Cursor;
 import vc4.api.gui.themed.ColorScheme;
 import vc4.api.input.MouseSet;
 import vc4.api.packet.Packet;
-import vc4.api.util.Fustrum;
+import vc4.api.util.Frustum;
 import vc4.api.util.Setting;
 import vc4.api.vbt.TagCompound;
 import vc4.api.world.World;
@@ -37,7 +37,7 @@ public interface ClientGame {
 
 	public void setPaused(boolean paused);
 
-	public Fustrum getViewFustrum();
+	public Frustum getViewFrustum();
 
 	/**
 	 * Finds the window

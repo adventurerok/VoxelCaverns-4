@@ -293,11 +293,11 @@ public class ImplWorld implements World {
 			// render.add(ds);
 		}
 		ArrayList<BlockStoreDist> tRender = new ArrayList<>();
-		Fustrum fust = Client.getGame().getViewFustrum();
+		Frustum fust = Client.getGame().getViewFrustum();
 		visibleChunks = 0;
 		for (BlockStoreDist b : render) {
 			AABB cube = AABB.getBoundingBox(b.c.pos.worldX(b.s.xMod) - 2, b.c.pos.worldX(b.s.xMod) + 18, b.c.pos.worldY(b.s.yMod) - 2, b.c.pos.worldY(b.s.yMod) + 18, b.c.pos.worldZ(b.s.zMod) - 2, b.c.pos.worldZ(b.s.zMod) + 18);
-			if (fust.boxInFrustum(cube) != Fustrum.OUTSIDE) {
+			if (fust.boxInFrustum(cube) != Frustum.OUTSIDE) {
 				tRender.add(b);
 				++visibleChunks;
 			}
@@ -313,10 +313,12 @@ public class ImplWorld implements World {
 			if (d.s.oldData[1] != null && d.s.oldData[1].isCompiled()) d.s.oldData[1].render();
 			else if (d.s.currentData[1] != null && d.s.currentData[1].isCompiled()) d.s.currentData[1].render();
 		}
+		gl.disableVertexAttribArray(2);
 		gl.disableVertexAttribArray(6);
 		for (ImplChunk c : chunks.values()) {
 			c.drawEntitys();
 		}
+		gl.enableVertexAttribArray(2);
 		gl.enableVertexAttribArray(6);
 		gl.bindShader("world");
 		gl.shaderUniform3f("skyLight", skylightColor.x, skylightColor.y, skylightColor.z);
@@ -331,6 +333,7 @@ public class ImplWorld implements World {
 			if (d.s.oldData[2] != null && d.s.oldData[2].isCompiled()) d.s.oldData[2].render();
 			else if (d.s.currentData[2] != null && d.s.currentData[2].isCompiled()) d.s.currentData[2].render();
 		}
+		gl.disableVertexAttribArray(2);
 		gl.disableVertexAttribArray(6);
 		gl.disable(GLFlag.CULL_FACE);
 		gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);

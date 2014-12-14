@@ -19,9 +19,9 @@ import vc4.api.text.Strings;
  */
 public class ScreenTypeMenu implements ScreenType {
 
-	int startx = 10, starty = 10;
+	int startX = 10, startY = 10;
 	int rows = 0, columns = 1;
-	int bwidth = 187, bheight = 20, bgapx = 10, bgapy = 10;
+	int bWidth = 187, bHeight = 20, bGapX = 10, bGapY = 10;
 	float fontSize = 14;
 	int currentPos = 0;
 
@@ -49,31 +49,51 @@ public class ScreenTypeMenu implements ScreenType {
 		ArrayList<Object> args = null;
 		float fontSize = this.fontSize;
 		for (Entry<String, ?> e : yaml.entrySet()) {
-			if (e.getKey().equals("class")) clazz = e.getValue().toString();
-			else if (e.getKey().equals("text")) text = e.getValue().toString();
-			else if (e.getKey().equals("action")) action = e.getValue().toString();
-			else if (e.getKey().equals("alt")) alt = e.getValue().toString();
-			else if (e.getKey().equals("args")) args = (ArrayList<Object>) e.getValue();
-			else if (e.getKey().equals("fontsize")) fontSize = Float.parseFloat(e.getValue().toString());
-		}
-		Object[] agmts;
-		if (args == null) agmts = new Object[0];
-		else {
-			agmts = new Object[args.size()];
-			for (int d = 0; d < args.size(); ++d) {
-				agmts[d] = args.get(d);
+			switch(e.getKey()){
+				case "class":
+					clazz = e.getValue().toString();
+					break;
+				case "text":
+					text = e.getValue().toString();
+					break;
+				case "action":
+					action = e.getValue().toString();
+					break;
+				case "alt":
+					alt = e.getValue().toString();
+					break;
+				case "args":
+					args = (ArrayList<Object>) e.getValue();
+					break;
+				case "fontsize":
+					fontSize = Float.parseFloat(e.getValue().toString());
+					break;
 			}
 		}
-		if (clazz.equals("button")) {
-			Button b = new Button(Strings.chatLocalization(text, agmts), action, alt);
-			b.setBounds(getNextBounds());
-			b.setFontSize(fontSize);
-			parent.add(b);
-		} else if (clazz.equals("settingscroller")) {
-			SettingScroller b = new SettingScroller(Strings.chatLocalization(text, agmts), action, alt);
-			b.setBounds(getNextBounds());
-			b.setFontSize(fontSize);
-			parent.add(b);
+		Object[] arguments;
+		if (args == null) arguments = new Object[0];
+		else {
+			arguments = new Object[args.size()];
+			for (int d = 0; d < args.size(); ++d) {
+				arguments[d] = args.get(d);
+			}
+		}
+
+		switch (clazz) {
+			case "button": {
+				Button b = new Button(Strings.chatLocalization(text, arguments), action, alt);
+				b.setBounds(getNextBounds());
+				b.setFontSize(fontSize);
+				parent.add(b);
+				break;
+			}
+			case "settingscroller": {
+				SettingScroller b = new SettingScroller(Strings.chatLocalization(text, arguments), action, alt);
+				b.setBounds(getNextBounds());
+				b.setFontSize(fontSize);
+				parent.add(b);
+				break;
+			}
 		}
 	}
 
@@ -93,10 +113,10 @@ public class ScreenTypeMenu implements ScreenType {
 				LinkedHashMap<String, ?> bDat = (LinkedHashMap<String, ?>) e.getValue();
 				for (Entry<String, ?> f : bDat.entrySet()) {
 					int val = ((Number) f.getValue()).intValue();
-					if (f.getKey().equals("width")) bwidth = val;
-					else if (f.getKey().equals("height")) bheight = val;
-					else if (f.getKey().equals("gapx")) bgapx = val;
-					else if (f.getKey().equals("gapy")) bgapy = val;
+					if (f.getKey().equals("width")) bWidth = val;
+					else if (f.getKey().equals("height")) bHeight = val;
+					else if (f.getKey().equals("gapx")) bGapX = val;
+					else if (f.getKey().equals("gapy")) bGapY = val;
 				}
 			} else if (e.getKey().equals("fontsize")) fontSize = Float.parseFloat(e.getValue().toString());
 			else if (e.getKey().equals("border")) c.setResizer(new ResizerBorder(Border.valueOf(e.getValue().toString().toUpperCase())));
@@ -111,20 +131,20 @@ public class ScreenTypeMenu implements ScreenType {
 	}
 
 	private Rectangle getNextBounds() {
-		Rectangle start = new Rectangle(startx, starty, bwidth, bheight);
+		Rectangle start = new Rectangle(startX, startY, bWidth, bHeight);
 		int xp;
 		int yp;
 		if (rows == 0) {
-			xp = (currentPos % columns) * (bwidth + bgapx);
-			yp = (currentPos / columns) * (bheight + bgapy);
+			xp = (currentPos % columns) * (bWidth + bGapX);
+			yp = (currentPos / columns) * (bHeight + bGapY);
 		} else if (columns == 0) {
-			yp = (currentPos % rows) * (bheight + bgapy);
-			xp = (currentPos / rows) * (bwidth + bgapx);
+			yp = (currentPos % rows) * (bHeight + bGapY);
+			xp = (currentPos / rows) * (bWidth + bGapX);
 		} else {
 			int rn = currentPos % rows;
 			int cn = (currentPos / rows) % rows;
-			xp = cn * (bwidth + bgapx);
-			yp = rn * (bheight + bgapy);
+			xp = cn * (bWidth + bGapX);
+			yp = rn * (bHeight + bGapY);
 		}
 		start.x += xp;
 		start.y += yp;

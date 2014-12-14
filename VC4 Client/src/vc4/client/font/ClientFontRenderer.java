@@ -31,16 +31,48 @@ public class ClientFontRenderer extends FontRenderer {
 		String text;
 
 		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			ClientRenderedText that = (ClientRenderedText) o;
+
+			if (Float.compare(that.size, size) != 0) return false;
+			if (texture != that.texture) return false;
+			if (Float.compare(that.x, x) != 0) return false;
+			if (Float.compare(that.y, y) != 0) return false;
+			if (text != null ? !text.equals(that.text) : that.text != null) return false;
+
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = texture;
+			result = 31 * result + (x != +0.0f ? Float.floatToIntBits(x) : 0);
+			result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+			result = 31 * result + (size != +0.0f ? Float.floatToIntBits(size) : 0);
+			result = 31 * result + (text != null ? text.hashCode() : 0);
+			return result;
+		}
+
+		@Override
 		public void draw() {
-			sm.bindShader("fontback");
-			gl.callList(backs);
+			if(backs != 0) {
+				sm.bindShader("fontback");
+				gl.callList(backs);
+			}
 
-			sm.bindShader("font");
-			gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture);
-			gl.callList(vertexes);
+			if(vertexes != 0) {
+				sm.bindShader("font");
+				gl.bindTexture(GLTexture.TEX_2D_ARRAY, texture);
+				gl.callList(vertexes);
+			}
 
-			gl.bindShader("shapes");
-			gl.callList(lines);
+			if(lines != 0) {
+				gl.bindShader("shapes");
+				gl.callList(lines);
+			}
 		}
 
 		@Override
@@ -146,6 +178,7 @@ public class ClientFontRenderer extends FontRenderer {
 		output.y = y;
 		output.size = size;
 		output.text = text;
+		output.texture = font.getTexture().getTexture();
 
 		boolean wasRendering = rendering;
 		int lineCount = 1;
@@ -261,23 +294,29 @@ public class ClientFontRenderer extends FontRenderer {
 
 			DataRenderer render = new DataRenderer();
 			int count = renderBacks(render);
-			render.compile();
-			int list = render.createList(0, count, GLPrimitive.LINES);
-			output.backs = list;
+			if(count != 0) {
+				render.compile();
+				int list = render.createList(0, count, GLPrimitive.LINES);
+				output.backs = list;
+			}
 
 			render = new DataRenderer();
 			count = renderVertexes(render);
-			render.compile();
-			list = render.createList(0, count, GLPrimitive.TRIANGLES);
-			output.vertexes = list;
+			if(count != 0) {
+				render.compile();
+				int list = render.createList(0, count, GLPrimitive.TRIANGLES);
+				output.vertexes = list;
+			}
 
 			render = new DataRenderer();
 			count = renderLines(render);
-			render.compile();
-			list = render.createList(0, count, GLPrimitive.TRIANGLES);
-			output.lines = list;
+			if(count != 0) {
+				render.compile();
+				int list = render.createList(0, count, GLPrimitive.TRIANGLES);
+				output.lines = list;
+			}
 
-			//sm.unbindShader();
+
 			rendering = false;
 		}
 		globalY = y;
@@ -446,7 +485,7 @@ public class ClientFontRenderer extends FontRenderer {
 
 	private int renderLines(DataRenderer render) {
 		if (lines.isEmpty()) return 0;
-		//sm.bindShader("shapes");
+
 		int count = lines.size();
 		Line line;
 		while (!lines.isEmpty()) {
@@ -461,10 +500,6 @@ public class ClientFontRenderer extends FontRenderer {
 	}
 
 	private int renderVertexes(DataRenderer render) {
-		//sm.bindShader("font");
-		//gl.bindTexture(GLTexture.TEX_2D_ARRAY, font.getTexture().getTexture());
-		//gl.begin(GLPrimitive.QUADS);
-		//render = new DataRenderer();
 		render.useQuadInputMode(true);
 		Vertex v;
 
@@ -479,17 +514,13 @@ public class ClientFontRenderer extends FontRenderer {
 		}
 		render.useQuadInputMode(false);
 
-		return count;
+		return (int)(count * 1.5f);
 
-		//render.compile();
-		//render.render();
-		//gl.bindTexture(GLTexture.TEX_2D_ARRAY, 0);
 	}
 
 	private int renderBacks(DataRenderer render) {
 		if (backgrounds.isEmpty()) return 0;
-		//sm.bindShader("fontback");
-		//gl.begin(GLPrimitive.QUADS);
+
 		render.useQuadInputMode(true);
 
 		Background back;
@@ -507,7 +538,7 @@ public class ClientFontRenderer extends FontRenderer {
 		}
 		render.useQuadInputMode(false);
 
-		return count;
+		return count * 6;
 	}
 
 	private float colorFormat(Format<Color> color, String text, boolean allowNull) {

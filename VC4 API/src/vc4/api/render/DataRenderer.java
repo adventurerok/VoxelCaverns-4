@@ -202,7 +202,7 @@ public class DataRenderer implements Renderer {
 		if(createdList) throw new RuntimeException("Cannot create list after render() is called once");
 		if (amountOfVertexes < 1) return 0;
 
-		if ((amountOfVertexes * 14) != buffer.capacity()) System.out.println((amountOfVertexes * 14) + " -=- " + buffer.capacity());
+		if ((amountOfVertexes * 11) != buffer.capacity()) System.out.println((amountOfVertexes * 14) + " -=- " + buffer.capacity());
 		int listId = gl.genLists(1);
 		gl.newList(listId, GLCompileFunc.COMPILE);
 		boolean normal = true;
