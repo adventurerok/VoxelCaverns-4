@@ -68,6 +68,11 @@ public class ClientGL implements OpenGL {
 		GL11.glBindTexture(type.getGlInt(), texture);
 	}
 
+
+	@Override
+	public int genBuffers(){
+		return GL15.glGenBuffers();
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,6 +115,11 @@ public class ClientGL implements OpenGL {
 			clr |= b.getGlInt();
 		}
 		GL11.glClear(clr);
+	}
+
+	@Override
+	public void bufferData(GLBufferType target, FloatBuffer data, GLBufferUsage usage){
+		GL15.glBufferData(target.getGlInt(), data, usage.getGlInt());
 	}
 
 	/*
@@ -1103,6 +1113,11 @@ public class ClientGL implements OpenGL {
 		GL20.glVertexAttribPointer(index, size, normalized, stride, buffer);
 	}
 
+	@Override
+	public void vertexAttribPointer(int index, int size, GLType type, boolean normalized, int stride, long bufferOffset){
+		GL20.glVertexAttribPointer(index, size, type.getGlInt(), normalized, stride, bufferOffset);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1112,6 +1127,16 @@ public class ClientGL implements OpenGL {
 	public void vertexWithTexture(float x, float y, float z, float r, float s, float t) {
 		texCoord(r, s, t);
 		vertex(x, y, z);
+	}
+
+	@Override
+	public void bindBuffer(GLBufferType target, int buffer){
+		GL15.glBindBuffer(target.getGlInt(), buffer);
+	}
+
+	@Override
+	public void deleteBuffers(int buffer){
+		GL15.glDeleteBuffers(buffer);
 	}
 
 	/*

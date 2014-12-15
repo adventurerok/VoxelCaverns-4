@@ -61,13 +61,13 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 				coords = TextureCoords.pipeTex_0(tex, max, mix, miz, maz);
 				renderer.color(color);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + bot, z + miz);
+				renderer.vertex(x + max, y + bot, z + miz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + bot, z + maz);
+				renderer.vertex(x + max, y + bot, z + maz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + bot, z + maz);
+				renderer.vertex(x + mix, y + bot, z + maz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + bot, z + miz);
+				renderer.vertex(x + mix, y + bot, z + miz);
 				if (df == 0 && mt != null && mt.renderSideMultitexture(world, x, y, z, 5)) {
 					tex = mt.getTextureIndexMultitexture(world, x, y, z, 5);
 					color = mt.getColorMultitexture(world, x, y, z, 5);
@@ -83,13 +83,13 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 				coords = TextureCoords.pipeTex_0(tex, max, mix, maz, miz);
 				renderer.color(color);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + top, z + maz);
+				renderer.vertex(x + max, y + top, z + maz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + top, z + miz);
+				renderer.vertex(x + max, y + top, z + miz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + top, z + miz);
+				renderer.vertex(x + mix, y + top, z + miz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + top, z + maz);
+				renderer.vertex(x + mix, y + top, z + maz);
 				if (df == 0 && mt != null && mt.renderSideMultitexture(world, x, y, z, 4)) {
 					tex = mt.getTextureIndexMultitexture(world, x, y, z, 4);
 					color = mt.getColorMultitexture(world, x, y, z, 4);
@@ -105,13 +105,13 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 				coords = TextureCoords.pipeTex_0(tex, may, miy, miz, maz);
 				renderer.color(color);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + top, y + may, z + miz);
+				renderer.vertex(x + top, y + may, z + miz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + top, y + may, z + maz);
+				renderer.vertex(x + top, y + may, z + maz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + top, y + miy, z + maz);
+				renderer.vertex(x + top, y + miy, z + maz);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + top, y + miy, z + miz);
+				renderer.vertex(x + top, y + miy, z + miz);
 				if (df == 0 && mt != null && mt.renderSideMultitexture(world, x, y, z, 0)) {
 					tex = mt.getTextureIndexMultitexture(world, x, y, z, 0);
 					color = mt.getColorMultitexture(world, x, y, z, 0);
@@ -127,13 +127,13 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 				coords = TextureCoords.pipeTex_1(tex, max, mix, may, miy);
 				renderer.color(color);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + may, z + top);
+				renderer.vertex(x + max, y + may, z + top);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + may, z + top);
+				renderer.vertex(x + mix, y + may, z + top);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + miy, z + top);
+				renderer.vertex(x + mix, y + miy, z + top);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + miy, z + top);
+				renderer.vertex(x + max, y + miy, z + top);
 				if (df == 0 && mt != null && mt.renderSideMultitexture(world, x, y, z, 1)) {
 					tex = mt.getTextureIndexMultitexture(world, x, y, z, 1);
 					color = mt.getColorMultitexture(world, x, y, z, 1);
@@ -149,13 +149,13 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 				coords = TextureCoords.pipeTex_0(tex, may, miy, maz, miz);
 				renderer.color(color);
 				renderer.tex(may, maz, tex);
-				renderer.addVertex(x + bot, y + may, z + maz);
+				renderer.vertex(x + bot, y + may, z + maz);
 				renderer.tex(may, miz, tex);
-				renderer.addVertex(x + bot, y + may, z + miz);
+				renderer.vertex(x + bot, y + may, z + miz);
 				renderer.tex(miy, miz, tex);
-				renderer.addVertex(x + bot, y + miy, z + miz);
+				renderer.vertex(x + bot, y + miy, z + miz);
 				renderer.tex(miy, maz, tex);
-				renderer.addVertex(x + bot, y + miy, z + maz);
+				renderer.vertex(x + bot, y + miy, z + maz);
 				if (df == 0 && mt != null && mt.renderSideMultitexture(world, x, y, z, 2)) {
 					tex = mt.getTextureIndexMultitexture(world, x, y, z, 2);
 					color = mt.getColorMultitexture(world, x, y, z, 2);
@@ -171,13 +171,13 @@ public class BlockRendererJoinable extends BlockRendererDefault {
 				coords = TextureCoords.pipeTex_1(tex, mix, max, may, miy);
 				renderer.color(color);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + may, z + bot);
+				renderer.vertex(x + mix, y + may, z + bot);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + may, z + bot);
+				renderer.vertex(x + max, y + may, z + bot);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + max, y + miy, z + bot);
+				renderer.vertex(x + max, y + miy, z + bot);
 				renderer.tex(coords.next());
-				renderer.addVertex(x + mix, y + miy, z + bot);
+				renderer.vertex(x + mix, y + miy, z + bot);
 				if (df == 0 && mt != null && mt.renderSideMultitexture(world, x, y, z, 3)) {
 					tex = mt.getTextureIndexMultitexture(world, x, y, z, 3);
 					color = mt.getColorMultitexture(world, x, y, z, 3);

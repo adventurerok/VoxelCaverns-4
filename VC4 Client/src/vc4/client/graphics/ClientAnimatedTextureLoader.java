@@ -24,51 +24,6 @@ import vc4.impl.plugin.PluginManager;
  */
 public class ClientAnimatedTextureLoader implements AnimatedTextureLoader {
 
-	// private static ArrayList<URL> getImageUrlsInPackage(String packageName) throws IOException {
-	// ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-	// URL packageURL;
-	// ArrayList<URL> names = new ArrayList<URL>();
-	//
-	// packageName = packageName.replace(".", "/");
-	// packageURL = classLoader.getResource(packageName);
-	// if(packageURL == null) return names;
-	//
-	// if (packageURL.getProtocol().equals("jar")) {
-	// String jarFileName;
-	// Enumeration<JarEntry> jarEntries;
-	// String entryName;
-	//
-	// // build jar file name, then loop through zipped entries
-	// jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
-	// jarFileName = jarFileName.substring(5, jarFileName.indexOf("!"));
-	// try (JarFile jf = new JarFile(jarFileName)) {
-	// jarEntries = jf.entries();
-	// while (jarEntries.hasMoreElements()) {
-	// JarEntry je = jarEntries.nextElement();
-	//
-	// entryName = je.getName();
-	// // System.out.println(entryName);
-	// if (entryName.startsWith(packageName) && entryName.length() > 5 && entryName.endsWith(".png")) {
-	// entryName = entryName.substring(packageName.length(), entryName.lastIndexOf('.'));
-	// names.add(new URL(packageURL + entryName + ".png"));
-	// }
-	// }
-	// }
-	//
-	// // loop through files in classpath
-	// } else {
-	// File folder = new File(URLDecoder.decode(packageURL.getFile(), "UTF-8"));
-	// File[] contenuti = folder.listFiles();
-	// //if(contenuti == null) return names;
-	// String entryName;
-	// for(File actual: contenuti){
-	// entryName = actual.getName();
-	// if(!entryName.endsWith(".png")) continue;
-	// names.add(actual.toURI().toURL());
-	// }
-	// }
-	// return names;
-	// }
 
 	private static ArrayList<URL> getImageURLs(String tex) {
 		ArrayList<URL> result = new ArrayList<>();
@@ -84,7 +39,7 @@ public class ClientAnimatedTextureLoader implements AnimatedTextureLoader {
 	}
 
 	private static ArrayList<URL> getImageUrlsElsewhere(URL baseURL) throws IOException {
-		ArrayList<URL> names = new ArrayList<URL>();
+		ArrayList<URL> names = new ArrayList<>();
 
 		if (baseURL.getProtocol().equals("jar")) {
 			String jarFileName;

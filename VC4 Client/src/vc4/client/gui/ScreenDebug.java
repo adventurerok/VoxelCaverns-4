@@ -69,10 +69,10 @@ public class ScreenDebug extends Component {
 
 		debugLine = 0;
 		EntityPlayer player = Client.getGame().getPlayer();
-		World world = (World) player.getWorld();
-		Vector3l ppos = player.position.toVector3l();
-		ImplChunk chunk = (ImplChunk) world.getChunk(ppos.x >> 5, ppos.y >> 5, ppos.z >> 5);
-		int bsn = (int) ((((ppos.x & 31) >> 4) * 2 + ((ppos.y & 31) >> 4)) * 2 + ((ppos.z & 31) >> 4));
+		World world = player.getWorld();
+		Vector3l pPos = player.position.toVector3l();
+		ImplChunk chunk = (ImplChunk) world.getChunk(pPos.x >> 5, pPos.y >> 5, pPos.z >> 5);
+		int bsn = (int) ((((pPos.x & 31) >> 4) * 2 + ((pPos.y & 31) >> 4)) * 2 + ((pPos.z & 31) >> 4));
 		BlockStore blockstore = null;
 		if (chunk != null) blockstore = chunk.getBlockStore(bsn);
 		Vector3l blockPos = player.position.toVector3l();
@@ -83,8 +83,8 @@ public class ScreenDebug extends Component {
 		long maxMemory = Runtime.getRuntime().maxMemory();
 		long totalMemory = Runtime.getRuntime().totalMemory();
 		// long freeMemory = Runtime.getRuntime().freeMemory();
-		long avaliableMemory = calcMemory();
-		renderDebugLine("Used memory: " + avaliableMemory * 100L / maxMemory + "% (" + avaliableMemory / 1024L / 1024L + "MB) of " + maxMemory / 1024L / 1024L + "MB");
+		long availableMemory = calcMemory();
+		renderDebugLine("Used memory: " + availableMemory * 100L / maxMemory + "% (" + availableMemory / 1024L / 1024L + "MB) of " + maxMemory / 1024L / 1024L + "MB");
 		renderDebugLine("Allocated memory: " + totalMemory * 100L / maxMemory + "% (" + totalMemory / 1024L / 1024L + "MB)");
 		renderDebugLine("FPS: " + calcFPS());
 		renderDebugLine("X: " + blockPos.x);
@@ -99,11 +99,12 @@ public class ScreenDebug extends Component {
 	}
 
 	public void renderDebugLine(String line) {
-		RenderedText old;
+		RenderedText old = null;
 		if(oldDebugLines.size() > debugLine && (old = oldDebugLines.get(debugLine)) != null && line.equals(old.getText())){
 			newDebugLines.add(old);
 			old.draw();
 		} else {
+			if(old != null) old.release();
 			RenderedText text = font.renderString(10, 10 + 16 * debugLine, line);
 			newDebugLines.add(text);
 			text.draw();

@@ -13,9 +13,9 @@ import vc4.api.vector.*;
  */
 public interface Renderer {
 
-	public abstract void addVertex(double x, double y, double z);
+	public abstract void vertex(double x, double y, double z);
 
-	public abstract void addVertex(Vertex v);
+	public abstract void vertex(Vertex v);
 
 	public abstract void color(float r, float g, float b, float a);
 

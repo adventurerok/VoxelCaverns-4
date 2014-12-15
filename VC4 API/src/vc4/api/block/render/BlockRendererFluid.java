@@ -107,26 +107,26 @@ public class BlockRendererFluid implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x + 1, y + heights[0], z + 1);
+		render.vertex(x + 1, y + heights[0], z + 1);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x + 1, y + heights[3], z);
+		render.vertex(x + 1, y + heights[3], z);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x + 1, y, z);
+		render.vertex(x + 1, y, z);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x + 1, y, z + 1);
+		render.vertex(x + 1, y, z + 1);
 	}
 
 	public void renderBlockFaceEast(double x, double y, double z, Renderer render, double[] heights, int tex, Color color) {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x, y + heights[1], z + 1);
+		render.vertex(x, y + heights[1], z + 1);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x + 1, y + heights[0], z + 1);
+		render.vertex(x + 1, y + heights[0], z + 1);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x + 1, y, z + 1);
+		render.vertex(x + 1, y, z + 1);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x, y, z + 1);
+		render.vertex(x, y, z + 1);
 
 	}
 
@@ -134,13 +134,13 @@ public class BlockRendererFluid implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x, y + heights[2], z);
+		render.vertex(x, y + heights[2], z);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x, y + heights[1], z + 1);
+		render.vertex(x, y + heights[1], z + 1);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x, y, z + 1);
+		render.vertex(x, y, z + 1);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x, y, z);
+		render.vertex(x, y, z);
 
 	}
 
@@ -148,13 +148,13 @@ public class BlockRendererFluid implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x + 1, y + heights[3], z);
+		render.vertex(x + 1, y + heights[3], z);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x, y + heights[2], z);
+		render.vertex(x, y + heights[2], z);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x, y, z);
+		render.vertex(x, y, z);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x + 1, y, z);
+		render.vertex(x + 1, y, z);
 
 	}
 
@@ -162,13 +162,13 @@ public class BlockRendererFluid implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x, y + heights[2], z);
+		render.vertex(x, y + heights[2], z);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x + 1, y + heights[3], z);
+		render.vertex(x + 1, y + heights[3], z);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x + 1, y + heights[0], z + 1);
+		render.vertex(x + 1, y + heights[0], z + 1);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x, y + heights[1], z + 1);
+		render.vertex(x, y + heights[1], z + 1);
 
 	}
 
@@ -176,13 +176,13 @@ public class BlockRendererFluid implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x + 1, y, z);
+		render.vertex(x + 1, y, z);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x, y, z);
+		render.vertex(x, y, z);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x, y, z + 1);
+		render.vertex(x, y, z + 1);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x + 1, y, z + 1);
+		render.vertex(x + 1, y, z + 1);
 
 	}
 

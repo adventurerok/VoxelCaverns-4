@@ -9,7 +9,7 @@ package vc4.api.graphics;
  */
 public enum GLType {
 
-	BYTE(5120), SHORT(5122), UNSIGNED_BYTE(5121), UNSIGNED_SHORT(5123);
+	BYTE(5120), SHORT(5122), UNSIGNED_BYTE(5121), UNSIGNED_SHORT(5123), FLOAT(5126), DOUBLE(5130);
 
 	private int glnum;
 

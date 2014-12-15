@@ -68,26 +68,26 @@ public class BlockRendererCross implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.color(color);
 		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
-		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
+		render.vertex(x + bounds.maxX, y + bounds.maxY, z + bounds.minZ);
 		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
-		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
+		render.vertex(x + bounds.maxX, y + bounds.minY, z + bounds.minZ);
 		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
-		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
+		render.vertex(x + bounds.minX, y + bounds.minY, z + bounds.maxZ);
 		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
-		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
+		render.vertex(x + bounds.minX, y + bounds.maxY, z + bounds.maxZ);
 	}
 
 	public void renderBlockRight(double x, double y, double z, Renderer render, AABB bounds, double tex, Color color) {
 		render.useQuadInputMode(true);
 		render.color(color);
 		render.tex(bounds.maxZ, 1 - bounds.maxY, tex, 0);
-		render.addVertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
+		render.vertex(x + bounds.maxX, y + bounds.maxY, z + bounds.maxZ);
 		render.tex(bounds.maxZ, 1 - bounds.minY, tex, 0);
-		render.addVertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
+		render.vertex(x + bounds.maxX, y + bounds.minY, z + bounds.maxZ);
 		render.tex(bounds.minZ, 1 - bounds.minY, tex, 0);
-		render.addVertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
+		render.vertex(x + bounds.minX, y + bounds.minY, z + bounds.minZ);
 		render.tex(bounds.minZ, 1 - bounds.maxY, tex, 0);
-		render.addVertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
+		render.vertex(x + bounds.minX, y + bounds.maxY, z + bounds.minZ);
 	}
 
 }

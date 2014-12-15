@@ -56,25 +56,25 @@ public class ChunkRenderer implements Renderer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.impl.world.rendering.Renderer#addVertex(double, double, double)
+	 * @see vc4.impl.world.rendering.Renderer#vertex(double, double, double)
 	 */
 	@Override
-	public void addVertex(double x, double y, double z) {
+	public void vertex(double x, double y, double z) {
 		if (!quadInput) {
-			addVertex(new Vertex(new Vector3d(x + trans.x, y + trans.y, z + trans.z), color, tex));
+			vertex(new Vertex(new Vector3d(x + trans.x, y + trans.y, z + trans.z), color, tex));
 			return;
 		}
 		if (qpos < 4) {
 			quad[qpos++] = new Vertex(new Vector3d(x + trans.x, y + trans.y, z + trans.z), color, tex);
 		}
 		if (qpos == 4) {
-			addVertex(quad[0]);
-			addVertex(quad[2]);
-			addVertex(quad[1]);
+			vertex(quad[0]);
+			vertex(quad[2]);
+			vertex(quad[1]);
 
-			addVertex(quad[0]);
-			addVertex(quad[3]);
-			addVertex(quad[2]);
+			vertex(quad[0]);
+			vertex(quad[3]);
+			vertex(quad[2]);
 
 			qpos = 0;
 		}
@@ -83,10 +83,10 @@ public class ChunkRenderer implements Renderer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.impl.world.rendering.Renderer#addVertex(vc4.impl.world.rendering.DataRenderer.Vertex)
+	 * @see vc4.impl.world.rendering.Renderer#vertex(vc4.impl.world.rendering.DataRenderer.Vertex)
 	 */
 	@Override
-	public void addVertex(Vertex v) {
+	public void vertex(Vertex v) {
 		if (tpos < 3) {
 			tri[tpos++] = v;
 		}
@@ -286,7 +286,7 @@ public class ChunkRenderer implements Renderer {
 
 	@Override
 	public void addVertex(Vector3d vertex) {
-		addVertex(vertex.x, vertex.y, vertex.z);
+		vertex(vertex.x, vertex.y, vertex.z);
 	}
 
 	@Override

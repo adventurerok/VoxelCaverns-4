@@ -44,6 +44,7 @@ public final class BufferUtils {
 	 */
 	public static ByteBuffer createByteBuffer(int size) {
 		return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
+		//return ByteBuffer.allocate(size).order(ByteOrder.nativeOrder());
 	}
 
 	/**

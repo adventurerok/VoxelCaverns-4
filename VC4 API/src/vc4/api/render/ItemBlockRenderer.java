@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import vc4.api.Resources;
 import vc4.api.block.Block;
+import vc4.api.block.BlockMultitexture;
 import vc4.api.block.IBlockMultitexture;
 import vc4.api.graphics.*;
 import vc4.api.item.ItemStack;
@@ -30,6 +31,20 @@ public class ItemBlockRenderer {
 		} else {
 			renderBlock2d();
 		}
+	}
+
+	public static void renderJustBlock(ItemStack stack, int x, int y, Renderer render){
+		gl = Graphics.getOpenGL();
+		current = stack;
+		position = new Vector2f(x, y);
+		if (stack == null || !stack.exists() || !stack.isBlock()) return;
+
+		if (Block.byId(stack.getId()).render3d(stack.getData())) {
+			renderBlock3d(render);
+		} else {
+			renderBlock2d(render);
+		}
+
 	}
 
 	protected static void renderBlock2d() {
@@ -67,6 +82,41 @@ public class ItemBlockRenderer {
 		}
 	}
 
+	protected static void renderBlock2d(Renderer render) {
+		int texInd = Block.byId(current.getId()).getTextureIndex(current, 0);
+		//Resources.getAnimatedTexture("blocks").bind();
+
+		//gl.begin(GLPrimitive.QUADS);
+		Color blockColor = Block.byId(current.getId()).getColor(current, 0);
+		render.color(blockColor.getRed() / 255F, blockColor.getGreen() / 255F, blockColor.getBlue() / 255F, 1F);
+		render.tex(0, 0, texInd);
+		render.vertex(position.x, position.y, 0);
+		render.tex(1, 0, texInd);
+		render.vertex(position.x + 24, position.y, 0);
+		render.tex(1, 1, texInd);
+		render.vertex(position.x + 24, position.y + 24, 0);
+		render.tex(0, 1, texInd);
+		render.vertex(position.x, position.y + 24, 0);
+
+
+		if (Block.byId(current.getId()) instanceof IBlockMultitexture && ((IBlockMultitexture) Block.byId(current.getId())).multitextureUsed(current.getData(), 0)) {
+			int texInd2 = ((IBlockMultitexture) Block.byId(current.getId())).getTextureIndexMultitexture(current, 0);
+			Color color = ((IBlockMultitexture) Block.byId(current.getId())).getColorMultitexture(current, 0);
+
+			//gl.begin(GLPrimitive.QUADS);
+			render.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1F);
+			render.tex(0, 0, texInd2);
+			render.vertex(position.x, position.y, 0);
+			render.tex(1, 0, texInd2);
+			render.vertex(position.x + 24, position.y, 0);
+			render.tex(1, 1, texInd2);
+			render.vertex(position.x + 24, position.y + 24, 0);
+			render.tex(0, 1, texInd2);
+			render.vertex(position.x, position.y + 24, 0);
+			//gl.end();
+		}
+	}
+
 	protected static void renderBlock3d() {
 		AABB bounds = Block.byId(current.getId()).getRenderSize(current);
 
@@ -77,12 +127,7 @@ public class ItemBlockRenderer {
 		maxY = (float) (((bounds.maxY) * 16) - 16F);
 		maxZ = (float) ((bounds.maxZ - 0.5F) * 16);
 
-		tix = (float) bounds.minX;
-		tiy = (float) bounds.minY;
-		tiz = (float) bounds.minZ;
-		tax = (float) bounds.maxX;
-		tay = (float) bounds.maxY;
-		taz = (float) bounds.maxZ;
+
 
 		gl.pushMatrix();
 		gl.translate(position.x + 12, position.y + 4, 0);
@@ -93,6 +138,153 @@ public class ItemBlockRenderer {
 		renderBlock3dLeft();
 		renderBlock3dRight();
 		gl.popMatrix();
+	}
+
+	private static final float LEFT_X = 8f/150f;
+	private static final float SIDE_TOP_Y = 34f/150f;
+	private static final float MIDDLE_X = 0.5f;
+	private static final float TOP_Y = 2f/150f;
+	private static final float RIGHT_X = 142f/150f;
+	private static final float MIDDLE_Y = 55f/150f;
+	private static final float SIDE_BOTTOM_Y = 116f/150f;
+	private static final float BOTTOM_Y = 148f/150f;
+
+	protected static void renderBlock3d(Renderer render) {
+		AABB bounds = Block.byId(current.getId()).getRenderSize(current);
+
+		tix = (float) bounds.minX;
+		tiy = (float) bounds.minY;
+		tiz = (float) bounds.minZ;
+		tax = (float) bounds.maxX;
+		tay = (float) bounds.maxY;
+		taz = (float) bounds.maxZ;
+
+		float x = position.x;
+		float y = position.y;
+		float size = 32;
+
+		float leftX = x + LEFT_X * size;
+		float sideTopY = y + SIDE_TOP_Y * size;
+		float middleX = x + MIDDLE_X * size;
+		float topY = y + TOP_Y * size;
+		float rightX = x + RIGHT_X * size;
+		float middleY = y + MIDDLE_Y * size;
+		float sideBottomY = y + SIDE_BOTTOM_Y * size;
+		float bottomY = y + BOTTOM_Y * size;
+		float topZ = 34f/150f * 2f * size;
+		float middleZ = 34f/150f * size;
+		float bottomZ = 0;
+
+		Block block = Block.byId(current.getId());
+		int texInd;
+		Color color;
+
+
+		//TOP FACE
+		texInd = block.getTextureIndex(current, 4);
+		color = block.getColor(current, 4);
+		render.color(color);
+
+		render.tex(0, 0, texInd);
+		render.vertex(leftX, sideTopY, middleZ);
+
+		render.tex(1, 0, texInd);
+		render.vertex(middleX, topY, bottomZ);
+
+		render.tex(1, 1, texInd);
+		render.vertex(rightX, sideTopY, middleZ);
+
+		render.tex(0, 1, texInd);
+		render.vertex(middleX, middleY, topZ);
+
+		//EAST FACE
+		texInd = block.getTextureIndex(current, 1);
+		color = block.getColor(current, 1);
+		render.color(color);
+
+		render.tex(0, 0, texInd);
+		render.vertex(leftX, sideTopY, middleZ);
+
+		render.tex(1, 0, texInd);
+		render.vertex(middleX, middleY, topZ);
+
+		render.tex(1, 1, texInd);
+		render.vertex(middleX, bottomY, topZ);
+
+		render.tex(0, 1, texInd);
+		render.vertex(leftX, sideBottomY, middleZ);
+
+		//NORTH FACE
+		texInd = block.getTextureIndex(current, 0);
+		color = block.getColor(current, 0);
+		render.color(color);
+
+		render.tex(0, 0, texInd);
+		render.vertex(middleX, middleY, topZ);
+
+		render.tex(1, 0, texInd);
+		render.vertex(rightX, sideTopY, middleZ);
+
+		render.tex(1, 1, texInd);
+		render.vertex(rightX, sideBottomY, middleZ);
+
+		render.tex(0, 1, texInd);
+		render.vertex(middleX, bottomY, topZ);
+
+		if(!(block instanceof IBlockMultitexture)) return;
+		IBlockMultitexture mult = (IBlockMultitexture) block;
+
+		//TOP FACE
+		texInd = mult.getTextureIndexMultitexture(current, 4);
+		color = mult.getColorMultitexture(current, 4);
+		render.color(color);
+
+		render.tex(0, 0, texInd);
+		render.vertex(leftX, sideTopY, middleZ);
+
+		render.tex(1, 0, texInd);
+		render.vertex(middleX, topY, bottomZ);
+
+		render.tex(1, 1, texInd);
+		render.vertex(rightX, sideTopY, middleZ);
+
+		render.tex(0, 1, texInd);
+		render.vertex(middleX, middleY, topZ);
+
+		//EAST FACE
+		texInd = mult.getTextureIndexMultitexture(current, 1);
+		color = mult.getColorMultitexture(current, 1);
+		render.color(color);
+
+		render.tex(0, 0, texInd);
+		render.vertex(leftX, sideTopY, middleZ);
+
+		render.tex(1, 0, texInd);
+		render.vertex(middleX, middleY, topZ);
+
+		render.tex(1, 1, texInd);
+		render.vertex(middleX, bottomY, topZ);
+
+		render.tex(0, 1, texInd);
+		render.vertex(leftX, sideBottomY, middleZ);
+
+		//NORTH FACE
+		texInd = mult.getTextureIndexMultitexture(current, 0);
+		color = mult.getColorMultitexture(current, 0);
+		render.color(color);
+
+		render.tex(0, 0, texInd);
+		render.vertex(middleX, middleY, topZ);
+
+		render.tex(1, 0, texInd);
+		render.vertex(rightX, sideTopY, middleZ);
+
+		render.tex(1, 1, texInd);
+		render.vertex(rightX, sideBottomY, middleZ);
+
+		render.tex(0, 1, texInd);
+		render.vertex(middleX, bottomY, topZ);
+
 	}
 
 	protected static void renderBlock3dTop() {

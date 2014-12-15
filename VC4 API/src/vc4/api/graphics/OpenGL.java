@@ -37,6 +37,8 @@ public interface OpenGL {
 
 	public void clear(EnumSet<GLBufferBit> bufferBits);
 
+	public void bufferData(GLBufferType target, FloatBuffer data, GLBufferUsage usage);
+
 	public void clearColor(float r, float g, float b, float a);
 
 	public void color(byte r, byte g, byte b);
@@ -74,6 +76,8 @@ public interface OpenGL {
 	public void depthMask(boolean mask);
 
 	public void disable(GLFlag flag);
+
+	public int genBuffers();
 
 	public void disableVertexAttribArray(int index);
 
@@ -296,7 +300,13 @@ public interface OpenGL {
 
 	public void vertexAttribPointer(int index, int size, boolean normalized, int stride, FloatBuffer buffer);
 
+	public void vertexAttribPointer(int index, int size, GLType type, boolean normalized, int stride, long bufferOffset);
+
 	public void vertexWithTexture(float x, float y, float z, float r, float s, float t);
+
+	public void bindBuffer(GLBufferType target, int buffer);
+
+	public void deleteBuffers(int buffer);
 
 	public void viewport(int x, int y, int width, int height);
 

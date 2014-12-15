@@ -29,58 +29,58 @@ public class BlockRendererTorch implements BlockRenderer {
 		render.color(color);
 		// Side 0
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.5625F, y + 0.65625F, z + 0.4375F);
+		render.vertex(x + 0.5625F, y + 0.65625F, z + 0.4375F);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F, y + 0.65625F, z + 0.5625F);
+		render.vertex(x + 0.5625F, y + 0.65625F, z + 0.5625F);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.5625F);
+		render.vertex(x + 0.5625F, y, z + 0.5625F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.4375F);
+		render.vertex(x + 0.5625F, y, z + 0.4375F);
 		// Side 1
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F, y + 0.65625F, z + 0.5625F);
+		render.vertex(x + 0.4375F, y + 0.65625F, z + 0.5625F);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F, y + 0.65625F, z + 0.5625F);
+		render.vertex(x + 0.5625F, y + 0.65625F, z + 0.5625F);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.5625F);
+		render.vertex(x + 0.5625F, y, z + 0.5625F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.5625F);
+		render.vertex(x + 0.4375F, y, z + 0.5625F);
 		// Side 2
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F, y + 0.65625F, z + 0.4375F);
+		render.vertex(x + 0.4375F, y + 0.65625F, z + 0.4375F);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.4375F, y + 0.65625F, z + 0.5625F);
+		render.vertex(x + 0.4375F, y + 0.65625F, z + 0.5625F);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.5625F);
+		render.vertex(x + 0.4375F, y, z + 0.5625F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.4375F);
+		render.vertex(x + 0.4375F, y, z + 0.4375F);
 		// Side 3
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F, y + 0.65625F, z + 0.4375F);
+		render.vertex(x + 0.4375F, y + 0.65625F, z + 0.4375F);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F, y + 0.65625F, z + 0.4375F);
+		render.vertex(x + 0.5625F, y + 0.65625F, z + 0.4375F);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.4375F);
+		render.vertex(x + 0.5625F, y, z + 0.4375F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.4375F);
+		render.vertex(x + 0.4375F, y, z + 0.4375F);
 		// side 4
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F, y + 0.65625F, z + 0.4375F);
+		render.vertex(x + 0.4375F, y + 0.65625F, z + 0.4375F);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F, y + 0.65625F, z + 0.4375F);
+		render.vertex(x + 0.5625F, y + 0.65625F, z + 0.4375F);
 		render.tex(0.5625F, 0.46875F, te);
-		render.addVertex(x + 0.5625F, y + 0.65625F, z + 0.5625F);
+		render.vertex(x + 0.5625F, y + 0.65625F, z + 0.5625F);
 		render.tex(0.4375F, 0.46875F, te);
-		render.addVertex(x + 0.4375F, y + 0.65625F, z + 0.5625F);
+		render.vertex(x + 0.4375F, y + 0.65625F, z + 0.5625F);
 		// side 5
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.4375F);
+		render.vertex(x + 0.4375F, y, z + 0.4375F);
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.4375F);
+		render.vertex(x + 0.5625F, y, z + 0.4375F);
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.5625F);
+		render.vertex(x + 0.5625F, y, z + 0.5625F);
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.5625F);
+		render.vertex(x + 0.4375F, y, z + 0.5625F);
 	}
 
 	public void renderTorchSlanting(Renderer render, double x, double y, double z, int te, Color color, int dir) {
@@ -106,58 +106,58 @@ public class BlockRendererTorch implements BlockRenderer {
 		render.color(color);
 		// Side 0
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.4375F + zTop);
+		render.vertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.4375F + zTop);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.5625F + zTop);
+		render.vertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.5625F + zTop);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.5625F);
+		render.vertex(x + 0.5625F, y, z + 0.5625F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.4375F);
+		render.vertex(x + 0.5625F, y, z + 0.4375F);
 		// Side 1
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.5625F + zTop);
+		render.vertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.5625F + zTop);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.5625F + zTop);
+		render.vertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.5625F + zTop);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.5625F);
+		render.vertex(x + 0.5625F, y, z + 0.5625F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.5625F);
+		render.vertex(x + 0.4375F, y, z + 0.5625F);
 		// Side 2
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.4375F + zTop);
+		render.vertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.4375F + zTop);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.5625F + zTop);
+		render.vertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.5625F + zTop);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.5625F);
+		render.vertex(x + 0.4375F, y, z + 0.5625F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.4375F);
+		render.vertex(x + 0.4375F, y, z + 0.4375F);
 		// Side 3
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.4375F + zTop);
+		render.vertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.4375F + zTop);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.4375F + zTop);
+		render.vertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.4375F + zTop);
 		render.tex(0.5625F, 1F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.4375F);
+		render.vertex(x + 0.5625F, y, z + 0.4375F);
 		render.tex(0.4375F, 1F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.4375F);
+		render.vertex(x + 0.4375F, y, z + 0.4375F);
 		// side 4
 		render.tex(0.4375F, 0.34375F, te);
-		render.addVertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.4375F + zTop);
+		render.vertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.4375F + zTop);
 		render.tex(0.5625F, 0.34375F, te);
-		render.addVertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.4375F + zTop);
+		render.vertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.4375F + zTop);
 		render.tex(0.5625F, 0.46875F, te);
-		render.addVertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.5625F + zTop);
+		render.vertex(x + 0.5625F + xTop, y + 0.65625F, z + 0.5625F + zTop);
 		render.tex(0.4375F, 0.46875F, te);
-		render.addVertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.5625F + zTop);
+		render.vertex(x + 0.4375F + xTop, y + 0.65625F, z + 0.5625F + zTop);
 		// side 5
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.4375F);
+		render.vertex(x + 0.4375F, y, z + 0.4375F);
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.4375F);
+		render.vertex(x + 0.5625F, y, z + 0.4375F);
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.5625F, y, z + 0.5625F);
+		render.vertex(x + 0.5625F, y, z + 0.5625F);
 		render.tex(0.46875F, 0.9375F, te);
-		render.addVertex(x + 0.4375F, y, z + 0.5625F);
+		render.vertex(x + 0.4375F, y, z + 0.5625F);
 	}
 
 	@Override

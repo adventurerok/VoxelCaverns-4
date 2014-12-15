@@ -3,6 +3,7 @@ package vc4.impl.gui;
 import java.awt.Color;
 import java.awt.Rectangle;
 
+import vc4.api.Resources;
 import vc4.api.client.Client;
 import vc4.api.client.ClientWindow;
 import vc4.api.container.ContainerCreative;
@@ -19,6 +20,31 @@ import vc4.api.util.ColorUtils;
 
 public class GuiCreative extends Component {
 
+
+	private static class CreativePage {
+		int items;
+		int itemsSize;
+		int blocks;
+		int blocksSize;
+		boolean released = false;
+
+		public void release(){
+			if(released) return;
+			gl.deleteBuffers(items);
+			gl.deleteBuffers(blocks);
+			released = true;
+		}
+
+		public void draw(){
+			gl.bindShader("texture");
+			Resources.getAnimatedTexture("items").bind();
+			VertexBufferRenderer.render(gl, items, GLPrimitive.TRIANGLES, 0, itemsSize);
+
+			Resources.getAnimatedTexture("blocks").bind();
+			VertexBufferRenderer.render(gl, blocks, GLPrimitive.TRIANGLES, 0, blocksSize);
+		}
+	}
+
 	private static OpenGL gl;
 
 	public ContainerCreative inventory = new ContainerCreative();
@@ -30,8 +56,8 @@ public class GuiCreative extends Component {
 	public static int columnsPerPage = 12;
 	public int currentPage = 0;
 
-	public int listId[];
-	public boolean builtList[];
+	private CreativePage pageArray[];
+	public boolean builtPage[];
 
 	boolean show = true;
 
@@ -47,16 +73,16 @@ public class GuiCreative extends Component {
 		setBounds(new Rectangle(width - getRequiredWidth(), 0, getRequiredWidth(), height));
 		calculateRows();
 		calculatePages();
-		if (listId != null) {
+		if (pageArray != null) {
 			try {
-				for (int dofor = 0; dofor < listId.length; ++dofor) {
-					if (listId[dofor] != 0) gl.deleteLists(listId[dofor], 1);
+				for (int dofor = 0; dofor < pageArray.length; ++dofor) {
+					pageArray[dofor].release();
 				}
 			} catch (Exception e) {
 			}
 		}
-		listId = new int[pages];
-		builtList = new boolean[pages];
+		pageArray = new CreativePage[pages];
+		builtPage = new boolean[pages];
 	}
 
 	protected void calculateColumns() {
@@ -196,10 +222,10 @@ public class GuiCreative extends Component {
 		ItemStack sel = null;
 		if (!hover && show) sel = renderSelectedStack(ix, iy);
 		if (currentPage >= pages) currentPage = pages - 1;
-		if (!builtList[currentPage]) createListForPage(currentPage);
+		if (!builtPage[currentPage]) createDataForPage(currentPage);
 		if (show) {
-			Graphics.getClientShaderManager().bindShader("texture");
-			gl.callList(listId[currentPage]);
+			//Graphics.getClientShaderManager().bindShader("texture");
+			pageArray[currentPage].draw();
 		}
 
 		if (sel != null && show) ItemTooltipRenderer.renderTooltip(sel, ToolTipType.CREATIVE);
@@ -247,10 +273,11 @@ public class GuiCreative extends Component {
 		return null;
 	}
 
-	private void createListForPage(int page) {
-		if (listId[page] != 0) gl.deleteLists(listId[page], 1);
-		listId[page] = gl.genLists(1);
-		gl.newList(listId[page], GLCompileFunc.COMPILE);
+	private void createDataForPage(int page) {
+		if (pageArray[page] != null) pageArray[page].release();
+
+		VertexBufferRenderer render = new VertexBufferRenderer();
+		render.useQuadInputMode(true);
 		int cx = getX();
 		int cy = getY();
 		for (int y = rows - 1; y > -1; --y) {
@@ -259,11 +286,40 @@ public class GuiCreative extends Component {
 				if (inventory.getItem(at) == null) {
 					continue;
 				}
-				ItemRenderer.renderItemStack(inventory.getItem(at), (8 + cx + x * 32), (8 + cy + y * 32) + 32);
+				if(inventory.getItem(at).isBlock()) continue;
+				ItemRenderer.renderJustItem(inventory.getItem(at), (8 + cx + x * 32), (8 + cy + y * 32) + 32, render);
 			}
 		}
-		gl.endList();
-		builtList[page] = true;
+		render.compile();
+		int itemBuffer = render.getBufferId();
+		int itemSize = render.getVertexCount();
+
+		render = new VertexBufferRenderer();
+		render.useQuadInputMode(true);
+
+		for (int y = rows - 1; y > -1; --y) {
+			for (int x = 0; x < columnsPerPage; ++x) {
+				int at = (y * columnsPerPage) + x + (page * stacksPerPage);
+				if (inventory.getItem(at) == null) {
+					continue;
+				}
+				if(inventory.getItem(at).isItem()) continue;
+				ItemBlockRenderer.renderJustBlock(inventory.getItem(at), (8 + cx + x * 32) - 4, (8 + cy + y * 32) + 28, render);
+				//ItemRenderer.renderJustItem();
+			}
+		}
+
+		render.compile();
+		int blockBuffer = render.getBufferId();
+		int blockSize = render.getVertexCount();
+
+		CreativePage pageData = new CreativePage();
+		pageData.items = itemBuffer;
+		pageData.itemsSize = itemSize;
+		pageData.blocks = blockBuffer;
+		pageData.blocksSize = blockSize;
+		pageArray[page] = pageData;
+		builtPage[page] = true;
 	}
 
 	@Override

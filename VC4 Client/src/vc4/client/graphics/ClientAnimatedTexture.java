@@ -24,7 +24,7 @@ public class ClientAnimatedTexture implements AnimatedTexture {
 	private static OpenGL gl;
 
 	int tex;
-	int arraysize;
+	int arraySize;
 	int width, height;
 	boolean smooth = true, mipmap = true;
 	boolean mipmapGen = false;
@@ -77,7 +77,7 @@ public class ClientAnimatedTexture implements AnimatedTexture {
 	 */
 	@Override
 	public int getArraySize() {
-		return arraysize;
+		return arraySize;
 	}
 
 	/*
@@ -183,7 +183,7 @@ public class ClientAnimatedTexture implements AnimatedTexture {
 			try {
 				BufferedImage img = ImageIO.read(i.getImageStream()); // Begin testing image
 				if ((img.getWidth() & -img.getWidth()) != img.getWidth()) continue;
-				if (img.getWidth() > 1024) continue; // 1024 is too big
+				if (img.getWidth() > 1024) continue; // 1024 is too big, is it?
 				if (img.getHeight() % (int) (img.getWidth() * yRatio) != 0 || img.getHeight() < (img.getWidth() * yRatio)) continue; // Test passed if false
 				if (img.getWidth() > widest) widest = img.getWidth();
 				toLoad.add(new LoadingImage(i.texName, img, i.txt));
@@ -205,11 +205,11 @@ public class ClientAnimatedTexture implements AnimatedTexture {
 			sizedImages.add(i);
 
 		}
-		arraysize = sizedImages.size();
-		if (prefix) arraysize += 2;
+		arraySize = sizedImages.size();
+		if (prefix) arraySize += 2;
 		width = widest;
 		height = (int) (widest * yRatio);
-		ByteBuffer data = BufferUtils.createByteBuffer(width * height * arraysize * 4);
+		ByteBuffer data = BufferUtils.createByteBuffer(width * height * arraySize * 4);
 		int index = prefix ? 2 : 0;
 		if (prefix) {
 			indexNames.put("transparent", 0);
@@ -253,7 +253,7 @@ public class ClientAnimatedTexture implements AnimatedTexture {
 		data.flip();
 		int texid = gl.genTextures();
 		gl.bindTexture(type, texid);
-		gl.texImage3D(type, 0, GLInternalFormat.RGBA8, width, height, arraysize, false, GLFormat.RGBA, GLType.UNSIGNED_BYTE, data);
+		gl.texImage3D(type, 0, GLInternalFormat.RGBA8, width, height, arraySize, false, GLFormat.RGBA, GLType.UNSIGNED_BYTE, data);
 
 		setMipmap(false);
 		setSmooth(false);

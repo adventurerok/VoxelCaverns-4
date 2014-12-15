@@ -82,6 +82,7 @@ public class ChatBox extends Component {
 				} else	{
 					font.setAlpha(open ? 1 : l.getAlpha());
 					l.lastAlpha = l.getAlpha();
+					if(l.lastRender != null) l.lastRender.release();
 					l.lastRender = font.renderString(x + 3, y, l.text, 14F);
 					l.lastRender.draw();
 				}

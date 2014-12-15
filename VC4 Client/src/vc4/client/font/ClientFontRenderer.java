@@ -29,6 +29,7 @@ public class ClientFontRenderer extends FontRenderer {
 		int backs, vertexes, lines, texture;
 		float x, y, width, height, size;
 		String text;
+		boolean released = false;
 
 		@Override
 		public boolean equals(Object o) {
@@ -58,6 +59,7 @@ public class ClientFontRenderer extends FontRenderer {
 
 		@Override
 		public void draw() {
+			if(released) throw new RuntimeException("RenderedText already released");
 			if(backs != 0) {
 				sm.bindShader("fontback");
 				gl.callList(backs);
@@ -103,6 +105,14 @@ public class ClientFontRenderer extends FontRenderer {
 		@Override
 		public float getSize() {
 			return size;
+		}
+
+		@Override
+		public void release() {
+			released = true;
+			gl.deleteLists(backs, 1);
+			gl.deleteLists(vertexes,1);
+			gl.deleteLists(lines, 1);
 		}
 	}
 
@@ -493,8 +503,8 @@ public class ClientFontRenderer extends FontRenderer {
 			if (line == null) continue;
 			Color c = line.color;
 			render.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
-			render.addVertex(line.startX, line.y, 0);
-			render.addVertex(line.endX, line.y, 0);
+			render.vertex(line.startX, line.y, 0);
+			render.vertex(line.endX, line.y, 0);
 		}
 		return count;
 	}
@@ -510,7 +520,7 @@ public class ClientFontRenderer extends FontRenderer {
 				render.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
 			}
 			render.tex(v.tex.x, v.tex.y, v.tex.z);
-			render.addVertex(v.pos.x, v.pos.y, 0f);
+			render.vertex(v.pos.x, v.pos.y, 0f);
 		}
 		render.useQuadInputMode(false);
 
@@ -531,10 +541,10 @@ public class ClientFontRenderer extends FontRenderer {
 			if (back == null) continue;
 			Color c = back.color;
 			render.color(c.getRed() / 255F, c.getGreen() / 255F, c.getBlue() / 255F, alpha);
-			render.addVertex(back.startX, back.startY, 1);
-			render.addVertex(back.endX, back.startY, 1);
-			render.addVertex(back.endX, back.endY, 1);
-			render.addVertex(back.startX, back.endY, 1);
+			render.vertex(back.startX, back.startY, 1);
+			render.vertex(back.endX, back.startY, 1);
+			render.vertex(back.endX, back.endY, 1);
+			render.vertex(back.startX, back.endY, 1);
 		}
 		render.useQuadInputMode(false);
 

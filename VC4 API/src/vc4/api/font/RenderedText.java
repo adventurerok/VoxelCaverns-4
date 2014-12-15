@@ -14,4 +14,5 @@ public interface RenderedText {
     public float getHeight();
     public String getText();
     public float getSize();
+    public void release();
 }

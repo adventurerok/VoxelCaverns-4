@@ -29,8 +29,7 @@ public class DataRenderer implements Renderer {
 
 	Vertex[] quad = new Vertex[4];
 	Vertex[] tri = new Vertex[3];
-	int qpos = 0;
-	int tpos = 0;
+	int qPos = 0;
 
 	boolean quadInput = false;
 
@@ -38,6 +37,10 @@ public class DataRenderer implements Renderer {
 
 	boolean createdList = false;
 	int listId = 0;
+
+	public int getVertexCount(){
+		return amountOfVertexes;
+	}
 
 	/**
 	 * 
@@ -49,54 +52,38 @@ public class DataRenderer implements Renderer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.impl.world.rendering.Renderer#addVertex(double, double, double)
+	 * @see vc4.impl.world.rendering.Renderer#vertex(double, double, double)
 	 */
 	@Override
-	public void addVertex(double x, double y, double z) {
+	public void vertex(double x, double y, double z) {
 		if (!quadInput) {
-			addVertex(new Vertex(new Vector3d(x + trans.x, y + trans.y, z + trans.z), color, tex));
+			vertex(new Vertex(new Vector3d(x + trans.x, y + trans.y, z + trans.z), color, tex));
 			return;
 		}
-		if (qpos < 4) {
-			quad[qpos++] = new Vertex(new Vector3d(x + trans.x, y + trans.y, z + trans.z), color, tex);
+		if (qPos < 4) {
+			quad[qPos++] = new Vertex(new Vector3d(x + trans.x, y + trans.y, z + trans.z), color, tex);
 		}
-		if (qpos == 4) {
-			addVertex(quad[0]);
-			addVertex(quad[2]);
-			addVertex(quad[1]);
+		if (qPos == 4) {
+			vertex(quad[0]);
+			vertex(quad[2]);
+			vertex(quad[1]);
 
-			addVertex(quad[0]);
-			addVertex(quad[3]);
-			addVertex(quad[2]);
+			vertex(quad[0]);
+			vertex(quad[3]);
+			vertex(quad[2]);
 
-			qpos = 0;
+			qPos = 0;
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see vc4.impl.world.rendering.Renderer#addVertex(vc4.impl.world.rendering.DataRenderer.Vertex)
+	 * @see vc4.impl.world.rendering.Renderer#vertex(vc4.impl.world.rendering.DataRenderer.Vertex)
 	 */
 	@Override
-	public void addVertex(Vertex v) {
+	public void vertex(Vertex v) {
 		inputVertex(v);
-//		if (tpos < 3) {
-//			tri[tpos++] = v;
-//		}
-//		if (tpos == 3) {
-//			//Vector3f normal = new Vector3f(0, 0, 0);
-//			//Vector3f U = tri[1].position.subtract(tri[0].position).toVector3f();
-//			//Vector3f V = tri[2].position.subtract(tri[0].position).toVector3f();
-//
-//			//normal.x = U.y * V.z - U.z * V.y;
-//			//normal.y = U.z * V.x - U.x * V.z;
-//			//normal.z = U.x * V.y - U.y * V.x;
-//			inputVertex(tri[0]);
-//			inputVertex(tri[1]);
-//			inputVertex(tri[2]);
-//			tpos = 0;
-//		}
 
 	}
 
@@ -112,9 +99,6 @@ public class DataRenderer implements Renderer {
 		data.add(v.tex.y);
 		data.add(v.tex.z);
 		data.add(v.tex.w);
-		//data.add(normal.x);
-		//data.add(normal.y);
-		//data.add(normal.z);
 		++amountOfVertexes;
 	}
 
@@ -212,8 +196,6 @@ public class DataRenderer implements Renderer {
 		gl.vertexAttribPointer(3, 4, normal, 44, buffer);
 		buffer.position(7);
 		gl.vertexAttribPointer(8, 4, normal, 44, buffer);
-		//buffer.position(11);
-		//gl.vertexAttribPointer(2, 3, normal, 56, buffer);
 		gl.drawArrays(type, start, count);
 		gl.endList();
 
@@ -264,7 +246,7 @@ public class DataRenderer implements Renderer {
 
 	@Override
 	public void addVertex(Vector3d vertex) {
-		addVertex(vertex.x, vertex.y, vertex.z);
+		vertex(vertex.x, vertex.y, vertex.z);
 	}
 
 	@Override

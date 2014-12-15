@@ -59,6 +59,35 @@ public class ItemRenderer {
         displayAmount();
     }
 
+    public static void renderItemStack(ItemStack stack, int x, int y, Renderer render) {
+        if (stack == null) return;
+        if (stack.getId() == 0) return;
+        if (!stack.exists()) return;
+        if (stack.getItem() == null) {
+            stack.setId(0);
+            stack.setAmount(0);
+            stack.setDamage(0);
+            return;
+        }
+        gl = Graphics.getOpenGL();
+        current = stack;
+        position = new Vector2f(x, y);
+        //Graphics.getClientShaderManager().bindShader("texture");
+        if (stack.isBlock()) {
+            renderBlock();
+        } else {
+            renderItem(render);
+            if (!big) renderDurability();
+        }
+        displayAmount();
+    }
+
+    public static void renderJustItem(ItemStack stack, int x, int y, Renderer render){
+        current = stack;
+        position = new Vector2f(x, y);
+        renderItem(render);
+    }
+
     private static void renderBlock() {
         ItemBlockRenderer.renderItemBlock(current, (int) position.x - 4, (int) position.y - 4);
     }
@@ -68,70 +97,146 @@ public class ItemRenderer {
 
         Resources.getAnimatedTexture("items").bind();
 
-        gl.begin(GLPrimitive.QUADS);
+        DataRenderer render = new DataRenderer();
+        render.useQuadInputMode(true);
 
         Color color = current.getItem().getColor(current);
-        gl.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F);
+        render.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1f);
         if (big) {
-            gl.texCoord(0, 0, tex);
-            gl.vertex(position.x - 8, position.y - 8);
-            gl.texCoord(1, 0, tex);
+            render.tex(0, 0, tex);
+            render.vertex(position.x - 8, position.y - 8, 0);
+            render.tex(1, 0, tex);
 
-            gl.vertex(position.x + 24, position.y - 8);
-            gl.texCoord(1, 1, tex);
+            render.vertex(position.x + 24, position.y - 8, 0);
+            render.tex(1, 1, tex);
 
-            gl.vertex(position.x + 24, position.y + 24);
-            gl.texCoord(0, 1, tex);
+            render.vertex(position.x + 24, position.y + 24, 0);
+            render.tex(0, 1, tex);
 
-            gl.vertex(position.x - 8, position.y + 24);
+            render.vertex(position.x - 8, position.y + 24, 0);
         } else {
-            gl.texCoord(0, 0, tex);
-            gl.vertex(position.x, position.y);
-            gl.texCoord(1, 0, tex);
+            render.tex(0, 0, tex);
+            render.vertex(position.x, position.y, 0);
+            render.tex(1, 0, tex);
 
-            gl.vertex(position.x + 16, position.y);
-            gl.texCoord(1, 1, tex);
+            render.vertex(position.x + 16, position.y, 0);
+            render.tex(1, 1, tex);
 
-            gl.vertex(position.x + 16, position.y + 16);
-            gl.texCoord(0, 1, tex);
+            render.vertex(position.x + 16, position.y + 16, 0);
+            render.tex(0, 1, tex);
 
-            gl.vertex(position.x, position.y + 16);
+            render.vertex(position.x, position.y + 16, 0);
         }
-        gl.end();
+
 
         if (current.getItem() instanceof IItemMultitexture) {
             int tex2 = ((IItemMultitexture) current.getItem()).getMultitextureTextureIndex(current);
-            gl.begin(GLPrimitive.QUADS);
 
             Color color2 = ((IItemMultitexture) current.getItem()).getMultitextureColor(current);
-            gl.color(color2.getRed() / 255F, color2.getGreen() / 255F, color2.getBlue() / 255F);
+            render.color(color2.getRed() / 255F, color2.getGreen() / 255F, color2.getBlue() / 255F, 1f);
             if (big) {
-                gl.texCoord(0, 0, tex2);
-                gl.vertex(position.x - 8, position.y - 8);
-                gl.texCoord(1, 0, tex2);
+                render.tex(0, 0, tex2);
+                render.vertex(position.x - 8, position.y - 8, 0);
+                render.tex(1, 0, tex2);
 
-                gl.vertex(position.x + 24, position.y - 8);
-                gl.texCoord(1, 1, tex2);
+                render.vertex(position.x + 24, position.y - 8, 0);
+                render.tex(1, 1, tex2);
 
-                gl.vertex(position.x + 24, position.y + 24);
-                gl.texCoord(0, 1, tex2);
+                render.vertex(position.x + 24, position.y + 24, 0);
+                render.tex(0, 1, tex2);
 
-                gl.vertex(position.x - 8, position.y + 24);
+                render.vertex(position.x - 8, position.y + 24, 0);
             } else {
-                gl.texCoord(0, 0, tex2);
-                gl.vertex(position.x, position.y);
-                gl.texCoord(1, 0, tex2);
+                render.tex(0, 0, tex2);
+                render.vertex(position.x, position.y, 0);
+                render.tex(1, 0, tex2);
 
-                gl.vertex(position.x + 16, position.y);
-                gl.texCoord(1, 1, tex2);
+                render.vertex(position.x + 16, position.y, 0);
+                render.tex(1, 1, tex2);
 
-                gl.vertex(position.x + 16, position.y + 16);
-                gl.texCoord(0, 1, tex2);
+                render.vertex(position.x + 16, position.y + 16, 0);
+                render.tex(0, 1, tex2);
 
-                gl.vertex(position.x, position.y + 16);
+                render.vertex(position.x, position.y + 16, 0);
             }
-            gl.end();
+            //gl.end();
         }
+
+        render.compile();
+        render.render();
+        render.destroy();
+    }
+
+    private static void renderItem(Renderer render) {
+        int tex = current.getItem().getTextureIndex(current);
+
+        render.useQuadInputMode(true);
+
+        Color color = current.getItem().getColor(current);
+        render.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1f);
+        if (big) {
+            render.tex(0, 0, tex);
+            render.vertex(position.x - 8, position.y - 8, 0);
+            render.tex(1, 0, tex);
+
+            render.vertex(position.x + 24, position.y - 8, 0);
+            render.tex(1, 1, tex);
+
+            render.vertex(position.x + 24, position.y + 24, 0);
+            render.tex(0, 1, tex);
+
+            render.vertex(position.x - 8, position.y + 24, 0);
+        } else {
+            render.tex(0, 0, tex);
+            render.vertex(position.x, position.y, 0);
+            render.tex(1, 0, tex);
+
+            render.vertex(position.x + 16, position.y, 0);
+            render.tex(1, 1, tex);
+
+            render.vertex(position.x + 16, position.y + 16, 0);
+            render.tex(0, 1, tex);
+
+            render.vertex(position.x, position.y + 16, 0);
+        }
+
+
+        if (current.getItem() instanceof IItemMultitexture) {
+            int tex2 = ((IItemMultitexture) current.getItem()).getMultitextureTextureIndex(current);
+
+            Color color2 = ((IItemMultitexture) current.getItem()).getMultitextureColor(current);
+            render.color(color2.getRed() / 255F, color2.getGreen() / 255F, color2.getBlue() / 255F, 1f);
+            if (big) {
+                render.tex(0, 0, tex2);
+                render.vertex(position.x - 8, position.y - 8, 0);
+                render.tex(1, 0, tex2);
+
+                render.vertex(position.x + 24, position.y - 8, 0);
+                render.tex(1, 1, tex2);
+
+                render.vertex(position.x + 24, position.y + 24, 0);
+                render.tex(0, 1, tex2);
+
+                render.vertex(position.x - 8, position.y + 24, 0);
+            } else {
+                render.tex(0, 0, tex2);
+                render.vertex(position.x, position.y, 0);
+                render.tex(1, 0, tex2);
+
+                render.vertex(position.x + 16, position.y, 0);
+                render.tex(1, 1, tex2);
+
+                render.vertex(position.x + 16, position.y + 16, 0);
+                render.tex(0, 1, tex2);
+
+                render.vertex(position.x, position.y + 16, 0);
+            }
+            //gl.end();
+        }
+
+        //render.compile();
+        //render.render();
+        //render.destroy();
     }
 
     public static String intToDisplayAmount(int amount) {
@@ -175,6 +280,7 @@ public class ItemRenderer {
         font.renderString(position.x + 28 - length, position.y + 10, text);
         font.resetStyles();
     }
+
 
     private static void renderDurability() {
         if (!current.getItem().isDamagedOnUse()) return;
@@ -315,37 +421,37 @@ public class ItemRenderer {
         render.useQuadInputMode(true);
 
         render.tex(0, 1, tid);
-        render.addVertex(x, y, z);
+        render.vertex(x, y, z);
 
         render.tex(1, 1, tid);
-        render.addVertex(f, y, z);
+        render.vertex(f, y, z);
 
         render.tex(1, 0, tid);
-        render.addVertex(f, y + 1F, z);
+        render.vertex(f, y + 1F, z);
 
         render.tex(0, 0, tid);
-        render.addVertex(x, y + 1F, z);
+        render.vertex(x, y + 1F, z);
         render.tex(0, 0, tid);
-        render.addVertex(x, y + 1, z - f1);
+        render.vertex(x, y + 1, z - f1);
         render.tex(1, 0, tid);
-        render.addVertex(f, y + 1, z - f1);
+        render.vertex(f, y + 1, z - f1);
         render.tex(1, 1, tid);
-        render.addVertex(f, y, z - f1);
+        render.vertex(f, y, z - f1);
         render.tex(0, 1, tid);
-        render.addVertex(x, y, z - f1);
+        render.vertex(x, y, z - f1);
 
         for (int i = 0; i < 32; i++) {
             float f2 = i / 32F;
             float f6 = (0 + (1 - 0) * f2) - smn;
             float f10 = 1 * f2;
             render.tex(f6, 1, tid);
-            render.addVertex(x + f10, y, z - f1);
+            render.vertex(x + f10, y, z - f1);
             render.tex(f6, 1, tid);
-            render.addVertex(x + f10, y, z);
+            render.vertex(x + f10, y, z);
             render.tex(f6, 0, tid);
-            render.addVertex(x + f10, y + 1, z);
+            render.vertex(x + f10, y + 1, z);
             render.tex(f6, 0, tid);
-            render.addVertex(x + f10, y + 1, z - f1);
+            render.vertex(x + f10, y + 1, z - f1);
         }
 
         for (int j = 0; j < 32; j++) {
@@ -353,13 +459,13 @@ public class ItemRenderer {
             float f7 = (0 + (1 - 0) * f3) - smn;
             float f11 = 1 * f3;
             render.tex(f7, 0, tid);
-            render.addVertex(x + f11, y + 1, z - f1);
+            render.vertex(x + f11, y + 1, z - f1);
             render.tex(f7, 0, tid);
-            render.addVertex(x + f11, y + 1, z);
+            render.vertex(x + f11, y + 1, z);
             render.tex(f7, 1, tid);
-            render.addVertex(x + f11, y, z);
+            render.vertex(x + f11, y, z);
             render.tex(f7, 1, tid);
-            render.addVertex(x + f11, y, z - f1);
+            render.vertex(x + f11, y, z - f1);
         }
 
         for (int k = 0; k < 32; k++) {
@@ -367,13 +473,13 @@ public class ItemRenderer {
             float f8 = 1 - ((0 + (1 - 0) * f4) - smn);
             float f12 = 1 * f4;
             render.tex(0, f8, tid);
-            render.addVertex(x, y + f12, z);
+            render.vertex(x, y + f12, z);
             render.tex(1, f8, tid);
-            render.addVertex(f, y + f12, z);
+            render.vertex(f, y + f12, z);
             render.tex(1, f8, tid);
-            render.addVertex(f, y + f12, z - f1);
+            render.vertex(f, y + f12, z - f1);
             render.tex(0, f8, tid);
-            render.addVertex(x, y + f12, z - f1);
+            render.vertex(x, y + f12, z - f1);
         }
 
         for (int l = 0; l < 32; l++) {
@@ -381,13 +487,13 @@ public class ItemRenderer {
             float f9 = 1 - ((0 + (1 - 0) * f5) - smn);
             float f13 = 1 * f5;
             render.tex(1, f9, tid);
-            render.addVertex(f, y + f13, z);
+            render.vertex(f, y + f13, z);
             render.tex(0, f9, tid);
-            render.addVertex(x, y + f13, z);
+            render.vertex(x, y + f13, z);
             render.tex(0, f9, tid);
-            render.addVertex(x, y + f13, z - f1);
+            render.vertex(x, y + f13, z - f1);
             render.tex(1, f9, tid);
-            render.addVertex(f, y + f13, z - f1);
+            render.vertex(f, y + f13, z - f1);
         }
 
     }

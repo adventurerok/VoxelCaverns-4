@@ -65,13 +65,13 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.color(color);
 		render.tex(0, 0, tex, 0);
-		render.addVertex(x + max, y + 1, z + 1);
+		render.vertex(x + max, y + 1, z + 1);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x + max, y + 1, z + 0);
+		render.vertex(x + max, y + 1, z + 0);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x + max, y + 0, z + 0);
+		render.vertex(x + max, y + 0, z + 0);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x + max, y + 0, z + 1);
+		render.vertex(x + max, y + 0, z + 1);
 	}
 
 	public void renderBlockFaceNorth(World world, long x, long y, long z, Renderer render, AABB bounds, double tex, Color color) {
@@ -92,16 +92,16 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.color(color, e);
 		render.tex(0, 1 - 1, tex, 0);
-		render.addVertex(x + max, y + 1, z + 1);
+		render.vertex(x + max, y + 1, z + 1);
 		render.color(color, w);
 		render.tex(1, 1 - 1, tex, 0);
-		render.addVertex(x + max, y + 1, z + 0);
+		render.vertex(x + max, y + 1, z + 0);
 		render.color(color, w);
 		render.tex(1, 1 - 0, tex, 0);
-		render.addVertex(x + max, y + 0, z + 0);
+		render.vertex(x + max, y + 0, z + 0);
 		render.color(color, e);
 		render.tex(0, 1 - 0, tex, 0);
-		render.addVertex(x + max, y + 0, z + 1);
+		render.vertex(x + max, y + 0, z + 1);
 	}
 
 	public void renderBlockFace(double x, double y, double z, Block block, ItemStack item, Renderer render, AABB bounds, int side) {
@@ -240,13 +240,13 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 1 - 1, tex, 0);
 		render.color(color);
-		render.addVertex(x + 0, y + 1, z + max);
+		render.vertex(x + 0, y + 1, z + max);
 		render.tex(1, 1 - 1, tex, 0);
-		render.addVertex(x + 1, y + 1, z + max);
+		render.vertex(x + 1, y + 1, z + max);
 		render.tex(1, 1 - 0, tex, 0);
-		render.addVertex(x + 1, y + 0, z + max);
+		render.vertex(x + 1, y + 0, z + max);
 		render.tex(0, 1 - 0, tex, 0);
-		render.addVertex(x + 0, y + 0, z + max);
+		render.vertex(x + 0, y + 0, z + max);
 
 	}
 
@@ -268,16 +268,16 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 1 - 1, tex, 0);
 		render.color(color, s);
-		render.addVertex(x + 0, y + 1, z + max);
+		render.vertex(x + 0, y + 1, z + max);
 		render.tex(1, 1 - 1, tex, 0);
 		render.color(color, n);
-		render.addVertex(x + 1, y + 1, z + max);
+		render.vertex(x + 1, y + 1, z + max);
 		render.tex(1, 1 - 0, tex, 0);
 		render.color(color, n);
-		render.addVertex(x + 1, y + 0, z + max);
+		render.vertex(x + 1, y + 0, z + max);
 		render.tex(0, 1 - 0, tex, 0);
 		render.color(color, s);
-		render.addVertex(x + 0, y + 0, z + max);
+		render.vertex(x + 0, y + 0, z + max);
 
 	}
 
@@ -285,13 +285,13 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 1 - 1, tex, 0);
 		render.color(color);
-		render.addVertex(x + min, y + 1, z + 0);
+		render.vertex(x + min, y + 1, z + 0);
 		render.tex(1, 1 - 1, tex, 0);
-		render.addVertex(x + min, y + 1, z + 1);
+		render.vertex(x + min, y + 1, z + 1);
 		render.tex(1, 1 - 0, tex, 0);
-		render.addVertex(x + min, y + 0, z + 1);
+		render.vertex(x + min, y + 0, z + 1);
 		render.tex(0, 1 - 0, tex, 0);
-		render.addVertex(x + min, y + 0, z + 0);
+		render.vertex(x + min, y + 0, z + 0);
 
 	}
 
@@ -313,16 +313,16 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 1 - 1, tex, 0);
 		render.color(color, w);
-		render.addVertex(x + min, y + 1, z + 0);
+		render.vertex(x + min, y + 1, z + 0);
 		render.tex(1, 1 - 1, tex, 0);
 		render.color(color, e);
-		render.addVertex(x + min, y + 1, z + 1);
+		render.vertex(x + min, y + 1, z + 1);
 		render.tex(1, 1 - 0, tex, 0);
 		render.color(color, e);
-		render.addVertex(x + min, y + 0, z + 1);
+		render.vertex(x + min, y + 0, z + 1);
 		render.tex(0, 1 - 0, tex, 0);
 		render.color(color, w);
-		render.addVertex(x + min, y + 0, z + 0);
+		render.vertex(x + min, y + 0, z + 0);
 
 	}
 
@@ -330,13 +330,13 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 1 - 1, tex, 0);
 		render.color(color);
-		render.addVertex(x + 1, y + 1, z + min);
+		render.vertex(x + 1, y + 1, z + min);
 		render.tex(1, 1 - 1, tex, 0);
-		render.addVertex(x + 0, y + 1, z + min);
+		render.vertex(x + 0, y + 1, z + min);
 		render.tex(1, 1 - 0, tex, 0);
-		render.addVertex(x + 0, y + 0, z + min);
+		render.vertex(x + 0, y + 0, z + min);
 		render.tex(0, 1 - 0, tex, 0);
-		render.addVertex(x + 1, y + 0, z + min);
+		render.vertex(x + 1, y + 0, z + min);
 
 	}
 
@@ -358,16 +358,16 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 1 - 1, tex, 0);
 		render.color(color, n);
-		render.addVertex(x + 1, y + 1, z + min);
+		render.vertex(x + 1, y + 1, z + min);
 		render.tex(1, 1 - 1, tex, 0);
 		render.color(color, s);
-		render.addVertex(x + 0, y + 1, z + min);
+		render.vertex(x + 0, y + 1, z + min);
 		render.tex(1, 1 - 0, tex, 0);
 		render.color(color, s);
-		render.addVertex(x + 0, y + 0, z + min);
+		render.vertex(x + 0, y + 0, z + min);
 		render.tex(0, 1 - 0, tex, 0);
 		render.color(color, n);
-		render.addVertex(x + 1, y + 0, z + min);
+		render.vertex(x + 1, y + 0, z + min);
 
 	}
 
@@ -375,13 +375,13 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x + 0, y + max, z + 0);
+		render.vertex(x + 0, y + max, z + 0);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x + 1, y + max, z + 0);
+		render.vertex(x + 1, y + max, z + 0);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x + 1, y + max, z + 1);
+		render.vertex(x + 1, y + max, z + 1);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x + 0, y + max, z + 1);
+		render.vertex(x + 0, y + max, z + 1);
 
 	}
 
@@ -417,16 +417,16 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color, sw);
-		render.addVertex(x + 0, y + max, z + 0);
+		render.vertex(x + 0, y + max, z + 0);
 		render.tex(1, 0, tex, 0);
 		render.color(color, nw);
-		render.addVertex(x + 1, y + max, z + 0);
+		render.vertex(x + 1, y + max, z + 0);
 		render.tex(1, 1, tex, 0);
 		render.color(color, ne);
-		render.addVertex(x + 1, y + max, z + 1);
+		render.vertex(x + 1, y + max, z + 1);
 		render.tex(0, 1, tex, 0);
 		render.color(color, se);
-		render.addVertex(x + 0, y + max, z + 1);
+		render.vertex(x + 0, y + max, z + 1);
 
 	}
 
@@ -434,13 +434,13 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x + 1, y + min, z + 0);
+		render.vertex(x + 1, y + min, z + 0);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x + 0, y + min, z + 0);
+		render.vertex(x + 0, y + min, z + 0);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x + 0, y + min, z + 1);
+		render.vertex(x + 0, y + min, z + 1);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x + 1, y + min, z + 1);
+		render.vertex(x + 1, y + min, z + 1);
 
 	}
 
@@ -448,13 +448,13 @@ public class BlockRendererFace implements BlockRenderer {
 		render.useQuadInputMode(true);
 		render.tex(0, 0, tex, 0);
 		render.color(color);
-		render.addVertex(x + 1, y + min, z + 0);
+		render.vertex(x + 1, y + min, z + 0);
 		render.tex(1, 0, tex, 0);
-		render.addVertex(x + 0, y + min, z + 0);
+		render.vertex(x + 0, y + min, z + 0);
 		render.tex(1, 1, tex, 0);
-		render.addVertex(x + 0, y + min, z + 1);
+		render.vertex(x + 0, y + min, z + 1);
 		render.tex(0, 1, tex, 0);
-		render.addVertex(x + 1, y + min, z + 1);
+		render.vertex(x + 1, y + min, z + 1);
 
 	}
 
